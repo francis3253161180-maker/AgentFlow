@@ -26,7 +26,8 @@ cleanup() {
   /root/autodl-tmp/conda/envs/agentflow/bin/ray stop --force >/dev/null 2>&1 || true
 }
 trap cleanup EXIT INT TERM
-pkill -f 'python train/rollout.py' 2>/dev/null || truemkdir -p log
+pkill -f 'python train/rollout.py' 2>/dev/null || true
+mkdir -p log
 
 /root/autodl-tmp/conda/envs/agentflow/bin/python train/train_agent.py --config "$AGENTFLOW_TRAIN_CONFIG" >"$TRAIN_LOG" 2>&1 &
 TRAIN_PID=$!
