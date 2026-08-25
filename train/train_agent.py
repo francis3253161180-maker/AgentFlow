@@ -9,11 +9,21 @@ def main():
     Main function to parse YAML config, set environment variables,
     and run the training script.
     """
-    # Define the path to the YAML configuration file
-    config_file_path = "train/config.yaml"
+    parser = argparse.ArgumentParser(description="Run training script with YAML config.")
+    parser.add_argument(
+        "--config",
+        default=os.environ.get("AGENTFLOW_TRAIN_CONFIG", "train/config.yaml"),
+        help="Path to the AgentFlow training configuration file.",
+    )
+    parser.add_argument('overrides', nargs='*', default=[])
+    args, unknown = parser.parse_known_args()
+
+    # Keep the rollout service on the same configuration as this launcher.
+    config_file_path = os.path.abspath(args.config)
+    os.environ["AGENTFLOW_TRAIN_CONFIG"] = config_file_path
 
     # --- Parse YAML configuration ---
-    print("Parsing YAML configuration from 'train/config.yaml'...")
+    print(f"Parsing YAML configuration from '{config_file_path}'...")
     try:
         with open(config_file_path, 'r') as f:
             config = yaml.safe_load(f)
@@ -36,13 +46,6 @@ def main():
     # --- Construct Python Command Arguments ---
     # Start with the core command parts
     command = ["python", "-m", "agentflow.verl"]
-
-    # Use argparse to handle user-provided command-line overrides
-    # This allows users to pass args like `python run_training.py data.train_batch_size=16`
-    parser = argparse.ArgumentParser(description="Run training script with YAML config.")
-    # Add a catch-all argument for user overrides
-    parser.add_argument('overrides', nargs='*', default=[])
-    args, unknown = parser.parse_known_args()
 
     # Get arguments from YAML and format them as 'key=value'
     if 'python_args' in config:

@@ -384,7 +384,9 @@ if __name__ == "__main__":
         "AGENT_MAX_TIMEOUT"
     ]
 
-    config_file = 'train/config.yaml'
+    config_file = os.environ.get('AGENTFLOW_TRAIN_CONFIG', 'train/config.yaml')
+    if not os.path.isfile(config_file):
+        raise FileNotFoundError(f"AgentFlow training config not found: {config_file}")
 
     values = get_values_from_yaml(config_file, keys_to_retrieve)
 
