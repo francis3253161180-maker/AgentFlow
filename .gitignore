@@ -220,3 +220,11 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 deployment/
+
+# experiment-sync
+!log/
+!log/**
+!rollout_data/
+!rollout_data/**
+!data/train/flowgrpo_smoke_2.parquet
+!data/train/flowgrpo_mini_20_seed20260825.parquet

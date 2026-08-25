@@ -1,5 +1,5 @@
-# 单张 RTX 5090（32 GB）上的最小 Flow-GRPO 冒烟配置。
-# 只使用两条训练样本验证完整链路；不替代上游 train/config.yaml 的正式训练设置。
+# 单张 RTX 5090（32 GB）上的 Flow-GRPO mini baseline。
+# 固定种子抽取 20 条训练样本（mathhard/nq 各 10），用于验证非零 reward variance 与真实 GRPO 更新。
 env:
   CUDA_VISIBLE_DEVICES: '0'
   HYDRA_FULL_ERROR: 1
@@ -8,8 +8,8 @@ env:
   ROLLOUT_TP_SIZE: 1
   # vLLM 0.9.2 的异步引擎需明确启用 V1 实现。
   VLLM_USE_V1: 1
-  EXPERIMENT_NAME: 'qwen25-3b-lora-flowgrpo-smoke'
-  PROJECT_NAME: 'agentflow-smoke'
+  EXPERIMENT_NAME: 'qwen25-3b-lora-mini20-seed20260825'
+  PROJECT_NAME: 'agentflow-mini-baseline'
   BASE_DATA_DIR: '/root/autodl-tmp/AgentFlow/data'
   VERBOSITY: 'INFO'
   N_WORKERS: 1
@@ -26,7 +26,7 @@ python_args:
   agentflow.port: 9999
   algorithm.adv_estimator: 'grpo'
   algorithm.use_kl_in_reward: False
-  data.train_files: '${BASE_DATA_DIR}/train/flowgrpo_smoke_2.parquet'
+  data.train_files: '${BASE_DATA_DIR}/train/flowgrpo_mini_20_seed20260825.parquet'
   data.val_files: '${BASE_DATA_DIR}/val/aime24.parquet'
   data.train_batch_size: 2
   data.max_prompt_length: 1280

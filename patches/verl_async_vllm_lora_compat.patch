@@ -1,0 +1,28 @@
+--- /root/autodl-tmp/conda/envs/agentflow/lib/python3.10/site-packages/verl/workers/rollout/vllm_rollout/vllm_async_server.py.bak_chatgpt_lora	2026-08-25 16:15:40.384106932 +0800
++++ /root/autodl-tmp/conda/envs/agentflow/lib/python3.10/site-packages/verl/workers/rollout/vllm_rollout/vllm_async_server.py	2026-08-25 16:18:23.784993796 +0800
+@@ -213,7 +213,9 @@
+         model_name = "/".join(model_path.split("/")[-2:])
+         local_path = copy_to_local(model_path)
+         trust_remote_code = config.model.get("trust_remote_code", False)
++        lora_rank = int(config.model.get("lora_rank", 0) or 0)
+         config = config.rollout
++        lora_engine_kwargs = ({"enable_lora": True, "max_loras": 1, "max_lora_rank": lora_rank} if lora_rank > 0 else {})
+ 
+         tensor_parallel_size = config.get("tensor_model_parallel_size", 1)
+         max_num_batched_tokens = config.get("max_num_batched_tokens", 8192)
+@@ -253,13 +255,14 @@
+             disable_custom_all_reduce=True,
+             skip_tokenizer_init=False,
+             max_model_len=self.max_model_len,
+-            load_format="auto",
++            load_format=config.get("load_format", "auto"),
+             disable_log_stats=config.disable_log_stats,
+             max_num_batched_tokens=max_num_batched_tokens,
+             enable_chunked_prefill=config.enable_chunked_prefill,
+             enable_prefix_caching=True,
+             trust_remote_code=trust_remote_code,
+             seed=config.get("seed", 0),
++            **lora_engine_kwargs,
+         )
+ 
+         # init async llm engine
