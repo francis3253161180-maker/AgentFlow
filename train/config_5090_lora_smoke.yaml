@@ -14,8 +14,8 @@ env:
   VERBOSITY: 'INFO'
   N_WORKERS: 2
   ENABLE_TOOLS: ['Base_Generator_Tool']
-  TOOL_ENGINE: ['deepseek-chat']
-  MODEL_ENGINE: ['trainable', 'deepseek-chat', 'deepseek-chat', 'deepseek-chat']
+  TOOL_ENGINE: ['deepseek-v4-flash']
+  MODEL_ENGINE: ['trainable', 'deepseek-v4-flash', 'deepseek-v4-flash', 'deepseek-v4-flash']
   TOOL_STEPS: 2
   TEST_TEMPERATURE: 0.0
   TRAIN_TEMPERATURE: 0.7

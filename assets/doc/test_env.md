@@ -75,7 +75,7 @@ Example output:
 ❌ Failed: 8
    • azure-gpt-4 → 🚫 API key not found in environment
    • claude-3-5-sonnet → 🚫 API key not found in environment
-   • deepseek-chat → 🚫 API key not found in environment
+   • deepseek-v4-flash → 🚫 API key not found in environment
    • grok → 🚫 API key not found in environment
    • vllm-meta-llama/Llama-3-8b-instruct → 🚫 Connection failed
    • together-meta-llama/Llama-3-70b-chat-hf → 🚫 API key not found
@@ -91,4 +91,3 @@ test your public IP(just for saving the logs files)
 cd PROJECT_ROOT
 python util/get_pub_ip.py
 ```
-

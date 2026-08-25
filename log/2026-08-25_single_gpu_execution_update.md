@@ -37,3 +37,10 @@
 ## 剩余限制
 
 当前 32 GiB 单卡可以稳定完成 rollout，但 3B 模型、vLLM 与训练 optimizer 共存时仍无法完成一次训练更新。正式训练需要降低模型/训练显存占用、进一步拆分 rollout 与 trainer，或使用更大显存/多卡资源。
+
+## DeepSeek 模型更新
+
+- DeepSeek 模型已切换为 `deepseek-v4-flash`。
+- 通过 OpenAI-compatible Chat Completions 请求的 `extra_body` 显式设置 `thinking.type` 为 `disabled`。
+- 未设置或发送 `reasoning_effort`。
+- 已更新 smoke 配置、引擎工厂识别、引擎单元测试及相关文档。

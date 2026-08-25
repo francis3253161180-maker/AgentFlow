@@ -82,7 +82,7 @@ def create_llm_engine(model_string: str, use_cache: bool = False, is_multimodal:
         return ChatAnthropic(**config)
 
     # === DeepSeek ===
-    elif any(x in model_string for x in ["deepseek-chat", "deepseek-reasoner"]):
+    elif any(x in model_string for x in ["deepseek-chat", "deepseek-reasoner", "deepseek-v4-flash"]):
         from .deepseek import ChatDeepseek
 
         # DeepSeek uses repetition_penalty, not frequency/presence

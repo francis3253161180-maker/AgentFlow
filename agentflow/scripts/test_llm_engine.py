@@ -79,7 +79,7 @@ def test_all_engines_with_fault_tolerance():
         {"model_string": "azure-gpt-4", "expected": "ChatAzureOpenAI", "kwargs": {}},
         {"model_string": "dashscope-qwen2.5-3b-instruct", "expected": "ChatDashScope", "kwargs": {}},
         {"model_string": "claude-3-5-sonnet", "expected": "ChatAnthropic", "kwargs": {}},
-        {"model_string": "deepseek-chat", "expected": "ChatDeepseek", "kwargs": {}},
+        {"model_string": "deepseek-v4-flash", "expected": "ChatDeepseek", "kwargs": {}},
         {"model_string": "gemini-1.5-flash", "expected": "ChatGemini", "kwargs": {}},
         {"model_string": "grok", "expected": "ChatGrok", "kwargs": {}},
         {"model_string": "vllm-meta-llama/Llama-3-8b-instruct", "expected": "ChatVLLM", "kwargs": {}},

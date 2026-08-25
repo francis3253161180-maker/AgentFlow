@@ -148,7 +148,7 @@ Example output:
    • gpt-4o → ChatOpenAI
    • dashscope-qwen2.5-3b-instruct → ChatDashScope
    • gemini-1.5-flash → ChatGemini
-   • deepseek-chat → ChatDeepseek
+   • deepseek-v4-flash → ChatDeepseek
 ...
 🎉 All engines initialized successfully!
 ```

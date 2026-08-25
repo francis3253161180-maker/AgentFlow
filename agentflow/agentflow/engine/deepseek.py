@@ -19,7 +19,7 @@ class ChatDeepseek(EngineLM, CachedEngine):
 
     def __init__(
         self,
-        model_string="deepseek-chat",
+        model_string="deepseek-v4-flash",
         use_cache: bool=False,
         system_prompt=DEFAULT_SYSTEM_PROMPT,
         is_multimodal: bool=False):
@@ -29,7 +29,7 @@ class ChatDeepseek(EngineLM, CachedEngine):
         self.system_prompt = system_prompt
         self.is_multimodal = is_multimodal
 
-        self.is_chat_model = any(x in model_string for x in ["deepseek-chat"])
+        self.is_chat_model = any(x in model_string for x in ["deepseek-chat", "deepseek-v4-flash"])
         self.is_reasoning_model = any(x in model_string for x in ["deepseek-reasoner"])
 
         if self.use_cache:
@@ -63,16 +63,22 @@ class ChatDeepseek(EngineLM, CachedEngine):
                 return cache_or_none
         
         if self.is_chat_model:
-            response = self.client.chat.completions.create(
-                model=self.model_string,
-                messages=[
+            request = {
+                "model": self.model_string,
+                "messages": [
                     {"role": "system", "content": sys_prompt_arg},
                     {"role": "user", "content": prompt},
                 ],
-                temperature=temperature,
-                max_tokens=max_tokens,
-                top_p=top_p,
-            )
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "top_p": top_p,
+            }
+            if self.model_string == "deepseek-v4-flash":
+                # DeepSeek V4 enables thinking by default. Keep the request
+                # explicitly non-thinking and intentionally omit
+                # reasoning_effort.
+                request["extra_body"] = {"thinking": {"type": "disabled"}}
+            response = self.client.chat.completions.create(**request)
             response = response.choices[0].message.content
 
         elif self.is_reasoning_model:
@@ -93,4 +99,3 @@ class ChatDeepseek(EngineLM, CachedEngine):
 
     def __call__(self, prompt, **kwargs):
         return self.generate(prompt, **kwargs)
-    
