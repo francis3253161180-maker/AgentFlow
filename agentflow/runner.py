@@ -115,9 +115,22 @@ class AgentRunner(ParallelWorkerBase):
         if trace_spans:
             triplets = self.triplet_exporter.export(trace_spans)
 
-        # If the agent has triplets, use the last one for final reward if not set
-        if triplets and triplets[-1].reward is not None and final_reward is None:
-            final_reward = triplets[-1].reward
+        # Reward spans may not carry token ids themselves, so capture them
+        # before removing non-trainable/fixed-model spans below.
+        if triplets and final_reward is None:
+            final_reward = next(
+                (triplet.reward for triplet in reversed(triplets) if triplet.reward is not None),
+                None,
+            )
+
+        # Only tokenized prompt/response pairs are usable by the trainable
+        # policy. Fixed-model/tool spans are intentionally represented by
+        # empty token ids and must not invalidate the whole rollout.
+        if triplets:
+            triplets = [
+                triplet for triplet in triplets
+                if triplet.prompt.get("token_ids") and triplet.response.get("token_ids")
+            ]
 
         # Create the Rollout object with standardized fields
         result_dict: Dict[str, Any] = {

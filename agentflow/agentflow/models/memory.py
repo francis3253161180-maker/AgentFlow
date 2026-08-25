@@ -80,4 +80,9 @@ class Memory:
     
     def get_actions(self) -> Dict[str, Dict[str, Any]]:
         return self.actions
-    
+
+    def reset(self) -> None:
+        """Clear per-query state before reusing a solver for another query."""
+        self.query = None
+        self.files.clear()
+        self.actions.clear()

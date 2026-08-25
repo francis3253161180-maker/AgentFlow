@@ -14,7 +14,8 @@ class Planner:
     def __init__(self, llm_engine_name: str, llm_engine_fixed_name: str = "gpt-4o",
                  toolbox_metadata: dict = None, available_tools: List = None,
                  verbose: bool = False, base_url: str = None, is_multimodal: bool = False,
-                 check_model: bool = True, temperature : float = .0):
+                 check_model: bool = True, temperature : float = .0,
+                 max_tokens: int = 2048):
         self.llm_engine_name = llm_engine_name
         self.llm_engine_fixed_name = llm_engine_fixed_name
         self.is_multimodal = is_multimodal
@@ -23,6 +24,7 @@ class Planner:
         self.llm_engine = create_llm_engine(model_string=llm_engine_name, is_multimodal=False, base_url=base_url, temperature = temperature)
         self.toolbox_metadata = toolbox_metadata if toolbox_metadata is not None else {}
         self.available_tools = available_tools if available_tools is not None else []
+        self.max_tokens = max_tokens
 
         self.verbose = verbose
     def get_image_info(self, image_path: str) -> Dict[str, Any]:
@@ -183,23 +185,38 @@ Be biref and precise with insight.
         return context, sub_goal, tool_name
 
     def generate_next_step(self, question: str, image: str, query_analysis: str, memory: Memory, step_count: int, max_step_count: int, json_data: Any = None) -> Any:
+        def compact(value: Any, limit: int) -> str:
+            text = str(value)
+            if len(text) <= limit:
+                return text
+            head = max(1, limit * 2 // 3)
+            return text[:head] + "\n...[context truncated]...\n" + text[-(limit - head):]
+
+        # Keep the trainable local-model decision prompt within the small
+        # context window used by the single-GPU smoke configuration.
+        compact_question = compact(question, 1200)
+        compact_analysis = compact(query_analysis, 1200)
+        compact_tools = compact(self.available_tools, 500)
+        compact_metadata = compact(self.toolbox_metadata, 1400)
+        compact_memory = compact(memory.get_actions(), 600)
+
         if self.is_multimodal:
             prompt_generate_next_step = f"""
 Task: Determine the optimal next step to address the given query based on the provided analysis, available tools, and previous steps taken.
 
 Context:
-Query: {question}
+Query: {compact_question}
 Image: {image}
-Query Analysis: {query_analysis}
+Query Analysis: {compact_analysis}
 
 Available Tools:
-{self.available_tools}
+{compact_tools}
 
 Tool Metadata:
-{self.toolbox_metadata}
+{compact_metadata}
 
 Previous Steps and Their Results:
-{memory.get_actions()}
+{compact_memory}
 
 Current Step: {step_count} in {max_step_count} steps
 Remaining Steps: {max_step_count - step_count}
@@ -259,11 +276,11 @@ Remember: Your response MUST end with the Context, Sub-Goal, and Tool Name secti
 Task: Determine the optimal next step to address the query using available tools and previous steps.
 
 Context:
-- **Query:** {question}
-- **Query Analysis:** {query_analysis}
-- **Available Tools:** {self.available_tools}
-- **Toolbox Metadata:** {self.toolbox_metadata}
-- **Previous Steps:** {memory.get_actions()}
+- **Query:** {compact_question}
+- **Query Analysis:** {compact_analysis}
+- **Available Tools:** {compact_tools}
+- **Toolbox Metadata:** {compact_metadata}
+- **Previous Steps:** {compact_memory}
 
 Instructions:
 1. Analyze the query, previous steps, and available tools.
@@ -284,7 +301,11 @@ Rules:
 - The response must end with the Context, Sub-Goal, and Tool Name sections in that order, with no extra content.
                     """
             
-        next_step = self.llm_engine(prompt_generate_next_step, response_format=NextStep)
+        next_step = self.llm_engine(
+            prompt_generate_next_step,
+            response_format=NextStep,
+            max_tokens=self.max_tokens,
+        )
         if json_data is not None:
             json_data[f"action_predictor_{step_count}_prompt"] = prompt_generate_next_step
             json_data[f"action_predictor_{step_count}_response"] = str(next_step)
@@ -414,4 +435,3 @@ Output Structure:
         # final_output = self.llm_engine_mm(input_data)
 
         return final_output
-

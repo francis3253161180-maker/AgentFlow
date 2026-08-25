@@ -43,9 +43,10 @@ python_args:
   actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu: 1
   actor_rollout_ref.actor.use_kl_loss: False
   actor_rollout_ref.actor.entropy_coeff: 0.0
-  actor_rollout_ref.actor.fsdp_config.param_offload: False
-  actor_rollout_ref.actor.fsdp_config.optimizer_offload: False
-  # 单卡不需要参数分片，采用 FSDP2 初始化路径以避免旧 FSDP 在 world_size=1 时停滞。
+  # 训练器与 rollout 共用一张 32 GB 卡；offload 为单卡冒烟保留显存峰值。
+  actor_rollout_ref.actor.fsdp_config.param_offload: True
+  actor_rollout_ref.actor.fsdp_config.optimizer_offload: True
+  # 采用 FSDP2 初始化路径以避免旧 FSDP 在 world_size=1 时停滞。
   actor_rollout_ref.actor.strategy: 'fsdp2'
   actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu: 1
   actor_rollout_ref.ref.fsdp_config.param_offload: False
@@ -53,7 +54,7 @@ python_args:
   actor_rollout_ref.rollout.tensor_model_parallel_size: '${ROLLOUT_TP_SIZE}'
   actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu: 1
   actor_rollout_ref.rollout.n: 2
-  actor_rollout_ref.rollout.gpu_memory_utilization: 0.36
+  actor_rollout_ref.rollout.gpu_memory_utilization: 0.24
   actor_rollout_ref.rollout.max_model_len: 2048
   actor_rollout_ref.rollout.max_num_batched_tokens: 2048
   actor_rollout_ref.rollout.max_num_seqs: 4

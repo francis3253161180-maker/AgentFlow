@@ -60,7 +60,10 @@ def main():
             else:
                 command.append(f"{key}={value}")
 
-    # Add any user-provided overrides to the command
+    # Add any user-provided overrides to the command. Positional Hydra-style
+    # overrides are parsed into ``args.overrides``; keep unknown options too so
+    # launcher flags are not silently dropped.
+    command.extend(args.overrides)
     command.extend(unknown)
     
     # --- Execute the command ---

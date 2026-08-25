@@ -45,6 +45,10 @@ class Solver:
         Args:
             index (int): Index of the problem to solve
         """
+        # A Solver instance can serve multiple rollout tasks in one worker.
+        # Do not leak files/actions from the previous query into this one.
+        self.memory.reset()
+
         # Update cache directory for the executor
         self.executor.set_query_cache_dir(self.root_cache_dir)
 
@@ -99,7 +103,7 @@ class Solver:
                     self.memory, 
                     step_count, 
                     self.max_steps,
-                    json_data
+                    json_data,
                 )
                 context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
                 if self.verbose:
@@ -235,7 +239,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         available_tools=initializer.available_tools,
         verbose=verbose,
         base_url=base_url,
-        temperature=temperature
+        temperature=temperature,
+        max_tokens=max_tokens,
     )
 
     # Instantiate Verifier

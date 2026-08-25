@@ -6,7 +6,6 @@ from typing import Any, Optional
 
 import sympy
 
-from autogen_ext.tools.mcp import StdioServerParams
 from agentflow import Trainer, LitAgent, NamedResources, LLM, reward, configure_logger, DevTaskLoader
 
 from agentflow.solver import construct_solver
@@ -18,6 +17,19 @@ import asyncio
 from utils import compute_score
 
 configure_logger()
+
+
+def _served_model_name(model_name: str) -> str:
+    """Return the model name exposed by verl's local vLLM server.
+
+    verl registers local models using the final two path components (for
+    example, ``models/Qwen2.5-3B-Instruct``), while the rollout resource
+    contains the absolute filesystem path.
+    """
+    normalized = os.path.normpath(model_name)
+    if os.path.isabs(normalized):
+        return "/".join(normalized.split(os.sep)[-2:])
+    return model_name
 
 
 @reward
@@ -54,9 +66,10 @@ class AgentFlowRollout:
         print(f"********MODEL {llm_engine_name} SERVED AT {base_url}***********")
         self.resources = resources
         self.llm_engine = llm_engine_name
-        prefix = "" if "gpt" in llm_engine_name else "vllm-"
+        served_model_name = _served_model_name(llm_engine_name) if base_url else llm_engine_name
+        prefix = "" if "gpt" in served_model_name else "vllm-"
         self.solver = construct_solver(
-            llm_engine_name=prefix + llm_engine_name,
+            llm_engine_name=prefix + served_model_name,
             enabled_tools=enabled_tools,
             tool_engine=tool_engine,
             model_engine=model_engine,
