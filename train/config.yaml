@@ -60,6 +60,7 @@ python_args:
   trainer.project_name: '${PROJECT_NAME}'
   trainer.experiment_name: '${EXPERIMENT_NAME}'
   trainer.nnodes: 1
-  trainer.save_freq: 2 # This is to ensure the CKPT exists.
+  # Set to 0 to disable periodic and final checkpoint writes.
+  trainer.save_freq: 0
   trainer.test_freq: 2 
   trainer.total_epochs: 5

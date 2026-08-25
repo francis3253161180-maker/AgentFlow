@@ -69,5 +69,5 @@ python_args:
   trainer.n_gpus_per_node: '${N_GPUS}'
   trainer.val_before_train: False
   trainer.test_freq: 1000
-  trainer.save_freq: 1000
+  trainer.save_freq: 0
   trainer.total_epochs: 1
