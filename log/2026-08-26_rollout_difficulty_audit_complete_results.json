@@ -1,0 +1,3132 @@
+{
+  "audit": {
+    "status": "complete",
+    "manifest": "log/2026-08-26_rollout_difficulty_audit_sample_manifest.json",
+    "manifest_sha256": "00d8466d69e125d99931c514423ab427847c9118fdb5dd08954ae8073710c80f",
+    "selected_data": "/root/autodl-tmp/tmp/rollout_difficulty_audit_20260826/prompts_100.parquet",
+    "selected_data_sha256": "48b93b2ca6162f71dad4f1fa8f967a86e2058dac8379ed46eb562e119c722c5f",
+    "selection_seed": 20260826,
+    "sampled_prompt_count": 100,
+    "sampled_source_counts": {
+      "nq": 50,
+      "mathhard": 50
+    },
+    "model": "/root/autodl-tmp/models/Qwen2.5-3B-Instruct",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "temperature": 0.7,
+    "rollout_n": 4,
+    "rollout_only": true,
+    "optimizer_steps": 0,
+    "checkpoint_files_observed": 0,
+    "llm_similarity_used": false
+  },
+  "chunks": [
+    {
+      "chunk": 0,
+      "train_rollout_dir": "rollout_data/107.173.39.105/rollout-difficulty-100-20260826-chunk0_20260826-171828/Qwen2.5-3B-Instruct_20260826-171828/train",
+      "rollout_json_files": 100,
+      "summary": {
+        "groups": 25,
+        "rollouts": 100,
+        "bin_counts": {
+          "0/4": 8,
+          "1/4": 0,
+          "2/4": 2,
+          "3/4": 2,
+          "4/4": 13
+        },
+        "bin_proportions": {
+          "0/4": 0.32,
+          "1/4": 0.0,
+          "2/4": 0.08,
+          "3/4": 0.08,
+          "4/4": 0.52
+        },
+        "mixed_informative_groups": 4,
+        "mixed_informative_proportion": 0.16,
+        "overall_rollout_reward_mean": 0.62,
+        "positive_reward_count": 62,
+        "negative_reward_count": 38,
+        "nonzero_reward_variance_groups": 4,
+        "nonzero_reward_variance_proportion": 0.16,
+        "mean_unique_answers_per_group": 3.6,
+        "mean_normalized_exact_duplicate_rate": 0.1,
+        "exact_duplicate_group_proportion": 0.32,
+        "path_signature_available_groups": 25,
+        "mean_unique_path_signatures_per_group": 1.28
+      },
+      "runtime": {
+        "progress_last": {
+          "completed": 98,
+          "queued": 100,
+          "valid": 98,
+          "retries": 0
+        },
+        "validation_summary": {
+          "completed": 100,
+          "queued": 100,
+          "valid": 100
+        },
+        "cleanup_markers": [
+          "VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 9.617768228054047e-05, 'sleep_started': True, 'cleanup_duration_seconds': 0.7036497667431831}]"
+        ],
+        "cleanup_drained_true": 1,
+        "cleanup_drained_false": 0,
+        "errors": [],
+        "unexpected_update_markers": []
+      }
+    },
+    {
+      "chunk": 1,
+      "train_rollout_dir": "rollout_data/107.173.39.105/rollout-difficulty-100-20260826-chunk1_20260826-174612/Qwen2.5-3B-Instruct_20260826-174613/train",
+      "rollout_json_files": 100,
+      "summary": {
+        "groups": 25,
+        "rollouts": 100,
+        "bin_counts": {
+          "0/4": 3,
+          "1/4": 0,
+          "2/4": 2,
+          "3/4": 1,
+          "4/4": 19
+        },
+        "bin_proportions": {
+          "0/4": 0.12,
+          "1/4": 0.0,
+          "2/4": 0.08,
+          "3/4": 0.04,
+          "4/4": 0.76
+        },
+        "mixed_informative_groups": 3,
+        "mixed_informative_proportion": 0.12,
+        "overall_rollout_reward_mean": 0.83,
+        "positive_reward_count": 83,
+        "negative_reward_count": 17,
+        "nonzero_reward_variance_groups": 3,
+        "nonzero_reward_variance_proportion": 0.12,
+        "mean_unique_answers_per_group": 3.76,
+        "mean_normalized_exact_duplicate_rate": 0.06,
+        "exact_duplicate_group_proportion": 0.16,
+        "path_signature_available_groups": 25,
+        "mean_unique_path_signatures_per_group": 1.16
+      },
+      "runtime": {
+        "progress_last": {
+          "completed": 99,
+          "queued": 100,
+          "valid": 99,
+          "retries": 0
+        },
+        "validation_summary": {
+          "completed": 100,
+          "queued": 100,
+          "valid": 100
+        },
+        "cleanup_markers": [
+          "VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 9.784102439880371e-05, 'sleep_started': True, 'cleanup_duration_seconds': 0.4833574555814266}]"
+        ],
+        "cleanup_drained_true": 1,
+        "cleanup_drained_false": 0,
+        "errors": [],
+        "unexpected_update_markers": []
+      }
+    },
+    {
+      "chunk": 2,
+      "train_rollout_dir": "rollout_data/107.173.39.105/rollout-difficulty-100-20260826-chunk2_20260826-181250/Qwen2.5-3B-Instruct_20260826-181251/train",
+      "rollout_json_files": 100,
+      "summary": {
+        "groups": 25,
+        "rollouts": 100,
+        "bin_counts": {
+          "0/4": 1,
+          "1/4": 2,
+          "2/4": 2,
+          "3/4": 3,
+          "4/4": 17
+        },
+        "bin_proportions": {
+          "0/4": 0.04,
+          "1/4": 0.08,
+          "2/4": 0.08,
+          "3/4": 0.12,
+          "4/4": 0.68
+        },
+        "mixed_informative_groups": 7,
+        "mixed_informative_proportion": 0.28,
+        "overall_rollout_reward_mean": 0.83,
+        "positive_reward_count": 83,
+        "negative_reward_count": 17,
+        "nonzero_reward_variance_groups": 7,
+        "nonzero_reward_variance_proportion": 0.28,
+        "mean_unique_answers_per_group": 2.4,
+        "mean_normalized_exact_duplicate_rate": 0.4,
+        "exact_duplicate_group_proportion": 0.72,
+        "path_signature_available_groups": 25,
+        "mean_unique_path_signatures_per_group": 1.52
+      },
+      "runtime": {
+        "progress_last": {
+          "completed": 99,
+          "queued": 100,
+          "valid": 99,
+          "retries": 0
+        },
+        "validation_summary": {
+          "completed": 100,
+          "queued": 100,
+          "valid": 100
+        },
+        "cleanup_markers": [
+          "VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.00016266480088233948, 'sleep_started': True, 'cleanup_duration_seconds': 0.506014434620738}]"
+        ],
+        "cleanup_drained_true": 1,
+        "cleanup_drained_false": 0,
+        "errors": [],
+        "unexpected_update_markers": []
+      }
+    },
+    {
+      "chunk": 3,
+      "train_rollout_dir": "rollout_data/107.173.39.105/rollout-difficulty-100-20260826-chunk3_20260826-185841/Qwen2.5-3B-Instruct_20260826-185842/train",
+      "rollout_json_files": 100,
+      "summary": {
+        "groups": 25,
+        "rollouts": 100,
+        "bin_counts": {
+          "0/4": 2,
+          "1/4": 2,
+          "2/4": 0,
+          "3/4": 3,
+          "4/4": 18
+        },
+        "bin_proportions": {
+          "0/4": 0.08,
+          "1/4": 0.08,
+          "2/4": 0.0,
+          "3/4": 0.12,
+          "4/4": 0.72
+        },
+        "mixed_informative_groups": 5,
+        "mixed_informative_proportion": 0.2,
+        "overall_rollout_reward_mean": 0.83,
+        "positive_reward_count": 83,
+        "negative_reward_count": 17,
+        "nonzero_reward_variance_groups": 5,
+        "nonzero_reward_variance_proportion": 0.2,
+        "mean_unique_answers_per_group": 2.4,
+        "mean_normalized_exact_duplicate_rate": 0.4,
+        "exact_duplicate_group_proportion": 0.64,
+        "path_signature_available_groups": 25,
+        "mean_unique_path_signatures_per_group": 1.32
+      },
+      "runtime": {
+        "progress_last": {
+          "completed": 99,
+          "queued": 100,
+          "valid": 99,
+          "retries": 0
+        },
+        "validation_summary": {
+          "completed": 100,
+          "queued": 100,
+          "valid": 100
+        },
+        "cleanup_markers": [
+          "VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.00012955628335475922, 'sleep_started': True, 'cleanup_duration_seconds': 0.5788309872150421}]"
+        ],
+        "cleanup_drained_true": 1,
+        "cleanup_drained_false": 0,
+        "errors": [],
+        "unexpected_update_markers": []
+      }
+    }
+  ],
+  "overall": {
+    "groups": 100,
+    "rollouts": 400,
+    "bin_counts": {
+      "0/4": 14,
+      "1/4": 4,
+      "2/4": 6,
+      "3/4": 9,
+      "4/4": 67
+    },
+    "bin_proportions": {
+      "0/4": 0.14,
+      "1/4": 0.04,
+      "2/4": 0.06,
+      "3/4": 0.09,
+      "4/4": 0.67
+    },
+    "mixed_informative_groups": 19,
+    "mixed_informative_proportion": 0.19,
+    "overall_rollout_reward_mean": 0.7775,
+    "positive_reward_count": 311,
+    "negative_reward_count": 89,
+    "nonzero_reward_variance_groups": 19,
+    "nonzero_reward_variance_proportion": 0.19,
+    "mean_unique_answers_per_group": 3.04,
+    "mean_normalized_exact_duplicate_rate": 0.24,
+    "exact_duplicate_group_proportion": 0.46,
+    "path_signature_available_groups": 100,
+    "mean_unique_path_signatures_per_group": 1.32
+  },
+  "by_source": {
+    "mathhard": {
+      "groups": 50,
+      "rollouts": 200,
+      "bin_counts": {
+        "0/4": 3,
+        "1/4": 4,
+        "2/4": 2,
+        "3/4": 6,
+        "4/4": 35
+      },
+      "bin_proportions": {
+        "0/4": 0.06,
+        "1/4": 0.08,
+        "2/4": 0.04,
+        "3/4": 0.12,
+        "4/4": 0.7
+      },
+      "mixed_informative_groups": 12,
+      "mixed_informative_proportion": 0.24,
+      "overall_rollout_reward_mean": 0.83,
+      "positive_reward_count": 166,
+      "negative_reward_count": 34,
+      "nonzero_reward_variance_groups": 12,
+      "nonzero_reward_variance_proportion": 0.24,
+      "mean_unique_answers_per_group": 2.4,
+      "mean_normalized_exact_duplicate_rate": 0.4,
+      "exact_duplicate_group_proportion": 0.68,
+      "path_signature_available_groups": 50,
+      "mean_unique_path_signatures_per_group": 1.42
+    },
+    "nq": {
+      "groups": 50,
+      "rollouts": 200,
+      "bin_counts": {
+        "0/4": 11,
+        "1/4": 0,
+        "2/4": 4,
+        "3/4": 3,
+        "4/4": 32
+      },
+      "bin_proportions": {
+        "0/4": 0.22,
+        "1/4": 0.0,
+        "2/4": 0.08,
+        "3/4": 0.06,
+        "4/4": 0.64
+      },
+      "mixed_informative_groups": 7,
+      "mixed_informative_proportion": 0.14,
+      "overall_rollout_reward_mean": 0.725,
+      "positive_reward_count": 145,
+      "negative_reward_count": 55,
+      "nonzero_reward_variance_groups": 7,
+      "nonzero_reward_variance_proportion": 0.14,
+      "mean_unique_answers_per_group": 3.68,
+      "mean_normalized_exact_duplicate_rate": 0.08,
+      "exact_duplicate_group_proportion": 0.24,
+      "path_signature_available_groups": 50,
+      "mean_unique_path_signatures_per_group": 1.22
+    }
+  },
+  "representative_mixed_groups": [
+    {
+      "id": 66765,
+      "idx": 60799,
+      "source": "nq",
+      "rewards": [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "theoretical_advantages": [
+        -0.8660239037870368,
+        -0.8660239037870368,
+        0.8660239037870368,
+        0.8660239037870368
+      ],
+      "reward_variance_population": 0.25,
+      "unique_answers": 4
+    },
+    {
+      "id": 76451,
+      "idx": 47281,
+      "source": "nq",
+      "rewards": [
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "theoretical_advantages": [
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002
+      ],
+      "reward_variance_population": 0.1875,
+      "unique_answers": 4
+    },
+    {
+      "id": 92628,
+      "idx": 39820,
+      "source": "nq",
+      "rewards": [
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "theoretical_advantages": [
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002
+      ],
+      "reward_variance_population": 0.1875,
+      "unique_answers": 4
+    },
+    {
+      "id": 156411,
+      "idx": 41990,
+      "source": "nq",
+      "rewards": [
+        0.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "theoretical_advantages": [
+        -0.8660239037870368,
+        0.8660239037870368,
+        0.8660239037870368,
+        -0.8660239037870368
+      ],
+      "reward_variance_population": 0.25,
+      "unique_answers": 4
+    },
+    {
+      "id": 38776,
+      "idx": 5403,
+      "source": "nq",
+      "rewards": [
+        1.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "theoretical_advantages": [
+        0.499999000002,
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002
+      ],
+      "reward_variance_population": 0.1875,
+      "unique_answers": 4
+    }
+  ],
+  "theoretical_advantage_check": {
+    "formula": "(reward - group_mean) / (torch.std(reward, unbiased=True) + 1e-6)",
+    "mixed_groups": 19,
+    "mixed_groups_with_nonzero_advantage": 19,
+    "representative_groups": [
+      {
+        "id": 66765,
+        "idx": 60799,
+        "source": "nq",
+        "rewards": [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "theoretical_advantages": [
+          -0.8660239037870368,
+          -0.8660239037870368,
+          0.8660239037870368,
+          0.8660239037870368
+        ],
+        "reward_variance_population": 0.25,
+        "unique_answers": 4
+      },
+      {
+        "id": 76451,
+        "idx": 47281,
+        "source": "nq",
+        "rewards": [
+          1.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "theoretical_advantages": [
+          0.499999000002,
+          -1.499997000006,
+          0.499999000002,
+          0.499999000002
+        ],
+        "reward_variance_population": 0.1875,
+        "unique_answers": 4
+      },
+      {
+        "id": 92628,
+        "idx": 39820,
+        "source": "nq",
+        "rewards": [
+          1.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "theoretical_advantages": [
+          0.499999000002,
+          -1.499997000006,
+          0.499999000002,
+          0.499999000002
+        ],
+        "reward_variance_population": 0.1875,
+        "unique_answers": 4
+      }
+    ]
+  },
+  "runtime": {
+    "valid_rollout_files": 400,
+    "expected_rollout_files": 400,
+    "all_rollouts_valid": true,
+    "retries": 0,
+    "cleanup_drained_true": 4,
+    "cleanup_drained_false": 0,
+    "gpu": {
+      "samples": 1673,
+      "observed_peak_memory_mib": 20370.0,
+      "observed_peak_utilization_percent": 91.0
+    },
+    "errors": [],
+    "unexpected_update_markers": []
+  },
+  "scorer_routing": {
+    "event_count": 400,
+    "route_counts": {
+      "judge": 185,
+      "judge_cache": 23,
+      "deterministic": 192
+    },
+    "deterministic_count": 192,
+    "judge_fallback_count": 208,
+    "judge_api_call_count": 185,
+    "cache_hit_count": 23,
+    "api_or_parse_error_count": 0,
+    "error_values": {},
+    "latency_ms_mean": 531.265885,
+    "latency_ms_median": 1.3725
+  },
+  "groups": [
+    {
+      "id": 12573,
+      "idx": 31767,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 14345,
+      "idx": 44579,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 27313,
+      "idx": 35936,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 38877,
+      "idx": 28886,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 39240,
+      "idx": 69423,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 47128,
+      "idx": 71443,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 51147,
+      "idx": 37585,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 3
+    },
+    {
+      "id": 66765,
+      "idx": 60799,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "class": "2/4",
+      "reward_variance_population": 0.25,
+      "reward_std_sample": 0.5773502691896257,
+      "theoretical_advantages": [
+        -0.8660239037870368,
+        -0.8660239037870368,
+        0.8660239037870368,
+        0.8660239037870368
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 71783,
+      "idx": 29163,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 76451,
+      "idx": 47281,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 92628,
+      "idx": 39820,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 105831,
+      "idx": 39070,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 107606,
+      "idx": 78405,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 109760,
+      "idx": 49554,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 111074,
+      "idx": 59239,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 112955,
+      "idx": 39248,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 118055,
+      "idx": 5693,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 120423,
+      "idx": 1556,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 128353,
+      "idx": 11861,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 142148,
+      "idx": 46143,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 148205,
+      "idx": 49672,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 153197,
+      "idx": 5355,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 156411,
+      "idx": 41990,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "class": "2/4",
+      "reward_variance_population": 0.25,
+      "reward_std_sample": 0.5773502691896257,
+      "theoretical_advantages": [
+        -0.8660239037870368,
+        0.8660239037870368,
+        0.8660239037870368,
+        -0.8660239037870368
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 175247,
+      "idx": 50166,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 176999,
+      "idx": 25306,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 4633,
+      "idx": 14706,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 12973,
+      "idx": 63370,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 25973,
+      "idx": 54331,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 29668,
+      "idx": 69358,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 33860,
+      "idx": 74989,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 38776,
+      "idx": 5403,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        0.499999000002,
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 59748,
+      "idx": 26032,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 3
+    },
+    {
+      "id": 61287,
+      "idx": 40684,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 70153,
+      "idx": 53811,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 72195,
+      "idx": 31018,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 83381,
+      "idx": 1174,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 88713,
+      "idx": 2208,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 97706,
+      "idx": 77906,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 103418,
+      "idx": 16540,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 111216,
+      "idx": 4588,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 117058,
+      "idx": 17278,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 120119,
+      "idx": 41282,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 130974,
+      "idx": 64210,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 135533,
+      "idx": 53317,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 138821,
+      "idx": 27020,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 145731,
+      "idx": 2134,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 150991,
+      "idx": 22574,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 152346,
+      "idx": 27243,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 157320,
+      "idx": 28986,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        0.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "class": "2/4",
+      "reward_variance_population": 0.25,
+      "reward_std_sample": 0.5773502691896257,
+      "theoretical_advantages": [
+        -0.8660239037870368,
+        0.8660239037870368,
+        0.8660239037870368,
+        -0.8660239037870368
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 163498,
+      "idx": 11554,
+      "source": "nq",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "class": "2/4",
+      "reward_variance_population": 0.25,
+      "reward_std_sample": 0.5773502691896257,
+      "theoretical_advantages": [
+        0.8660239037870368,
+        -0.8660239037870368,
+        0.8660239037870368,
+        -0.8660239037870368
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 16835,
+      "idx": 20299,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 21590,
+      "idx": 99429,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 22097,
+      "idx": 56341,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "class": "1/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        -0.499999000002,
+        1.499997000006,
+        -0.499999000002,
+        -0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 34556,
+      "idx": 29992,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 64420,
+      "idx": 84620,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 64526,
+      "idx": 33486,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 64809,
+      "idx": 23520,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 64829,
+      "idx": 77797,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 69050,
+      "idx": 48460,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 82390,
+      "idx": 69456,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 84820,
+      "idx": 68700,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 3
+    },
+    {
+      "id": 92613,
+      "idx": 44830,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 107751,
+      "idx": 102358,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 108377,
+      "idx": 23265,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 111937,
+      "idx": 89720,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "class": "2/4",
+      "reward_variance_population": 0.25,
+      "reward_std_sample": 0.5773502691896257,
+      "theoretical_advantages": [
+        0.8660239037870368,
+        -0.8660239037870368,
+        -0.8660239037870368,
+        0.8660239037870368
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 3
+    },
+    {
+      "id": 122331,
+      "idx": 41285,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 134052,
+      "idx": 69664,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "class": "2/4",
+      "reward_variance_population": 0.25,
+      "reward_std_sample": 0.5773502691896257,
+      "theoretical_advantages": [
+        0.8660239037870368,
+        -0.8660239037870368,
+        -0.8660239037870368,
+        0.8660239037870368
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 143343,
+      "idx": 55524,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "class": "1/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        -0.499999000002,
+        -0.499999000002,
+        -0.499999000002,
+        1.499997000006
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 3
+    },
+    {
+      "id": 145244,
+      "idx": 29106,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 153599,
+      "idx": 100855,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 157053,
+      "idx": 99702,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 160193,
+      "idx": 52412,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 168836,
+      "idx": 42090,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 170579,
+      "idx": 80308,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 178853,
+      "idx": 78651,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 2302,
+      "idx": 80320,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        0.499999000002,
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 2570,
+      "idx": 74332,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 2846,
+      "idx": 37137,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 5744,
+      "idx": 101706,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 29462,
+      "idx": 36637,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 33246,
+      "idx": 89013,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 34138,
+      "idx": 52800,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "1/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        1.499997000006,
+        -0.499999000002,
+        -0.499999000002,
+        -0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 37884,
+      "idx": 84309,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 44256,
+      "idx": 86959,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 54893,
+      "idx": 42999,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "1/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        1.499997000006,
+        -0.499999000002,
+        -0.499999000002,
+        -0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 58237,
+      "idx": 21675,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 59503,
+      "idx": 50939,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 3
+    },
+    {
+      "id": 69322,
+      "idx": 9398,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "class": "0/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 78801,
+      "idx": 19926,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 81924,
+      "idx": 62901,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 92128,
+      "idx": 40435,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 102290,
+      "idx": 568,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 107592,
+      "idx": 72120,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 111596,
+      "idx": 85528,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "class": "3/4",
+      "reward_variance_population": 0.1875,
+      "reward_std_sample": 0.5,
+      "theoretical_advantages": [
+        0.499999000002,
+        -1.499997000006,
+        0.499999000002,
+        0.499999000002
+      ],
+      "nonzero_theoretical_advantage": true,
+      "unique_answers": 2,
+      "duplicate_rate": 0.5,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 118243,
+      "idx": 8252,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 125472,
+      "idx": 85573,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 134133,
+      "idx": 66889,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 4,
+      "duplicate_rate": 0.0,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 151282,
+      "idx": 91879,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 3,
+      "duplicate_rate": 0.25,
+      "path_signature_available": true,
+      "unique_path_signatures": 2
+    },
+    {
+      "id": 160040,
+      "idx": 93118,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    },
+    {
+      "id": 175543,
+      "idx": 69616,
+      "source": "mathhard",
+      "n": 4,
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class": "4/4",
+      "reward_variance_population": 0.0,
+      "reward_std_sample": 0.0,
+      "theoretical_advantages": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "nonzero_theoretical_advantage": false,
+      "unique_answers": 1,
+      "duplicate_rate": 0.75,
+      "path_signature_available": true,
+      "unique_path_signatures": 1
+    }
+  ]
+}
