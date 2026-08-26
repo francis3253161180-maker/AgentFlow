@@ -1,0 +1,40 @@
+{
+  "audit": "outcome_reward_validity_audit_20260826",
+  "label_definition": "labels are clear manual semantic correctness labels; null means ambiguous/uncertain and is excluded from TP/TN/FP/FN. conditional_labels record the reviewer\u2019s best interpretation but are not used for the primary confusion matrix.",
+  "groups": {
+    "mathhard:568": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "Expected value is e."},
+    "mathhard:20299": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers give the matrix derivative 2 X c c^T."},
+    "mathhard:41285": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "x=1 satisfies the equation and is the only real solution on the domain."},
+    "mathhard:48460": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "10^8 is the correct nearest power-of-ten estimate."},
+    "mathhard:66889": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "The Euclid/primorial argument supports True."},
+    "mathhard:69616": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "X1+X2-X3 is centered symmetric and continuous, giving probability 1/2."},
+    "mathhard:78651": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "The coefficient ratio tends to 1/2."},
+    "mathhard:86959": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "The piecewise function satisfies both identities on their domains."},
+    "mathhard:93118": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "The logarithm equation gives both ratios 2, yielding a right non-isosceles triangle."},
+    "mathhard:101706": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "The inradius is area/semiperimeter = 3 sqrt(10)/5."},
+    "mathhard:9398": {"status": "clear", "labels": [1, 1, 1, 1], "root_cause": "groundtruth_error", "reason": "The standard minimal vertex count for a triangulated Klein bottle is 8; GT=6 is erroneous."},
+    "mathhard:33486": {"status": "clear", "labels": [1, 1, 1, 1], "root_cause": "scorer_false_negative", "reason": "Yes, a=b is the requested conclusion; deterministic safe_math_mismatch rejected a semantically equivalent answer."},
+    "mathhard:50939": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [1, 1, 1, 1], "root_cause": "ambiguous_or_invalid_groundtruth", "reason": "T(x,y) is unspecified, so no numeric rate 3 follows. The derivative/underdetermination answers are mathematically appropriate, but the prompt/GT cannot support a forced binary label."},
+
+    "nq:2208": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers identify Sydney, Australia as the primary filming location."},
+    "nq:5355": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers identify Jennifer Elise Cox."},
+    "nq:16540": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers give April 22, 1915."},
+    "nq:27243": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers give the West Coast."},
+    "nq:28886": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers explicitly identify the main observation deck as the 86th floor."},
+    "nq:31018": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers give December 14, 2018."},
+    "nq:31767": {"status": "clear", "labels": [1, 1, 0, 1], "root_cause": "judge_false_positive", "reason": "Rollout 3 adds false songwriter names (including Ludacris/Nasri Atweh/Adam Messinger) to otherwise correct credits; the judge accepted a contaminated multi-answer list."},
+    "nq:40684": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers identify Jay Silverheels."},
+    "nq:71443": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers identify Dave Bickler."},
+    "nq:74989": {"status": "clear", "labels": [1, 1, 1, 1], "reason": "All answers correctly give the 1993 franchise award date."},
+
+    "nq:44579": {"status": "clear", "labels": [0, 0, 0, 0], "reason": "The answers give Ryan Guzman, Jai Courtney, or Graham Phillips; GT Matt Bennett is the expected actor."},
+    "nq:4588": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [0, 0, 0, 0], "root_cause": "temporal_ambiguity", "reason": "The question has no date anchor; GT=2017 while answers discuss later playoff appearances."},
+    "nq:25306": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [0, 0, 0, 0], "root_cause": "temporal_ambiguity", "reason": "Cabinet office is time-sensitive and the question has no date; answers give a later historical/current holder than GT Carla Qualtrough."},
+    "nq:26032": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [0, 0, 0, 0], "root_cause": "missing_context", "reason": "The phrase does not identify a work or source; the answers correctly flag ambiguity or speculate among unrelated sources."},
+    "nq:39070": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [1, 1, 1, 1], "root_cause": "groundtruth_error_or_missing_regular", "reason": "A regular hexagon has 6 symmetry axes, not 9, but the question does not explicitly say regular."},
+    "nq:39248": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [1, 1, 1, 1], "root_cause": "historical_rate_ambiguity", "reason": "The broad question is time-sensitive; answers explain service tax and give a later 15% rate while GT gives 14.5%."},
+    "nq:50166": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [1, 1, 1, 1], "root_cause": "temporal_definition_ambiguity", "reason": "Debt/GDP depends on year and debt definition; GT=41.4 has no date/definition while answers give later general-government figures."},
+    "nq:69358": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [0, 1, 1, 1], "root_cause": "aggregation_ambiguity", "reason": "The wording does not say one season or the two-season Wizards tenure; 21.5 is the two-season average, 20.0 is the 2002-03 season, and rollout 1 also has an arithmetic error (21.2)."},
+    "nq:78405": {"status": "ambiguous", "labels": [null, null, null, null], "conditional_labels": [0, 0, 0, 0], "root_cause": "classification_ambiguity", "reason": "Mineral counts depend on the classification and inclusion of minor/fuel minerals; answers do not reproduce the GT category breakdown."}
+  }
+}

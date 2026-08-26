@@ -1,0 +1,410 @@
+{
+  "audit": "outcome_reward_validity_audit_20260826",
+  "source_results": "log/2026-08-26_rollout_difficulty_audit_complete_results.json",
+  "source_results_sha256": "43e49a9a6a7aca39ed4c86bee590b902afb6cc481b965b148b96e0ac8f937e39",
+  "source_manifest": "log/2026-08-26_rollout_difficulty_audit_sample_manifest.json",
+  "source_manifest_sha256": "00d8466d69e125d99931c514423ab427847c9118fdb5dd08954ae8073710c80f",
+  "selection_seed": 20260826,
+  "selection_rule": {
+    "all_equal_only": true,
+    "categories": {
+      "0/4": {
+        "total": 12,
+        "mathhard": 3,
+        "nq": 9
+      },
+      "4/4": {
+        "total": 20,
+        "mathhard": 10,
+        "nq": 10
+      }
+    },
+    "method": "random.Random(20260826), independently shuffled within source/category; no answer-content filtering"
+  },
+  "selected_groups": [
+    {
+      "id": 69322,
+      "idx": 9398,
+      "source": "mathhard",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 64526,
+      "idx": 33486,
+      "source": "mathhard",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 59503,
+      "idx": 50939,
+      "source": "mathhard",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 102290,
+      "idx": 568,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 16835,
+      "idx": 20299,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 122331,
+      "idx": 41285,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 69050,
+      "idx": 48460,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 134133,
+      "idx": 66889,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 175543,
+      "idx": 69616,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 178853,
+      "idx": 78651,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 44256,
+      "idx": 86959,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 160040,
+      "idx": 93118,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 5744,
+      "idx": 101706,
+      "source": "mathhard",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 111216,
+      "idx": 4588,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 176999,
+      "idx": 25306,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 59748,
+      "idx": 26032,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 105831,
+      "idx": 39070,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 112955,
+      "idx": 39248,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 14345,
+      "idx": 44579,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 175247,
+      "idx": 50166,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 29668,
+      "idx": 69358,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 107606,
+      "idx": 78405,
+      "source": "nq",
+      "category": "0/4",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": 88713,
+      "idx": 2208,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 153197,
+      "idx": 5355,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 103418,
+      "idx": 16540,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 152346,
+      "idx": 27243,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 38877,
+      "idx": 28886,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 72195,
+      "idx": 31018,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 12573,
+      "idx": 31767,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 61287,
+      "idx": 40684,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 47128,
+      "idx": 71443,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": 33860,
+      "idx": 74989,
+      "source": "nq",
+      "category": "4/4",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ]
+}
