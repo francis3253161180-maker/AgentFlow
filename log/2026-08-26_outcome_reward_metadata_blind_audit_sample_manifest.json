@@ -1,0 +1,89 @@
+{
+  "audit": "2026-08-26 outcome reward metadata-blinded non-overlap review",
+  "selection_seed": 20260826,
+  "previous_manifest": "log/2026-08-26_outcome_reward_validity_audit_sample_manifest.json",
+  "previous_manifest_sha256": "49c4a43490a05ddfe6e548569ac48f330dfc5a5166b3d4d5666887c5818a15b2",
+  "complete_results": "log/2026-08-26_rollout_difficulty_audit_complete_results.json",
+  "complete_results_sha256": "43e49a9a6a7aca39ed4c86bee590b902afb6cc481b965b148b96e0ac8f937e39",
+  "remaining_group_count": 68,
+  "selected_count": 24,
+  "selection_rule": "Exclude all prior-manifest groups; independently shuffle remaining groups within source strata and take the first 12 per source; no reward/class/content stratification.",
+  "source_counts": {
+    "mathhard": 12,
+    "nq": 12
+  },
+  "selected_groups": [
+    {
+      "opaque_id": "opaque-001"
+    },
+    {
+      "opaque_id": "opaque-002"
+    },
+    {
+      "opaque_id": "opaque-003"
+    },
+    {
+      "opaque_id": "opaque-004"
+    },
+    {
+      "opaque_id": "opaque-005"
+    },
+    {
+      "opaque_id": "opaque-006"
+    },
+    {
+      "opaque_id": "opaque-007"
+    },
+    {
+      "opaque_id": "opaque-008"
+    },
+    {
+      "opaque_id": "opaque-009"
+    },
+    {
+      "opaque_id": "opaque-010"
+    },
+    {
+      "opaque_id": "opaque-011"
+    },
+    {
+      "opaque_id": "opaque-012"
+    },
+    {
+      "opaque_id": "opaque-013"
+    },
+    {
+      "opaque_id": "opaque-014"
+    },
+    {
+      "opaque_id": "opaque-015"
+    },
+    {
+      "opaque_id": "opaque-016"
+    },
+    {
+      "opaque_id": "opaque-017"
+    },
+    {
+      "opaque_id": "opaque-018"
+    },
+    {
+      "opaque_id": "opaque-019"
+    },
+    {
+      "opaque_id": "opaque-020"
+    },
+    {
+      "opaque_id": "opaque-021"
+    },
+    {
+      "opaque_id": "opaque-022"
+    },
+    {
+      "opaque_id": "opaque-023"
+    },
+    {
+      "opaque_id": "opaque-024"
+    }
+  ]
+}

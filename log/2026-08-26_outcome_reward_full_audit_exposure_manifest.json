@@ -1,0 +1,1468 @@
+{
+  "audit": "2026-08-26 full outcome-reward validity audit exposure manifest",
+  "base_commit": "4cc7090",
+  "selection_seed": 20260826,
+  "complete_results": "log/2026-08-26_rollout_difficulty_audit_complete_results.json",
+  "complete_results_sha256": "43e49a9a6a7aca39ed4c86bee590b902afb6cc481b965b148b96e0ac8f937e39",
+  "legacy_manifest": "log/2026-08-26_outcome_reward_validity_audit_sample_manifest.json",
+  "legacy_manifest_sha256": "49c4a43490a05ddfe6e548569ac48f330dfc5a5166b3d4d5666887c5818a15b2",
+  "metadata_results": "log/2026-08-26_outcome_reward_metadata_blind_audit_results.json",
+  "metadata_results_sha256": "83155e289892ddba02b32ec8bf4278502ff7c6f400e5c4d838cf3bb62b7edb3d",
+  "total_groups": 100,
+  "exposed_groups": 56,
+  "unexposed_groups": 44,
+  "exposure_provenance_counts": {
+    "exposed_legacy_32_prior_manual_audit": 32,
+    "exposed_metadata_24_same_session_audit": 24,
+    "unexposed_remaining_full_audit_blind_phase": 44
+  },
+  "groups": [
+    {
+      "group_key": "mathhard:100855",
+      "source": "mathhard",
+      "id": 153599,
+      "idx": 100855,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:101706",
+      "source": "mathhard",
+      "id": 5744,
+      "idx": 101706,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:102358",
+      "source": "mathhard",
+      "id": 107751,
+      "idx": 102358,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:19926",
+      "source": "mathhard",
+      "id": 78801,
+      "idx": 19926,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:20299",
+      "source": "mathhard",
+      "id": 16835,
+      "idx": 20299,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:21675",
+      "source": "mathhard",
+      "id": 58237,
+      "idx": 21675,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:23265",
+      "source": "mathhard",
+      "id": 108377,
+      "idx": 23265,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:23520",
+      "source": "mathhard",
+      "id": 64809,
+      "idx": 23520,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:29106",
+      "source": "mathhard",
+      "id": 145244,
+      "idx": 29106,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:29992",
+      "source": "mathhard",
+      "id": 34556,
+      "idx": 29992,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:33486",
+      "source": "mathhard",
+      "id": 64526,
+      "idx": 33486,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:36637",
+      "source": "mathhard",
+      "id": 29462,
+      "idx": 36637,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:37137",
+      "source": "mathhard",
+      "id": 2846,
+      "idx": 37137,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:40435",
+      "source": "mathhard",
+      "id": 92128,
+      "idx": 40435,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:41285",
+      "source": "mathhard",
+      "id": 122331,
+      "idx": 41285,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:42090",
+      "source": "mathhard",
+      "id": 168836,
+      "idx": 42090,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:42999",
+      "source": "mathhard",
+      "id": 54893,
+      "idx": 42999,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:44830",
+      "source": "mathhard",
+      "id": 92613,
+      "idx": 44830,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:48460",
+      "source": "mathhard",
+      "id": 69050,
+      "idx": 48460,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:50939",
+      "source": "mathhard",
+      "id": 59503,
+      "idx": 50939,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:52412",
+      "source": "mathhard",
+      "id": 160193,
+      "idx": 52412,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:52800",
+      "source": "mathhard",
+      "id": 34138,
+      "idx": 52800,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:55524",
+      "source": "mathhard",
+      "id": 143343,
+      "idx": 55524,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:56341",
+      "source": "mathhard",
+      "id": 22097,
+      "idx": 56341,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:568",
+      "source": "mathhard",
+      "id": 102290,
+      "idx": 568,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:62901",
+      "source": "mathhard",
+      "id": 81924,
+      "idx": 62901,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:66889",
+      "source": "mathhard",
+      "id": 134133,
+      "idx": 66889,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:68700",
+      "source": "mathhard",
+      "id": 84820,
+      "idx": 68700,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:69456",
+      "source": "mathhard",
+      "id": 82390,
+      "idx": 69456,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:69616",
+      "source": "mathhard",
+      "id": 175543,
+      "idx": 69616,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:69664",
+      "source": "mathhard",
+      "id": 134052,
+      "idx": 69664,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:72120",
+      "source": "mathhard",
+      "id": 107592,
+      "idx": 72120,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:74332",
+      "source": "mathhard",
+      "id": 2570,
+      "idx": 74332,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:77797",
+      "source": "mathhard",
+      "id": 64829,
+      "idx": 77797,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:78651",
+      "source": "mathhard",
+      "id": 178853,
+      "idx": 78651,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:80308",
+      "source": "mathhard",
+      "id": 170579,
+      "idx": 80308,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:80320",
+      "source": "mathhard",
+      "id": 2302,
+      "idx": 80320,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:8252",
+      "source": "mathhard",
+      "id": 118243,
+      "idx": 8252,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:84309",
+      "source": "mathhard",
+      "id": 37884,
+      "idx": 84309,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:84620",
+      "source": "mathhard",
+      "id": 64420,
+      "idx": 84620,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:85528",
+      "source": "mathhard",
+      "id": 111596,
+      "idx": 85528,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:85573",
+      "source": "mathhard",
+      "id": 125472,
+      "idx": 85573,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:86959",
+      "source": "mathhard",
+      "id": 44256,
+      "idx": 86959,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:89013",
+      "source": "mathhard",
+      "id": 33246,
+      "idx": 89013,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:89720",
+      "source": "mathhard",
+      "id": 111937,
+      "idx": 89720,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:91879",
+      "source": "mathhard",
+      "id": 151282,
+      "idx": 91879,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:93118",
+      "source": "mathhard",
+      "id": 160040,
+      "idx": 93118,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:9398",
+      "source": "mathhard",
+      "id": 69322,
+      "idx": 9398,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "mathhard:99429",
+      "source": "mathhard",
+      "id": 21590,
+      "idx": 99429,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "mathhard:99702",
+      "source": "mathhard",
+      "id": 157053,
+      "idx": 99702,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:11554",
+      "source": "nq",
+      "id": 163498,
+      "idx": 11554,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:1174",
+      "source": "nq",
+      "id": 83381,
+      "idx": 1174,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:11861",
+      "source": "nq",
+      "id": 128353,
+      "idx": 11861,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:14706",
+      "source": "nq",
+      "id": 4633,
+      "idx": 14706,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:1556",
+      "source": "nq",
+      "id": 120423,
+      "idx": 1556,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:16540",
+      "source": "nq",
+      "id": 103418,
+      "idx": 16540,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:17278",
+      "source": "nq",
+      "id": 117058,
+      "idx": 17278,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:2134",
+      "source": "nq",
+      "id": 145731,
+      "idx": 2134,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:2208",
+      "source": "nq",
+      "id": 88713,
+      "idx": 2208,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:22574",
+      "source": "nq",
+      "id": 150991,
+      "idx": 22574,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:25306",
+      "source": "nq",
+      "id": 176999,
+      "idx": 25306,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:26032",
+      "source": "nq",
+      "id": 59748,
+      "idx": 26032,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:27020",
+      "source": "nq",
+      "id": 138821,
+      "idx": 27020,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:27243",
+      "source": "nq",
+      "id": 152346,
+      "idx": 27243,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:28886",
+      "source": "nq",
+      "id": 38877,
+      "idx": 28886,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:28986",
+      "source": "nq",
+      "id": 157320,
+      "idx": 28986,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:29163",
+      "source": "nq",
+      "id": 71783,
+      "idx": 29163,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:31018",
+      "source": "nq",
+      "id": 72195,
+      "idx": 31018,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:31767",
+      "source": "nq",
+      "id": 12573,
+      "idx": 31767,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:35936",
+      "source": "nq",
+      "id": 27313,
+      "idx": 35936,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:37585",
+      "source": "nq",
+      "id": 51147,
+      "idx": 37585,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:39070",
+      "source": "nq",
+      "id": 105831,
+      "idx": 39070,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:39248",
+      "source": "nq",
+      "id": 112955,
+      "idx": 39248,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:39820",
+      "source": "nq",
+      "id": 92628,
+      "idx": 39820,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:40684",
+      "source": "nq",
+      "id": 61287,
+      "idx": 40684,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:41282",
+      "source": "nq",
+      "id": 120119,
+      "idx": 41282,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:41990",
+      "source": "nq",
+      "id": 156411,
+      "idx": 41990,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:44579",
+      "source": "nq",
+      "id": 14345,
+      "idx": 44579,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:4588",
+      "source": "nq",
+      "id": 111216,
+      "idx": 4588,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:46143",
+      "source": "nq",
+      "id": 142148,
+      "idx": 46143,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:47281",
+      "source": "nq",
+      "id": 76451,
+      "idx": 47281,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:49554",
+      "source": "nq",
+      "id": 109760,
+      "idx": 49554,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:49672",
+      "source": "nq",
+      "id": 148205,
+      "idx": 49672,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:50166",
+      "source": "nq",
+      "id": 175247,
+      "idx": 50166,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:53317",
+      "source": "nq",
+      "id": 135533,
+      "idx": 53317,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:5355",
+      "source": "nq",
+      "id": 153197,
+      "idx": 5355,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:53811",
+      "source": "nq",
+      "id": 70153,
+      "idx": 53811,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:5403",
+      "source": "nq",
+      "id": 38776,
+      "idx": 5403,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:54331",
+      "source": "nq",
+      "id": 25973,
+      "idx": 54331,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:5693",
+      "source": "nq",
+      "id": 118055,
+      "idx": 5693,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:59239",
+      "source": "nq",
+      "id": 111074,
+      "idx": 59239,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:60799",
+      "source": "nq",
+      "id": 66765,
+      "idx": 60799,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:63370",
+      "source": "nq",
+      "id": 12973,
+      "idx": 63370,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:64210",
+      "source": "nq",
+      "id": 130974,
+      "idx": 64210,
+      "exposure_status": "unexposed",
+      "exposure_provenance": "unexposed_remaining_full_audit_blind_phase",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:69358",
+      "source": "nq",
+      "id": 29668,
+      "idx": 69358,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:69423",
+      "source": "nq",
+      "id": 39240,
+      "idx": 69423,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:71443",
+      "source": "nq",
+      "id": 47128,
+      "idx": 71443,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:74989",
+      "source": "nq",
+      "id": 33860,
+      "idx": 74989,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    },
+    {
+      "group_key": "nq:77906",
+      "source": "nq",
+      "id": 97706,
+      "idx": 77906,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_metadata_24_same_session_audit",
+      "prior_legacy_manifest_member": false,
+      "metadata_audit_member": true
+    },
+    {
+      "group_key": "nq:78405",
+      "source": "nq",
+      "id": 107606,
+      "idx": 78405,
+      "exposure_status": "exposed",
+      "exposure_provenance": "exposed_legacy_32_prior_manual_audit",
+      "prior_legacy_manifest_member": true,
+      "metadata_audit_member": false
+    }
+  ],
+  "canonical_blind_order": [
+    {
+      "opaque_id": "full-blind-001",
+      "group_key": "mathhard:69664",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-002",
+      "group_key": "nq:29163",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-003",
+      "group_key": "mathhard:102358",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-004",
+      "group_key": "mathhard:91879",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-005",
+      "group_key": "nq:1174",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-006",
+      "group_key": "mathhard:68700",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-007",
+      "group_key": "nq:54331",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-008",
+      "group_key": "mathhard:62901",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-009",
+      "group_key": "mathhard:29992",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-010",
+      "group_key": "mathhard:84309",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-011",
+      "group_key": "nq:60799",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-012",
+      "group_key": "nq:47281",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-013",
+      "group_key": "mathhard:85528",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-014",
+      "group_key": "nq:11554",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-015",
+      "group_key": "nq:11861",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-016",
+      "group_key": "nq:41282",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-017",
+      "group_key": "mathhard:37137",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-018",
+      "group_key": "mathhard:84620",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-019",
+      "group_key": "mathhard:80308",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-020",
+      "group_key": "mathhard:23520",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-021",
+      "group_key": "mathhard:36637",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-022",
+      "group_key": "nq:17278",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-023",
+      "group_key": "nq:63370",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-024",
+      "group_key": "mathhard:21675",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-025",
+      "group_key": "nq:37585",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-026",
+      "group_key": "mathhard:85573",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-027",
+      "group_key": "nq:5693",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-028",
+      "group_key": "mathhard:42999",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-029",
+      "group_key": "mathhard:52800",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-030",
+      "group_key": "nq:2134",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-031",
+      "group_key": "mathhard:99702",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-032",
+      "group_key": "mathhard:19926",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-033",
+      "group_key": "nq:59239",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-034",
+      "group_key": "nq:28986",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-035",
+      "group_key": "nq:49554",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-036",
+      "group_key": "nq:5403",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-037",
+      "group_key": "nq:64210",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-038",
+      "group_key": "mathhard:72120",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-039",
+      "group_key": "mathhard:74332",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-040",
+      "group_key": "nq:14706",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-041",
+      "group_key": "mathhard:8252",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-042",
+      "group_key": "mathhard:56341",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-043",
+      "group_key": "mathhard:69456",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    },
+    {
+      "opaque_id": "full-blind-044",
+      "group_key": "mathhard:77797",
+      "candidate_ids": [
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ]
+    }
+  ],
+  "blind_mapping_recovery": {
+    "used_after_manual_labels": true,
+    "reason": "The final sealed mapping was rebuilt from raw chunk evidence after discarding set-order-mismatched intermediate mappings.",
+    "validated_candidate_order": true
+  }
+}
