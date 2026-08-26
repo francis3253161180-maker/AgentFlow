@@ -46,6 +46,7 @@ class ScoreResult:
     reason: str
     cache_hit: bool = False
     judge_error: str | None = None
+    latency_seconds: float = 0.0
 
 
 @dataclass
@@ -310,16 +311,28 @@ class HybridRewardScorer:
             return cls(enabled=True)
 
     def score_with_metadata(self, question: str, groundtruth: str, answer: str) -> ScoreResult:
+        started = time.perf_counter()
         self.stats.total += 1
         decision: DeterministicDecision = deterministic_decision(groundtruth, answer)
         if decision.value is not None:
             self.stats.deterministic += 1
-            return ScoreResult(decision.value, "deterministic", decision.reason)
+            return ScoreResult(
+                decision.value,
+                "deterministic",
+                decision.reason,
+                latency_seconds=time.perf_counter() - started,
+            )
 
         self.stats.judge_fallback += 1
         if not self.enabled or self.judge is None:
             self.stats.judge_unavailable += 1
-            return ScoreResult(False, "conservative_fallback", decision.reason, judge_error="unavailable")
+            return ScoreResult(
+                False,
+                "conservative_fallback",
+                decision.reason,
+                judge_error="unavailable",
+                latency_seconds=time.perf_counter() - started,
+            )
 
         cache_key = None
         if self.cache is not None:
@@ -328,7 +341,13 @@ class HybridRewardScorer:
                 cached = self.cache.get(cache_key)
                 if cached is not None:
                     self.stats.cache_hits += 1
-                    return ScoreResult(cached, "judge_cache", decision.reason, cache_hit=True)
+                    return ScoreResult(
+                        cached,
+                        "judge_cache",
+                        decision.reason,
+                        cache_hit=True,
+                        latency_seconds=time.perf_counter() - started,
+                    )
                 return self._call_judge(question, groundtruth, answer, decision.reason, cache_key)
 
         return self._call_judge(question, groundtruth, answer, decision.reason, None)
@@ -349,13 +368,24 @@ class HybridRewardScorer:
             self.stats.judge_failures += 1
             error_type = type(exc).__name__
             LOGGER.warning("DeepSeek reward judge failed (%s); returning 0", error_type)
-            return ScoreResult(False, "conservative_fallback", reason, judge_error=error_type)
+            return ScoreResult(
+                False,
+                "conservative_fallback",
+                reason,
+                judge_error=error_type,
+                latency_seconds=time.perf_counter() - started,
+            )
         finally:
             self.stats.judge_latencies_seconds.append(time.perf_counter() - started)
 
         if cache_key is not None:
             self.cache.set(cache_key, verdict.true_false)
-        return ScoreResult(verdict.true_false, "judge", reason)
+        return ScoreResult(
+            verdict.true_false,
+            "judge",
+            reason,
+            latency_seconds=time.perf_counter() - started,
+        )
 
     def score(self, question: str, groundtruth: str, answer: str) -> bool:
         return self.score_with_metadata(question, groundtruth, answer).score

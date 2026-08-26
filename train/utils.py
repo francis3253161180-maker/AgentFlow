@@ -477,7 +477,19 @@ def compute_score(question: str, groundtruth: str, answer_extracted: str,) -> bo
             from reward_judge import HybridRewardScorer
 
         _default_reward_scorer = HybridRewardScorer.from_environment()
-    return _default_reward_scorer.score(question, groundtruth, answer_extracted)
+    result = _default_reward_scorer.score_with_metadata(
+        question, groundtruth, answer_extracted
+    )
+    if os.getenv("AGENTFLOW_REWARD_SCORER_LOG") == "1":
+        print(
+            "HYBRID_REWARD_EVENT "
+            f"route={result.route} score={int(result.score)} "
+            f"cache_hit={int(result.cache_hit)} reason={result.reason} "
+            f"error={result.judge_error or 'none'} "
+            f"latency_ms={result.latency_seconds * 1000:.3f}",
+            flush=True,
+        )
+    return result.score
 
 
 def eval(question: str, groundtruth: any, answer_extracted: any, val: bool = False) -> float:

@@ -1,0 +1,475 @@
+{
+  "experiment": "controlled_flow_grpo_hybrid_prepost_20260826",
+  "run_id": "20260826_hybrid_prepost_112050",
+  "head_before_run": "c1d78f2",
+  "data": {
+    "train_and_validation": "data/train/flowgrpo_mini_20_seed20260825.parquet",
+    "validation_note": "Validation intentionally reused the 20-row mini20 file for NQ/mathhard paired pre/post comparison; it is not held-out generalization.",
+    "source_counts": {
+      "mathhard": 10,
+      "nq": 10
+    }
+  },
+  "fixed_configuration": {
+    "model": "Qwen2.5-3B-Instruct",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "dataset": "mini20 seed20260825",
+    "train_batch_size": 2,
+    "ppo_mini_batch_size": 2,
+    "micro_batch_size_per_gpu": 1,
+    "rollout_n": 2,
+    "max_prompt_length": 1280,
+    "max_response_length": 384,
+    "learning_rate": 1e-05,
+    "gpus": 1,
+    "epochs": 1,
+    "trainer_val_before_train": true,
+    "trainer_save_freq": 0,
+    "hydra_validation_override": "data/train/flowgrpo_mini_20_seed20260825.parquet"
+  },
+  "pre_validation": {
+    "json_count": 20,
+    "reward": {
+      "overall": {
+        "count": 20,
+        "reward_positive": 16,
+        "reward_negative": 4,
+        "reward_mean": 0.8,
+        "reward_variance_population": 0.16
+      },
+      "mathhard": {
+        "count": 10,
+        "reward_positive": 9,
+        "reward_negative": 1,
+        "reward_mean": 0.9,
+        "reward_variance_population": 0.09
+      },
+      "nq": {
+        "count": 10,
+        "reward_positive": 7,
+        "reward_negative": 3,
+        "reward_mean": 0.7,
+        "reward_variance_population": 0.21
+      }
+    }
+  },
+  "post_validation": {
+    "json_count": 20,
+    "reward": {
+      "overall": {
+        "count": 20,
+        "reward_positive": 16,
+        "reward_negative": 4,
+        "reward_mean": 0.8,
+        "reward_variance_population": 0.16
+      },
+      "mathhard": {
+        "count": 10,
+        "reward_positive": 9,
+        "reward_negative": 1,
+        "reward_mean": 0.9,
+        "reward_variance_population": 0.09
+      },
+      "nq": {
+        "count": 10,
+        "reward_positive": 7,
+        "reward_negative": 3,
+        "reward_mean": 0.7,
+        "reward_variance_population": 0.21
+      }
+    }
+  },
+  "training_rollouts": {
+    "json_count": 40,
+    "unique_example_ids": 20,
+    "rollouts_per_example_counts": {
+      "2": 20
+    },
+    "reward": {
+      "overall": {
+        "count": 40,
+        "reward_positive": 34,
+        "reward_negative": 6,
+        "reward_mean": 0.85,
+        "reward_variance_population": 0.1275
+      },
+      "mathhard": {
+        "count": 20,
+        "reward_positive": 20,
+        "reward_negative": 0,
+        "reward_mean": 1.0,
+        "reward_variance_population": 0.0
+      },
+      "nq": {
+        "count": 20,
+        "reward_positive": 14,
+        "reward_negative": 6,
+        "reward_mean": 0.7,
+        "reward_variance_population": 0.21
+      }
+    }
+  },
+  "training_metrics": {
+    "metric_row_count": 10,
+    "rows": [
+      {
+        "step": 1,
+        "critic/rewards/mean": 1.0,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.4823194444179535,
+        "timing_s/old_log_prob": 1.8618838619440794,
+        "timing_s/update_actor": 3.4032954908907413,
+        "training/global_step": 1.0
+      },
+      {
+        "step": 2,
+        "critic/rewards/mean": 0.5,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.43342775106430054,
+        "timing_s/old_log_prob": 0.8374334536492825,
+        "timing_s/update_actor": 2.2319919038563967,
+        "training/global_step": 2.0
+      },
+      {
+        "step": 3,
+        "critic/rewards/mean": 0.75,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.4552152156829834,
+        "timing_s/old_log_prob": 1.0006333999335766,
+        "timing_s/update_actor": 2.3645901661366224,
+        "training/global_step": 3.0
+      },
+      {
+        "step": 4,
+        "critic/rewards/mean": 1.0,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.3894265592098236,
+        "timing_s/old_log_prob": 0.8593475446105003,
+        "timing_s/update_actor": 2.2756443843245506,
+        "training/global_step": 4.0
+      },
+      {
+        "step": 5,
+        "critic/rewards/mean": 0.25,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.5965474247932434,
+        "timing_s/old_log_prob": 0.9679187946021557,
+        "timing_s/update_actor": 2.291950836777687,
+        "training/global_step": 5.0
+      },
+      {
+        "step": 6,
+        "critic/rewards/mean": 1.0,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.3838980197906494,
+        "timing_s/old_log_prob": 0.8633157331496477,
+        "timing_s/update_actor": 2.23273691162467,
+        "training/global_step": 6.0
+      },
+      {
+        "step": 7,
+        "critic/rewards/mean": 1.0,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.5006604790687561,
+        "timing_s/old_log_prob": 0.8553289491683245,
+        "timing_s/update_actor": 2.2650537490844727,
+        "training/global_step": 7.0
+      },
+      {
+        "step": 8,
+        "critic/rewards/mean": 1.0,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.4238160252571106,
+        "timing_s/old_log_prob": 0.79718535579741,
+        "timing_s/update_actor": 2.235100207850337,
+        "training/global_step": 8.0
+      },
+      {
+        "step": 9,
+        "critic/rewards/mean": 1.0,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.4331856071949005,
+        "timing_s/old_log_prob": 0.8527049422264099,
+        "timing_s/update_actor": 2.2635035049170256,
+        "training/global_step": 9.0
+      },
+      {
+        "step": 10,
+        "critic/rewards/mean": 1.0,
+        "critic/advantages/mean": 0.0,
+        "actor/pg_loss": 0.0,
+        "actor/grad_norm": 0.0,
+        "actor/entropy_loss": 0.522939920425415,
+        "timing_s/old_log_prob": 0.8425650428980589,
+        "timing_s/update_actor": 2.199191713705659,
+        "training/global_step": 10.0
+      }
+    ],
+    "max_gpu_memory_allocated_gb": 21.608757972717285,
+    "max_gpu_memory_reserved_gb": 27.08203125,
+    "max_gpu_memory_metric_source": "perf/max_memory_allocated_gb and perf/max_memory_reserved_gb in train log"
+  },
+  "rollout_progress": {
+    "finished_batches": 12,
+    "finished_batch_records": [
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 20,
+        "total": 20,
+        "valid": 20
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 4,
+        "total": 4,
+        "valid": 4
+      },
+      {
+        "completion_rate_percent": 100.0,
+        "completed": 20,
+        "total": 20,
+        "valid": 20
+      }
+    ],
+    "valid_rollouts_total_from_finished_lines": 80,
+    "retry_observations": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "retry_count_sum": 0,
+    "retry_count_max": 0
+  },
+  "scorer": {
+    "event_count": 80,
+    "phase_assignment": "event order: 20 pre, 40 training (20 rows x rollout.n=2), 20 post",
+    "pre_validation": {
+      "phase": "pre_validation",
+      "event_count": 20,
+      "route_counts": {
+        "deterministic": 10,
+        "judge": 10
+      },
+      "deterministic_count": 10,
+      "judge_fallback_count": 10,
+      "judge_api_call_count": 10,
+      "cache_hit_count": 0,
+      "api_error_count": 0,
+      "api_errors": {},
+      "uncached_latency": {
+        "count": 10,
+        "mean_ms": 1027.2426,
+        "median_ms": 956.8725,
+        "p95_ms": 1451.282
+      },
+      "cached_latency": {
+        "count": 0,
+        "mean_ms": null,
+        "median_ms": null,
+        "p95_ms": null
+      }
+    },
+    "training_rollouts": {
+      "phase": "training_rollouts",
+      "event_count": 40,
+      "route_counts": {
+        "deterministic": 24,
+        "judge": 14,
+        "judge_cache": 2
+      },
+      "deterministic_count": 24,
+      "judge_fallback_count": 16,
+      "judge_api_call_count": 14,
+      "cache_hit_count": 2,
+      "api_error_count": 0,
+      "api_errors": {},
+      "uncached_latency": {
+        "count": 14,
+        "mean_ms": 1063.5702857142858,
+        "median_ms": 961.202,
+        "p95_ms": 2134.99
+      },
+      "cached_latency": {
+        "count": 2,
+        "mean_ms": 1.03,
+        "median_ms": 1.03,
+        "p95_ms": 1.115
+      }
+    },
+    "post_validation": {
+      "phase": "post_validation",
+      "event_count": 20,
+      "route_counts": {
+        "deterministic": 12,
+        "judge": 6,
+        "judge_cache": 2
+      },
+      "deterministic_count": 12,
+      "judge_fallback_count": 8,
+      "judge_api_call_count": 6,
+      "cache_hit_count": 2,
+      "api_error_count": 0,
+      "api_errors": {},
+      "uncached_latency": {
+        "count": 6,
+        "mean_ms": 1323.6511666666668,
+        "median_ms": 1412.6999999999998,
+        "p95_ms": 1697.382
+      },
+      "cached_latency": {
+        "count": 2,
+        "mean_ms": 1.1955,
+        "median_ms": 1.1955,
+        "p95_ms": 1.243
+      }
+    },
+    "overall": {
+      "phase": "overall",
+      "event_count": 80,
+      "route_counts": {
+        "deterministic": 46,
+        "judge": 30,
+        "judge_cache": 4
+      },
+      "deterministic_count": 46,
+      "judge_fallback_count": 34,
+      "judge_api_call_count": 30,
+      "cache_hit_count": 4,
+      "api_error_count": 0,
+      "api_errors": {},
+      "uncached_latency": {
+        "count": 30,
+        "mean_ms": 1103.4772333333335,
+        "median_ms": 1046.4085,
+        "p95_ms": 1697.382
+      },
+      "cached_latency": {
+        "count": 4,
+        "mean_ms": 1.11275,
+        "median_ms": 1.1315,
+        "p95_ms": 1.243
+      }
+    }
+  },
+  "safety_checks": {
+    "fatal_pattern_matches": {
+      "CUDA out of memory": 0,
+      "OutOfMemoryError": 0,
+      "No valid rollout": 0,
+      "No valid rollouts": 0
+    },
+    "framework_error_lines_in_rollout_log": [
+      "[ERROR] Failed to kill process on port 9999: [Errno 2] No such file or directory: 'lsof'"
+    ],
+    "checkpoint_files_in_experiment_dir": [],
+    "processes_stopped_after_run": true,
+    "gpu_idle_after_run_observed": true
+  },
+  "evidence_paths": {
+    "train_log": "log/20260826_hybrid_prepost_112050_train.log",
+    "rollout_log": "log/20260826_hybrid_prepost_112050_rollout.log",
+    "rollout_root": "rollout_data/107.173.39.105/qwen25-3b-lora-mini20-seed20260825_20260826-112203/Qwen2.5-3B-Instruct_20260826-112204",
+    "checkpoint_dir": "checkpoints/agentflow-mini-baseline/qwen25-3b-lora-mini20-seed20260825-hybrid-prepost-20260826"
+  }
+}
