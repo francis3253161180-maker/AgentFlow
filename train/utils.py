@@ -1,7 +1,13 @@
 import os
 import re
+import unicodedata
 from pydantic import BaseModel
 from agentflow.engine.openai import ChatOpenAI
+
+try:
+    import sympy
+except ImportError:  # pragma: no cover - AgentFlow includes sympy in production
+    sympy = None
 
 
 class AnswerVerification(BaseModel):
@@ -20,7 +26,285 @@ if os.getenv("AGENTFLOW_USE_LLM_SCORER") == "1":
     except Exception as e:
         print(f"Failed to initialize LLM Scorer engine: {e}")
 
-def compute_score(question: str,  groundtruth: str, answer_extracted: str,) -> bool:
+_MONTHS = {
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+}
+
+
+def _answer_candidates(value: str) -> list[str]:
+    """Return the most likely final-answer text before the full response."""
+    text = str(value).strip()
+    tagged = re.findall(r"<answer>(.*?)</answer>", text, flags=re.IGNORECASE | re.DOTALL)
+    if tagged:
+        return [tagged[-1].strip()]
+
+    markers = list(
+        re.finditer(
+            r"(?:\*\*\s*)?(?:final\s+answer|answer|conclusion|result)"
+            r"(?:\s*\*\*)?\s*(?::|is)\s*",
+            text,
+            flags=re.IGNORECASE,
+        )
+    )
+    if markers:
+        return [text[markers[-1].end() :].strip()]
+    return [text]
+
+
+def _compact_candidates(value: str) -> set[str]:
+    """Preserve the previous compact normalization for short math answers."""
+    text = str(value).lower()
+    text = re.sub(r"<answer>|</answer>|\\boxed\s*", "", text)
+    text = text.replace("\\left", "").replace("\\right", "")
+    text = re.sub(r"\\(?:d?frac)\s*\{([^{}]+)\}\s*\{([^{}]+)\}", r"\1/\2", text)
+    text = re.sub(r"\\text\s*\{([^{}]+)\}", r"\1", text)
+    text = re.sub(r"\s+", "", text)
+    forms = {text}
+    if "=" in text:
+        forms.add(text.rsplit("=", 1)[-1])
+    return {re.sub(r"[^a-z0-9./+\-√]", "", form) for form in forms}
+
+
+def _normalized_tokens(value: str) -> list[str]:
+    text = unicodedata.normalize("NFKC", str(value)).lower()
+    text = text.replace("’", "'")
+    text = re.sub(r"['’]s\b", "", text)
+    return re.findall(r"[a-z0-9]+", text)
+
+
+def _negated_token(tokens: list[str], start: int) -> bool:
+    prefix = tokens[max(0, start - 4) : start]
+    return bool(prefix and prefix[-1] in {"not", "never", "no", "without"})
+
+
+def _negated_phrase(tokens: list[str], start: int, width: int) -> bool:
+    if _negated_token(tokens, start):
+        return True
+    suffix = tokens[start + width : start + width + 3]
+    return len(suffix) >= 2 and suffix[0] in {"is", "was", "are", "were"} and suffix[1] == "not"
+
+
+def _phrase_match(groundtruth: str, answer: str) -> bool:
+    truth_tokens = _normalized_tokens(groundtruth)
+    answer_tokens = _normalized_tokens(answer)
+    if not truth_tokens or not answer_tokens:
+        return False
+
+    width = len(truth_tokens)
+    for start in range(len(answer_tokens) - width + 1):
+        if answer_tokens[start : start + width] == truth_tokens:
+            if not _negated_phrase(answer_tokens, start, width):
+                return True
+
+    # Possessives often turn a benchmark phrase such as "Chicago's Grant
+    # Park" into a grammatical answer such as "Chicago ... in Grant Park".
+    # Permit an ordered, bounded token span only when the ground truth itself
+    # contains a possessive; this avoids general bag-of-words matching.
+    if re.search(r"['’]s\b", str(groundtruth)) and width > 1:
+        for start, token in enumerate(answer_tokens):
+            if token != truth_tokens[0] or _negated_phrase(answer_tokens, start, 1):
+                continue
+            pos = start
+            for wanted in truth_tokens[1:]:
+                try:
+                    pos = answer_tokens.index(wanted, pos + 1)
+                except ValueError:
+                    break
+            else:
+                if pos - start <= 32:
+                    return True
+    return False
+
+
+def _yes_no(value: str) -> bool | None:
+    text = re.sub(r"[*_`]+", "", str(value)).strip().lower()
+    if re.match(r"^(?:the\s+)?(?:answer|conclusion|result)\s+is\s+not\s+(?:yes|no)\b", text):
+        return None
+    match = re.match(r"^(?:the\s+)?(?:answer|conclusion|result)\s*(?::|is)\s*(yes|no)\b", text)
+    if match:
+        return match.group(1) == "yes"
+    match = re.match(r"^(yes|no)\b", text)
+    return None if not match else match.group(1) == "yes"
+
+
+def _date_values(value: str) -> list[tuple[int, int, int, int, int]]:
+    text = unicodedata.normalize("NFKC", str(value)).lower()
+    found: list[tuple[int, int, int, int, int]] = []
+    month_names = "|".join(_MONTHS)
+    patterns = [
+        rf"\b({month_names})\s+(\d{{1,2}})(?:st|nd|rd|th)?(?:,)?\s+(\d{{4}})\b",
+        rf"\b(\d{{1,2}})\s+({month_names})\s+(\d{{4}})\b",
+    ]
+    for pattern_index, pattern in enumerate(patterns):
+        for match in re.finditer(pattern, text):
+            if pattern_index == 0:
+                month, day, year = match.group(1), match.group(2), match.group(3)
+            else:
+                day, month, year = match.group(1), match.group(2), match.group(3)
+            found.append((int(year), _MONTHS[month], int(day), match.start(), match.end()))
+    return found
+
+
+def _date_match(groundtruth: str, candidates: list[str]) -> bool | None:
+    truth_dates = _date_values(groundtruth)
+    if not truth_dates:
+        return None
+    target = truth_dates[0][:3]
+    for candidate in candidates:
+        for year, month, day, start, _ in _date_values(candidate):
+            if (year, month, day) == target:
+                prefix = candidate[max(0, start - 24) : start].lower()
+                if not re.search(r"\b(?:not|never|wrong|incorrectly)\s*$", prefix):
+                    return True
+    return False
+
+
+def _numeric_target(value: str) -> str | None:
+    compact = re.sub(r"\s+", "", str(value)).strip(".,:;()[]")
+    if re.fullmatch(r"[-+]?\d+(?:\.\d+)?", compact):
+        return compact
+    return None
+
+
+def _numeric_match(groundtruth: str, candidates: list[str]) -> bool | None:
+    target = _numeric_target(groundtruth)
+    if target is None:
+        return None
+    for candidate in candidates:
+        matches = []
+        for match in re.finditer(r"(?<![\w.])[-+]?\d+(?:\.\d+)?", candidate):
+            end = match.end()
+            following = candidate[end : end + 2]
+            if following.startswith(".") and len(following) > 1 and following[1].isdigit():
+                continue
+            if following.startswith(".") and len(following) == 1:
+                pass
+            elif following and (following[0].isalnum() or following[0] == "_"):
+                continue
+            matches.append(match)
+        if not matches:
+            continue
+        for match in matches:
+            if match.group(0) != target:
+                continue
+            prefix = candidate[max(0, match.start() - 24) : match.start()].lower()
+            if not re.search(r"\b(?:not|never|wrong|incorrectly)\s*$", prefix):
+                # Do not accept a number merely because it shares a year or an
+                # intermediate value. A concise answer or explicit answer
+                # segment is required.
+                numbers = [item.group(0) for item in matches]
+                explicit_value = bool(
+                    re.search(
+                        r"(?:there\s+(?:is|are)|answer|result|value|equals?)\s*(?:is|are|:|=)?\s*$",
+                        prefix,
+                    )
+                )
+                if (len(set(numbers)) == 1 and numbers[0] == target) or explicit_value:
+                    return True
+    return False
+
+
+def _math_expressions(value: str) -> list[str]:
+    text = str(value).strip()
+    expressions = [text]
+    if "=" in text:
+        expressions.append(text.rsplit("=", 1)[-1].strip())
+    expressions.extend(re.findall(r"\\(?:d?frac)\s*\{[^{}]+\}\s*\{[^{}]+\}", text))
+    expressions.extend(re.findall(r"\\sqrt\s*\{[^{}]+\}|√\s*[0-9]+", text))
+    expressions.extend(re.findall(r"(?<![A-Za-z])[-+]?\d+\s*/\s*\d+", text))
+    return list(dict.fromkeys(expressions))
+
+
+def _to_sympy(value: str):
+    if sympy is None:
+        return None
+    text = str(value).strip()
+    text = re.sub(r"\\(?:d?frac)\s*\{([^{}]+)\}\s*\{([^{}]+)\}", r"(\1)/(\2)", text)
+    text = re.sub(r"\\sqrt\s*\{([^{}]+)\}", r"sqrt(\1)", text)
+    text = re.sub(r"√\s*([A-Za-z0-9]+)", r"sqrt(\1)", text)
+    text = text.replace("\\left", "").replace("\\right", "")
+    text = text.replace("\\cdot", "*").replace("^", "**")
+    text = re.sub(r"\\text\s*\{([^{}]+)\}", r"\1", text)
+    text = text.replace("{", "(").replace("}", ")")
+    text = text.replace("\\", "")
+    text = re.sub(r"\b([A-Za-z])_(\d+)\b", r"\1\2", text)
+    text = text.strip(" $\\")
+    if not text or len(text) > 160 or re.search(r"[^A-Za-z0-9_+\-*/()., ]", text):
+        return None
+    try:
+        return sympy.sympify(text, locals={"sqrt": sympy.sqrt})
+    except (TypeError, ValueError, SyntaxError, sympy.SympifyError):
+        return None
+
+
+def _math_match(groundtruth: str, candidates: list[str]) -> bool:
+    truth_compact = _compact_candidates(groundtruth)
+    for candidate in candidates:
+        if truth_compact & _compact_candidates(candidate):
+            return True
+    truth_exprs = [_to_sympy(expr) for expr in _math_expressions(groundtruth)]
+    truth_exprs = [expr for expr in truth_exprs if expr is not None]
+    if not truth_exprs:
+        return False
+    for candidate in candidates:
+        for answer_expr in _math_expressions(candidate):
+            parsed_answer = _to_sympy(answer_expr)
+            if parsed_answer is None:
+                continue
+            for parsed_truth in truth_exprs:
+                try:
+                    if bool(sympy.simplify(parsed_answer - parsed_truth) == 0):
+                        return True
+                except (TypeError, ValueError):
+                    continue
+    return False
+
+
+def _looks_mathematical(value: str) -> bool:
+    text = str(value)
+    return bool(
+        re.search(r"\\(?:d?frac|sqrt)|√|\^|=", text)
+        or re.fullmatch(r"\s*[-+]?\d+(?:\.\d+)?\s*", text)
+        or re.search(r"[A-Za-z]\w*\s*[+*/^=]\s*[-+A-Za-z0-9]", text)
+    )
+
+
+def deterministic_fallback_score(groundtruth: str, answer_extracted: str) -> bool:
+    """Compare an answer deterministically without an external judge."""
+    candidates = _answer_candidates(answer_extracted)
+    truth = str(groundtruth).strip()
+    truth_lower = truth.lower()
+
+    if truth_lower in {"yes", "no"}:
+        expected = truth_lower == "yes"
+        return any(_yes_no(candidate) is expected for candidate in candidates)
+
+    date_result = _date_match(truth, candidates)
+    if date_result is not None:
+        return date_result
+
+    numeric_result = _numeric_match(truth, candidates)
+    if numeric_result is not None:
+        return numeric_result
+
+    if _looks_mathematical(truth) and _math_match(truth, candidates):
+        return True
+
+    return any(_phrase_match(truth, candidate) for candidate in candidates)
+
+
+def compute_score(question: str, groundtruth: str, answer_extracted: str,) -> bool:
     """
     Uses gpt-4o to determine if the extracted answer matches the groundtruth.
     
@@ -32,31 +316,8 @@ def compute_score(question: str,  groundtruth: str, answer_extracted: str,) -> b
     Returns:
         A boolean indicating whether the answer is correct.
     """
-    def fallback_score() -> bool:
-        """Compare the compact smoke-test answers without an external judge."""
-        def candidates(value: str) -> set[str]:
-            text = str(value).lower()
-            text = re.sub(r"<answer>|</answer>|\\boxed\s*", "", text)
-            text = text.replace("\\left", "").replace("\\right", "")
-            text = re.sub(r"\\(?:d?frac)\s*\{([^{}]+)\}\s*\{([^{}]+)\}", r"\1/\2", text)
-            text = re.sub(r"\\text\s*\{([^{}]+)\}", r"\1", text)
-            text = re.sub(r"\s+", "", text)
-            forms = {text}
-            if "=" in text:
-                forms.add(text.rsplit("=", 1)[-1])
-            return {re.sub(r"[^a-z0-9./+-]", "", form) for form in forms}
-
-        answer_forms = candidates(answer_extracted)
-        truth_forms = candidates(groundtruth)
-        if answer_forms & truth_forms:
-            return True
-        # A final numeric/fraction token is a common compact answer format.
-        answer_tokens = set(re.findall(r"[-+]?\d+(?:\.\d+)?(?:/[-+]?\d+)?", str(answer_extracted)))
-        truth_tokens = set(re.findall(r"[-+]?\d+(?:\.\d+)?(?:/[-+]?\d+)?", str(groundtruth)))
-        return bool(answer_tokens & truth_tokens)
-
     if llm_scorer_engine is None:
-        return fallback_score()
+        return deterministic_fallback_score(groundtruth, answer_extracted)
 
     query_prompt = f"""
 You are a precise evaluator. Determine if the Model Response is equivalent to the Ground Truth.
@@ -88,7 +349,7 @@ Ground Truth: {groundtruth}
     except Exception as exc:
         print(f"LLM scorer unavailable; using local smoke-test comparison: {exc}")
 
-    return fallback_score()
+    return deterministic_fallback_score(groundtruth, answer_extracted)
 
 
 def eval(question: str, groundtruth: any, answer_extracted: any, val: bool = False) -> float:
@@ -100,7 +361,7 @@ def eval(question: str, groundtruth: any, answer_extracted: any, val: bool = Fal
     groundtruth_str = str(groundtruth)
     answer_extracted_str = str(answer_extracted)
 
-    is_correct = compute_score(question_str, answer_extracted_str, groundtruth_str)
+    is_correct = compute_score(question_str, groundtruth_str, answer_extracted_str)
     
     return 1.0 if is_correct else 0.0
 

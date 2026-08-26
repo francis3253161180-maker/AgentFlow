@@ -18,6 +18,9 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+os.environ.pop("AGENTFLOW_USE_LLM_SCORER", None)
+from train.utils import deterministic_fallback_score
+
 
 def fallback_candidates(value: Any) -> set[str]:
     """Mirror train/utils.py's current local fallback scorer exactly."""
@@ -33,8 +36,8 @@ def fallback_candidates(value: Any) -> set[str]:
     return {re.sub(r"[^a-z0-9./+-]", "", form) for form in forms}
 
 
-def fallback_score(groundtruth: Any, answer_extracted: Any) -> bool:
-    """Mirror train/utils.py's fallback_score without any network dependency."""
+def legacy_fallback_score(groundtruth: Any, answer_extracted: Any) -> bool:
+    """Mirror the pre-fix train/utils.py fallback without network access."""
     answer_forms = fallback_candidates(answer_extracted)
     truth_forms = fallback_candidates(groundtruth)
     if answer_forms & truth_forms:
@@ -42,6 +45,10 @@ def fallback_score(groundtruth: Any, answer_extracted: Any) -> bool:
     answer_tokens = set(re.findall(r"[-+]?\d+(?:\.\d+)?(?:/[-+]?\d+)?", str(answer_extracted)))
     truth_tokens = set(re.findall(r"[-+]?\d+(?:\.\d+)?(?:/[-+]?\d+)?", str(groundtruth)))
     return bool(answer_tokens & truth_tokens)
+
+
+# Keep the old name for callers of the first audit script version.
+fallback_score = legacy_fallback_score
 
 
 # Explicit semantic review for the 20 source examples.  IDs in the first set
@@ -72,10 +79,9 @@ INCORRECT_ALL = {
 }
 
 
-def semantic_verdict(record: dict[str, Any]) -> str:
-    """Return TP/TN/FP/FN from the fixed, documented semantic review."""
+def semantic_correct(record: dict[str, Any]) -> bool:
+    """Return the fixed, documented semantic review label independent of reward."""
     sample_id = int(record["id"])
-    reward = float(record["reward"])
     answer = str(record["answer_extracted"])
 
     if sample_id == 61526:
@@ -90,6 +96,15 @@ def semantic_verdict(record: dict[str, Any]) -> str:
         correct = False
     else:
         raise AssertionError(f"No semantic review label for dataset id {sample_id}")
+
+    return correct
+
+
+def semantic_verdict(record: dict[str, Any], reward: float | None = None) -> str:
+    """Return TP/TN/FP/FN for a supplied or saved binary reward."""
+    correct = semantic_correct(record)
+    if reward is None:
+        reward = float(record["reward"])
 
     if correct and reward == 1.0:
         return "TP"
@@ -165,12 +180,13 @@ def main() -> None:
         raw = json.loads(path.read_text())
         sample = source_map[int(raw["id"])]
         answer = str(raw["answer_extracted"])
-        current_fallback = fallback_score(raw["groundtruth"], answer)
+        legacy_fallback = legacy_fallback_score(raw["groundtruth"], answer)
+        fixed_fallback = deterministic_fallback_score(raw["groundtruth"], answer)
         # train/rollout.py calls compute_score(question, groundtruth, answer)
         # directly.  train/utils.py::eval has a swapped call, so record both
         # to distinguish that bug from the scorer's matching limitation.
-        swapped_fallback = fallback_score(answer, raw["groundtruth"])
-        verdict = semantic_verdict(raw)
+        swapped_fallback = legacy_fallback_score(answer, raw["groundtruth"])
+        verdict = semantic_verdict(raw, float(raw["reward"]))
         try:
             rel_path = path.relative_to(Path.cwd())
         except ValueError:
@@ -186,19 +202,41 @@ def main() -> None:
                 "groundtruth": str(raw["groundtruth"]),
                 "answer_extracted": answer,
                 "reward": float(raw["reward"]),
-                "current_fallback": bool(current_fallback),
+                "legacy_fallback": bool(legacy_fallback),
+                "current_fallback": bool(legacy_fallback),
+                "fixed_fallback": bool(fixed_fallback),
                 "swapped_fallback": bool(swapped_fallback),
-                "scorer_matches_record": bool(float(raw["reward"]) == float(current_fallback)),
+                "scorer_matches_record": bool(float(raw["reward"]) == float(legacy_fallback)),
+                "fixed_reward_matches_semantic": bool(float(fixed_fallback) == semantic_correct(raw)),
                 "semantic_verdict": verdict,
+                "fixed_semantic_verdict": semantic_verdict(raw, float(fixed_fallback)),
                 "answer_excerpt": re.sub(r"\s+", " ", answer).strip()[:320],
             }
         )
 
     counts = Counter(r["semantic_verdict"] for r in records)
+    fixed_counts = Counter(r["fixed_semantic_verdict"] for r in records)
     by_source: dict[str, Counter[str]] = defaultdict(Counter)
+    fixed_by_source: dict[str, Counter[str]] = defaultdict(Counter)
     for row in records:
         by_source[row["source"]][row["semantic_verdict"]] += 1
+        fixed_by_source[row["source"]][row["fixed_semantic_verdict"]] += 1
     reward_counts = Counter(int(r["reward"]) for r in records)
+    fixed_reward_counts = Counter(int(r["fixed_fallback"]) for r in records)
+    newly_positive = [
+        {
+            "path": r["path"],
+            "source": r["source"],
+            "id": r["id"],
+            "groundtruth": r["groundtruth"],
+            "answer_extracted": r["answer_extracted"],
+            "pre_fix_reward": r["reward"],
+            "post_fix_reward": float(r["fixed_fallback"]),
+            "post_fix_verdict": r["fixed_semantic_verdict"],
+        }
+        for r in records
+        if not r["legacy_fallback"] and r["fixed_fallback"]
+    ]
     output = {
         "audit": "2026-08-26 reward audit",
         "scope": "train rollouts only; validation is intentionally excluded",
@@ -208,10 +246,17 @@ def main() -> None:
         "unique_dataset_ids": len({r["id"] for r in records}),
         "reward_counts": {str(k): v for k, v in sorted(reward_counts.items())},
         "semantic_counts": dict(sorted(counts.items())),
+        "fixed_semantic_counts": dict(sorted(fixed_counts.items())),
         "by_source": {source: dict(sorted(counter.items())) for source, counter in sorted(by_source.items())},
+        "fixed_by_source": {source: dict(sorted(counter.items())) for source, counter in sorted(fixed_by_source.items())},
+        "fixed_reward_counts": {str(k): v for k, v in sorted(fixed_reward_counts.items())},
         "scorer_matches_saved_reward": all(r["scorer_matches_record"] for r in records),
         "scorer_mismatch_count": sum(not r["scorer_matches_record"] for r in records),
         "swapped_fallback_diff_count": sum(r["current_fallback"] != r["swapped_fallback"] for r in records),
+        "fixed_matches_semantic_count": sum(r["fixed_reward_matches_semantic"] for r in records),
+        "fixed_mismatch_semantic_count": sum(not r["fixed_reward_matches_semantic"] for r in records),
+        "newly_positive_count": len(newly_positive),
+        "newly_positive": newly_positive,
         "metric_lines": parse_metric_lines(args.train_log),
         "records": records,
     }
