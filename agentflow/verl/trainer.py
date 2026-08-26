@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from copy import deepcopy
 from typing import Dict, Tuple
 
+import ray
 import torch
 from omegaconf import OmegaConf
 from pprint import pprint
@@ -63,6 +64,41 @@ class AgentFlowTrainer(RayPPOTrainer):
     4. Streamlined validation using agent_mode validation
     """
 
+    def _cleanup_rollout_engine(self, reason: str):
+        """Drain custom async vLLM servers before prefix-cache reset/sleep."""
+        servers = list(getattr(self.async_rollout_manager, "async_llm_servers", []) or [])
+        cleanup_refs = []
+        for server in servers:
+            cleanup = getattr(server, "cleanup", None)
+            if cleanup is not None:
+                cleanup_refs.append(cleanup.remote(reason=reason))
+
+        if cleanup_refs and len(cleanup_refs) == len(servers):
+            results = ray.get(cleanup_refs)
+            print(f"VLLM_CLEANUP_DRIVER reason={reason} results={results}")
+            return results
+
+        # Compatibility fallback for non-AgentFlow server classes. The current
+        # branch uses PatchedvLLMServer, so this path is not used in production.
+        print(
+            "VLLM_CLEANUP_DRIVER fallback=manager_sleep "
+            f"reason={reason} custom_servers={len(cleanup_refs)}/{len(servers)}"
+        )
+        self.async_rollout_manager.sleep()
+        return []
+
+    def _maybe_cleanup_health_check(self):
+        """Test-only wake/health check after the forced-timeout cleanup."""
+        if os.environ.get("AGENTFLOW_CLEANUP_HEALTH_CHECK", "0") != "1":
+            return
+        self.async_rollout_manager.wake_up()
+        servers = list(getattr(self.async_rollout_manager, "async_llm_servers", []) or [])
+        health_refs = [server.health_check.remote() for server in servers if hasattr(server, "health_check")]
+        if len(health_refs) != len(servers):
+            raise RuntimeError("cleanup health check unavailable on one or more rollout servers")
+        results = ray.get(health_refs)
+        print(f"VLLM_CLEANUP_HEALTH_CHECK status=ok results={results}")
+
     def _validate(self):
         assert len(self.val_dataloader) == 1, "Please set val_batch_size to None for better throughput."
         # Explicitly opt-in instrumentation for rollout-only group-diversity
@@ -117,38 +153,44 @@ class AgentFlowTrainer(RayPPOTrainer):
         if self.agent_mode_daemon._total_tasks_queued == 0:
             raise ValueError("No validation tasks were queued. Check data preparation.")
 
-        self.agent_mode_daemon.run_until_all_finished()
+        test_metrics = None
+        try:
+            self.agent_mode_daemon.run_until_all_finished()
 
-        # Check if we have any completed rollouts, with more detailed error reporting
-        completed_count = len(self.agent_mode_daemon._completed_rollouts)
-        valid_count = len([r for r in self.agent_mode_daemon._completed_rollouts.values()
-                          if r.triplets and len(r.triplets) > 0])
-        original_count = self.agent_mode_daemon._total_tasks_queued
+            # Check if we have any completed rollouts, with more detailed error reporting
+            completed_count = len(self.agent_mode_daemon._completed_rollouts)
+            valid_count = len([r for r in self.agent_mode_daemon._completed_rollouts.values()
+                              if r.triplets and len(r.triplets) > 0])
+            original_count = self.agent_mode_daemon._total_tasks_queued
 
-        completion_rate = completed_count / original_count if original_count > 0 else 0
-        print(f"Validation summary: {completed_count}/{original_count} total rollouts ({completion_rate:.1%}), {valid_count} valid rollouts")
+            completion_rate = completed_count / original_count if original_count > 0 else 0
+            print(f"Validation summary: {completed_count}/{original_count} total rollouts ({completion_rate:.1%}), {valid_count} valid rollouts")
 
-        # More lenient validation acceptance
-        if completed_count == 0:
-            raise ValueError("No validation tasks completed. Check server and agent execution.")
+            # More lenient validation acceptance
+            if completed_count == 0:
+                raise ValueError("No validation tasks completed. Check server and agent execution.")
 
-        # Accept partial results if we have some reasonable completion
-        min_acceptable_rate = 0.1  # Accept if at least 10% completed
-        if completion_rate < min_acceptable_rate:
-            raise ValueError(f"Insufficient validation completion: {completion_rate:.1%} < {min_acceptable_rate:.1%}. "
-                           f"Only {completed_count}/{original_count} tasks completed.")
+            # Accept partial results if we have some reasonable completion
+            min_acceptable_rate = float(
+                os.environ.get("AGENTFLOW_CLEANUP_SMOKE_MIN_COMPLETION_RATE", "0.1")
+            )
+            if completion_rate < min_acceptable_rate:
+                raise ValueError(f"Insufficient validation completion: {completion_rate:.1%} < {min_acceptable_rate:.1%}. "
+                               f"Only {completed_count}/{original_count} tasks completed.")
 
-        if valid_count == 0:
-            print("Warning: No valid validation rollouts (all have empty triplets), using fallback metrics")
-        else:
-            print(f"Validation proceeding with {valid_count} valid rollouts ({valid_count/completed_count:.1%} of completed)")
+            if valid_count == 0:
+                print("Warning: No valid validation rollouts (all have empty triplets), using fallback metrics")
+            else:
+                print(f"Validation proceeding with {valid_count} valid rollouts ({valid_count/completed_count:.1%} of completed)")
 
-        test_metrics = self.agent_mode_daemon.get_test_metrics(
-            allow_train=rollout_only_group_mode
-        )
+            test_metrics = self.agent_mode_daemon.get_test_metrics(
+                allow_train=rollout_only_group_mode
+            )
+        finally:
+            self._cleanup_rollout_engine(self.agent_mode_daemon.get_cleanup_reason())
+            self.agent_mode_daemon.clear_data_and_server()
+            self._maybe_cleanup_health_check()
 
-        self.agent_mode_daemon.clear_data_and_server()
-        self.async_rollout_manager.sleep()
         return test_metrics
 
     def _train_step(self, batch_dict: dict) -> dict:
@@ -190,19 +232,21 @@ class AgentFlowTrainer(RayPPOTrainer):
                 if self.agent_mode_daemon._total_tasks_queued == 0:
                     raise ValueError("No training tasks were queued. Check data preparation.")
 
-                self.agent_mode_daemon.run_until_all_finished()
+                try:
+                    self.agent_mode_daemon.run_until_all_finished()
 
-                if len(self.agent_mode_daemon._completed_rollouts) == 0:
-                    raise ValueError("No training tasks completed. Check server and agent execution.")
+                    if len(self.agent_mode_daemon._completed_rollouts) == 0:
+                        raise ValueError("No training tasks completed. Check server and agent execution.")
 
-                batch, agent_metrics = self.agent_mode_daemon.get_train_data_batch(
-                    max_prompt_length=self.config.data.max_prompt_length,
-                    max_response_length=self.config.data.max_response_length,
-                    device=gen_batch.batch["fake_ids"].device,
-                )
-                metrics.update(agent_metrics)
-                self.agent_mode_daemon.clear_data_and_server()
-                self.async_rollout_manager.sleep()
+                    batch, agent_metrics = self.agent_mode_daemon.get_train_data_batch(
+                        max_prompt_length=self.config.data.max_prompt_length,
+                        max_response_length=self.config.data.max_response_length,
+                        device=gen_batch.batch["fake_ids"].device,
+                    )
+                    metrics.update(agent_metrics)
+                finally:
+                    self._cleanup_rollout_engine(self.agent_mode_daemon.get_cleanup_reason())
+                    self.agent_mode_daemon.clear_data_and_server()
 
             if self.config.algorithm.adv_estimator == AdvantageEstimator.REMAX:
                 with _timer("gen_max", timing_raw):

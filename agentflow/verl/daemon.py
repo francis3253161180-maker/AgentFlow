@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import os
 import random
 import socket
 import threading
@@ -138,6 +139,7 @@ class AgentModeDaemon:
         self.enable_rollout_validation = enable_rollout_validation
         self.max_empty_retries = max_empty_retries
         self._empty_rollout_counts: Dict[str, int] = {}
+        self._cleanup_reason = "not_started"
 
     def _start_proxy_server(self):
         """
@@ -235,6 +237,8 @@ class AgentModeDaemon:
     async def _async_set_up(self, data, server_addresses, is_train=True):
         """Async helper to set up data and resources on the server."""
         self.clear_data_and_server()
+
+        await self.server.start_accepting_tasks(reason="new_rollout_cycle")
 
         # Clear any orphaned rollouts from previous runs
         try:
@@ -412,6 +416,7 @@ class AgentModeDaemon:
 
     async def _async_run_until_finished(self, verbose=True, avg_task_time_sec=150):
         """Async helper to wait for all tasks to complete with dynamic timeout and smart completion"""
+        self._cleanup_reason = "normal_complete"
         original_task_count = self._total_tasks_queued
         retried_rollout_ids = set()
         start_time = time.time()
@@ -423,6 +428,15 @@ class AgentModeDaemon:
         min_timeout = 600  # At least 10 minutes
         max_timeout = 3600  # At most 1 hour
         dynamic_timeout = max(min_timeout, min(max_timeout, estimated_total_time))
+        timeout_override = os.environ.get("AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS")
+        if timeout_override:
+            dynamic_timeout = float(timeout_override)
+            if dynamic_timeout <= 0:
+                raise ValueError("AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS must be positive")
+            print(
+                "Using test-only rollout wait timeout override: "
+                f"{dynamic_timeout:.1f}s (AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS)"
+            )
 
         print(f"Starting {original_task_count} {'training' if self.is_train else 'validation'} tasks")
         print(f"Estimated completion time: {dynamic_timeout/60:.1f} minutes (avg {avg_task_time_sec}s per task)")
@@ -441,11 +455,15 @@ class AgentModeDaemon:
             # Smart early exit: if >90% done and no progress for 2 minutes
             if completion_rate >= 0.9 and (current_time - last_progress_time) > 120:
                 print(f"Early completion: {completion_rate:.1%} tasks done ({completed_count}/{original_task_count})")
+                self._cleanup_reason = "early_completion_no_progress"
+                await self.server.stop_accepting_tasks(reason=self._cleanup_reason)
                 break
 
             # Dynamic timeout check
             if elapsed > dynamic_timeout:
                 print(f"Timeout after {elapsed/60:.1f} minutes. Completed {completion_rate:.1%} ({completed_count}/{original_task_count})")
+                self._cleanup_reason = "wait_timeout"
+                await self.server.stop_accepting_tasks(reason=self._cleanup_reason)
                 break
 
             # No progress timeout (5 minutes for training, 3 minutes for validation)
@@ -454,6 +472,8 @@ class AgentModeDaemon:
                 print(f"No progress for {no_progress_limit/60:.1f} minutes. Completed {completion_rate:.1%}")
                 if not self.is_train or completion_rate >= 0.5:  # Accept if validation or >50% training done
                     print("Accepting current results")
+                    self._cleanup_reason = "no_progress_accept"
+                    await self.server.stop_accepting_tasks(reason=self._cleanup_reason)
                     break
 
             completed_batch = await self.server.retrieve_completed_rollouts()
@@ -525,6 +545,10 @@ class AgentModeDaemon:
         print(f"Finished after {final_elapsed/60:.1f} minutes. "
               f"Completion rate: {final_rate:.1%} ({len(self._completed_rollouts)}/{original_task_count}), "
               f"Valid rollouts: {valid_rollouts}")
+
+    def get_cleanup_reason(self) -> str:
+        """Return the reason that the driver should use for engine cleanup."""
+        return self._cleanup_reason
 
     def run_until_all_finished(self, verbose=True):
         """Synchronously waits for all queued tasks to be completed and reported."""

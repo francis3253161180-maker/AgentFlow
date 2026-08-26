@@ -32,6 +32,7 @@ class ServerDataStore:
         self._task_queue: asyncio.Queue[Task] = asyncio.Queue()
         self._processing_tasks: Dict[str, Task] = {}  # Currently processing tasks
         self._completed_rollouts: Dict[str, Rollout] = {}
+        self._accepting_tasks = True
 
         self.max_retries = max_retries                                                                                                                                                                                                                                     
         self._failed_tasks: Dict[str, Task] = {}  # Track permanently failed tasks
@@ -64,7 +65,10 @@ class ServerDataStore:
             num_claims=0,
             metadata=metadata or {},
         )
-        await self._task_queue.put(task)
+        async with self._results_lock:
+            if not self._accepting_tasks:
+                raise RuntimeError("task queue is draining; new tasks are rejected")
+            await self._task_queue.put(task)
         logger.info(f"Task queued: {rollout_id} (mode: {mode}, resources_id: {resources_id})")
         return rollout_id
 
@@ -75,6 +79,8 @@ class ServerDataStore:
         """
         try:
             async with self._results_lock:
+                if not self._accepting_tasks:
+                    return None
                 task = self._task_queue.get_nowait()
                 task = task.model_copy(
                     update={
@@ -164,7 +170,13 @@ class ServerDataStore:
         async with self._results_lock:
             # Remove from processing tasks
             self._processing_tasks.pop(task.rollout_id, None)
-            self._task_queue.put_nowait(task)
+            if self._accepting_tasks:
+                self._task_queue.put_nowait(task)
+
+    async def set_accepting_tasks(self, accepting: bool, reason: str = ""):
+        async with self._results_lock:
+            self._accepting_tasks = accepting
+        logger.info("Task queue acceptance=%s reason=%s", accepting, reason or "unspecified")
 
 
 class AgentFlowServer:
@@ -325,6 +337,18 @@ class AgentFlowServer:
         if not self._store:
             raise RuntimeError("Store not initialized. The server may not be running.")
         return await self._store.add_task(sample, mode=mode, resources_id=resources_id, metadata=metadata)
+
+    async def stop_accepting_tasks(self, reason: str = "cleanup"):
+        """Reject new work and leave queued work untouched for the cleanup boundary."""
+        if not self._store:
+            return
+        await self._store.set_accepting_tasks(False, reason=reason)
+
+    async def start_accepting_tasks(self, reason: str = "new_run"):
+        """Re-open task intake for a fresh rollout cycle."""
+        if not self._store:
+            return
+        await self._store.set_accepting_tasks(True, reason=reason)
 
     async def update_resources(self, resources: NamedResources) -> str:
         """
