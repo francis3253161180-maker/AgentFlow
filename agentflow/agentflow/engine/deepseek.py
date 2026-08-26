@@ -22,7 +22,10 @@ class ChatDeepseek(EngineLM, CachedEngine):
         model_string="deepseek-v4-flash",
         use_cache: bool=False,
         system_prompt=DEFAULT_SYSTEM_PROMPT,
-        is_multimodal: bool=False):
+        is_multimodal: bool=False,
+        api_key: str | None = None,
+        base_url: str | None = None,
+        timeout: float | None = None):
 
         self.model_string = model_string
         self.use_cache = use_cache
@@ -37,12 +40,19 @@ class ChatDeepseek(EngineLM, CachedEngine):
             cache_path = os.path.join(root, f"cache_deepseek_{model_string}.db")
             super().__init__(cache_path=cache_path)
 
-        if os.getenv("DEEPSEEK_API_KEY") is None:
+        resolved_api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
+        if resolved_api_key is None:
             raise ValueError("Please set the DEEPSEEK_API_KEY environment variable.")
-        self.client = OpenAI(
-            api_key=os.getenv("DEEPSEEK_API_KEY"),
-            base_url="https://api.deepseek.com"
+        resolved_base_url = (
+            base_url
+            or os.getenv("DEEPSEEK_BASE_URL")
+            or os.getenv("DEEPSEEK_API_BASE")
+            or "https://api.deepseek.com"
         )
+        client_kwargs = {"api_key": resolved_api_key, "base_url": resolved_base_url}
+        if timeout is not None:
+            client_kwargs["timeout"] = timeout
+        self.client = OpenAI(**client_kwargs)
 
     @retry(wait=wait_random_exponential(min=1, max=5), stop=stop_after_attempt(5))
     def generate(self, content: Union[str, List[Union[str, bytes]]], system_prompt=None, **kwargs):

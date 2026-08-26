@@ -1,0 +1,351 @@
+{
+  "audit": "2026-08-26 hybrid reward scorer offline regression",
+  "seen_source": "log/2026-08-26_reward_scorer_fix_results.json",
+  "seen": {
+    "overall": {
+      "count": 40,
+      "confusion": {
+        "TP": 34,
+        "TN": 6,
+        "FP": 0,
+        "FN": 0
+      },
+      "fn_rate": 0.0,
+      "fp_rate": 0.0,
+      "reward_positive": 34,
+      "reward_negative": 6
+    },
+    "by_source": {
+      "mathhard": {
+        "count": 20,
+        "confusion": {
+          "TP": 19,
+          "TN": 1,
+          "FP": 0,
+          "FN": 0
+        },
+        "fn_rate": 0.0,
+        "fp_rate": 0.0,
+        "reward_positive": 19,
+        "reward_negative": 1
+      },
+      "nq": {
+        "count": 20,
+        "confusion": {
+          "TP": 15,
+          "TN": 5,
+          "FP": 0,
+          "FN": 0
+        },
+        "fn_rate": 0.0,
+        "fp_rate": 0.0,
+        "reward_positive": 15,
+        "reward_negative": 5
+      }
+    },
+    "pre_hybrid_saved_reward": {
+      "confusion": {
+        "FN": 18,
+        "FP": 3,
+        "TN": 3,
+        "TP": 16
+      },
+      "reward_positive": 19,
+      "reward_negative": 21
+    },
+    "routing": {
+      "scorer": {
+        "total": 40,
+        "deterministic": 20,
+        "judge_fallback": 20,
+        "judge_calls": 18,
+        "cache_hits": 2,
+        "judge_failures": 0,
+        "judge_unavailable": 0,
+        "deterministic_hit_rate": 0.5,
+        "judge_fallback_rate": 0.5,
+        "judge_average_latency_seconds": 3.542926990323597e-05,
+        "judge_max_latency_seconds": 6.473436951637268e-05
+      },
+      "mock_calls": 18,
+      "judge_route_input_characters": 13892,
+      "judge_route_input_token_estimate_at_4_chars": 3473.0
+    }
+  },
+  "synthetic": {
+    "case_count": 26,
+    "overall": {
+      "count": 26,
+      "confusion": {
+        "TP": 15,
+        "TN": 11,
+        "FP": 0,
+        "FN": 0
+      },
+      "fn_rate": 0.0,
+      "fp_rate": 0.0,
+      "reward_positive": 15,
+      "reward_negative": 11
+    },
+    "routing": {
+      "scorer": {
+        "total": 26,
+        "deterministic": 12,
+        "judge_fallback": 14,
+        "judge_calls": 14,
+        "cache_hits": 0,
+        "judge_failures": 0,
+        "judge_unavailable": 0,
+        "deterministic_hit_rate": 0.46153846153846156,
+        "judge_fallback_rate": 0.5384615384615384,
+        "judge_average_latency_seconds": 2.6207550295761655e-05,
+        "judge_max_latency_seconds": 3.8001686334609985e-05
+      },
+      "mock_calls": 14,
+      "judge_route_input_characters": 1762,
+      "judge_route_input_token_estimate_at_4_chars": 440.5
+    },
+    "expected_route_mismatches": [],
+    "cases": [
+      {
+        "name": "date_corrected_to_wrong",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "conflicting_dates",
+        "judge_error": null
+      },
+      {
+        "name": "date_wrong_corrected_to_right",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "judge",
+        "reason": "conflicting_dates",
+        "judge_error": null
+      },
+      {
+        "name": "yes_to_no_self_correction",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "ambiguous_yes_no",
+        "judge_error": null
+      },
+      {
+        "name": "no_to_yes_self_correction",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "judge",
+        "reason": "ambiguous_yes_no",
+        "judge_error": null
+      },
+      {
+        "name": "date_mentioned_then_denied",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "conflicting_dates",
+        "judge_error": null
+      },
+      {
+        "name": "entity_near_but_rejected",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "open_natural_language",
+        "judge_error": null
+      },
+      {
+        "name": "multiple_candidate_entities",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "judge",
+        "reason": "open_natural_language",
+        "judge_error": null
+      },
+      {
+        "name": "near_but_not_in_entity",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "rejected_phrase_in_open_answer",
+        "judge_error": null
+      },
+      {
+        "name": "thought_x_actually_y",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "judge",
+        "reason": "open_natural_language",
+        "judge_error": null
+      },
+      {
+        "name": "final_marker_overrides_earlier_reasoning",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "normalized_exact_match",
+        "judge_error": null
+      },
+      {
+        "name": "final_xml_answer_overrides_candidate",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "normalized_exact_match",
+        "judge_error": null
+      },
+      {
+        "name": "fraction_local_proof",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "proved_math_equivalence",
+        "judge_error": null
+      },
+      {
+        "name": "radical_local_equivalence",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "proved_math_equivalence",
+        "judge_error": null
+      },
+      {
+        "name": "integer_local_match",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "complete_number_match",
+        "judge_error": null
+      },
+      {
+        "name": "integer_local_mismatch",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "deterministic",
+        "reason": "complete_number_mismatch",
+        "judge_error": null
+      },
+      {
+        "name": "date_local_match",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "complete_date_match",
+        "judge_error": null
+      },
+      {
+        "name": "bare_no_local",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "unambiguous_yes_no",
+        "judge_error": null
+      },
+      {
+        "name": "bare_yes_local",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "unambiguous_yes_no",
+        "judge_error": null
+      },
+      {
+        "name": "entity_mentioned_then_rejected",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "open_natural_language",
+        "judge_error": null
+      },
+      {
+        "name": "long_correct_entity_explanation",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "judge",
+        "reason": "open_natural_language",
+        "judge_error": null
+      },
+      {
+        "name": "correct_phrase_then_wrong_replacement",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "open_natural_language",
+        "judge_error": null
+      },
+      {
+        "name": "wrong_phrase_then_correct_replacement",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "normalized_exact_match",
+        "judge_error": null
+      },
+      {
+        "name": "date_wrong_candidate_only",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "deterministic",
+        "reason": "complete_date_mismatch",
+        "judge_error": null
+      },
+      {
+        "name": "yes_no_contradiction_with_final_no",
+        "source": "synthetic",
+        "correct": true,
+        "predicted": true,
+        "route": "deterministic",
+        "reason": "unambiguous_yes_no",
+        "judge_error": null
+      },
+      {
+        "name": "entity_rejection_with_explicit_final",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "open_natural_language",
+        "judge_error": null
+      },
+      {
+        "name": "target_date_in_quote_then_new_date",
+        "source": "synthetic",
+        "correct": false,
+        "predicted": false,
+        "route": "judge",
+        "reason": "conflicting_dates",
+        "judge_error": null
+      }
+    ]
+  },
+  "live": {
+    "status": "not_available",
+    "reason": "ModuleNotFoundError",
+    "calls": 0
+  }
+}

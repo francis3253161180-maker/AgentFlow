@@ -1,8 +1,8 @@
 import os
 import re
 import unicodedata
+from dataclasses import dataclass
 from pydantic import BaseModel
-from agentflow.engine.openai import ChatOpenAI
 
 try:
     import sympy
@@ -14,17 +14,7 @@ class AnswerVerification(BaseModel):
     analysis: str
     true_false: bool
 
-llm_scorer_engine = None
-if os.getenv("AGENTFLOW_USE_LLM_SCORER") == "1":
-    try:
-        llm_scorer_engine = ChatOpenAI(
-            model_string="gpt-4o",
-            is_multimodal=False,
-            enable_cache=True
-        )
-        print(f"\nLLM Scorer engine '{llm_scorer_engine.model_string}' initialized successfully.\n")
-    except Exception as e:
-        print(f"Failed to initialize LLM Scorer engine: {e}")
+_default_reward_scorer = None
 
 _MONTHS = {
     "january": 1,
@@ -280,76 +270,214 @@ def _looks_mathematical(value: str) -> bool:
     )
 
 
-def deterministic_fallback_score(groundtruth: str, answer_extracted: str) -> bool:
-    """Compare an answer deterministically without an external judge."""
-    candidates = _answer_candidates(answer_extracted)
+@dataclass(frozen=True)
+class DeterministicDecision:
+    """A high-confidence local verdict, or ``None`` when semantic review is needed."""
+
+    value: bool | None
+    reason: str
+
+
+def _candidate_is_explicit(answer: str) -> bool:
+    text = str(answer)
+    return bool(
+        re.search(r"<answer>.*?</answer>", text, flags=re.IGNORECASE | re.DOTALL)
+        or re.search(
+            r"(?:\*\*\s*)?(?:final\s+answer|answer|conclusion|result)"
+            r"(?:\s*\*\*)?\s*(?::|is)\s*",
+            text,
+            flags=re.IGNORECASE,
+        )
+        or re.search(r"\\boxed\s*\{", text)
+    )
+
+
+def _answer_has_conflict(answer: str) -> bool:
+    """Detect cues that make an otherwise matching mention unsafe to trust locally."""
+    text = unicodedata.normalize("NFKC", str(answer)).lower()
+    return bool(
+        re.search(
+            r"\b(?:but|however|although|instead|rather|actually|correction|corrected|"
+            r"first|initially|thought|incorrect|incorrectly|wrong|false|not)\b",
+            text,
+        )
+    )
+
+
+def _yes_no_has_conflict(answer: str) -> bool:
+    text = unicodedata.normalize("NFKC", str(answer)).lower()
+    return bool(
+        re.search(
+            r"\b(?:but|however|although|instead|rather|actually|correction|corrected|"
+            r"first|initially|thought|not)\b",
+            text,
+        )
+    )
+
+
+def _phrase_is_rejected(groundtruth: str, answer: str) -> bool:
+    """Return true when every target phrase occurrence is locally negated/rejected."""
+    truth_tokens = _normalized_tokens(groundtruth)
+    answer_tokens = _normalized_tokens(answer)
+    width = len(truth_tokens)
+    if not truth_tokens or not answer_tokens:
+        return False
+
+    occurrences = [
+        start
+        for start in range(len(answer_tokens) - width + 1)
+        if answer_tokens[start : start + width] == truth_tokens
+    ]
+    if not occurrences:
+        return False
+
+    for start in occurrences:
+        before = answer_tokens[max(0, start - 5) : start]
+        after = answer_tokens[start + width : start + width + 7]
+        if _negated_phrase(answer_tokens, start, width):
+            continue
+        if len(before) >= 2 and before[-2:] == ["not", "in"]:
+            continue
+        if "not" in before[-3:] or "never" in before[-3:]:
+            continue
+        if after[:2] == ["but", "not"] or after[:2] == ["and", "not"]:
+            continue
+        if after[:2] in (["is", "incorrect"], ["was", "incorrect"]):
+            continue
+        return False
+    return True
+
+
+def _numeric_occurrences(value: str) -> list[str]:
+    return [
+        match.group(0)
+        for match in re.finditer(r"(?<![\w.])[-+]?\d+(?:\.\d+)?", str(value))
+        if not (
+            str(value)[match.end() : match.end() + 2].startswith(".")
+            and len(str(value)[match.end() : match.end() + 2]) > 1
+            and str(value)[match.end() + 1 : match.end() + 2].isdigit()
+        )
+    ]
+
+
+def deterministic_decision(groundtruth: str, answer_extracted: str) -> DeterministicDecision:
+    """Return only high-confidence local decisions.
+
+    ``None`` is intentional: it is the routing signal for the semantic judge.
+    The function does not attempt open-ended entity or discourse resolution.
+    """
     truth = str(groundtruth).strip()
-    truth_lower = truth.lower()
+    answer = str(answer_extracted).strip()
+    candidates = _answer_candidates(answer)
+    explicit = _candidate_is_explicit(answer)
+    candidate = candidates[-1] if candidates else answer
+    candidate_tokens = _normalized_tokens(candidate)
+    truth_tokens = _normalized_tokens(truth)
 
-    if truth_lower in {"yes", "no"}:
-        expected = truth_lower == "yes"
-        return any(_yes_no(candidate) is expected for candidate in candidates)
+    if not truth or not answer:
+        return DeterministicDecision(False, "empty_input")
 
-    date_result = _date_match(truth, candidates)
-    if date_result is not None:
-        return date_result
+    if truth.lower() in {"yes", "no"}:
+        expected = truth.lower() == "yes"
+        if re.match(
+            r"^(?:the\s+)?(?:answer|conclusion|result)\s+is\s+not\s+(?:yes|no)\b",
+            candidate,
+            flags=re.IGNORECASE,
+        ):
+            return DeterministicDecision(False, "explicit_yes_no_negation")
+        answer_value = _yes_no(candidate)
+        yes_no_tokens = [token for token in _normalized_tokens(candidate) if token in {"yes", "no"}]
+        if answer_value is not None and len(set(yes_no_tokens)) == 1 and (
+            explicit or len(candidate_tokens) <= 12
+        ) and not _yes_no_has_conflict(candidate):
+            return DeterministicDecision(answer_value == expected, "unambiguous_yes_no")
+        return DeterministicDecision(None, "ambiguous_yes_no")
 
-    numeric_result = _numeric_match(truth, candidates)
-    if numeric_result is not None:
-        return numeric_result
+    truth_dates = _date_values(truth)
+    if truth_dates:
+        target = truth_dates[0][:3]
+        for candidate_text in candidates:
+            values = _date_values(candidate_text)
+            unique_values = {(year, month, day) for year, month, day, _, _ in values}
+            if len(unique_values) != 1:
+                if len(unique_values) > 1:
+                    return DeterministicDecision(None, "conflicting_dates")
+                continue
+            value = next(iter(unique_values))
+            if value == target:
+                if _phrase_is_rejected(truth, candidate_text):
+                    return DeterministicDecision(False, "negated_date")
+                return DeterministicDecision(True, "complete_date_match")
+            if explicit or len(_normalized_tokens(candidate_text)) <= 12:
+                return DeterministicDecision(False, "complete_date_mismatch")
+        return DeterministicDecision(None, "uncertain_date")
 
-    if _looks_mathematical(truth) and _math_match(truth, candidates):
-        return True
+    numeric_target = _numeric_target(truth)
+    if numeric_target is not None:
+        for candidate_text in candidates:
+            values = _numeric_occurrences(candidate_text)
+            unique_values = set(values)
+            if len(unique_values) != 1:
+                if len(unique_values) > 1:
+                    return DeterministicDecision(None, "conflicting_numbers")
+                continue
+            value = next(iter(unique_values))
+            if value == numeric_target:
+                if _answer_has_conflict(candidate_text):
+                    return DeterministicDecision(None, "conflicting_number_language")
+                return DeterministicDecision(True, "complete_number_match")
+            if explicit or len(_normalized_tokens(candidate_text)) <= 12:
+                return DeterministicDecision(False, "complete_number_mismatch")
+        return DeterministicDecision(None, "uncertain_number")
 
-    return any(_phrase_match(truth, candidate) for candidate in candidates)
+    if _looks_mathematical(truth):
+        math_candidate = candidate
+        math_conflict = _answer_has_conflict(math_candidate)
+        if not math_conflict and _math_match(truth, candidates):
+            if explicit or len(_normalized_tokens(math_candidate)) <= 24:
+                return DeterministicDecision(True, "proved_math_equivalence")
+        if not math_conflict and _looks_mathematical(math_candidate) and (
+            explicit or len(_normalized_tokens(math_candidate)) <= 24
+        ):
+            return DeterministicDecision(False, "safe_math_mismatch")
+        return DeterministicDecision(None, "uncertain_math")
+
+    normalized_truth = _normalized_tokens(truth)
+    normalized_candidate = _normalized_tokens(candidate)
+    if normalized_truth and normalized_candidate == normalized_truth:
+        return DeterministicDecision(True, "normalized_exact_match")
+
+    if _phrase_is_rejected(truth, candidate):
+        if explicit and len(candidate_tokens) <= 32:
+            return DeterministicDecision(False, "explicit_phrase_rejection")
+        return DeterministicDecision(None, "rejected_phrase_in_open_answer")
+
+    if explicit and _phrase_match(truth, candidate) and not _answer_has_conflict(candidate):
+        return DeterministicDecision(True, "explicit_phrase_match")
+
+    # A phrase in an unrestricted natural-language response is deliberately not
+    # promoted to a reward. It may be a citation, a rejected location, or one
+    # of several candidates; the semantic judge must read the full question and
+    # response to resolve that discourse.
+    return DeterministicDecision(None, "open_natural_language")
+
+
+def deterministic_fallback_score(groundtruth: str, answer_extracted: str) -> bool:
+    """Return the local high-confidence verdict; unresolved cases are false."""
+    return deterministic_decision(groundtruth, answer_extracted).value is True
 
 
 def compute_score(question: str, groundtruth: str, answer_extracted: str,) -> bool:
-    """
-    Uses gpt-4o to determine if the extracted answer matches the groundtruth.
-    
-    Args:
-        question: The full question text, including options.
-        answer_extracted: The answer provided by the model being evaluated.
-        groundtruth: The correct answer label (e.g., "A").
+    """Score with high-confidence local rules, then the configured DeepSeek judge."""
+    global _default_reward_scorer
+    if _default_reward_scorer is None:
+        try:
+            from train.reward_judge import HybridRewardScorer
+        except ModuleNotFoundError:  # direct execution from the train directory
+            from reward_judge import HybridRewardScorer
 
-    Returns:
-        A boolean indicating whether the answer is correct.
-    """
-    if llm_scorer_engine is None:
-        return deterministic_fallback_score(groundtruth, answer_extracted)
-
-    query_prompt = f"""
-You are a precise evaluator. Determine if the Model Response is equivalent to the Ground Truth.
-
-**Instructions:**
-1.  **Extract:** Isolate the final answer from the Model Response, ignoring reasoning. Look for `\boxed{{...}}` or concluding statements.
-2.  **Normalize & Compare:** The extracted answer and Ground Truth must be equivalent after normalization:
-    - **Math:** Mathematically identical (e.g., `\\frac{{1}}{{2}}` == `0.5`).
-    - **Numbers/Text:** Ignore formatting, case, and currency/units (e.g., `1,000` == `1000`).
-    - **MCQ:** Match option content (e.g., "Paris") or number (e.g., `3rd` option) to the correct letter.
-3.  **Verdict:** "True" only for semantically or mathematically equivalent answers.
-
-**Inputs:**
-Question: {question}
-Model Response: {answer_extracted}
-Ground Truth: {groundtruth}
-
-**Format:**
-<analysis>: Brief analysis of the comparison.
-<true_false>: "True" or "False".
-"""
-
-    try:
-        verification_result = llm_scorer_engine(query_prompt, response_format=AnswerVerification)
-        if isinstance(verification_result, AnswerVerification):
-            return verification_result.true_false
-        if isinstance(verification_result, dict) and "true_false" in verification_result:
-            return bool(verification_result["true_false"])
-    except Exception as exc:
-        print(f"LLM scorer unavailable; using local smoke-test comparison: {exc}")
-
-    return deterministic_fallback_score(groundtruth, answer_extracted)
+        _default_reward_scorer = HybridRewardScorer.from_environment()
+    return _default_reward_scorer.score(question, groundtruth, answer_extracted)
 
 
 def eval(question: str, groundtruth: any, answer_extracted: any, val: bool = False) -> float:
