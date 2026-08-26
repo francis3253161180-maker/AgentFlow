@@ -65,6 +65,14 @@ class AgentFlowTrainer(RayPPOTrainer):
 
     def _validate(self):
         assert len(self.val_dataloader) == 1, "Please set val_batch_size to None for better throughput."
+        # Explicitly opt-in instrumentation for rollout-only group-diversity
+        # experiments.  This reuses the training rollout path and its n value,
+        # but fit() returns immediately through trainer.val_only before any
+        # training batch, advantage computation, backward pass, or optimizer
+        # update.  Normal validation remains unchanged (one rollout/sample).
+        rollout_only_group_mode = os.environ.get(
+            "AGENTFLOW_ROLLOUT_ONLY_GROUP_MODE", "0"
+        ) == "1"
 
         # no empty check dataloader
         try:
@@ -93,10 +101,16 @@ class AgentFlowTrainer(RayPPOTrainer):
         test_batch = DataProto.from_single_dict(test_data)
         # test_batch.non_tensor_batch["step"] = np.ones_like(test_batch.non_tensor_batch["question"]) * self.global_steps
         self.async_rollout_manager.wake_up()
+        if rollout_only_group_mode:
+            print(
+                "Rollout-only group mode: queueing training-mode rollouts "
+                "with configured rollout.n; no optimizer step will run because "
+                "trainer.val_only=true."
+            )
         self.agent_mode_daemon.set_up_data_and_server(
             test_batch.non_tensor_batch,
             self.async_rollout_manager.server_addresses,
-            is_train=False,
+            is_train=rollout_only_group_mode,
         )
 
         # whether persisting queueing 
@@ -129,7 +143,9 @@ class AgentFlowTrainer(RayPPOTrainer):
         else:
             print(f"Validation proceeding with {valid_count} valid rollouts ({valid_count/completed_count:.1%} of completed)")
 
-        test_metrics = self.agent_mode_daemon.get_test_metrics()
+        test_metrics = self.agent_mode_daemon.get_test_metrics(
+            allow_train=rollout_only_group_mode
+        )
 
         self.agent_mode_daemon.clear_data_and_server()
         self.async_rollout_manager.sleep()

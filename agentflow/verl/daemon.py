@@ -543,9 +543,13 @@ class AgentModeDaemon:
             print(f"Error while waiting for tasks to finish: {e}")
             raise
 
-    def get_test_metrics(self):
+    def get_test_metrics(self, allow_train: bool = False):
         """Calculates and returns metrics for a validation run."""
-        assert not self.is_train, "This method should only be called during validation."
+        # Rollout-only group-diversity instrumentation intentionally queues
+        # through the training path to obtain train_rollout_n samples/group.
+        # It still uses this read-only metric aggregation and never enters
+        # get_train_data_batch or an optimizer update.
+        assert allow_train or not self.is_train, "This method should only be called during validation."
 
         # With retry logic, we might have more/less completed rollouts than originally queued
         # Log the actual counts for debugging
