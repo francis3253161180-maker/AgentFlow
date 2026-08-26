@@ -1,10 +1,10 @@
 # Deterministic reward scorer fix handoff
 
-实验分支：`experiment/flow-grpo-3b-lora`  
-基线 HEAD：`7a7fb68`  
-实现 commit：`f7cfd2b` (`Fix deterministic reward scorer and add regression`)  
-配置：`train/config_5090_lora_mini20.yaml`  
-数据：`data/train/flowgrpo_mini_20_seed20260825.parquet`（NQ 10、mathhard 10）  
+实验分支：`experiment/flow-grpo-3b-lora`
+基线 HEAD：`7a7fb68`
+实现 commit：`f7cfd2b` (`Fix deterministic reward scorer and add regression`)
+配置：`train/config_5090_lora_mini20.yaml`
+数据：`data/train/flowgrpo_mini_20_seed20260825.parquet`（NQ 10、mathhard 10）
 模型：Qwen2.5-3B-Instruct + LoRA rank 8；本轮未修改模型、GPU、rollout.n、Flow-GRPO 或 reward 数值范围。
 
 完整逐条前后结果见 [`2026-08-26_reward_scorer_fix_results.json`](2026-08-26_reward_scorer_fix_results.json)。
