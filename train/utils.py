@@ -208,12 +208,58 @@ def _numeric_match(groundtruth: str, candidates: list[str]) -> bool | None:
 def _math_expressions(value: str) -> list[str]:
     text = str(value).strip()
     expressions = [text]
-    if "=" in text:
-        expressions.append(text.rsplit("=", 1)[-1].strip())
+    # Responses commonly put the final claim inside TeX delimiters.  The
+    # previous extractor only saw the whole response and the text after its
+    # last '=', so a truthful claim such as ``Yes, it is true that
+    # \(a=b\)`` was treated as an unsafe mismatch.  Extract delimited spans
+    # while retaining the old compact/full-expression candidates.
+    expressions.extend(
+        match.strip()
+        for pattern in (
+            r"\\\((.*?)\\\)",
+            r"\\\[(.*?)\\\]",
+            r"\$\$(.*?)\$\$",
+            r"\$(.*?)\$",
+        )
+        for match in re.findall(pattern, text, flags=re.DOTALL)
+        if match.strip()
+    )
+    expressions.extend(
+        match.strip()
+        for match in re.findall(r"\\boxed\s*\{([^{}]+)\}", text, flags=re.DOTALL)
+        if match.strip()
+    )
+    # Also capture short bare equations in a concise answer such as
+    # ``Yes, a=b``.  The deterministic decision layer separately rejects
+    # unmarked multi-equation candidate lists.
+    expressions.extend(
+        match.strip()
+        for match in re.findall(
+            r"(?<![A-Za-z0-9_])([A-Za-z][A-Za-z0-9_]*\s*=\s*"
+            r"(?:[-+]?(?:\d+(?:\.\d+)?|[A-Za-z][A-Za-z0-9_]*)))(?![A-Za-z0-9_])",
+            text,
+        )
+        if match.strip()
+    )
+    # Keep the right-hand side of each extracted equation as a candidate too;
+    # a labelled equation such as ``|H_n| = 2^{n+1}`` has a non-sympifiable
+    # left side but a perfectly safe scalar conclusion.
+    for expression in list(expressions):
+        if "=" in expression:
+            expressions.append(expression.rsplit("=", 1)[-1].strip())
     expressions.extend(re.findall(r"\\(?:d?frac)\s*\{[^{}]+\}\s*\{[^{}]+\}", text))
     expressions.extend(re.findall(r"\\sqrt\s*\{[^{}]+\}|√\s*[0-9]+", text))
     expressions.extend(re.findall(r"(?<![A-Za-z])[-+]?\d+\s*/\s*\d+", text))
-    return list(dict.fromkeys(expressions))
+    # A trailing sentence terminator is prose around the formula, not part of
+    # the formula.  Only trim punctuation at the edges; do not normalize the
+    # interior, where it may carry mathematical meaning.
+    cleaned = []
+    for expr in expressions:
+        expr = re.sub(r"\\[)\]]\s*$", "", expr)
+        expr = expr.strip(" $.,;:")
+        if expr:
+            cleaned.append(expr)
+    return list(dict.fromkeys(cleaned))
 
 
 def _to_sympy(value: str):
@@ -229,7 +275,20 @@ def _to_sympy(value: str):
     text = text.replace("{", "(").replace("}", ")")
     text = text.replace("\\", "")
     text = re.sub(r"\b([A-Za-z])_(\d+)\b", r"\1\2", text)
-    text = text.strip(" $\\")
+    text = re.sub(r"\s*\]\s*$", "", text)
+    text = re.sub(r"\)\s*\.\s*$", ")", text)
+    # Parse a simple equality as a relation rather than asking sympify to
+    # parse Python assignment syntax.  This is intentionally limited to one
+    # plain '=' and leaves inequalities/compound statements on the judge
+    # route.
+    if text.count("=") == 1 and not re.search(r"[<>!=]=", text):
+        lhs, rhs = (part.strip() for part in text.split("=", 1))
+        if lhs and rhs:
+            parsed_lhs = _to_sympy(lhs)
+            parsed_rhs = _to_sympy(rhs)
+            if parsed_lhs is not None and parsed_rhs is not None:
+                return sympy.Eq(parsed_lhs, parsed_rhs)
+    text = text.strip(" $\\.,;:")
     if not text or len(text) > 160 or re.search(r"[^A-Za-z0-9_+\-*/()., ]", text):
         return None
     try:
@@ -239,11 +298,29 @@ def _to_sympy(value: str):
 
 
 def _math_match(groundtruth: str, candidates: list[str]) -> bool:
-    truth_compact = _compact_candidates(groundtruth)
-    for candidate in candidates:
-        if truth_compact & _compact_candidates(candidate):
-            return True
-    truth_exprs = [_to_sympy(expr) for expr in _math_expressions(groundtruth)]
+    if sympy is None:
+        return False
+    # For an equality target, a shared right-hand side is not evidence of an
+    # equivalent equation (``a=b`` must not match ``c=b``).  The SymPy path
+    # below handles the relation itself; compact matching remains useful for
+    # scalar/formula targets and preserves the established fraction behavior.
+    if "=" not in str(groundtruth):
+        truth_compact = _compact_candidates(groundtruth)
+        for candidate in candidates:
+            if truth_compact & _compact_candidates(candidate):
+                return True
+    raw_truth_exprs = _math_expressions(groundtruth)
+    relation_truth_exprs = [
+        _to_sympy(expr) for expr in raw_truth_exprs if "=" in expr
+    ]
+    relation_truth_exprs = [
+        expr for expr in relation_truth_exprs if isinstance(expr, sympy.Equality)
+    ]
+    # Prefer a parseable equality relation over the auxiliary RHS candidate;
+    # otherwise ``a=b`` could incorrectly match ``c=b`` through the shared
+    # scalar b.  If the left side is not parseable (for example |H_n|), the
+    # RHS fallback remains available.
+    truth_exprs = relation_truth_exprs or [_to_sympy(expr) for expr in raw_truth_exprs]
     truth_exprs = [expr for expr in truth_exprs if expr is not None]
     if not truth_exprs:
         return False
@@ -252,9 +329,27 @@ def _math_match(groundtruth: str, candidates: list[str]) -> bool:
             parsed_answer = _to_sympy(answer_expr)
             if parsed_answer is None:
                 continue
+            if relation_truth_exprs and not isinstance(parsed_answer, sympy.Equality):
+                continue
             for parsed_truth in truth_exprs:
                 try:
-                    if bool(sympy.simplify(parsed_answer - parsed_truth) == 0):
+                    # ``sympify('a=b')`` is not a numeric expression.  Treat
+                    # two simple equality claims as equivalent when their
+                    # left-minus-right forms agree up to orientation.  This
+                    # covers algebraic answer statements without accepting a
+                    # merely shared token.
+                    if all(
+                        isinstance(item, sympy.Equality)
+                        for item in (parsed_answer, parsed_truth)
+                    ):
+                        answer_delta = sympy.expand(parsed_answer.lhs - parsed_answer.rhs)
+                        truth_delta = sympy.expand(parsed_truth.lhs - parsed_truth.rhs)
+                        if bool(
+                            sympy.simplify(answer_delta - truth_delta) == 0
+                            or sympy.simplify(answer_delta + truth_delta) == 0
+                        ):
+                            return True
+                    elif bool(sympy.simplify(parsed_answer - parsed_truth) == 0):
                         return True
                 except (TypeError, ValueError):
                     continue
@@ -433,6 +528,23 @@ def deterministic_decision(groundtruth: str, answer_extracted: str) -> Determini
     if _looks_mathematical(truth):
         math_candidate = candidate
         math_conflict = _answer_has_conflict(math_candidate)
+        equation_count = len(re.findall(r"(?<![<>=])=(?!=)", math_candidate))
+        short_ambiguous_list = bool(
+            equation_count > 1
+            and (
+                not explicit
+                or (
+                    len(candidate_tokens) <= 64
+                    and re.search(
+                        r"\b(?:alternative|alternatively|possibilit\w*|candidate|either|or)\b",
+                        math_candidate,
+                        re.IGNORECASE,
+                    )
+                )
+            )
+        )
+        if short_ambiguous_list:
+            return DeterministicDecision(None, "ambiguous_math_candidates")
         if not math_conflict and _math_match(truth, candidates):
             if explicit or len(_normalized_tokens(math_candidate)) <= 24:
                 return DeterministicDecision(True, "proved_math_equivalence")

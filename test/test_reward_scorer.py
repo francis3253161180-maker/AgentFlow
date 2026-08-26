@@ -61,6 +61,63 @@ class HybridRewardScorerTest(unittest.TestCase):
         self.assertScore("x + 1", r"f(x) = x + 1")
         self.assertEqual(len(self.judge.calls), 0)
 
+    def test_math_conclusion_extraction_is_local_and_conservative(self):
+        # An affirmative prose wrapper around an equivalent equality is a
+        # high-confidence math claim, not an open-ended entity answer.
+        result = self.scorer.score_with_metadata(
+            "offline equality", "a = b", r"Yes, it is true that \(a = b\)."
+        )
+        self.assertTrue(result.score)
+        self.assertEqual(result.route, "deterministic")
+        self.assertEqual(result.reason, "proved_math_equivalence")
+        self.assertEqual(len(self.judge.calls), 0)
+
+        # The same target being rejected must not become a local positive.
+        self.judge.verdict = False
+        rejected = self.scorer.score_with_metadata(
+            "offline equality", "a = b", r"No, \(a = b\) is false; the answer is \(a = c\)."
+        )
+        self.assertFalse(rejected.score)
+        self.assertEqual(rejected.route, "deterministic")
+        self.assertEqual(rejected.reason, "safe_math_mismatch")
+        self.assertEqual(len(self.judge.calls), 0)
+
+        # A long derivation with a final equivalent formula is still safe when
+        # the answer block contains the final mathematical conclusion.
+        final = self.scorer.score_with_metadata(
+            "offline group order",
+            r"2^{n+1}",
+            r"The derivation has several intermediate relations. **Answer:** "
+            r"\[|H_n| = 2^{n+1}.\]",
+        )
+        self.assertTrue(final.score)
+        self.assertEqual(final.route, "deterministic")
+        self.assertEqual(len(self.judge.calls), 0)
+
+    def test_math_mentions_without_final_claim_do_not_get_promoted(self):
+        self.judge.verdict = False
+        wrong_relation = self.scorer.score_with_metadata(
+            "offline equality", "a = b", "c = b"
+        )
+        self.assertFalse(wrong_relation.score)
+        self.assertEqual(wrong_relation.route, "deterministic")
+
+        result = self.scorer.score_with_metadata(
+            "offline equality", "a = b", "The possibilities include a = b and c = d."
+        )
+        self.assertFalse(result.score)
+        # The local route remains conservative for an unmarked multi-candidate
+        # statement; a real hybrid scorer would send it to the judge.
+        self.assertEqual(result.route, "judge")
+        self.assertEqual(len(self.judge.calls), 1)
+
+        explicit_list = self.scorer.score_with_metadata(
+            "offline equality", "a = b", "Answer: a = b or c = b"
+        )
+        self.assertFalse(explicit_list.score)
+        self.assertEqual(explicit_list.route, "judge")
+        self.assertEqual(len(self.judge.calls), 2)
+
     def test_yes_no_and_negation(self):
         self.assertScore("Yes", "Yes, such a natural number exists.")
         self.assertScore("No", "No, the proposed statement is false.")

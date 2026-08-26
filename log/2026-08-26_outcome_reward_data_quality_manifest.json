@@ -1,0 +1,1904 @@
+{
+  "category_counts": {
+    "ambiguous_question": 2,
+    "clean": 84,
+    "definition_sensitive": 5,
+    "gt_defect": 1,
+    "stale_or_time_sensitive": 4,
+    "underspecified": 4
+  },
+  "eligible_manifest_path": "log/2026-08-26_outcome_reward_clean_eligible_manifest.json",
+  "eligible_static_stats": {
+    "corrected_manual": {
+      "bins": {
+        "0/4": 3,
+        "1/4": 3,
+        "2/4": 3,
+        "3/4": 5,
+        "4/4": 70
+      },
+      "by_source": {
+        "mathhard": {
+          "bins": {
+            "0/4": 0,
+            "1/4": 3,
+            "2/4": 2,
+            "3/4": 2,
+            "4/4": 37
+          },
+          "group_count": 44,
+          "mixed_group_count": 7,
+          "mixed_ratio": 0.1590909090909091
+        },
+        "nq": {
+          "bins": {
+            "0/4": 3,
+            "1/4": 0,
+            "2/4": 1,
+            "3/4": 3,
+            "4/4": 33
+          },
+          "group_count": 40,
+          "mixed_group_count": 4,
+          "mixed_ratio": 0.1
+        }
+      },
+      "group_count": 84,
+      "mixed_group_count": 11,
+      "mixed_ratio": 0.13095238095238096,
+      "row_count": 336
+    },
+    "original": {
+      "bins": {
+        "0/4": 4,
+        "1/4": 3,
+        "2/4": 6,
+        "3/4": 5,
+        "4/4": 66
+      },
+      "by_source": {
+        "mathhard": {
+          "bins": {
+            "0/4": 1,
+            "1/4": 3,
+            "2/4": 2,
+            "3/4": 3,
+            "4/4": 35
+          },
+          "group_count": 44,
+          "mixed_group_count": 8,
+          "mixed_ratio": 0.18181818181818182
+        },
+        "nq": {
+          "bins": {
+            "0/4": 3,
+            "1/4": 0,
+            "2/4": 4,
+            "3/4": 2,
+            "4/4": 31
+          },
+          "group_count": 40,
+          "mixed_group_count": 6,
+          "mixed_ratio": 0.15
+        }
+      },
+      "group_count": 84,
+      "mixed_group_count": 14,
+      "mixed_ratio": 0.16666666666666666,
+      "row_count": 336
+    }
+  },
+  "excluded_static_stats": {
+    "corrected_manual": {
+      "bins": {
+        "0/4": 0,
+        "1/4": 0,
+        "2/4": 0,
+        "3/4": 0,
+        "4/4": 1
+      },
+      "by_source": {
+        "mathhard": {
+          "bins": {
+            "0/4": 0,
+            "1/4": 0,
+            "2/4": 0,
+            "3/4": 0,
+            "4/4": 1
+          },
+          "group_count": 6,
+          "mixed_group_count": 0,
+          "mixed_ratio": 0.0
+        },
+        "nq": {
+          "bins": {
+            "0/4": 0,
+            "1/4": 0,
+            "2/4": 0,
+            "3/4": 0,
+            "4/4": 0
+          },
+          "group_count": 10,
+          "mixed_group_count": 0,
+          "mixed_ratio": 0.0
+        }
+      },
+      "group_count": 16,
+      "mixed_group_count": 0,
+      "mixed_ratio": 0.0,
+      "row_count": 64
+    },
+    "original": {
+      "bins": {
+        "0/4": 10,
+        "1/4": 1,
+        "2/4": 0,
+        "3/4": 4,
+        "4/4": 1
+      },
+      "by_source": {
+        "mathhard": {
+          "bins": {
+            "0/4": 2,
+            "1/4": 1,
+            "2/4": 0,
+            "3/4": 3,
+            "4/4": 0
+          },
+          "group_count": 6,
+          "mixed_group_count": 4,
+          "mixed_ratio": 0.6666666666666666
+        },
+        "nq": {
+          "bins": {
+            "0/4": 8,
+            "1/4": 0,
+            "2/4": 0,
+            "3/4": 1,
+            "4/4": 1
+          },
+          "group_count": 10,
+          "mixed_group_count": 1,
+          "mixed_ratio": 0.1
+        }
+      },
+      "group_count": 16,
+      "mixed_group_count": 5,
+      "mixed_ratio": 0.3125,
+      "row_count": 64
+    }
+  },
+  "exclusion_manifest_path": "log/2026-08-26_outcome_reward_exclusion_manifest.json",
+  "groups": [
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 153599,
+      "group_key": "mathhard:100855",
+      "idx": 100855,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 5744,
+      "group_key": "mathhard:101706",
+      "idx": 101706,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "3/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 107751,
+      "group_key": "mathhard:102358",
+      "idx": 102358,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "3/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 78801,
+      "group_key": "mathhard:19926",
+      "idx": 19926,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "3/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 16835,
+      "group_key": "mathhard:20299",
+      "idx": 20299,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 58237,
+      "group_key": "mathhard:21675",
+      "idx": 21675,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 108377,
+      "group_key": "mathhard:23265",
+      "idx": 23265,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 64809,
+      "group_key": "mathhard:23520",
+      "idx": 23520,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 145244,
+      "group_key": "mathhard:29106",
+      "idx": 29106,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 34556,
+      "group_key": "mathhard:29992",
+      "idx": 29992,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 64526,
+      "group_key": "mathhard:33486",
+      "idx": 33486,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "0/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 29462,
+      "group_key": "mathhard:36637",
+      "idx": 36637,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 2846,
+      "group_key": "mathhard:37137",
+      "idx": 37137,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 92128,
+      "group_key": "mathhard:40435",
+      "idx": 40435,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 122331,
+      "group_key": "mathhard:41285",
+      "idx": 41285,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 168836,
+      "group_key": "mathhard:42090",
+      "idx": 42090,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "1/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 54893,
+      "group_key": "mathhard:42999",
+      "idx": 42999,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "1/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked 3/4 rows ambiguous because the prompt premises are inconsistent.",
+      "group_id": 92613,
+      "group_key": "mathhard:44830",
+      "idx": 44830,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Inconsistent premises make the requested status and formal -2 result non-binary.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 69050,
+      "group_key": "mathhard:48460",
+      "idx": 48460,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "All four full-audit rows were ambiguous for the same missing-function-definition reason.",
+      "group_id": 59503,
+      "group_key": "mathhard:50939",
+      "idx": 50939,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "T(x,y) is not specified, so a unique numeric rate cannot be inferred.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "3/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 160193,
+      "group_key": "mathhard:52412",
+      "idx": 52412,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "3/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "1/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 34138,
+      "group_key": "mathhard:52800",
+      "idx": 52800,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "1/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked the row ambiguous because real-domain and intended formal interpretations differ.",
+      "group_id": 143343,
+      "group_key": "mathhard:55524",
+      "idx": 55524,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "1/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "The domain interpretation changes whether the expression is defined and whether b>0 is a sufficient answer.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "1/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 22097,
+      "group_key": "mathhard:56341",
+      "idx": 56341,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "1/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 102290,
+      "group_key": "mathhard:568",
+      "idx": 568,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 81924,
+      "group_key": "mathhard:62901",
+      "idx": 62901,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 134133,
+      "group_key": "mathhard:66889",
+      "idx": 66889,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 84820,
+      "group_key": "mathhard:68700",
+      "idx": 68700,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 82390,
+      "group_key": "mathhard:69456",
+      "idx": 69456,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 175543,
+      "group_key": "mathhard:69616",
+      "idx": 69616,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "2/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 134052,
+      "group_key": "mathhard:69664",
+      "idx": 69664,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "2/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 107592,
+      "group_key": "mathhard:72120",
+      "idx": 72120,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 2570,
+      "group_key": "mathhard:74332",
+      "idx": 74332,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 64829,
+      "group_key": "mathhard:77797",
+      "idx": 77797,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 178853,
+      "group_key": "mathhard:78651",
+      "idx": 78651,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 170579,
+      "group_key": "mathhard:80308",
+      "idx": 80308,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked one row ambiguous and retained the remaining answers as interpretation-dependent.",
+      "group_id": 2302,
+      "group_key": "mathhard:80320",
+      "idx": 80320,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Real-valued and formal/complex interpretations produce different readings of the negative-base expression.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 118243,
+      "group_key": "mathhard:8252",
+      "idx": 8252,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 37884,
+      "group_key": "mathhard:84309",
+      "idx": 84309,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 64420,
+      "group_key": "mathhard:84620",
+      "idx": 84620,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked one row ambiguous for missing geometric/domain context.",
+      "group_id": 111596,
+      "group_key": "mathhard:85528",
+      "idx": 85528,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "The prompt does not provide enough geometric setup or a value of x for a unique numeric answer.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 125472,
+      "group_key": "mathhard:85573",
+      "idx": 85573,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 44256,
+      "group_key": "mathhard:86959",
+      "idx": 86959,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 33246,
+      "group_key": "mathhard:89013",
+      "idx": 89013,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "2/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 111937,
+      "group_key": "mathhard:89720",
+      "idx": 89720,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "2/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 151282,
+      "group_key": "mathhard:91879",
+      "idx": 91879,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 160040,
+      "group_key": "mathhard:93118",
+      "idx": 93118,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "gt_defect"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Full audit manual review identified a benchmark ground-truth error; all four answers gave 8.",
+      "group_id": 69322,
+      "group_key": "mathhard:9398",
+      "idx": 9398,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "0/4",
+      "primary_category": "gt_defect",
+      "quality_status": "excluded",
+      "reason": "The supplied Klein bottle minimum is 6; the standard minimal triangulation has 8 vertices.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 21590,
+      "group_key": "mathhard:99429",
+      "idx": 99429,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 157053,
+      "group_key": "mathhard:99702",
+      "idx": 99702,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 163498,
+      "group_key": "nq:11554",
+      "idx": 11554,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "2/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 83381,
+      "group_key": "nq:1174",
+      "idx": 1174,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 128353,
+      "group_key": "nq:11861",
+      "idx": 11861,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 4633,
+      "group_key": "nq:14706",
+      "idx": 14706,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 120423,
+      "group_key": "nq:1556",
+      "idx": 1556,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 103418,
+      "group_key": "nq:16540",
+      "idx": 16540,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 117058,
+      "group_key": "nq:17278",
+      "idx": 17278,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 145731,
+      "group_key": "nq:2134",
+      "idx": 2134,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 88713,
+      "group_key": "nq:2208",
+      "idx": 2208,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 150991,
+      "group_key": "nq:22574",
+      "idx": 22574,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found the supplied GT Carla Qualtrough conflicts with later historical/current answers without a time anchor.",
+      "group_id": 176999,
+      "group_key": "nq:25306",
+      "idx": 25306,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "The cabinet-office question has no date anchor and the office holder changes over time.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked all four rows ambiguous because the source context is missing.",
+      "group_id": 59748,
+      "group_key": "nq:26032",
+      "idx": 26032,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "The phrase does not identify a work or source, so multiple unrelated interpretations remain possible.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "ambiguous_question",
+        "definition_sensitive"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found answers give actor Lee J. Cobb while GT gives character Johnny Friendly.",
+      "group_id": 138821,
+      "group_key": "nq:27020",
+      "idx": 27020,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "4/4",
+      "primary_category": "ambiguous_question",
+      "quality_status": "excluded",
+      "reason": "The question/GT pair does not resolve whether the requested name is the actor or the character.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 152346,
+      "group_key": "nq:27243",
+      "idx": 27243,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 38877,
+      "group_key": "nq:28886",
+      "idx": 28886,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "2/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 157320,
+      "group_key": "nq:28986",
+      "idx": 28986,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "2/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 71783,
+      "group_key": "nq:29163",
+      "idx": 29163,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 72195,
+      "group_key": "nq:31018",
+      "idx": 31018,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "3/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 12573,
+      "group_key": "nq:31767",
+      "idx": 31767,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 27313,
+      "group_key": "nq:35936",
+      "idx": 35936,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "0/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 51147,
+      "group_key": "nq:37585",
+      "idx": 37585,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "0/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "gt_defect",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit identified a possible GT defect conditional on the missing regularity assumption.",
+      "group_id": 105831,
+      "group_key": "nq:39070",
+      "idx": 39070,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Nine symmetry axes is inconsistent with a regular hexagon's six, but regularity is not stated.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked all four rows ambiguous due to the historical-rate mismatch.",
+      "group_id": 112955,
+      "group_key": "nq:39248",
+      "idx": 39248,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "The broad service-tax question has no time anchor; 14.5% and later 15% rates are both time-dependent.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "ambiguous_question",
+        "underspecified"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked one row ambiguous for conflicting counts; this is retained as an unresolved item rather than a model-difficulty filter.",
+      "group_id": 92628,
+      "group_key": "nq:39820",
+      "idx": 39820,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "ambiguous_question",
+      "quality_status": "excluded",
+      "reason": "The candidate response is internally inconsistent about whether the total is six or seven coasters, preventing a clear binary audit label.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 61287,
+      "group_key": "nq:40684",
+      "idx": 40684,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 120119,
+      "group_key": "nq:41282",
+      "idx": 41282,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 156411,
+      "group_key": "nq:41990",
+      "idx": 41990,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "2/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "0/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 14345,
+      "group_key": "nq:44579",
+      "idx": 44579,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "0/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found the answers discuss later playoff appearances, so the benchmark target is not time-stable.",
+      "group_id": 111216,
+      "group_key": "nq:4588",
+      "idx": 4588,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "The playoff question has no date/season anchor while the GT is 2017.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 142148,
+      "group_key": "nq:46143",
+      "idx": 46143,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 76451,
+      "group_key": "nq:47281",
+      "idx": 47281,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "3/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 109760,
+      "group_key": "nq:49554",
+      "idx": 49554,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 148205,
+      "group_key": "nq:49672",
+      "idx": 49672,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found later general-government figures cannot be compared to the unanchored GT.",
+      "group_id": 175247,
+      "group_key": "nq:50166",
+      "idx": 50166,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "Debt/GDP depends on year and debt definition; neither is specified alongside GT 41.4.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 135533,
+      "group_key": "nq:53317",
+      "idx": 53317,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 153197,
+      "group_key": "nq:5355",
+      "idx": 5355,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 70153,
+      "group_key": "nq:53811",
+      "idx": 53811,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "3/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 38776,
+      "group_key": "nq:5403",
+      "idx": 5403,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "3/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "3/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 25973,
+      "group_key": "nq:54331",
+      "idx": 54331,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 118055,
+      "group_key": "nq:5693",
+      "idx": 5693,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "0/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 111074,
+      "group_key": "nq:59239",
+      "idx": 59239,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "0/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 66765,
+      "group_key": "nq:60799",
+      "idx": 60799,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "2/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 12973,
+      "group_key": "nq:63370",
+      "idx": 63370,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 130974,
+      "group_key": "nq:64210",
+      "idx": 64210,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found 20.0, 21.5, and an erroneous 21.2 under different readings.",
+      "group_id": 29668,
+      "group_key": "nq:69358",
+      "idx": 69358,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "The wording does not say whether one season or a two-season Wizards tenure should be aggregated.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 39240,
+      "group_key": "nq:69423",
+      "idx": 69423,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 47128,
+      "group_key": "nq:71443",
+      "idx": 71443,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 33860,
+      "group_key": "nq:74989",
+      "idx": 74989,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "clean"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Clear or otherwise evaluable semantic audit; scorer/model errors are not quality exclusions.",
+      "group_id": 97706,
+      "group_key": "nq:77906",
+      "idx": 77906,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "4/4",
+      "primary_category": "clean",
+      "quality_status": "eligible",
+      "reason": "No supported question/ground-truth quality defect was identified in the full audit.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found the answers cannot reproduce the GT category breakdown without a classification convention.",
+      "group_id": 107606,
+      "group_key": "nq:78405",
+      "idx": 78405,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Mineral counts depend on classification and inclusion rules that are not specified.",
+      "source": "nq"
+    }
+  ],
+  "manifest": "2026-08-26 outcome reward data quality",
+  "policy": {
+    "eligible": "clean only",
+    "excluded": "all 15 unresolved groups plus the explicit Klein bottle GT defect and conditional definition-sensitive invalidity",
+    "not_excluded": "model error, difficult prompt, scorer error, or surface diversity alone"
+  },
+  "quality_status_counts": {
+    "eligible": 84,
+    "excluded": 16
+  },
+  "scope": "100 fixed prompt groups / 400 saved rollouts; no new rollout or judge call",
+  "source_audit_commit": "96ef69f",
+  "version": "2026-08-26.v1"
+}

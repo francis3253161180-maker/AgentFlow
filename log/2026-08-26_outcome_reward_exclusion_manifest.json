@@ -1,0 +1,297 @@
+{
+  "group_count": 16,
+  "groups": [
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked 3/4 rows ambiguous because the prompt premises are inconsistent.",
+      "group_id": 92613,
+      "group_key": "mathhard:44830",
+      "idx": 44830,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Inconsistent premises make the requested status and formal -2 result non-binary.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "All four full-audit rows were ambiguous for the same missing-function-definition reason.",
+      "group_id": 59503,
+      "group_key": "mathhard:50939",
+      "idx": 50939,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "T(x,y) is not specified, so a unique numeric rate cannot be inferred.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked the row ambiguous because real-domain and intended formal interpretations differ.",
+      "group_id": 143343,
+      "group_key": "mathhard:55524",
+      "idx": 55524,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "1/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "The domain interpretation changes whether the expression is defined and whether b>0 is a sufficient answer.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked one row ambiguous and retained the remaining answers as interpretation-dependent.",
+      "group_id": 2302,
+      "group_key": "mathhard:80320",
+      "idx": 80320,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Real-valued and formal/complex interpretations produce different readings of the negative-base expression.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked one row ambiguous for missing geometric/domain context.",
+      "group_id": 111596,
+      "group_key": "mathhard:85528",
+      "idx": 85528,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "The prompt does not provide enough geometric setup or a value of x for a unique numeric answer.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "gt_defect"
+      ],
+      "corrected_class": "4/4",
+      "corrected_status": "resolvable",
+      "evidence": "Full audit manual review identified a benchmark ground-truth error; all four answers gave 8.",
+      "group_id": 69322,
+      "group_key": "mathhard:9398",
+      "idx": 9398,
+      "manual_ambiguous_count": 0,
+      "original_group_class": "0/4",
+      "primary_category": "gt_defect",
+      "quality_status": "excluded",
+      "reason": "The supplied Klein bottle minimum is 6; the standard minimal triangulation has 8 vertices.",
+      "source": "mathhard"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found the supplied GT Carla Qualtrough conflicts with later historical/current answers without a time anchor.",
+      "group_id": 176999,
+      "group_key": "nq:25306",
+      "idx": 25306,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "The cabinet-office question has no date anchor and the office holder changes over time.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked all four rows ambiguous because the source context is missing.",
+      "group_id": 59748,
+      "group_key": "nq:26032",
+      "idx": 26032,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "The phrase does not identify a work or source, so multiple unrelated interpretations remain possible.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "ambiguous_question",
+        "definition_sensitive"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found answers give actor Lee J. Cobb while GT gives character Johnny Friendly.",
+      "group_id": 138821,
+      "group_key": "nq:27020",
+      "idx": 27020,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "4/4",
+      "primary_category": "ambiguous_question",
+      "quality_status": "excluded",
+      "reason": "The question/GT pair does not resolve whether the requested name is the actor or the character.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "gt_defect",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit identified a possible GT defect conditional on the missing regularity assumption.",
+      "group_id": 105831,
+      "group_key": "nq:39070",
+      "idx": 39070,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Nine symmetry axes is inconsistent with a regular hexagon's six, but regularity is not stated.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked all four rows ambiguous due to the historical-rate mismatch.",
+      "group_id": 112955,
+      "group_key": "nq:39248",
+      "idx": 39248,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "The broad service-tax question has no time anchor; 14.5% and later 15% rates are both time-dependent.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "ambiguous_question",
+        "underspecified"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit marked one row ambiguous for conflicting counts; this is retained as an unresolved item rather than a model-difficulty filter.",
+      "group_id": 92628,
+      "group_key": "nq:39820",
+      "idx": 39820,
+      "manual_ambiguous_count": 1,
+      "original_group_class": "3/4",
+      "primary_category": "ambiguous_question",
+      "quality_status": "excluded",
+      "reason": "The candidate response is internally inconsistent about whether the total is six or seven coasters, preventing a clear binary audit label.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found the answers discuss later playoff appearances, so the benchmark target is not time-stable.",
+      "group_id": 111216,
+      "group_key": "nq:4588",
+      "idx": 4588,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "The playoff question has no date/season anchor while the GT is 2017.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "stale_or_time_sensitive",
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found later general-government figures cannot be compared to the unanchored GT.",
+      "group_id": 175247,
+      "group_key": "nq:50166",
+      "idx": 50166,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "stale_or_time_sensitive",
+      "quality_status": "excluded",
+      "reason": "Debt/GDP depends on year and debt definition; neither is specified alongside GT 41.4.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "underspecified",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found 20.0, 21.5, and an erroneous 21.2 under different readings.",
+      "group_id": 29668,
+      "group_key": "nq:69358",
+      "idx": 69358,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "underspecified",
+      "quality_status": "excluded",
+      "reason": "The wording does not say whether one season or a two-season Wizards tenure should be aggregated.",
+      "source": "nq"
+    },
+    {
+      "categories": [
+        "definition_sensitive",
+        "ambiguous_question"
+      ],
+      "corrected_class": null,
+      "corrected_status": "unresolved",
+      "evidence": "Full audit found the answers cannot reproduce the GT category breakdown without a classification convention.",
+      "group_id": 107606,
+      "group_key": "nq:78405",
+      "idx": 78405,
+      "manual_ambiguous_count": 4,
+      "original_group_class": "0/4",
+      "primary_category": "definition_sensitive",
+      "quality_status": "excluded",
+      "reason": "Mineral counts depend on classification and inclusion rules that are not specified.",
+      "source": "nq"
+    }
+  ],
+  "manifest": "2026-08-26 outcome reward data-quality exclusions",
+  "source_audit_commit": "96ef69f",
+  "version": "2026-08-26.v1"
+}

@@ -1,0 +1,188 @@
+{
+  "affected_group_count": 2,
+  "affected_row_count": 5,
+  "affected_rows": [
+    {
+      "candidate_id": "candidate-1",
+      "group_key": "mathhard:33486",
+      "manual_label": "correct",
+      "manual_reason": "Yes, a=b is the requested conclusion; deterministic safe_math_mismatch rejected a semantically equivalent answer.",
+      "post_fix_reason": "proved_math_equivalence",
+      "post_fix_reward": 1.0,
+      "pre_fix_reason": "safe_math_mismatch",
+      "pre_fix_reward": 0.0,
+      "pre_fix_route": "deterministic",
+      "source": "mathhard"
+    },
+    {
+      "candidate_id": "candidate-2",
+      "group_key": "mathhard:33486",
+      "manual_label": "correct",
+      "manual_reason": "Yes, a=b is the requested conclusion; deterministic safe_math_mismatch rejected a semantically equivalent answer.",
+      "post_fix_reason": "proved_math_equivalence",
+      "post_fix_reward": 1.0,
+      "pre_fix_reason": "safe_math_mismatch",
+      "pre_fix_reward": 0.0,
+      "pre_fix_route": "deterministic",
+      "source": "mathhard"
+    },
+    {
+      "candidate_id": "candidate-3",
+      "group_key": "mathhard:33486",
+      "manual_label": "correct",
+      "manual_reason": "Yes, a=b is the requested conclusion; deterministic safe_math_mismatch rejected a semantically equivalent answer.",
+      "post_fix_reason": "proved_math_equivalence",
+      "post_fix_reward": 1.0,
+      "pre_fix_reason": "safe_math_mismatch",
+      "pre_fix_reward": 0.0,
+      "pre_fix_route": "deterministic",
+      "source": "mathhard"
+    },
+    {
+      "candidate_id": "candidate-4",
+      "group_key": "mathhard:33486",
+      "manual_label": "correct",
+      "manual_reason": "Yes, a=b is the requested conclusion; deterministic safe_math_mismatch rejected a semantically equivalent answer.",
+      "post_fix_reason": "proved_math_equivalence",
+      "post_fix_reward": 1.0,
+      "pre_fix_reason": "safe_math_mismatch",
+      "pre_fix_reward": 0.0,
+      "pre_fix_route": "deterministic",
+      "source": "mathhard"
+    },
+    {
+      "candidate_id": "candidate-2",
+      "group_key": "mathhard:19926",
+      "manual_label": "correct",
+      "manual_reason": "Correct order and complete two-coset element list.",
+      "post_fix_reason": "proved_math_equivalence",
+      "post_fix_reward": 1.0,
+      "pre_fix_reason": "safe_math_mismatch",
+      "pre_fix_reward": 0.0,
+      "pre_fix_route": "deterministic",
+      "source": "mathhard"
+    }
+  ],
+  "audit": "2026-08-26 safe_math_scorer_fix offline replay",
+  "deterministic_route_count_after_offline": 192,
+  "deterministic_route_count_before": 192,
+  "group_reward_replay": {
+    "mathhard:19926": {
+      "post_fix_class": "4.0/4",
+      "post_fix_rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "pre_fix_class": "3/4",
+      "pre_fix_rewards": [
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    "mathhard:33486": {
+      "post_fix_class": "4.0/4",
+      "post_fix_rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "pre_fix_class": "0/4",
+      "pre_fix_rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "manual_ambiguous_count": 45,
+  "manual_clear_count": 355,
+  "network_calls": 0,
+  "new_false_negative_count_against_clear_manual": 0,
+  "new_false_positive_count_against_clear_manual": 0,
+  "post_fix_deterministic_by_source": {
+    "mathhard": {
+      "FN": 4,
+      "FP": 0,
+      "TN": 9,
+      "TP": 134
+    },
+    "nq": {
+      "FN": 0,
+      "FP": 0,
+      "TN": 1,
+      "TP": 39
+    }
+  },
+  "post_fix_deterministic_confusion_clear": {
+    "FN": 4,
+    "FP": 0,
+    "TN": 10,
+    "TP": 173
+  },
+  "post_fix_local_decision_counts": {
+    "false": 19,
+    "judge": 208,
+    "true": 173
+  },
+  "post_fix_reason_counts": {
+    "ambiguous_math_candidates": 3,
+    "ambiguous_yes_no": 12,
+    "complete_date_match": 12,
+    "complete_date_mismatch": 1,
+    "complete_number_match": 70,
+    "complete_number_mismatch": 15,
+    "conflicting_dates": 5,
+    "conflicting_numbers": 35,
+    "explicit_phrase_match": 32,
+    "normalized_exact_match": 9,
+    "open_natural_language": 147,
+    "proved_math_equivalence": 45,
+    "unambiguous_yes_no": 8,
+    "uncertain_date": 2,
+    "uncertain_math": 4
+  },
+  "post_fix_replay_confusion_clear": {
+    "FN": 11,
+    "FP": 2,
+    "TN": 33,
+    "TP": 309
+  },
+  "pre_fix_deterministic_by_source": {
+    "mathhard": {
+      "FN": 9,
+      "FP": 0,
+      "TN": 9,
+      "TP": 129
+    },
+    "nq": {
+      "FN": 0,
+      "FP": 0,
+      "TN": 1,
+      "TP": 39
+    }
+  },
+  "pre_fix_deterministic_confusion_clear": {
+    "FN": 9,
+    "FP": 0,
+    "TN": 10,
+    "TP": 168
+  },
+  "pre_fix_route_counts": {
+    "deterministic": 192,
+    "judge_fallback": 208
+  },
+  "pre_fix_saved_reward_confusion_clear": {
+    "FN": 16,
+    "FP": 2,
+    "TN": 33,
+    "TP": 304
+  },
+  "record_count": 400,
+  "source_audit": "log/2026-08-26_outcome_reward_full_audit_results.json"
+}
