@@ -1,0 +1,269 @@
+{
+  "status": "completed",
+  "model": "deepseek-v4-flash",
+  "temperature": 0,
+  "case_count": 12,
+  "api_calls": 18,
+  "primary_accuracy": 1.0,
+  "primary_successes": 12,
+  "primary_errors": 0,
+  "case_results": [
+    {
+      "case_id": "date_corrected_to_wrong",
+      "case_type": "synthetic_adversarial",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 0.8511423505842686,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "date_corrected_to_wrong__cached_repeat",
+      "case_type": "synthetic_adversarial",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "route": "judge_cache",
+      "judge_called": false,
+      "cache_hit": true,
+      "latency_seconds": 0.0006489790976047516,
+      "error": null,
+      "expected_route": "judge_cache"
+    },
+    {
+      "case_id": "date_wrong_corrected_to_right",
+      "case_type": "synthetic_adversarial",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 2.1590114049613476,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "date_wrong_corrected_to_right__cached_repeat",
+      "case_type": "synthetic_adversarial",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "judge_cache",
+      "judge_called": false,
+      "cache_hit": true,
+      "latency_seconds": 0.000698210671544075,
+      "error": null,
+      "expected_route": "judge_cache"
+    },
+    {
+      "case_id": "yes_to_no_self_correction",
+      "case_type": "synthetic_adversarial",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 0.798525532707572,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "yes_to_no_self_correction__cached_repeat",
+      "case_type": "synthetic_adversarial",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "route": "judge_cache",
+      "judge_called": false,
+      "cache_hit": true,
+      "latency_seconds": 0.0006268993020057678,
+      "error": null,
+      "expected_route": "judge_cache"
+    },
+    {
+      "case_id": "no_to_yes_self_correction",
+      "case_type": "synthetic_adversarial",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 1.0666317380964756,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "multiple_candidate_entities",
+      "case_type": "synthetic_adversarial",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 0.9219175446778536,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "near_but_not_in_entity",
+      "case_type": "synthetic_adversarial",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 1.0145241245627403,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "thought_x_actually_y",
+      "case_type": "synthetic_adversarial",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 1.0963404793292284,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "final_marker_overrides_earlier_reasoning",
+      "case_type": "synthetic_adversarial",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "deterministic",
+      "judge_called": false,
+      "cache_hit": false,
+      "latency_seconds": 0.00010169297456741333,
+      "error": null,
+      "expected_route": "deterministic"
+    },
+    {
+      "case_id": "fraction_local_proof",
+      "case_type": "synthetic_adversarial",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "deterministic",
+      "judge_called": false,
+      "cache_hit": false,
+      "latency_seconds": 0.0007025115191936493,
+      "error": null,
+      "expected_route": "deterministic"
+    },
+    {
+      "case_id": "integer_local_mismatch",
+      "case_type": "synthetic_adversarial",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "route": "deterministic",
+      "judge_called": false,
+      "cache_hit": false,
+      "latency_seconds": 3.681890666484833e-05,
+      "error": null,
+      "expected_route": "deterministic"
+    },
+    {
+      "case_id": "entity_mentioned_then_rejected",
+      "case_type": "synthetic_adversarial",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 0.882032198831439,
+      "error": null,
+      "expected_route": "judge"
+    },
+    {
+      "case_id": "real_rollout_nq_open_answer",
+      "case_type": "real_rollout_nq",
+      "expected": true,
+      "actual": true,
+      "correct": true,
+      "route": "judge",
+      "judge_called": true,
+      "cache_hit": false,
+      "latency_seconds": 0.7387271393090487,
+      "error": null,
+      "expected_route": "judge"
+    }
+  ],
+  "raw_repeat_results": {
+    "date_corrected_to_wrong": {
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "all_successful_verdicts_equal": true,
+      "errors": []
+    },
+    "date_wrong_corrected_to_right": {
+      "verdicts": [
+        true,
+        true,
+        true
+      ],
+      "all_successful_verdicts_equal": true,
+      "errors": []
+    },
+    "yes_to_no_self_correction": {
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "all_successful_verdicts_equal": true,
+      "errors": []
+    }
+  },
+  "raw_repeat_consistency_all_cases": true,
+  "uncached_latency": {
+    "count": 18,
+    "average_seconds": 0.956921899277303,
+    "median_seconds": 0.8884739940986037,
+    "p95_seconds": 1.3037154280580565
+  },
+  "cached_latency": {
+    "count": 3,
+    "average_seconds": 0.0006580296903848648,
+    "median_seconds": 0.0006489790976047516,
+    "p95_seconds": 0.0006932875141501427
+  },
+  "scorer_stats": {
+    "total": 15,
+    "deterministic": 3,
+    "judge_fallback": 12,
+    "judge_calls": 9,
+    "cache_hits": 3,
+    "judge_failures": 0,
+    "judge_unavailable": 0,
+    "deterministic_hit_rate": 0.2,
+    "judge_fallback_rate": 0.8,
+    "judge_average_latency_seconds": 1.0550845207439528,
+    "judge_max_latency_seconds": 2.156530788168311
+  },
+  "cache_validation": {
+    "cache_json_files": 9,
+    "cache_contains_raw_input": false,
+    "cache_key_format_sha256": true,
+    "cache_directory_temporary": true
+  },
+  "api_error_types": []
+}

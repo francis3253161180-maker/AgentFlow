@@ -97,18 +97,25 @@ class HybridRewardScorerTest(unittest.TestCase):
             parse_judge_response("The answer is probably true.")
 
     def test_api_failure_is_conservative(self):
-        def failing_judge(*args):
-            raise TimeoutError("simulated timeout")
-
-        scorer = HybridRewardScorer(
-            judge=failing_judge,
-            cache=RewardJudgeCache(self.tempdir.name),
-            enabled=True,
-        )
-        result = scorer.score_with_metadata("q", "target", "a long answer that mentions target")
-        self.assertFalse(result.score)
-        self.assertEqual(result.route, "conservative_fallback")
-        self.assertEqual(result.judge_error, "TimeoutError")
+        failures = [
+            ("TimeoutError", lambda *args: (_ for _ in ()).throw(TimeoutError("simulated timeout"))),
+            ("RuntimeError", lambda *args: (_ for _ in ()).throw(RuntimeError("simulated HTTP error"))),
+            ("ValueError", lambda *args: "not valid JSON"),
+        ]
+        for index, (error_type, failing_judge) in enumerate(failures):
+            with self.subTest(error_type=error_type):
+                scorer = HybridRewardScorer(
+                    judge=failing_judge,
+                    cache=RewardJudgeCache(os.path.join(self.tempdir.name, str(index))),
+                    enabled=True,
+                )
+                result = scorer.score_with_metadata(
+                    "q", "target", "a long answer that mentions target"
+                )
+                self.assertFalse(result.score)
+                self.assertEqual(result.route, "conservative_fallback")
+                self.assertEqual(result.judge_error, error_type)
+                self.assertIn(float(result.score), {0.0, 1.0})
 
     def test_synthetic_adversarial_accuracy_and_routing(self):
         for case in SYNTHETIC_CASES:
