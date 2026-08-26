@@ -89,3 +89,27 @@ baseline → failure analysis → algorithm improvement → A/B → ablation →
 ```
 
 在 baseline 尚未证明稳定训练信号前，不提前宣称完成算法复现或算法改进。
+
+## Checkpoint 保留策略
+
+现在扩到 200G 后，正式实验有必要保留训练后权重，但没必要保留大量完整 FSDP checkpoint。
+
+我建议按实验级别区分：
+
+- smoke / mini / debug：不保存 checkpoint，`save_freq: 0`。
+- 正式 baseline / improvement / ablation：至少保留最终训练权重，因为后面可能需要重新验证、补 benchmark、做案例分析，而不应该为了一个新指标重新训练。
+- 最优方案：只保存 LoRA adapter。rank=8 的 adapter 应该远小于之前约 9.5GB 的完整 FSDP state。
+- 如果当前代码暂时不能方便地只保存 adapter：每个重要实验只保存最后一个完整 checkpoint，不要每 N step 保存。
+- 旧 smoke、OOM、失败实验的大 checkpoint 可以直接清掉；log + rollout_data + config + seed + commit SHA 才是这些实验真正需要长期保留的东西。
+
+所以后面正式实验最好是：
+
+```text
+训练
+├── log                    必存
+├── rollout_data           必存
+├── config / seed / SHA    必存
+└── final LoRA adapter     正式实验必存
+```
+
+200G 给了我们更多余量，但不应该因此恢复“每轮都存 10GB checkpoint”的方式。尤其后面 baseline、改进版、多个 seed、ablation 一多，200G 很快仍会被吃掉。
