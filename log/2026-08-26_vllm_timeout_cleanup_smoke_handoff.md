@@ -7,7 +7,7 @@
 - Model/runtime: Qwen2.5-3B-Instruct, LoRA rank 8 / alpha 16, one RTX 5090, async vLLM.
 - Installed versions: `verl==0.5.0`, `vllm==0.9.2`, `torch==2.7.1+cu128`.
 - No dependency, model, LoRA, FSDP, optimizer, or checkpoint configuration upgrade was made.
-- The final implementation commit SHA is supplied with the Git handoff; this report is part of that commit.
+- Implementation commit: `ebe7395` (`Backport safe vLLM timeout cleanup lifecycle`).
 
 ## Observed facts
 
