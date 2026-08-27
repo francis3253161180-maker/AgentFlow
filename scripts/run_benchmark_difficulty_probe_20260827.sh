@@ -1,21 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ "$#" -ne 1 ] || [[ ! "$1" =~ ^(bamboogle|amc23|2wiki)$ ]]; then
-  echo "usage: $0 DATASET (bamboogle, amc23, or 2wiki)" >&2
+if [ "$#" -ne 1 ] || [[ ! "$1" =~ ^(hotpotqa|musique|gaia|aime24|gameof24|gpqa|medqa)$ ]]; then
+  echo "usage: $0 DATASET (hotpotqa, musique, gaia, aime24, gameof24, gpqa, or medqa)" >&2
   exit 2
 fi
 DATASET="$1"
 REPO=/root/autodl-tmp/AgentFlow
 ENV_PY=/root/autodl-tmp/conda/envs/agentflow/bin/python
 BASE_CONFIG="$REPO/train/config_5090_lora_mini20.yaml"
-PROBE_TMP=/root/autodl-tmp/tmp/benchmark_difficulty_probe_20260827
+PROBE_TMP=/root/autodl-tmp/tmp/remaining_benchmark_screen_20260827
 PARQUET="$PROBE_TMP/${DATASET}.parquet"
 CONFIG="$PROBE_TMP/${DATASET}.yaml"
 EXP_NAME="benchmark-difficulty-${DATASET}-20260827"
 TRAIN_LOG="$REPO/log/20260827_benchmark_difficulty_${DATASET}_train.log"
 ROLLOUT_LOG="$REPO/log/20260827_benchmark_difficulty_${DATASET}_rollout.log"
 GPU_LOG="$PROBE_TMP/${DATASET}_gpu.tsv"
+EXPECTED_PROMPTS="${AGENTFLOW_PROBE_EXPECTED_PROMPTS:-10}"
+EXPECTED_ROLLOUTS=$((EXPECTED_PROMPTS * 4))
+
+if ! [[ "$EXPECTED_PROMPTS" =~ ^[1-9][0-9]*$ ]]; then
+  echo "AGENTFLOW_PROBE_EXPECTED_PROMPTS must be a positive integer" >&2
+  exit 2
+fi
 
 cd "$REPO"
 source /root/.env
@@ -81,6 +88,7 @@ check_abort_conditions() {
 echo "BENCHMARK_PROBE_DATASET=$DATASET"
 echo "BENCHMARK_PROBE_CONFIG=Qwen2.5-3B-Instruct LoRA rank8 alpha16 temp=0.7 rollout_n=4 rollout_only=1"
 echo "BENCHMARK_PROBE_PARQUET=$PARQUET"
+echo "BENCHMARK_PROBE_EXPECTED_PROMPTS=$EXPECTED_PROMPTS EXPECTED_ROLLOUTS=$EXPECTED_ROLLOUTS"
 echo "BENCHMARK_PROBE_COMMAND=train_agent.py val_only=true save_freq=0 optimizer_steps=0"
 PYTHONUNBUFFERED=1 "$ENV_PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP_NAME" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.val_files="$PARQUET" >"$TRAIN_LOG" 2>&1 &
 TRAIN_PID=$!
@@ -101,18 +109,24 @@ ROLLOUT_PID=$!
 while kill -0 "$TRAIN_PID" 2>/dev/null; do check_abort_conditions || exit 2; sleep 5; done
 wait "$TRAIN_PID"
 check_abort_conditions
-grep -q "Validation summary: 80/80 total rollouts (100.0%), 80 valid rollouts" "$TRAIN_LOG" || { echo "ABORT_CONDITION incomplete_probe_summary" >&2; exit 2; }
+if ! grep -q "Validation summary:" "$TRAIN_LOG"; then
+  echo "ABORT_CONDITION missing_probe_summary" >&2
+  exit 2
+fi
+if ! grep -q "Validation summary: ${EXPECTED_ROLLOUTS}/${EXPECTED_ROLLOUTS} total rollouts (100.0%), ${EXPECTED_ROLLOUTS} valid rollouts" "$TRAIN_LOG"; then
+  echo "BENCHMARK_PROBE_PARTIAL_VALIDITY summary_differs_from_expected=1" >&2
+fi
 if grep -Eqi "Training data keys|optimizer\.step|backward\(|global_step: [1-9]" "$TRAIN_LOG"; then echo "ABORT_CONDITION unexpected_training_execution_marker" >&2; exit 2; fi
 for _ in $(seq 1 90); do if ! kill -0 "$ROLLOUT_PID" 2>/dev/null; then break; fi; sleep 1; done
 if kill -0 "$ROLLOUT_PID" 2>/dev/null; then kill -TERM "$ROLLOUT_PID" 2>/dev/null || true; wait "$ROLLOUT_PID" 2>/dev/null || true; fi
 ROLLOUT_PID=""
 TRAIN_ROLLOUT_DIR=$(find "$REPO/rollout_data" -type d -path "*/$EXP_NAME""_*/Qwen2.5-3B-Instruct_*/train" -print | sort | tail -1)
 if [ -z "$TRAIN_ROLLOUT_DIR" ]; then echo "ABORT_CONDITION missing_rollout_data_directory" >&2; exit 2; fi
-"$ENV_PY" - "$PROBE_TMP/${DATASET}.meta.json" "$DATASET" "$EXP_NAME" "$PARQUET" "$TRAIN_LOG" "$ROLLOUT_LOG" "$GPU_LOG" "$TRAIN_ROLLOUT_DIR" <<'PY'
+"$ENV_PY" - "$PROBE_TMP/${DATASET}.meta.json" "$DATASET" "$EXP_NAME" "$PARQUET" "$TRAIN_LOG" "$ROLLOUT_LOG" "$GPU_LOG" "$TRAIN_ROLLOUT_DIR" "$EXPECTED_PROMPTS" <<'PY'
 import json
 import sys
 from pathlib import Path
-meta = {"dataset": sys.argv[2], "experiment_name": sys.argv[3], "prompt_parquet": sys.argv[4], "train_log": sys.argv[5], "rollout_log": sys.argv[6], "gpu_log": sys.argv[7], "train_rollout_dir": sys.argv[8]}
+meta = {"dataset": sys.argv[2], "experiment_name": sys.argv[3], "prompt_parquet": sys.argv[4], "train_log": sys.argv[5], "rollout_log": sys.argv[6], "gpu_log": sys.argv[7], "train_rollout_dir": sys.argv[8], "expected_prompts": int(sys.argv[9]), "expected_rollouts": int(sys.argv[9]) * 4}
 Path(sys.argv[1]).write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(meta, sort_keys=True))
 PY

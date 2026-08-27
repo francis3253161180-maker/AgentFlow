@@ -18,7 +18,9 @@ from audit_rollout_diversity_20260826 import ANSI_RE, extract_tool_signature, no
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--prior-results", type=Path, required=True, help="results JSON for the three completed probes")
     parser.add_argument("--dataset", nargs=4, action="append", required=True, metavar=("NAME", "META", "TRAIN_LOG", "ROLLOUT_LOG"))
+    parser.add_argument("--not-run", action="append", default=[], metavar="DATASET=REASON", help="benchmark blocked before rollout")
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 
@@ -64,7 +66,7 @@ def runtime_info(paths: list[Path]) -> dict[str, Any]:
     updates = [line.strip()[-500:] for line in text.splitlines() if re.search(r"Training data keys|optimizer\.step|backward\(|update_actor|actor/pg_loss", line, re.I)]
     return {
         "progress_last": {"completed": int(progress[-1][0]), "queued": int(progress[-1][1]), "valid": int(progress[-1][2]), "retries": int(progress[-1][3])} if progress else None,
-        "validation_summary": {"completed": int(summaries[-1][0]), "queued": int(summaries[-1][1]), "valid": int(summaries[-1][2])} if summaries else None,
+        "validation_summary": {"completed": int(summaries[-1][0]), "attempted": int(summaries[-1][1]), "valid": int(summaries[-1][2])} if summaries else None,
         "elapsed_minutes": float(elapsed[-1]) if elapsed else None,
         "cleanup_markers": cleanup,
         "cleanup_drained_true": sum("drained': True" in line or "drained=True" in line for line in cleanup),
@@ -109,16 +111,23 @@ def aggregate_dataset(name: str, meta_path: Path, train_log: Path, rollout_log: 
             "path_signature": extract_tool_signature(row.get("total_result")),
         })
     groups: list[dict[str, Any]] = []
-    for data_id, members in sorted(by_id.items()):
-        rewards = [member["reward"] for member in members]
-        signatures = [member["path_signature"] for member in members]
+    for data_id in sorted(selected):
+        members = by_id.get(data_id, [])
+        # Retries can leave more than n files for an id. Use the first n
+        # deterministic path-sorted attempts for the protocol vector and
+        # preserve extra attempts as validity telemetry.
+        protocol_members = members[:4]
+        rewards = [member["reward"] for member in protocol_members]
+        signatures = [member["path_signature"] for member in protocol_members]
         unique_answers = len({member["answer_norm"] for member in members})
-        path_available = all(signature is not None for signature in signatures)
+        path_available = bool(signatures) and all(signature is not None for signature in signatures)
         advantages = theoretical_advantages(rewards)
         groups.append({
             "id": data_id,
             "source_row_index": selected[data_id]["source_row_index"],
-            "n": len(members),
+            "n": len(protocol_members),
+            "attempt_count": len(members),
+            "extra_retry_attempts": max(0, len(members) - 4),
             "rewards": rewards,
             "class": class_for(rewards),
             "reward_mean": statistics.mean(rewards) if rewards else 0.0,
@@ -130,36 +139,133 @@ def aggregate_dataset(name: str, meta_path: Path, train_log: Path, rollout_log: 
             "path_signature_available": path_available,
             "unique_path_signatures": len(set(signatures)) if path_available else 0,
         })
-    if len(groups) != len(selected) or any(group["n"] != 4 for group in groups):
-        raise SystemExit(f"{name}: expected {len(selected)} complete n=4 groups; got {len(groups)}")
-    values = [value for group in groups for value in group["rewards"]]
-    bins = {f"{count}/4": sum(group["class"] == f"{count}/4" for group in groups) for count in range(5)}
-    mixed = sum(group["class"] in {"1/4", "2/4", "3/4"} for group in groups)
+    complete_groups = [group for group in groups if group["n"] == 4]
+    values = [value for group in complete_groups for value in group["rewards"]]
+    bins = {f"{count}/4": sum(group["class"] == f"{count}/4" for group in complete_groups) for count in range(5)}
+    mixed = sum(group["class"] in {"1/4", "2/4", "3/4"} for group in complete_groups)
+    denominator = len(complete_groups)
+    runtime = runtime_info([train_log, rollout_log])
+    reported_valid = (runtime.get("validation_summary") or {}).get("valid")
+    attempted_rollouts = len(paths)
+    protocol_rollouts = len(selected) * 4
     return {
         "dataset": name,
+        "source": {
+            "path": manifest_dataset["source_path"],
+            "ref": manifest_dataset.get("source_ref"),
+            "split": manifest_dataset.get("split"),
+            "sha256": manifest_dataset["source_sha256"],
+            "sample_count": manifest_dataset["selected_sample_count"],
+        },
+        "stage": "remaining_stage1_screen",
+        "status": "complete" if reported_valid == protocol_rollouts and len(complete_groups) == len(selected) else "partial",
         "prompts": len(groups),
-        "valid_rollouts": len(values),
+        "planned_prompts": len(selected),
+        "protocol_rollouts": protocol_rollouts,
+        "attempted_rollouts": attempted_rollouts,
+        "valid_rollouts": reported_valid if reported_valid is not None else len(values),
+        "reward_rows_used": len(values),
+        "completeness": {
+            "expected_groups": len(selected),
+            "complete_n4_groups": len(complete_groups),
+            "partial_or_missing_groups": len(groups) - len(complete_groups),
+            "reported_valid_rollouts": reported_valid,
+            "protocol_complete": reported_valid == protocol_rollouts and len(complete_groups) == len(selected),
+        },
         "groups": groups,
         "summary": {
             "group_bin_counts": bins,
-            "group_bin_proportions": {key: value / len(groups) for key, value in bins.items()},
+            "group_bin_proportions": {key: value / denominator for key, value in bins.items()} if denominator else {key: None for key in bins},
             "mixed_group_count": mixed,
-            "mixed_group_ratio": mixed / len(groups),
-            "nonzero_variance_group_count": sum(group["nonzero_theoretical_advantage"] for group in groups),
-            "nonzero_variance_group_ratio": sum(group["nonzero_theoretical_advantage"] for group in groups) / len(groups),
+            "mixed_group_ratio": mixed / denominator if denominator else None,
+            "nonzero_variance_group_count": sum(group["nonzero_theoretical_advantage"] for group in complete_groups),
+            "nonzero_variance_group_ratio": sum(group["nonzero_theoretical_advantage"] for group in complete_groups) / denominator if denominator else None,
             "reward_mean": statistics.mean(values) if values else 0.0,
             "positive_reward_count": sum(value == 1.0 for value in values),
             "negative_reward_count": sum(value == 0.0 for value in values),
-            "mean_unique_answers_per_group": statistics.mean(group["unique_answers"] for group in groups),
-            "exact_duplicate_rate": statistics.mean(group["duplicate_rate"] for group in groups),
-            "groups_with_exact_duplicates": sum(group["unique_answers"] < 4 for group in groups),
-            "mean_unique_path_signatures_per_group": statistics.mean([group["unique_path_signatures"] for group in groups if group["path_signature_available"]]) if any(group["path_signature_available"] for group in groups) else None,
-            "path_signature_available_groups": sum(group["path_signature_available"] for group in groups),
+            "mean_unique_answers_per_group": statistics.mean(group["unique_answers"] for group in complete_groups) if complete_groups else None,
+            "exact_duplicate_rate": statistics.mean(group["duplicate_rate"] for group in complete_groups) if complete_groups else None,
+            "groups_with_exact_duplicates": sum(group["unique_answers"] < 4 for group in complete_groups),
+            "mean_unique_path_signatures_per_group": statistics.mean([group["unique_path_signatures"] for group in complete_groups if group["path_signature_available"]]) if any(group["path_signature_available"] for group in complete_groups) else None,
+            "path_signature_available_groups": sum(group["path_signature_available"] for group in complete_groups),
+            "metrics_group_denominator": denominator,
         },
         "scorer_routing": parse_events([train_log, rollout_log]),
-        "runtime": runtime_info([train_log, rollout_log]),
+        "runtime": runtime,
         "gpu": gpu_info(Path(meta["gpu_log"])),
         "raw_evidence": {"train_log": meta["train_log"], "rollout_log": meta["rollout_log"], "train_rollout_dir": meta["train_rollout_dir"]},
+    }
+
+
+def not_run_dataset(name: str, reason: str, manifest_dataset: dict[str, Any]) -> dict[str, Any]:
+    bins = {f"{count}/4": 0 for count in range(5)}
+    return {
+        "dataset": name,
+        "source": {
+            "path": manifest_dataset["source_path"],
+            "ref": manifest_dataset.get("source_ref"),
+            "split": manifest_dataset.get("split"),
+            "sha256": manifest_dataset["source_sha256"],
+            "sample_count": manifest_dataset["selected_sample_count"],
+        },
+        "stage": "remaining_stage1_screen_not_run",
+        "status": "not_run",
+        "not_run_reason": reason,
+        "prompts": 0,
+        "planned_prompts": manifest_dataset["selected_sample_count"],
+        "protocol_rollouts": 0,
+        "attempted_rollouts": 0,
+        "valid_rollouts": 0,
+        "reward_rows_used": 0,
+        "completeness": {
+            "expected_groups": manifest_dataset["selected_sample_count"],
+            "complete_n4_groups": 0,
+            "partial_or_missing_groups": manifest_dataset["selected_sample_count"],
+            "reported_valid_rollouts": 0,
+            "protocol_complete": False,
+        },
+        "groups": [],
+        "summary": {
+            "group_bin_counts": bins,
+            "group_bin_proportions": {key: None for key in bins},
+            "mixed_group_count": 0,
+            "mixed_group_ratio": None,
+            "nonzero_variance_group_count": 0,
+            "nonzero_variance_group_ratio": None,
+            "reward_mean": None,
+            "positive_reward_count": 0,
+            "negative_reward_count": 0,
+            "mean_unique_answers_per_group": None,
+            "exact_duplicate_rate": None,
+            "groups_with_exact_duplicates": 0,
+            "mean_unique_path_signatures_per_group": None,
+            "path_signature_available_groups": 0,
+            "metrics_group_denominator": 0,
+        },
+        "scorer_routing": {
+            "event_count": 0,
+            "route_counts": {},
+            "deterministic_count": 0,
+            "judge_fallback_count": 0,
+            "judge_api_call_count": 0,
+            "cache_hit_count": 0,
+            "api_or_parse_error_count": 0,
+            "error_values": {},
+            "latency_ms_mean": None,
+            "latency_ms_median": None,
+        },
+        "runtime": {
+            "progress_last": None,
+            "validation_summary": None,
+            "elapsed_minutes": None,
+            "cleanup_markers": [],
+            "cleanup_drained_true": 0,
+            "cleanup_drained_false": 0,
+            "errors": [],
+            "unexpected_update_markers": [],
+        },
+        "gpu": {"samples": 0, "observed_peak_memory_mib": None, "observed_peak_utilization_percent": None},
+        "raw_evidence": {},
     }
 
 
@@ -188,7 +294,66 @@ def main() -> None:
         if name not in manifest["datasets"]:
             raise SystemExit(f"dataset absent from sample manifest: {name}")
         output["datasets"][name] = aggregate_dataset(name, Path(meta), Path(train_log), Path(rollout_log), manifest["datasets"][name])
-    output["overall"] = {"prompts": sum(item["prompts"] for item in output["datasets"].values()), "valid_rollouts": sum(item["valid_rollouts"] for item in output["datasets"].values())}
+
+    for value in args.not_run:
+        if "=" not in value:
+            raise SystemExit(f"--not-run must use DATASET=REASON: {value}")
+        name, reason = value.split("=", 1)
+        if name in output["datasets"] or name not in manifest["datasets"]:
+            raise SystemExit(f"invalid or duplicate not-run dataset: {name}")
+        output["datasets"][name] = not_run_dataset(name, reason, manifest["datasets"][name])
+
+    prior = json.loads(args.prior_results.read_text(encoding="utf-8"))
+    for name, item in prior.get("datasets", {}).items():
+        if name in output["datasets"]:
+            raise SystemExit(f"dataset appears in both new and prior results: {name}")
+        item = dict(item)
+        item["stage"] = "prior_probe"
+        item["status"] = "complete"
+        item["planned_prompts"] = item.get("prompts")
+        item["source"] = {
+            "kind": "completed prior probe",
+            "results": str(args.prior_results),
+            "sample_count": item.get("prompts"),
+        }
+        output["datasets"][name] = item
+
+    if len(output["datasets"]) != 10:
+        raise SystemExit(f"expected unified 10-benchmark comparison, got {len(output['datasets'])}")
+    output["overall"] = {
+        "benchmarks": len(output["datasets"]),
+        "prompts": sum(item.get("planned_prompts", item["prompts"]) for item in output["datasets"].values()),
+        "observed_prompt_groups": sum(item["prompts"] for item in output["datasets"].values()),
+        "valid_rollouts": sum(item["valid_rollouts"] for item in output["datasets"].values()),
+        "remaining_stage1_prompts": sum(item["prompts"] for item in output["datasets"].values() if item["stage"] == "remaining_stage1_screen"),
+        "remaining_stage1_planned_prompts": sum(item.get("planned_prompts", item["prompts"]) for item in output["datasets"].values() if item["stage"].startswith("remaining_stage1_screen")),
+        "prior_probe_prompts": sum(item["prompts"] for item in output["datasets"].values() if item["stage"] == "prior_probe"),
+        "not_run_benchmarks": sum(item["stage"] == "remaining_stage1_screen_not_run" for item in output["datasets"].values()),
+    }
+    output["unified_comparison"] = []
+    for name in sorted(output["datasets"]):
+        item = output["datasets"][name]
+        summary = item["summary"]
+        output["unified_comparison"].append({
+            "dataset": name,
+            "stage": item["stage"],
+            "status": item.get("status", "complete"),
+            "sample_size": item.get("planned_prompts", item["prompts"]),
+            "observed_prompt_groups": item["prompts"],
+            "valid_rollouts": item["valid_rollouts"],
+            "reward_mean": summary["reward_mean"],
+            "group_bin_counts": summary["group_bin_counts"],
+            "mixed_group_ratio": summary["mixed_group_ratio"],
+            "nonzero_variance_group_ratio": summary["nonzero_variance_group_ratio"],
+            "mean_unique_answers_per_group": summary["mean_unique_answers_per_group"],
+            "exact_duplicate_rate": summary["exact_duplicate_rate"],
+            "mean_unique_path_signatures_per_group": summary["mean_unique_path_signatures_per_group"],
+            "scorer_routing": item["scorer_routing"],
+            "runtime_minutes": item["runtime"]["elapsed_minutes"],
+            "gpu_peak_memory_mib": item["gpu"]["observed_peak_memory_mib"],
+            "cleanup_drained_false": item["runtime"]["cleanup_drained_false"],
+            "cleanup_drained_true": item["runtime"]["cleanup_drained_true"],
+        })
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({name: item["summary"] for name, item in output["datasets"].items()}, sort_keys=True))

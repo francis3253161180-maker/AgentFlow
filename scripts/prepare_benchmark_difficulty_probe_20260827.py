@@ -33,6 +33,18 @@ def parse_mapping(values: list[str], label: str) -> dict[str, Path]:
     return result
 
 
+def parse_text_mapping(values: list[str], label: str) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for value in values:
+        if "=" not in value:
+            raise SystemExit(f"{label} must use DATASET=VALUE: {value}")
+        dataset, metadata = value.split("=", 1)
+        if not dataset or not metadata or dataset in result:
+            raise SystemExit(f"invalid or duplicate {label}: {value}")
+        result[dataset] = metadata
+    return result
+
+
 def ground_truth_text(value: Any) -> str:
     # Bamboogle stores answers as a JSON list; preserve that native value in
     # text because AgentFlow's result column is textual.
@@ -47,6 +59,8 @@ def prepare_dataset(
     output_path: Path,
     seed: int,
     requested_count: int,
+    source_ref: str,
+    split: str,
 ) -> dict[str, Any]:
     import pandas as pd
 
@@ -116,6 +130,8 @@ def prepare_dataset(
     return {
         "dataset": dataset,
         "source_path": str(input_path),
+        "source_ref": source_ref,
+        "split": split,
         "source_sha256": sha256_bytes(input_bytes),
         "source_row_count": len(rows),
         "structurally_valid_row_count": len(valid_indices),
@@ -136,16 +152,30 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=20260827)
     parser.add_argument("--sample-count", type=int, default=20)
+    parser.add_argument("--source-ref", action="append", default=[], help="DATASET=source/version note")
+    parser.add_argument("--split", action="append", default=[], help="DATASET=split note")
     args = parser.parse_args()
     if args.sample_count <= 0:
         raise SystemExit("--sample-count must be positive")
     inputs = parse_mapping(args.dataset, "--dataset")
     outputs = parse_mapping(args.output_parquet, "--output-parquet")
+    source_refs = parse_text_mapping(args.source_ref, "--source-ref")
+    splits = parse_text_mapping(args.split, "--split")
     if set(inputs) != set(outputs):
         raise SystemExit("dataset input/output names differ")
+    if not set(source_refs).issubset(inputs) or not set(splits).issubset(inputs):
+        raise SystemExit("source metadata contains an unknown dataset")
 
     datasets = {
-        name: prepare_dataset(name, inputs[name], outputs[name], args.seed, args.sample_count)
+        name: prepare_dataset(
+            name,
+            inputs[name],
+            outputs[name],
+            args.seed,
+            args.sample_count,
+            source_refs.get(name, "local repository fixture; upstream source/version not encoded"),
+            splits.get(name, "split not encoded in local fixture"),
+        )
         for name in sorted(inputs)
     }
     manifest = {
