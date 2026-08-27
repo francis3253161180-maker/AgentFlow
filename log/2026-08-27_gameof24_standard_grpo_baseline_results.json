@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "status": "blocked_provenance_gate",
+  "experiment": "GameOf24 Standard GRPO baseline",
+  "branch": "experiment/flow-grpo-3b-lora",
+  "commit_checked": "a13c9d649542063305b512cfd1eeca1aad8d7c4b",
+  "protocol_requested": {
+    "model": "/root/autodl-tmp/models/Qwen2.5-3B-Instruct",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "temperature": 0.7,
+    "rollout_n": 4,
+    "epochs": 1,
+    "optimizer_steps": 0,
+    "checkpoint_save_freq": 0
+  },
+  "provenance_gate": {
+    "passed": false,
+    "blocker": "The only local GameOf24 data is test/gameof24/data/data.json, a benchmark/evaluation fixture with no verifiable training split or analogous training provenance.",
+    "requested_train_groups": 60,
+    "eligible_train_groups": null,
+    "selected_train_groups": 0
+  },
+  "pre_eval_reference": {
+    "source": "log/2026-08-27_stage2_30prompt_confirmation_results.json",
+    "groups": 30,
+    "valid_rollouts": 120,
+    "reward_mean": 0.6416666666666667,
+    "group_bins": {"0/4": 3, "1/4": 5, "2/4": 7, "3/4": 2, "4/4": 13},
+    "mixed_group_ratio": 0.4666666666666667,
+    "note": "Existing rollout-only probe reference; all 30 prompts are forbidden from future training. No new pre-evaluation was run."
+  },
+  "train": null,
+  "post_eval": null,
+  "training_not_started": true,
+  "new_rollouts_not_started": true,
+  "deepseek_calls_for_this_task": 0,
+  "recommendation": "Obtain a verifiable official train split or separately licensed analogous GameOf24 training source, then construct a non-overlapping 60-row manifest with identifier/content-hash checks before reconsidering the baseline. Do not use the local test fixture for training."
+}

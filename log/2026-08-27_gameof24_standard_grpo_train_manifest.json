@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "status": "blocked_provenance_gate",
+  "experiment": "GameOf24 Standard GRPO baseline",
+  "branch": "experiment/flow-grpo-3b-lora",
+  "commit_checked": "a13c9d649542063305b512cfd1eeca1aad8d7c4b",
+  "seed": 20260827,
+  "requested_train_groups": 60,
+  "selected_train_groups": 0,
+  "train_rows": [],
+  "reason": "No verifiable official or analogous GameOf24 training source is present. The only local GameOf24 pool is a repository benchmark/evaluation fixture, so selecting 60 rows from it would contaminate the formal baseline.",
+  "eval_manifest": "log/2026-08-27_stage2_30prompt_confirmation_sample_manifest.json",
+  "eval_groups": 30,
+  "eval_rows_forbidden_in_training": true,
+  "provenance_evidence": {
+    "local_fixture": {
+      "path": "test/gameof24/data/data.json",
+      "sha256": "ffb0c95018ba400931f2940a2dabae666f1ed6d0383beadd969f0447869a14ff",
+      "row_count": 300,
+      "fields": ["pid", "question", "answer", "image", "query"],
+      "split_field_present": false,
+      "git_introduction_commit": "b94006436b8712ab8682846fb0d886a5f174f2d4",
+      "git_history_before_introduction": false,
+      "runner": "test/gameof24/run.sh",
+      "runner_behavior": "reads task/data/data.json and evaluates benchmark indices 0..99"
+    },
+    "repository_train_pool": {
+      "path": "data/train/combined_train.parquet",
+      "row_count": 182190,
+      "source_values": ["mathhard", "nq"],
+      "gameof24_rows": 0
+    },
+    "historical_probe_exclusion": {
+      "stage2_manifest": "log/2026-08-27_stage2_30prompt_confirmation_sample_manifest.json",
+      "unique_eval_probe_groups": 30,
+      "identifier_and_content_hash_overlap_within_eval": 0,
+      "source_rows_forbidden": "all 30 stage-2 GameOf24 source rows and all historical GameOf24 probe rows they contain"
+    }
+  },
+  "training_not_started": true,
+  "rollout_not_started": true,
+  "optimizer_steps": 0,
+  "checkpoint_written": false
+}
