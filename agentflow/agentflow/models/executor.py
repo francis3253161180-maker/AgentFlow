@@ -52,7 +52,7 @@ except NameError:
 class Executor:
     def __init__(self, llm_engine_name: str, root_cache_dir: str = "solver_cache",  num_threads: int = 1, max_time: int = 120,
     max_output_length: int = 100000, verbose: bool = False, base_url: str = None, check_model: bool = True, temperature: float = .0,
-    tool_instances_cache: dict = None):
+    tool_instances_cache: dict = None, max_tokens: int = 2048):
         self.llm_engine_name = llm_engine_name
         self.root_cache_dir = root_cache_dir
         self.num_threads = num_threads
@@ -62,14 +62,15 @@ class Executor:
         self.base_url = base_url
         self.check_model = check_model
         self.temperature  = temperature
+        self.max_tokens = max_tokens
 
         # Store the tool instances cache
         self.tool_instances_cache = tool_instances_cache if tool_instances_cache is not None else {}
 
         if base_url is not None:
-            self.llm_generate_tool_command = create_llm_engine(model_string=self.llm_engine_name, is_multimodal=False, base_url=self.base_url, temperature = self.temperature)
+            self.llm_generate_tool_command = create_llm_engine(model_string=self.llm_engine_name, is_multimodal=False, base_url=self.base_url, max_tokens=self.max_tokens, temperature = self.temperature)
         else:
-            self.llm_generate_tool_command = create_llm_engine(model_string=self.llm_engine_name, is_multimodal=False, temperature = self.temperature)
+            self.llm_generate_tool_command = create_llm_engine(model_string=self.llm_engine_name, is_multimodal=False, max_tokens=self.max_tokens, temperature = self.temperature)
     
     def set_query_cache_dir(self, query_cache_dir):
         if query_cache_dir:

@@ -1,6 +1,7 @@
 import argparse
 import time
 import json
+import os
 from typing import Optional
 
 from agentflow.models.initializer import Initializer
@@ -216,11 +217,37 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
 
     # Parse model_engine configuration
     # Format: [planner_main, planner_fixed, verifier, executor]
-    # "trainable" means use llm_engine_name (the trainable model)
-    planner_main_engine = llm_engine_name if model_engine[0] == "trainable" else model_engine[0]
-    planner_fixed_engine = llm_engine_name if model_engine[1] == "trainable" else model_engine[1]
-    verifier_engine = llm_engine_name if model_engine[2] == "trainable" else model_engine[2]
-    executor_engine = llm_engine_name if model_engine[3] == "trainable" else model_engine[3]
+    # Both markers refer to the same local base endpoint.  The distinction is
+    # intentional: only planner_main is allowed to use the actor LoRA;
+    # frozen roles are base-only.  The async OpenAI-compatible vLLM route in
+    # the pinned VERL/vLLM stack has no per-request LoRA selector, so the
+    # frozen path is represented explicitly and never creates another model.
+    def resolve_role_engine(spec: str) -> str:
+        return llm_engine_name if spec in {"trainable", "frozen"} else spec
+
+    planner_main_engine = resolve_role_engine(model_engine[0])
+    planner_fixed_engine = resolve_role_engine(model_engine[1])
+    verifier_engine = resolve_role_engine(model_engine[2])
+    executor_engine = resolve_role_engine(model_engine[3])
+
+    unified_local_roles = os.getenv("AGENTFLOW_UNIFIED_LOCAL_ROLES", "0").lower() in {
+        "1", "true", "yes", "on"
+    }
+    if unified_local_roles:
+        if model_engine != ["trainable", "frozen", "frozen", "frozen"]:
+            raise ValueError(
+                "Unified local role mode requires MODEL_ENGINE=['trainable','frozen','frozen','frozen']"
+            )
+        if any(engine not in {"self", "frozen"} for engine in tool_engine):
+            raise ValueError("Unified local role mode requires every TOOL_ENGINE entry to be local frozen base")
+        if not base_url or not llm_engine_name.startswith("vllm-"):
+            raise ValueError("Unified local role mode requires a local vLLM model and base_url")
+        print(
+            "UNIFIED_LOCAL_ROLES enabled "
+            f"model={llm_engine_name.removeprefix('vllm-')} "
+            "planner_main=trainable_actor_lora planner_fixed=frozen_base_no_lora "
+            "verifier=local_base_no_lora executor=local_base_no_lora tools=local_base_no_lora"
+        )
 
     # Instantiate Initializer
     initializer = Initializer(
@@ -229,6 +256,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         model_string=llm_engine_name,
         verbose=verbose,
         vllm_config_path=vllm_config_path,
+        base_url=base_url,
+        max_tokens=max_tokens,
     )
 
     # Instantiate Planner
@@ -239,6 +268,7 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         available_tools=initializer.available_tools,
         verbose=verbose,
         base_url=base_url,
+        fixed_base_url=base_url,
         temperature=temperature,
         max_tokens=max_tokens,
     )
@@ -251,6 +281,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         available_tools=initializer.available_tools,
         verbose=verbose,
         base_url=base_url if verifier_engine == llm_engine_name else None,
+        fixed_base_url=base_url if planner_fixed_engine == llm_engine_name else None,
+        max_tokens=max_tokens,
         temperature=temperature
     )
 
@@ -264,7 +296,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         verbose=verbose,
         base_url=base_url if executor_engine == llm_engine_name else None,  # Only use base_url for trainable model
         temperature=temperature,
-        tool_instances_cache=initializer.tool_instances_cache  # Pass the cached tool instances
+        tool_instances_cache=initializer.tool_instances_cache,  # Pass the cached tool instances
+        max_tokens=max_tokens,
     )
 
     # Instantiate Solver

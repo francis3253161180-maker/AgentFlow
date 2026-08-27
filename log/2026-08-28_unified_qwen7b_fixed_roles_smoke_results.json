@@ -1,0 +1,104 @@
+{
+  "task": "unified_local_qwen_fixed_roles_architecture_smoke",
+  "repo": {
+    "branch": "experiment/flow-grpo-3b-lora",
+    "head_before_commit": "156554b7f99ae437b2827a7681c626884044a46c"
+  },
+  "scope": {
+    "formal_training": false,
+    "optimizer_updates_requested": false,
+    "checkpoint_requested": false,
+    "external_llm_calls": 0,
+    "deepseek_calls": 0,
+    "doubao_or_gpt_calls": 0
+  },
+  "model_download": {
+    "source": "ModelScope",
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "local_path": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "download_command": "modelscope download --model Qwen/Qwen2.5-7B-Instruct --local_dir /root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "revision_pinned": false,
+    "safetensors_shards": {
+      "model-00001-of-00004.safetensors": {"bytes": 3945441440, "sha256": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7"},
+      "model-00002-of-00004.safetensors": {"bytes": 3864726352, "sha256": "f5d25a2772cb825164a2a0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185"},
+      "model-00003-of-00004.safetensors": {"bytes": 3864726424, "sha256": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5"},
+      "model-00004-of-00004.safetensors": {"bytes": 3556377672, "sha256": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"}
+    }
+  },
+  "protocol": {
+    "base_model": "Qwen2.5-Instruct",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "target_modules": "all-linear",
+    "temperature": 0.7,
+    "rollout_n": 2,
+    "train_prompts": 4,
+    "train_batch": 2,
+    "ppo_mini_batch": 2,
+    "micro_batch": 1,
+    "ppo_epochs": 1,
+    "max_prompt_length": 1280,
+    "smoke_max_response_length": 64,
+    "max_model_len": 2048,
+    "max_num_seqs": 1,
+    "max_num_batched_tokens": 1024,
+    "optimizer_steps_observed": 2,
+    "save_freq": 0,
+    "validation": false,
+    "vllm_tensor_parallel": 1
+  },
+  "role_contract": {
+    "model_engine": ["trainable", "frozen", "frozen", "frozen"],
+    "tool_engine": ["frozen"],
+    "planner_main": "shared local Qwen endpoint; actor has trainable LoRA",
+    "planner_fixed": "shared local Qwen endpoint; base-only/frozen semantic role",
+    "verifier": "shared local Qwen endpoint; base-only/frozen semantic role",
+    "executor": "shared local Qwen endpoint; base-only/frozen semantic role",
+    "ref_policy": "not instantiated; KL disabled",
+    "separate_fixed_model_process": false,
+    "limitation": "Pinned VERL/vLLM async OpenAI-compatible requests expose no per-request LoRA selector; this smoke proves actor LoRA wiring and a shared local endpoint, but does not prove direct AgentFlow role requests select the synced planner_main adapter."
+  },
+  "seven_b": {
+    "status": "failed_oom",
+    "attempts": [
+      {"timestamp": "20260827_233700", "vllm_gpu_memory_utilization": 0.14, "phase": "actor FSDP2 initialization", "rollouts": 0, "error": "CUDA OOM allocating 2.03 GiB; 1.17 GiB free; 30.18 GiB in use; 28.58 GiB PyTorch allocated"},
+      {"timestamp": "20260827_233813", "vllm_gpu_memory_utilization": 0.10, "phase": "actor FSDP2 initialization", "rollouts": 0, "error": "CUDA OOM allocating 2.03 GiB; 1.17 GiB free; 30.18 GiB in use; 28.58 GiB PyTorch allocated"}
+    ],
+    "conclusion": "Not feasible on the single 32 GiB RTX 5090 with the current FSDP2 plus vLLM architecture after the tested conservative vLLM memory reductions."
+  },
+  "three_b": {
+    "status": "passed",
+    "model_path": "/root/autodl-tmp/models/Qwen2.5-3B-Instruct",
+    "run_timestamp": "20260827_234821",
+    "vllm_gpu_memory_utilization": 0.24,
+    "valid_rollouts": 8,
+    "expected_rollouts": 8,
+    "retries": 0,
+    "errors": 0,
+    "reward_counts": {"0.0": 8, "1.0": 0},
+    "reward_mean": 0.0,
+    "mixed_group_observed": false,
+    "nonzero_advantage_observed": false,
+    "nonzero_pg_loss_observed": false,
+    "nonzero_grad_norm_observed": false,
+    "actor_lora_applied": true,
+    "actor_parameter_evidence": "PeftModelForCausalLM contains 3.10B parameters; Applying LoRA to actor module",
+    "scorer_routing": {"deterministic": 0, "judge": 0, "cache_hit": 0, "conservative_fallback": 8, "api_errors": 0, "parse_errors": 0},
+    "cleanup": {"events": 2, "all_drained": true, "outstanding_before": [0, 0], "abort_count": [0, 0], "sleep_started_after_drain": true, "prefix_cache_failures": 0, "illegal_memory_access": 0},
+    "gpu_peak": {"monitor_used_mib": 20916, "monitor_total_mib": 32607, "actor_max_memory_allocated_gb": [20.8641, 20.8674], "actor_max_memory_reserved_gb": [24.1055, 24.3984]},
+    "runtime_seconds_approx": 106,
+    "nonfatal_environment_warning": "lsof was unavailable for a port-kill helper; no serving or cleanup failure followed",
+    "evidence": {
+      "train_log": "log/unified-qwen3b-fixed-roles-smoke-20260828_20260827_234821_train.log",
+      "rollout_log": "log/unified-qwen3b-fixed-roles-smoke-20260828_20260827_234821_rollout.log",
+      "gpu_log_local_untracked": "/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/unified-qwen3b-fixed-roles-smoke-20260828_20260827_234821_gpu.tsv",
+      "raw_rollout_count": 8
+    }
+  },
+  "final_state": {
+    "gpu_used_mib": 2,
+    "matching_ray_vllm_training_processes": [],
+    "checkpoint_written": false,
+    "recommendation": "Do not start formal unified 7B training. The 3B path is a stable local architecture smoke, but first resolve/verifiably test per-request planner_main LoRA selection before using it for a formal baseline."
+  }
+}

@@ -73,7 +73,8 @@ class Initializer:
     base_url: str = None,
     check_model: bool = True,
     parallel_loading: bool = True,
-    max_workers: int = None):
+    max_workers: int = None,
+    max_tokens: int = 2048):
         """
         Initialize the tool initializer with intelligent parallel loading.
 
@@ -101,6 +102,7 @@ class Initializer:
         self.vllm_server_process = None
         self.vllm_config_path = vllm_config_path
         self.base_url = base_url
+        self.max_tokens = max_tokens
         self.check_model = check_model
         self.parallel_loading = parallel_loading
 
@@ -224,8 +226,12 @@ class Initializer:
                             engine = self.tool_engine[tool_index]
                             if engine == "Default":
                                 tool_instance = obj()
-                            elif engine == "self":
-                                tool_instance = obj(model_string=self.model_string)
+                            elif engine in {"self", "frozen"}:
+                                tool_instance = obj(
+                                    model_string=self.model_string,
+                                    base_url=self.base_url,
+                                    max_tokens=self.max_tokens,
+                                )
                             else:
                                 tool_instance = obj(model_string=engine)
                         else:
@@ -526,4 +532,3 @@ if __name__ == "__main__":
     print(f"Speedup:          {serial_time/parallel_time:>6.2f}x")
     print(f"Time saved:       {serial_time - parallel_time:>6.2f}s")
     print("="*80)
-    

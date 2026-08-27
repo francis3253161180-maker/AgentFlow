@@ -17,6 +17,20 @@ def create_llm_engine(model_string: str, use_cache: bool = False, is_multimodal:
     """
     original_model_string = model_string
 
+    # Safety guard for local-only architecture smokes and offline evaluation.
+    # It prevents an accidental fallback to a paid provider when the config is
+    # intended to use one local vLLM model for every AgentFlow role.
+    if os.getenv("AGENTFLOW_DISABLE_EXTERNAL_LLM", "0").lower() in {"1", "true", "yes", "on"}:
+        external_markers = (
+            "azure", "gpt", "o1", "o3", "o4", "dashscope", "claude", "deepseek",
+            "gemini", "grok", "together", "litellm", "anthropic", "openai",
+        )
+        if any(marker in model_string.lower() for marker in external_markers):
+            raise RuntimeError(
+                "External LLM disabled by AGENTFLOW_DISABLE_EXTERNAL_LLM; "
+                f"refusing model engine {model_string!r}"
+            )
+
     print(f"creating llm engine {model_string} with: is_multimodal: {is_multimodal}, kwargs: {kwargs}")
 
     # === Azure OpenAI ===
@@ -137,6 +151,7 @@ def create_llm_engine(model_string: str, use_cache: bool = False, is_multimodal:
             "frequency_penalty": kwargs.get("frequency_penalty", 1.2),
             "max_model_len": kwargs.get("max_model_len", 15200),
             "max_seq_len_to_capture": kwargs.get("max_seq_len_to_capture", 15200),
+            "max_tokens": kwargs.get("max_tokens", 2048),
         }
         print("serving ")
         return ChatVLLM(**config)
