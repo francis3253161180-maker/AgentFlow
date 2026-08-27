@@ -1,107 +1,101 @@
-# Remaining AgentFlow benchmark screen handoff
+# Remaining AgentFlow benchmark screen handoff (completed)
 
 ## Scope and protocol
 
-This was intended as a first-stage, rollout-only mixed-ratio screen for the seven AgentFlow-paper benchmarks not covered by the completed probe. No optimizer update, backward pass, parameter update, checkpoint, validation run, or variance-aware sampling was started. Benchmark examples are evaluation/probe examples only and must not enter a future formal training pool.
+This handoff completes the first-stage rollout-only screen for the seven remaining AgentFlow-paper benchmarks after the DeepSeek quota was restored. No formal training, backward pass, optimizer step, parameter update, checkpoint write, variance-aware sampling, or new 100-prompt audit was started.
 
-The intended common protocol was Qwen2.5-3B-Instruct at `/root/autodl-tmp/models/Qwen2.5-3B-Instruct`, the current LoRA rank 8 / alpha 16 configuration, the current AgentFlow toolchain, temperature 0.7, rollout.n=4, max prompt/response lengths 1280/384, tool steps 2, `trainer.val_only=true`, `trainer.save_freq=0`, and the patched safe vLLM cleanup lifecycle. Sampling used seed 20260827 and the fixed manifest in `log/2026-08-27_remaining_benchmark_screen_sample_manifest.json`.
+The common protocol was kept fixed: Qwen2.5-3B-Instruct at `/root/autodl-tmp/models/Qwen2.5-3B-Instruct`, the existing LoRA rank 8 / alpha 16 configuration, the existing AgentFlow toolchain and safe vLLM cleanup lifecycle, temperature 0.7, rollout.n=4, max prompt/response lengths 1280/384, tool steps 2, `trainer.val_only=true`, `trainer.save_freq=0`, and zero optimizer steps. The seven datasets used the fixed manifest `log/2026-08-27_remaining_benchmark_screen_sample_manifest.json` with selection seed 20260827 and ten prompts per dataset. The scorer was unchanged and used only its normal deterministic/judge paths.
+
+The final AIME24, GameOf24, GPQA, and MedQA runs used the independent run tag `quota_refill1`; this preserved the earlier quota-blocked raw logs and rollout directories. Only the new complete runs are used for the final metrics below.
 
 ## Observed facts
 
-### Authoritative benchmark inventory
+### Authoritative benchmark inventory and data preparation
 
-The AgentFlow project page and paper list ten benchmarks: Bamboogle, 2Wiki, HotpotQA, and Musique for knowledge-intensive search; GAIA using its textual split; AIME24, AMC23, and GameOf24 for mathematics; and GPQA and MedQA for scientific reasoning. See the [AgentFlow project benchmark description](https://agentflow.stanford.edu/) and [AgentFlow paper](https://arxiv.org/html/2510.05592v2).
+The AgentFlow project and paper identify these ten benchmark names: Bamboogle, 2Wiki, HotpotQA, Musique, GAIA, AIME24, AMC23, GameOf24, GPQA, and MedQA. The project groups them as knowledge-intensive search (Bamboogle, 2Wiki, HotpotQA, Musique, GAIA), mathematics (AIME24, AMC23, GameOf24), and scientific reasoning (GPQA, MedQA). References: [AgentFlow project](https://agentflow.stanford.edu/) and [AgentFlow paper](https://arxiv.org/html/2510.05592v2).
 
-The repository contains local fixtures for all ten names. The seven remaining local files were present before this run, so no benchmark download was performed:
+All seven remaining inputs were already available as local repository fixtures, so no public benchmark download was performed. The manifest records source paths, source SHA-256 hashes, source references, split evidence, selected source indices, and generated parquet hashes. The repository fixture revision observed for these paths was `b940064`. Where a fixture does not serialize an upstream release or official split identity, that limitation is recorded rather than inferred away.
 
-| Dataset | Local rows | Native answer shape | Local split/index evidence |
-|---|---:|---|---|
-| HotpotQA | 100 | list | wrapper indices 0--99; upstream release not encoded |
-| Musique | 200 | string | wrapper indices 0--99; upstream release not encoded |
-| GAIA | 127 | string | every local row has `split=validation`; wrapper indices 0--126 |
-| AIME24 | 30 | integer | full local 30-row fixture; wrapper indices 0--29 |
-| GameOf24 | 300 | list | wrapper indices 0--99 of the local 300-row fixture |
-| GPQA | 300 | string | wrapper indices 0--99 of the local 300-row fixture |
-| MedQA | 300 | string | wrapper indices 0--99 of the local 300-row fixture |
+| Dataset | Local fixture / split evidence | Selected prompts |
+|---|---|---:|
+| HotpotQA | `test/hotpotqa/data/data.json`; wrapper indices 0--99; upstream release not encoded | 10 |
+| Musique | `test/musique/data/data.json`; wrapper indices 0--99; upstream release not encoded | 10 |
+| GAIA | `test/gaia/data/data.json`; local rows explicitly marked validation; wrapper indices 0--126 | 10 |
+| AIME24 | `test/aime24/data/data.json`; full local 30-row fixture | 10 |
+| GameOf24 | `test/gameof24/data/data.json`; repository evaluation fixture; wrapper indices 0--99 of 300 | 10 |
+| GPQA | `test/gpqa/data/data.json`; repository evaluation fixture; wrapper indices 0--99 of 300 | 10 |
+| MedQA | `test/medqa/data/data.json`; repository evaluation fixture; wrapper indices 0--99 of 300 | 10 |
 
-The local files are repository fixtures at the observed repository data revision (`b940064` for these paths). Several upstream version/split identities are not serialized in the files; the manifest records that limitation instead of guessing an official release. The preparation step found no structurally invalid rows. Native list/dict answers were encoded as compact JSON text for the AgentFlow parquet adapter; scalar answers were stringified.
+Sampling was answer-content-independent: structurally valid source rows were sampled with `random.Random(20260827).sample`, then selected source indices were sorted. These benchmark/evaluation examples are probe-only and must not be placed in a future formal training pool.
 
-### Fixed sampling
+### Completion and safety
 
-Each remaining dataset was answer-content-independently sampled with `random.Random(20260827).sample` over structurally valid rows, then source indices were sorted. Ten rows were selected for each of the seven remaining datasets. The manifest stores source row indices, pids, source hashes, selected question/ground-truth hashes, and generated parquet hashes; it does not store raw question/answer text.
+All seven remaining datasets completed with 40 valid rollouts from ten prompt groups. GPQA's validation summary recorded 42 attempts and 40 completed valid rollouts, corresponding to two transient empty-rollout retries; its final ten n=4 groups are complete. The other six runs had no final retry count. No run produced an API/parse error after the quota refill.
 
-### Execution status and safety
-
-- HotpotQA: complete, 40/40 valid rollouts, retry 0, cleanup drained.
-- Musique: complete, 40/40 valid rollouts, retry 0, cleanup drained.
-- GAIA: complete, 40/40 valid rollouts, retry 0, cleanup drained.
-- AIME24: task queue completed but only 29 valid out of 46 attempts; the remaining failures repeatedly hit DeepSeek HTTP 402 `Insufficient Balance` through the normal tool/scorer path. Cleanup drained successfully. This is not a complete comparable screen.
-- GameOf24: started, but was safely stopped after persistent DeepSeek HTTP 402 failures; 9 attempts and 8 saved reward rows were observed, with only two complete n=4 groups. No valid complete screen was obtained and no cleanup marker was emitted before the external interrupt.
-- GPQA and MedQA: not started after the persistent provider failure was established; no API or GPU request was made for either.
-
-The initial HotpotQA launch failed before rollout because the runner referenced a stale temporary parquet directory. This was corrected once in the generic runner; the subsequent HotpotQA run completed normally. No CUDA/Ray/vLLM lifecycle error caused a stop. No OOM, illegal memory access, prefix-cache reset failure, `drained=False`, Ray worker death, or deadlock was observed in the actual completed lifecycles. Raw logs and rollout data remain local and untracked.
-
-## Hypotheses
-
-The HTTP 402 failures explain the AIME24 partial validity and the GameOf24 interruption; they cannot be interpreted as benchmark difficulty, reward sparsity, or scorer quality. AIME24's provisional reward vector statistics are therefore diagnostic only. GameOf24's two observed all-zero groups are not evidence of a benchmark-level all-zero distribution.
-
-For the three complete new screens, the observed differences are consistent with task-format difficulty under the exact 3B/tool configuration: GAIA produced almost exclusively all-zero groups, HotpotQA was mostly all-one, and Musique was closer to a useful mixed regime. This is a screening observation, not a causal claim about the benchmarks or the paper's 7B results.
-
-## Code and artifact changes
-
-- Extended `scripts/prepare_benchmark_difficulty_probe_20260827.py` with explicit source-reference and split metadata while retaining answer-content-independent sampling.
-- Extended `scripts/run_benchmark_difficulty_probe_20260827.sh` for the seven remaining names, ten-prompt expected runs, and safe archival of completed-but-partial validity results. It retains temperature 0.7, rollout.n=4, val-only mode, no checkpoint, and the existing cleanup settings.
-- Extended `scripts/aggregate_benchmark_difficulty_probe_20260827.py` to merge prior results into a unified ten-benchmark table, preserve source metadata, and represent partial/not-run datasets explicitly rather than failing or inventing complete metrics.
-- Tracked artifacts are this report, `log/2026-08-27_remaining_benchmark_screen_results.json`, and `log/2026-08-27_remaining_benchmark_screen_sample_manifest.json`. No raw rollout, cache, generated parquet, or secret was added.
+Every final run emitted a safe cleanup marker with `drained=True`, `outstanding_before=0`, `abort_count=0`, and `abort_errors=0`. No final run emitted `drained=False`, `Failed to reset prefix cache`, `blocks are not freed yet`, CUDA illegal memory access, CUDA OOM, Ray worker death, or deadlock. No optimizer/backward/update marker was found. Raw logs and rollout data remain local and untracked.
 
 ## Unified ten-benchmark comparison
 
-The prior three probes used 20 prompts each; this stage planned 10 prompts per remaining dataset. `mixed` means 1/4, 2/4, or 3/4. Bins for complete rows use the raw hybrid scorer. A dagger marks a partial/non-comparable result; its bin metrics use only the available complete n=4 vectors and must not be ranked as a normal screen.
+The prior Bamboogle, AMC23, and 2Wiki probes used 20 prompts each. The remaining screen used ten prompts each, so the new rows have lower group-level precision. Bins are counts of prompt groups with the indicated number of positive rewards; `mixed` is the sum of 1/4, 2/4, and 3/4 groups and equals the nonzero-variance group ratio for binary rewards.
 
-| Dataset | Stage/status | Planned prompts | Valid rollouts | Reward mean | 0/4 | 1/4 | 2/4 | 3/4 | 4/4 | Mixed | Unique answers | Exact dup. | Unique paths |
+| Dataset | Stage | Groups | Valid rollouts | Reward mean | 0/4 | 1/4 | 2/4 | 3/4 | 4/4 | Mixed | Unique answers | Exact dup. rate | Unique paths |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Bamboogle | prior complete | 20 | 80 | 0.7000 | 4 | 2 | 1 | 0 | 13 | 15% | 4.00 | 0.000 | 1.25 |
 | AMC23 | prior complete | 20 | 80 | 0.9000 | 1 | 0 | 1 | 2 | 16 | 15% | 1.45 | 0.638 | 1.60 |
 | 2Wiki | prior complete | 20 | 80 | 0.6125 | 3 | 3 | 4 | 2 | 8 | 45% | 3.55 | 0.113 | 1.75 |
-| HotpotQA | new complete | 10 | 40 | 0.7250 | 2 | 1 | 0 | 0 | 7 | 10% | 4.00 | 0.000 | 1.40 |
-| Musique | new complete | 10 | 40 | 0.2750 | 6 | 1 | 1 | 0 | 2 | 20% | 3.50 | 0.125 | 1.70 |
-| GAIA textual fixture | new complete | 10 | 40 | 0.1000 | 9 | 0 | 0 | 0 | 1 | 0% | 3.60 | 0.100 | 1.90 |
-| AIME24 | new partial† | 10 | 29/40 valid; 46 attempts | 0.4500† | 4 | 1 | 1 | 1 | 3 | 30%† | 2.10 | 0.500 | 1.43 |
-| GameOf24 | new interrupted† | 10 | 8 saved rows | 0.0000† | 2 | 0 | 0 | 0 | 0 | 0%† | 1.00 | 0.750 | n/a |
-| GPQA | new not run | 10 | 0 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
-| MedQA | new not run | 10 | 0 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
+| HotpotQA | remaining complete | 10 | 40 | 0.7250 | 2 | 1 | 0 | 0 | 7 | 10% | 4.00 | 0.000 | 1.40 |
+| Musique | remaining complete | 10 | 40 | 0.2750 | 6 | 1 | 1 | 0 | 2 | 20% | 3.50 | 0.125 | 1.70 |
+| GAIA textual fixture | remaining complete | 10 | 40 | 0.1000 | 9 | 0 | 0 | 0 | 1 | 0% | 3.60 | 0.100 | 1.90 |
+| AIME24 | remaining complete | 10 | 40 | 0.7000 | 2 | 0 | 1 | 2 | 5 | 30% | 2.10 | 0.475 | 1.50 |
+| GameOf24 | remaining complete | 10 | 40 | 0.6000 | 1 | 2 | 3 | 0 | 4 | 50% | 2.60 | 0.350 | 1.50 |
+| GPQA | remaining complete | 10 | 40 | 0.6500 | 2 | 2 | 0 | 0 | 6 | 20% | 2.40 | 0.400 | 1.80 |
+| MedQA | remaining complete | 10 | 40 | 0.9500 | 0 | 0 | 1 | 0 | 9 | 10% | 1.40 | 0.650 | 1.40 |
 
-The unified JSON records 130 planned prompts across the ten rows, 110 observed prompt groups, and 397 valid rollouts. The two not-run rows contribute no observed metrics. The exact per-dataset data, group vectors, routing, runtime, GPU, and cleanup fields are in the results JSON.
+The final results JSON records the full group vectors, source metadata, routing, runtime, GPU telemetry, cleanup markers, and the same table as `unified_comparison`. Across the ten rows there are 130 prompt groups and 520 valid rollouts; all ten rows are complete. The 20-prompt prior rows and ten-prompt new rows should not be treated as equal-precision estimates.
 
-## Complete new-screen results and routing
+## New-screen runtime, routing, and resource evidence
 
-| Dataset | Runtime | GPU peak | Routing | API/parse errors | Cleanup |
-|---|---:|---:|---|---:|---|
-| HotpotQA | 10.0 min | 20,312 MiB | deterministic 18; judge 22 | 0 | drained true; outstanding before 0 |
-| Musique | 13.1 min | 20,270 MiB | deterministic 4; judge 32; judge cache 4 | 0 | drained true; outstanding before 0 |
-| GAIA | 17.2 min | 20,274 MiB | deterministic 8; judge 30; judge cache 2 | 0 | drained true; outstanding before 0 |
-| AIME24† | 26.5 min | 20,302 MiB | deterministic 26; judge 2; conservative fallback 18 | 18 `RetryError` events from provider failure | drained true; early-completion cleanup |
-| GameOf24† | interrupted | 20,204 MiB observed | conservative fallback 9 | 9 `RetryError` events from provider failure | no marker before interrupt; no lifecycle error observed |
+| Dataset | Runtime (min) | GPU peak (MiB) | Retry count | Scorer routing | API/parse errors | Cleanup |
+|---|---:|---:|---:|---|---:|---|
+| HotpotQA | 10.0 | 20,312 | 0 | deterministic 18; judge 22 | 0 | drained true; outstanding 0 |
+| Musique | 13.1 | 20,270 | 0 | deterministic 4; judge 32; judge cache 4 | 0 | drained true; outstanding 0 |
+| GAIA | 17.2 | 20,274 | 0 | deterministic 8; judge 30; judge cache 2 | 0 | drained true; outstanding 0 |
+| AIME24 | 19.7 | 20,308 | 0 | deterministic 40 | 0 | drained true; outstanding 0 |
+| GameOf24 | 21.9 | 20,906 | 0 | deterministic 1; judge 25; judge cache 14 | 0 | drained true; outstanding 0 |
+| GPQA | 19.6 | 20,354 | 2 transient empty-rollout retries | deterministic 20; judge 18; judge cache 2 | 0 | drained true; outstanding 0 |
+| MedQA | 12.5 | 20,352 | 0 | judge 14; judge cache 26 | 0 | drained true; outstanding 0 |
 
-No extra audit/judge calls were made. The route counts are normal production scorer telemetry from the attempted probe paths. The 402 provider failure is not a dataset-level score and makes judge-dependent rows unusable for the intended comparison.
+The new probe had no extra audit/judge calls: DeepSeek calls shown in routing are only ordinary hybrid reward computation. AIME24 was fully deterministic because its sampled numeric answers were resolved locally; GameOf24, GPQA, and MedQA used the normal judge fallback and/or stable cache. The GPQA `42 attempted / 40 completed` summary and two retry events are retained in the JSON runtime evidence, while only the 40 valid rows contribute group metrics.
+
+The prior complete rows retained their original telemetry: Bamboogle 18.8 min / 20,906 MiB, AMC23 26.7 min / 20,374 MiB, and 2Wiki 21.2 min / 20,270 MiB. Their scorer routing and cleanup markers remain in the prior result provenance.
+
+## Hypotheses and interpretation
+
+The observed separation is consistent with task-format difficulty and answer-generation behavior for this exact 3B/tool configuration, but it is not a causal estimate of benchmark difficulty and does not establish transfer of paper-level accuracy. The paper's benchmark results cannot be assumed to predict these binary reward distributions.
+
+GameOf24 and 2Wiki are the clearest useful-regime candidates: their reward means are 0.6000 and 0.6125, with mixed ratios of 50% and 45%. AIME24 is also numerically at the strong-screen boundary (0.7000 mean and 30% mixed), but it has only ten groups and all 40 scores were deterministic, so it needs confirmation rather than immediate training use. Musique and GPQA are secondary: each has a 20% mixed ratio, with means 0.2750 and 0.6500 respectively. HotpotQA, Bamboogle, AMC23, and MedQA are mostly all-one; GAIA is mostly all-zero. These rows are poor main candidates under the stated screening heuristic.
+
+Surface answer diversity does not imply outcome diversity. For example, GameOf24 has mean 2.60 unique normalized answers per group but 35% exact duplicate rate, while MedQA has mean 1.40 unique answers and 65% exact duplicate rate. Tool/path signatures are also relatively concentrated (1.4--1.9 unique signatures per group in the new rows), so the screen supports measuring both answer and path diversity in later probes. This is descriptive evidence only; it does not show data leakage.
 
 ## Conclusions
 
-1. The complete new evidence does not support transferring the paper's 7B accuracy claims to this exact 3B setup. HotpotQA is too close to all-one (`mixed=10%`), GAIA is too close to all-zero (`mixed=0%`), and Musique is borderline secondary (`mixed=20%`, reward mean 0.275).
-2. The prior 2Wiki result remains the strongest observed candidate for a useful binary-GRPO regime (`reward mean=0.6125`, `mixed=45%`). Bamboogle and AMC23 remain deprioritized by the same heuristic used previously.
-3. AIME24's provisional `mixed=30%` and reward mean 0.45 look promising numerically, but the sample is invalid for ranking because only 29/40 rollouts were valid and 18 scorer events failed with provider `RetryError`. GameOf24 has no usable screen result.
-4. There is not enough evidence to rank GPQA or MedQA. Their local data and fixed manifests are prepared, but running them while DeepSeek is returning HTTP 402 would only measure provider failure.
+1. The quota-blocked AIME24/GameOf24 results were successfully replaced by complete, comparable runs, and GPQA/MedQA were completed. The final ten-benchmark screen is complete at 520/520 valid rollouts.
+2. The strongest observed binary-GRPO candidates are GameOf24 and 2Wiki. AIME24 is a promising boundary candidate, not yet a high-confidence winner because its new sample has only ten groups.
+3. The screen does not support using GAIA, MedQA, AMC23, Bamboogle, or HotpotQA as the main 3B baseline under this protocol. Musique and GPQA can remain secondary comparison targets.
+4. These are raw scorer metrics. They should not be mixed with the historical manually corrected outcome-reward audit metrics; the comparison above uses the same raw hybrid scorer protocol for all rows.
 
 ## Recommendation for stage 2
 
-Do not start stage 2 yet. First restore/verify the normal DeepSeek provider balance and rerun the incomplete AIME24/GameOf24 screens under the same fixed manifest/protocol; then run GPQA and MedQA. Once provider health is confirmed, the conditional stage-2 shortlist is:
+Do not start stage 2 or formal Flow-GRPO training in this task. After approval, expand the following candidates to 20--30 prompts under the same protocol:
 
-- 2Wiki, as the current strong candidate and a useful replication/extension target;
-- Musique, as the only complete remaining screen in the secondary band;
-- AIME24 only if a clean rerun reaches 40/40 valid, because its current number is not evidence.
+1. GameOf24, to confirm its 50% mixed estimate;
+2. AIME24, to confirm its 30% boundary estimate with more groups;
+3. 2Wiki, as the current strongest 20-prompt result and a useful replication anchor.
 
-For any later training experiment, keep all sampled benchmark/evaluation examples out of training. Construct a separate, non-overlapping training pool from an allowed official train split or an explicitly analogous source, and verify content-hash and identifier non-overlap before use. No stage-2 probe, variance-aware sampling, or formal Flow-GRPO training was started here.
+For any later training experiment, keep every probe/evaluation example out of the training pool. Build a separate pool from an allowed non-overlapping official train split or an explicitly analogous source, and run identifier/content-hash overlap checks against all probe manifests before training. If a candidate remains promising, use variance-aware sampling only after the larger probe confirms the signal; do not hand-label difficulty or tune the scorer per benchmark.
 
-## Verification
+## Verification and artifact policy
 
-The final offline checks included JSON consistency, Python compilation for the preparation and aggregation scripts, `bash -n` for the runner, `git diff --check`, and a scoped scan for likely secret literals. The existing related scorer/cleanup unit suite had already passed 14 tests in the prior probe commit; pytest was not installed and was not needed for this verification. GPU state after stopping was approximately 2 MiB used with no compute application, and no Ray/vLLM/AgentFlow process remained.
+The updated aggregate was generated offline from the fixed manifest and final raw rollout directories. The runner now supports a validated `AGENTFLOW_PROBE_RUN_TAG` solely to preserve independent rerun evidence; it does not alter model, sampling, scoring, or training behavior. The tracked artifacts are this handoff, the small results JSON, the fixed sample manifest, and the generic preparation/runner/aggregation scripts. Raw logs, generated parquet files, judge cache, and rollout data remain local and untracked.
+
+Before commit, run the existing scorer/cleanup unit tests, Python compilation, `bash -n`, JSON consistency checks, `git diff --check`, and a scoped secret scan. No API key or other credential is included in the report, results, manifest, or source changes.

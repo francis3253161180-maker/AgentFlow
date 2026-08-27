@@ -12,9 +12,14 @@ BASE_CONFIG="$REPO/train/config_5090_lora_mini20.yaml"
 PROBE_TMP=/root/autodl-tmp/tmp/remaining_benchmark_screen_20260827
 PARQUET="$PROBE_TMP/${DATASET}.parquet"
 CONFIG="$PROBE_TMP/${DATASET}.yaml"
-EXP_NAME="benchmark-difficulty-${DATASET}-20260827"
-TRAIN_LOG="$REPO/log/20260827_benchmark_difficulty_${DATASET}_train.log"
-ROLLOUT_LOG="$REPO/log/20260827_benchmark_difficulty_${DATASET}_rollout.log"
+RUN_TAG="${AGENTFLOW_PROBE_RUN_TAG:-base}"
+if ! [[ "$RUN_TAG" =~ ^[A-Za-z0-9_-]+$ ]]; then
+  echo "AGENTFLOW_PROBE_RUN_TAG must contain only letters, digits, underscore, or hyphen" >&2
+  exit 2
+fi
+EXP_NAME="benchmark-difficulty-${DATASET}-20260827-${RUN_TAG}"
+TRAIN_LOG="$REPO/log/20260827_benchmark_difficulty_${DATASET}_${RUN_TAG}_train.log"
+ROLLOUT_LOG="$REPO/log/20260827_benchmark_difficulty_${DATASET}_${RUN_TAG}_rollout.log"
 GPU_LOG="$PROBE_TMP/${DATASET}_gpu.tsv"
 EXPECTED_PROMPTS="${AGENTFLOW_PROBE_EXPECTED_PROMPTS:-10}"
 EXPECTED_ROLLOUTS=$((EXPECTED_PROMPTS * 4))

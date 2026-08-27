@@ -64,9 +64,11 @@ def runtime_info(paths: list[Path]) -> dict[str, Any]:
     error_re = re.compile(r"CUDA out of memory|OutOfMemoryError|illegal memory access|device-side assert|blocks are not freed|Failed to reset prefix cache|RayTaskError|deadlock|No valid rollout|worker died|drained.*False|HTTP/\S+\s+5\d\d|status[_ ]?code[=: ]+5\d\d", re.I)
     errors = [line.strip()[-500:] for line in text.splitlines() if error_re.search(line)]
     updates = [line.strip()[-500:] for line in text.splitlines() if re.search(r"Training data keys|optimizer\.step|backward\(|update_actor|actor/pg_loss", line, re.I)]
+    validation_summary = {"completed": int(summaries[-1][0]), "attempted": int(summaries[-1][1]), "valid": int(summaries[-1][2])} if summaries else None
     return {
         "progress_last": {"completed": int(progress[-1][0]), "queued": int(progress[-1][1]), "valid": int(progress[-1][2]), "retries": int(progress[-1][3])} if progress else None,
-        "validation_summary": {"completed": int(summaries[-1][0]), "attempted": int(summaries[-1][1]), "valid": int(summaries[-1][2])} if summaries else None,
+        "validation_summary": validation_summary,
+        "retry_count": max(0, validation_summary["attempted"] - validation_summary["completed"]) if validation_summary else None,
         "elapsed_minutes": float(elapsed[-1]) if elapsed else None,
         "cleanup_markers": cleanup,
         "cleanup_drained_true": sum("drained': True" in line or "drained=True" in line for line in cleanup),
