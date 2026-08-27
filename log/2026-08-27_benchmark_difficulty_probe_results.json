@@ -1,0 +1,1764 @@
+{
+  "datasets": {
+    "2wiki": {
+      "dataset": "2wiki",
+      "gpu": {
+        "observed_peak_memory_mib": 20270.0,
+        "observed_peak_utilization_percent": 67.0,
+        "samples": 263
+      },
+      "groups": [
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 0,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 0,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 1,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 8,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 2,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 10,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.5,
+          "id": 3,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 38,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "1/4",
+          "duplicate_rate": 0.0,
+          "id": 4,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.25,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_row_index": 44,
+          "theoretical_advantages": [
+            -0.499999000002,
+            -0.499999000002,
+            -0.499999000002,
+            1.499997000006
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "2/4",
+          "duplicate_rate": 0.0,
+          "id": 5,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.5,
+          "reward_variance_population": 0.25,
+          "rewards": [
+            1.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "source_row_index": 47,
+          "theoretical_advantages": [
+            0.8660239037870368,
+            -0.8660239037870368,
+            0.8660239037870368,
+            -0.8660239037870368
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 6,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 61,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 3
+        },
+        {
+          "class": "2/4",
+          "duplicate_rate": 0.0,
+          "id": 7,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.5,
+          "reward_variance_population": 0.25,
+          "rewards": [
+            1.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_row_index": 62,
+          "theoretical_advantages": [
+            0.8660239037870368,
+            -0.8660239037870368,
+            -0.8660239037870368,
+            0.8660239037870368
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 3
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.5,
+          "id": 8,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 66,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "2/4",
+          "duplicate_rate": 0.0,
+          "id": 9,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.5,
+          "reward_variance_population": 0.25,
+          "rewards": [
+            0.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          "source_row_index": 97,
+          "theoretical_advantages": [
+            -0.8660239037870368,
+            0.8660239037870368,
+            -0.8660239037870368,
+            0.8660239037870368
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.5,
+          "id": 10,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 103,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 3
+        },
+        {
+          "class": "2/4",
+          "duplicate_rate": 0.0,
+          "id": 11,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.5,
+          "reward_variance_population": 0.25,
+          "rewards": [
+            0.0,
+            1.0,
+            1.0,
+            0.0
+          ],
+          "source_row_index": 104,
+          "theoretical_advantages": [
+            -0.8660239037870368,
+            0.8660239037870368,
+            0.8660239037870368,
+            -0.8660239037870368
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 12,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 129,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.5,
+          "id": 13,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 132,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "3/4",
+          "duplicate_rate": 0.0,
+          "id": 14,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.75,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            1.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 134,
+          "theoretical_advantages": [
+            0.499999000002,
+            -1.499997000006,
+            0.499999000002,
+            0.499999000002
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "1/4",
+          "duplicate_rate": 0.0,
+          "id": 15,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.25,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 145,
+          "theoretical_advantages": [
+            -0.499999000002,
+            1.499997000006,
+            -0.499999000002,
+            -0.499999000002
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.25,
+          "id": 16,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 158,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 3,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "1/4",
+          "duplicate_rate": 0.0,
+          "id": 17,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.25,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "source_row_index": 161,
+          "theoretical_advantages": [
+            -0.499999000002,
+            -0.499999000002,
+            1.499997000006,
+            -0.499999000002
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "3/4",
+          "duplicate_rate": 0.0,
+          "id": 18,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.75,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            0.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 171,
+          "theoretical_advantages": [
+            -1.499997000006,
+            0.499999000002,
+            0.499999000002,
+            0.499999000002
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 19,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 198,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        }
+      ],
+      "prompts": 20,
+      "raw_evidence": {
+        "rollout_log": "/root/autodl-tmp/AgentFlow/log/20260827_benchmark_difficulty_2wiki_rollout.log",
+        "train_log": "/root/autodl-tmp/AgentFlow/log/20260827_benchmark_difficulty_2wiki_train.log",
+        "train_rollout_dir": "/root/autodl-tmp/AgentFlow/rollout_data/46.38.243.197/benchmark-difficulty-2wiki-20260827_20260827-114627/Qwen2.5-3B-Instruct_20260827-114628/train"
+      },
+      "runtime": {
+        "cleanup_drained_false": 0,
+        "cleanup_drained_true": 1,
+        "cleanup_markers": [
+          "(TaskRunner pid=36172) VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 9.664241224527359e-05, 'sleep_started': True, 'cleanup_duration_seconds': 0.4703926043584943}]"
+        ],
+        "elapsed_minutes": 21.2,
+        "errors": [],
+        "progress_last": {
+          "completed": 79,
+          "queued": 80,
+          "retries": 0,
+          "valid": 79
+        },
+        "unexpected_update_markers": [],
+        "validation_summary": {
+          "completed": 80,
+          "queued": 80,
+          "valid": 80
+        }
+      },
+      "scorer_routing": {
+        "api_or_parse_error_count": 0,
+        "cache_hit_count": 5,
+        "deterministic_count": 15,
+        "error_values": {},
+        "event_count": 80,
+        "judge_api_call_count": 60,
+        "judge_fallback_count": 65,
+        "latency_ms_mean": 689.3918125,
+        "latency_ms_median": 800.3375000000001,
+        "route_counts": {
+          "deterministic": 15,
+          "judge": 60,
+          "judge_cache": 5
+        }
+      },
+      "summary": {
+        "exact_duplicate_rate": 0.1125,
+        "group_bin_counts": {
+          "0/4": 3,
+          "1/4": 3,
+          "2/4": 4,
+          "3/4": 2,
+          "4/4": 8
+        },
+        "group_bin_proportions": {
+          "0/4": 0.15,
+          "1/4": 0.15,
+          "2/4": 0.2,
+          "3/4": 0.1,
+          "4/4": 0.4
+        },
+        "groups_with_exact_duplicates": 5,
+        "mean_unique_answers_per_group": 3.55,
+        "mean_unique_path_signatures_per_group": 1.75,
+        "mixed_group_count": 9,
+        "mixed_group_ratio": 0.45,
+        "negative_reward_count": 31,
+        "nonzero_variance_group_count": 9,
+        "nonzero_variance_group_ratio": 0.45,
+        "path_signature_available_groups": 20,
+        "positive_reward_count": 49,
+        "reward_mean": 0.6125
+      },
+      "valid_rollouts": 80
+    },
+    "amc23": {
+      "dataset": "amc23",
+      "gpu": {
+        "observed_peak_memory_mib": 20374.0,
+        "observed_peak_utilization_percent": 54.0,
+        "samples": 329
+      },
+      "groups": [
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 0,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 0,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 1,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 1,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.5,
+          "id": 2,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 2,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 3,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 5,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 4,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 7,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 3
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 5,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 8,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 6,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 9,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "3/4",
+          "duplicate_rate": 0.5,
+          "id": 7,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.75,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            1.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 12,
+          "theoretical_advantages": [
+            0.499999000002,
+            -1.499997000006,
+            0.499999000002,
+            0.499999000002
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 3
+        },
+        {
+          "class": "2/4",
+          "duplicate_rate": 0.5,
+          "id": 8,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.5,
+          "reward_variance_population": 0.25,
+          "rewards": [
+            0.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          "source_row_index": 15,
+          "theoretical_advantages": [
+            -0.8660239037870368,
+            0.8660239037870368,
+            -0.8660239037870368,
+            0.8660239037870368
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 9,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 16,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 10,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 20,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 3
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.5,
+          "id": 11,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 21,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 12,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 23,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 13,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 24,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 14,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 25,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 15,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 26,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.5,
+          "id": 16,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 32,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 17,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 33,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.75,
+          "id": 18,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 35,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 1,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "3/4",
+          "duplicate_rate": 0.5,
+          "id": 19,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.75,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            0.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 36,
+          "theoretical_advantages": [
+            -1.499997000006,
+            0.499999000002,
+            0.499999000002,
+            0.499999000002
+          ],
+          "unique_answers": 2,
+          "unique_path_signatures": 2
+        }
+      ],
+      "prompts": 20,
+      "raw_evidence": {
+        "rollout_log": "/root/autodl-tmp/AgentFlow/log/20260827_benchmark_difficulty_amc23_rollout.log",
+        "train_log": "/root/autodl-tmp/AgentFlow/log/20260827_benchmark_difficulty_amc23_train.log",
+        "train_rollout_dir": "/root/autodl-tmp/AgentFlow/rollout_data/46.38.243.197/benchmark-difficulty-amc23-20260827_20260827-111656/Qwen2.5-3B-Instruct_20260827-111657/train"
+      },
+      "runtime": {
+        "cleanup_drained_false": 0,
+        "cleanup_drained_true": 1,
+        "cleanup_markers": [
+          "(TaskRunner pid=22611) VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.0001148618757724762, 'sleep_started': True, 'cleanup_duration_seconds': 0.4598330557346344}]"
+        ],
+        "elapsed_minutes": 26.7,
+        "errors": [],
+        "progress_last": {
+          "completed": 79,
+          "queued": 80,
+          "retries": 0,
+          "valid": 79
+        },
+        "unexpected_update_markers": [],
+        "validation_summary": {
+          "completed": 80,
+          "queued": 80,
+          "valid": 80
+        }
+      },
+      "scorer_routing": {
+        "api_or_parse_error_count": 0,
+        "cache_hit_count": 0,
+        "deterministic_count": 80,
+        "error_values": {},
+        "event_count": 80,
+        "judge_api_call_count": 0,
+        "judge_fallback_count": 0,
+        "latency_ms_mean": 0.24775,
+        "latency_ms_median": 0.2025,
+        "route_counts": {
+          "deterministic": 80
+        }
+      },
+      "summary": {
+        "exact_duplicate_rate": 0.6375,
+        "group_bin_counts": {
+          "0/4": 1,
+          "1/4": 0,
+          "2/4": 1,
+          "3/4": 2,
+          "4/4": 16
+        },
+        "group_bin_proportions": {
+          "0/4": 0.05,
+          "1/4": 0.0,
+          "2/4": 0.05,
+          "3/4": 0.1,
+          "4/4": 0.8
+        },
+        "groups_with_exact_duplicates": 19,
+        "mean_unique_answers_per_group": 1.45,
+        "mean_unique_path_signatures_per_group": 1.6,
+        "mixed_group_count": 3,
+        "mixed_group_ratio": 0.15,
+        "negative_reward_count": 8,
+        "nonzero_variance_group_count": 3,
+        "nonzero_variance_group_ratio": 0.15,
+        "path_signature_available_groups": 20,
+        "positive_reward_count": 72,
+        "reward_mean": 0.9
+      },
+      "valid_rollouts": 80
+    },
+    "bamboogle": {
+      "dataset": "bamboogle",
+      "gpu": {
+        "observed_peak_memory_mib": 20906.0,
+        "observed_peak_utilization_percent": 48.0,
+        "samples": 234
+      },
+      "groups": [
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 0,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 0,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 1,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 4,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 2,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 5,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 3,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 19,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 4,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 22,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 5,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 23,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 6,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 30,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 7,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 31,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 8,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 33,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 9,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 48,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 10,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 51,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 11,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 52,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 12,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 64,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "1/4",
+          "duplicate_rate": 0.0,
+          "id": 13,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.25,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "source_row_index": 66,
+          "theoretical_advantages": [
+            -0.499999000002,
+            -0.499999000002,
+            1.499997000006,
+            -0.499999000002
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 14,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 67,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "1/4",
+          "duplicate_rate": 0.0,
+          "id": 15,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.25,
+          "reward_variance_population": 0.1875,
+          "rewards": [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "source_row_index": 72,
+          "theoretical_advantages": [
+            -0.499999000002,
+            -0.499999000002,
+            1.499997000006,
+            -0.499999000002
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 16,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 79,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "0/4",
+          "duplicate_rate": 0.0,
+          "id": 17,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 0.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "source_row_index": 80,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 2
+        },
+        {
+          "class": "2/4",
+          "duplicate_rate": 0.0,
+          "id": 18,
+          "n": 4,
+          "nonzero_theoretical_advantage": true,
+          "path_signature_available": true,
+          "reward_mean": 0.5,
+          "reward_variance_population": 0.25,
+          "rewards": [
+            1.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "source_row_index": 85,
+          "theoretical_advantages": [
+            0.8660239037870368,
+            -0.8660239037870368,
+            0.8660239037870368,
+            -0.8660239037870368
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        },
+        {
+          "class": "4/4",
+          "duplicate_rate": 0.0,
+          "id": 19,
+          "n": 4,
+          "nonzero_theoretical_advantage": false,
+          "path_signature_available": true,
+          "reward_mean": 1.0,
+          "reward_variance_population": 0.0,
+          "rewards": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "source_row_index": 99,
+          "theoretical_advantages": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unique_answers": 4,
+          "unique_path_signatures": 1
+        }
+      ],
+      "prompts": 20,
+      "raw_evidence": {
+        "rollout_log": "/root/autodl-tmp/AgentFlow/log/20260827_benchmark_difficulty_bamboogle_rollout.log",
+        "train_log": "/root/autodl-tmp/AgentFlow/log/20260827_benchmark_difficulty_bamboogle_train.log",
+        "train_rollout_dir": "/root/autodl-tmp/AgentFlow/rollout_data/46.38.243.197/benchmark-difficulty-bamboogle-20260827_20260827-105527/Qwen2.5-3B-Instruct_20260827-105528/train"
+      },
+      "runtime": {
+        "cleanup_drained_false": 0,
+        "cleanup_drained_true": 1,
+        "cleanup_markers": [
+          "(TaskRunner pid=11587) VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 9.318534284830093e-05, 'sleep_started': True, 'cleanup_duration_seconds': 0.43680050410330296}]"
+        ],
+        "elapsed_minutes": 18.8,
+        "errors": [],
+        "progress_last": {
+          "completed": 78,
+          "queued": 80,
+          "retries": 0,
+          "valid": 78
+        },
+        "unexpected_update_markers": [],
+        "validation_summary": {
+          "completed": 80,
+          "queued": 80,
+          "valid": 80
+        }
+      },
+      "scorer_routing": {
+        "api_or_parse_error_count": 0,
+        "cache_hit_count": 0,
+        "deterministic_count": 46,
+        "error_values": {},
+        "event_count": 80,
+        "judge_api_call_count": 34,
+        "judge_fallback_count": 34,
+        "latency_ms_mean": 521.7143125,
+        "latency_ms_median": 0.6835,
+        "route_counts": {
+          "deterministic": 46,
+          "judge": 34
+        }
+      },
+      "summary": {
+        "exact_duplicate_rate": 0.0,
+        "group_bin_counts": {
+          "0/4": 4,
+          "1/4": 2,
+          "2/4": 1,
+          "3/4": 0,
+          "4/4": 13
+        },
+        "group_bin_proportions": {
+          "0/4": 0.2,
+          "1/4": 0.1,
+          "2/4": 0.05,
+          "3/4": 0.0,
+          "4/4": 0.65
+        },
+        "groups_with_exact_duplicates": 0,
+        "mean_unique_answers_per_group": 4,
+        "mean_unique_path_signatures_per_group": 1.25,
+        "mixed_group_count": 3,
+        "mixed_group_ratio": 0.15,
+        "negative_reward_count": 24,
+        "nonzero_variance_group_count": 3,
+        "nonzero_variance_group_ratio": 0.15,
+        "path_signature_available_groups": 20,
+        "positive_reward_count": 56,
+        "reward_mean": 0.7
+      },
+      "valid_rollouts": 80
+    }
+  },
+  "manifest": "log/2026-08-27_benchmark_difficulty_probe_sample_manifest.json",
+  "manifest_sha256": "0ff552474ed93e20c713f99a407c82f4cd0940b3870f6b3963966894e2696646",
+  "overall": {
+    "prompts": 60,
+    "valid_rollouts": 240
+  },
+  "protocol": {
+    "benchmark_examples_are_probe_only": true,
+    "checkpoint_disabled": true,
+    "model": "/root/autodl-tmp/models/Qwen2.5-3B-Instruct",
+    "optimizer_steps": 0,
+    "rollout_n": 4,
+    "rollout_only": true,
+    "scorer": "current hybrid scorer from commit 9447d83; no per-dataset rules",
+    "temperature": 0.7
+  },
+  "schema_version": 1
+}
