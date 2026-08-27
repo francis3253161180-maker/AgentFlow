@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ "$#" -ne 1 ] || [[ ! "$1" =~ ^(hotpotqa|musique|gaia|aime24|gameof24|gpqa|medqa)$ ]]; then
-  echo "usage: $0 DATASET (hotpotqa, musique, gaia, aime24, gameof24, gpqa, or medqa)" >&2
+if [ "$#" -ne 1 ] || [[ ! "$1" =~ ^(2wiki|hotpotqa|musique|gaia|aime24|gameof24|gpqa|medqa)$ ]]; then
+  echo "usage: $0 DATASET (2wiki, hotpotqa, musique, gaia, aime24, gameof24, gpqa, or medqa)" >&2
   exit 2
 fi
 DATASET="$1"
