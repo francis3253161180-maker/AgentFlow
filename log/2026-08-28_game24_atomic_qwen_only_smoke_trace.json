@@ -1,0 +1,821 @@
+{
+  "schema_version": 1,
+  "rollouts": [
+    {
+      "question": "Using the numbers [2,3,4,8], create an expression that equals 24.",
+      "initial_state": [
+        {
+          "node_id": "n0",
+          "value": "2",
+          "expression": "2",
+          "provenance": [
+            0
+          ]
+        },
+        {
+          "node_id": "n1",
+          "value": "3",
+          "expression": "3",
+          "provenance": [
+            1
+          ]
+        },
+        {
+          "node_id": "n2",
+          "value": "4",
+          "expression": "4",
+          "provenance": [
+            2
+          ]
+        },
+        {
+          "node_id": "n3",
+          "value": "8",
+          "expression": "8",
+          "provenance": [
+            3
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "state_before": [
+            {
+              "node_id": "n0",
+              "value": "2",
+              "expression": "2",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n1",
+              "value": "3",
+              "expression": "3",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n2",
+              "value": "4",
+              "expression": "4",
+              "provenance": [
+                2
+              ]
+            },
+            {
+              "node_id": "n3",
+              "value": "8",
+              "expression": "8",
+              "provenance": [
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n2\",\"operator\":\"+\",\"right_id\":\"n3\"}",
+              "prompt_tokens": 237,
+              "response_tokens": 17,
+              "status": "committed",
+              "action": {
+                "left_id": "n2",
+                "operator": "+",
+                "right_id": "n3"
+              },
+              "result": {
+                "node_id": "n4",
+                "value": "12",
+                "expression": "(4+8)",
+                "provenance": [
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n0",
+              "value": "2",
+              "expression": "2",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n1",
+              "value": "3",
+              "expression": "3",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n4",
+              "value": "12",
+              "expression": "(4+8)",
+              "provenance": [
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "state_before": [
+            {
+              "node_id": "n0",
+              "value": "2",
+              "expression": "2",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n1",
+              "value": "3",
+              "expression": "3",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n4",
+              "value": "12",
+              "expression": "(4+8)",
+              "provenance": [
+                2,
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n1\",\"operator\":\"*\",\"right_id\":\"n4\"}",
+              "prompt_tokens": 215,
+              "response_tokens": 18,
+              "status": "committed",
+              "action": {
+                "left_id": "n1",
+                "operator": "*",
+                "right_id": "n4"
+              },
+              "result": {
+                "node_id": "n5",
+                "value": "36",
+                "expression": "(3*(4+8))",
+                "provenance": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n0",
+              "value": "2",
+              "expression": "2",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n5",
+              "value": "36",
+              "expression": "(3*(4+8))",
+              "provenance": [
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "step": 3,
+          "state_before": [
+            {
+              "node_id": "n0",
+              "value": "2",
+              "expression": "2",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n5",
+              "value": "36",
+              "expression": "(3*(4+8))",
+              "provenance": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n0\",\"operator\":\"/\",\"right_id\":\"n5\"}",
+              "prompt_tokens": 193,
+              "response_tokens": 17,
+              "status": "committed",
+              "action": {
+                "left_id": "n0",
+                "operator": "/",
+                "right_id": "n5"
+              },
+              "result": {
+                "node_id": "n6",
+                "value": "1/18",
+                "expression": "(2/(3*(4+8)))",
+                "provenance": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n6",
+              "value": "1/18",
+              "expression": "(2/(3*(4+8)))",
+              "provenance": [
+                0,
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        }
+      ],
+      "final_expression": "(2/(3*(4+8)))",
+      "final_value": "1/18",
+      "final_provenance": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "reward": 0,
+      "failure_category": "SEARCH/ARITHMETIC STRATEGY",
+      "wall_time_seconds": 1.854
+    },
+    {
+      "question": "Using the numbers [1,4,6,6], create an expression that equals 24.",
+      "initial_state": [
+        {
+          "node_id": "n0",
+          "value": "1",
+          "expression": "1",
+          "provenance": [
+            0
+          ]
+        },
+        {
+          "node_id": "n1",
+          "value": "4",
+          "expression": "4",
+          "provenance": [
+            1
+          ]
+        },
+        {
+          "node_id": "n2",
+          "value": "6",
+          "expression": "6",
+          "provenance": [
+            2
+          ]
+        },
+        {
+          "node_id": "n3",
+          "value": "6",
+          "expression": "6",
+          "provenance": [
+            3
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "state_before": [
+            {
+              "node_id": "n0",
+              "value": "1",
+              "expression": "1",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n1",
+              "value": "4",
+              "expression": "4",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n2",
+              "value": "6",
+              "expression": "6",
+              "provenance": [
+                2
+              ]
+            },
+            {
+              "node_id": "n3",
+              "value": "6",
+              "expression": "6",
+              "provenance": [
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n2\",\"operator\":\"+\",\"right_id\":\"n3\"}",
+              "prompt_tokens": 237,
+              "response_tokens": 17,
+              "status": "committed",
+              "action": {
+                "left_id": "n2",
+                "operator": "+",
+                "right_id": "n3"
+              },
+              "result": {
+                "node_id": "n4",
+                "value": "12",
+                "expression": "(6+6)",
+                "provenance": [
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n0",
+              "value": "1",
+              "expression": "1",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n1",
+              "value": "4",
+              "expression": "4",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n4",
+              "value": "12",
+              "expression": "(6+6)",
+              "provenance": [
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "state_before": [
+            {
+              "node_id": "n0",
+              "value": "1",
+              "expression": "1",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n1",
+              "value": "4",
+              "expression": "4",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n4",
+              "value": "12",
+              "expression": "(6+6)",
+              "provenance": [
+                2,
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n1\",\"operator\":\"*\",\"right_id\":\"n4\"}",
+              "prompt_tokens": 215,
+              "response_tokens": 18,
+              "status": "committed",
+              "action": {
+                "left_id": "n1",
+                "operator": "*",
+                "right_id": "n4"
+              },
+              "result": {
+                "node_id": "n5",
+                "value": "48",
+                "expression": "(4*(6+6))",
+                "provenance": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n0",
+              "value": "1",
+              "expression": "1",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n5",
+              "value": "48",
+              "expression": "(4*(6+6))",
+              "provenance": [
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "step": 3,
+          "state_before": [
+            {
+              "node_id": "n0",
+              "value": "1",
+              "expression": "1",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n5",
+              "value": "48",
+              "expression": "(4*(6+6))",
+              "provenance": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n0\",\"operator\":\"/\",\"right_id\":\"n5\"}",
+              "prompt_tokens": 193,
+              "response_tokens": 17,
+              "status": "committed",
+              "action": {
+                "left_id": "n0",
+                "operator": "/",
+                "right_id": "n5"
+              },
+              "result": {
+                "node_id": "n6",
+                "value": "1/48",
+                "expression": "(1/(4*(6+6)))",
+                "provenance": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n6",
+              "value": "1/48",
+              "expression": "(1/(4*(6+6)))",
+              "provenance": [
+                0,
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        }
+      ],
+      "final_expression": "(1/(4*(6+6)))",
+      "final_value": "1/48",
+      "final_provenance": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "reward": 0,
+      "failure_category": "SEARCH/ARITHMETIC STRATEGY",
+      "wall_time_seconds": 1.293
+    },
+    {
+      "question": "Using the numbers [1,7,8,12], create an expression that equals 24.",
+      "initial_state": [
+        {
+          "node_id": "n0",
+          "value": "1",
+          "expression": "1",
+          "provenance": [
+            0
+          ]
+        },
+        {
+          "node_id": "n1",
+          "value": "7",
+          "expression": "7",
+          "provenance": [
+            1
+          ]
+        },
+        {
+          "node_id": "n2",
+          "value": "8",
+          "expression": "8",
+          "provenance": [
+            2
+          ]
+        },
+        {
+          "node_id": "n3",
+          "value": "12",
+          "expression": "12",
+          "provenance": [
+            3
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "state_before": [
+            {
+              "node_id": "n0",
+              "value": "1",
+              "expression": "1",
+              "provenance": [
+                0
+              ]
+            },
+            {
+              "node_id": "n1",
+              "value": "7",
+              "expression": "7",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n2",
+              "value": "8",
+              "expression": "8",
+              "provenance": [
+                2
+              ]
+            },
+            {
+              "node_id": "n3",
+              "value": "12",
+              "expression": "12",
+              "provenance": [
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n0\",\"operator\":\"+\",\"right_id\":\"n3\"}",
+              "prompt_tokens": 240,
+              "response_tokens": 17,
+              "status": "committed",
+              "action": {
+                "left_id": "n0",
+                "operator": "+",
+                "right_id": "n3"
+              },
+              "result": {
+                "node_id": "n4",
+                "value": "13",
+                "expression": "(1+12)",
+                "provenance": [
+                  0,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n1",
+              "value": "7",
+              "expression": "7",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n2",
+              "value": "8",
+              "expression": "8",
+              "provenance": [
+                2
+              ]
+            },
+            {
+              "node_id": "n4",
+              "value": "13",
+              "expression": "(1+12)",
+              "provenance": [
+                0,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "state_before": [
+            {
+              "node_id": "n1",
+              "value": "7",
+              "expression": "7",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n2",
+              "value": "8",
+              "expression": "8",
+              "provenance": [
+                2
+              ]
+            },
+            {
+              "node_id": "n4",
+              "value": "13",
+              "expression": "(1+12)",
+              "provenance": [
+                0,
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n2\",\"operator\":\"+\",\"right_id\":\"n4\"}",
+              "prompt_tokens": 217,
+              "response_tokens": 17,
+              "status": "committed",
+              "action": {
+                "left_id": "n2",
+                "operator": "+",
+                "right_id": "n4"
+              },
+              "result": {
+                "node_id": "n5",
+                "value": "21",
+                "expression": "(8+(1+12))",
+                "provenance": [
+                  0,
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n1",
+              "value": "7",
+              "expression": "7",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n5",
+              "value": "21",
+              "expression": "(8+(1+12))",
+              "provenance": [
+                0,
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "step": 3,
+          "state_before": [
+            {
+              "node_id": "n1",
+              "value": "7",
+              "expression": "7",
+              "provenance": [
+                1
+              ]
+            },
+            {
+              "node_id": "n5",
+              "value": "21",
+              "expression": "(8+(1+12))",
+              "provenance": [
+                0,
+                2,
+                3
+              ]
+            }
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "planner_json": "{\"left_id\":\"n1\",\"operator\":\"+\",\"right_id\":\"n5\"}",
+              "prompt_tokens": 195,
+              "response_tokens": 17,
+              "status": "committed",
+              "action": {
+                "left_id": "n1",
+                "operator": "+",
+                "right_id": "n5"
+              },
+              "result": {
+                "node_id": "n6",
+                "value": "28",
+                "expression": "(7+(8+(1+12)))",
+                "provenance": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "state_after": [
+            {
+              "node_id": "n6",
+              "value": "28",
+              "expression": "(7+(8+(1+12)))",
+              "provenance": [
+                0,
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        }
+      ],
+      "final_expression": "(7+(8+(1+12)))",
+      "final_value": "28",
+      "final_provenance": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "reward": 0,
+      "failure_category": "SEARCH/ARITHMETIC STRATEGY",
+      "wall_time_seconds": 1.274
+    }
+  ]
+}
