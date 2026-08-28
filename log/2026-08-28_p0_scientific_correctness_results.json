@@ -1,0 +1,46 @@
+{
+  "task": "p0_scientific_correctness_fix",
+  "base_revision": "8199c20",
+  "runtime_experiments": {
+    "rollout": false,
+    "model_inference": false,
+    "gpu": false,
+    "optimizer": false,
+    "external_api": false,
+    "checkpoint": false
+  },
+  "changes": {
+    "actor_only_unified_transitions": true,
+    "rollout_level_grpo_advantage": true,
+    "strict_game24_reward": true,
+    "logical_slot_retry_accounting": true,
+    "infra_errors_raise": true,
+    "replay_update_fail_closed": true,
+    "truncated_transitions_dropped": true
+  },
+  "tests": {
+    "command": "/root/autodl-tmp/conda/envs/agentflow/bin/pytest -q test/test_p0_scientific_correctness.py test/test_structured_outputs.py test/test_reward_scorer.py test/test_unified_local_roles.py test/test_unified_role_routing.py test/test_unified_replay_pack.py test/test_unified_smoke_capture.py test/test_dynamic_padding.py test/test_vllm_timeout_cleanup.py",
+    "passed": 49,
+    "subtests_passed": 39,
+    "warnings": 1
+  },
+  "static_checks": {
+    "py_compile": "passed",
+    "git_diff_check": "passed",
+    "secret_scan": "passed_scoped_no_credential_material"
+  },
+  "changed_files": [
+    "agentflow/agentflow/engine/vllm.py",
+    "agentflow/agentflow/models/structured_outputs.py",
+    "agentflow/runner.py",
+    "agentflow/tracer/triplet.py",
+    "agentflow/verl/advantage.py",
+    "agentflow/verl/daemon.py",
+    "agentflow/verl/identifiers.py",
+    "agentflow/verl/trainer.py",
+    "agentflow/verl/unified_smoke_capture.py",
+    "train/rollout.py",
+    "train/utils.py",
+    "test/test_p0_scientific_correctness.py"
+  ]
+}

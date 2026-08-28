@@ -20,6 +20,7 @@ from tensordict import TensorDict
 
 from verl import DataProto
 from .dynamic_padding import make_response_padding_plan
+from .identifiers import stable_prompt_id
 
 configure_logger()
 
@@ -140,7 +141,9 @@ class AgentModeDaemon:
 
         self.enable_rollout_validation = enable_rollout_validation
         self.max_empty_retries = max_empty_retries
-        self._empty_rollout_counts: Dict[str, int] = {}
+        self._empty_rollout_counts: Dict[tuple[str, int], int] = {}
+        self._failed_logical_slots: set[tuple[str, int]] = set()
+        self._task_logical_slots: Dict[str, tuple[str, int]] = {}
         self._cleanup_reason = "not_started"
 
     def _start_proxy_server(self):
@@ -274,10 +277,17 @@ class AgentModeDaemon:
             data_id = str(uuid.uuid4())
             original_sample = {key: data[key][i] for key in keys}
             original_sample["data_id"] = data_id
+            original_sample["prompt_id"] = stable_prompt_id(original_sample)
 
             # For training, each sample is rolled out multiple times
             for j in range(rollouts_per_sample):
-                task_metadata = {"data_id": data_id, "is_train": is_train}
+                task_metadata = {
+                    "data_id": data_id,
+                    "prompt_id": original_sample["prompt_id"],
+                    "logical_slot": j,
+                    "retry": False,
+                    "is_train": is_train,
+                }
 
                 # Data ID is different from Rollout ID, as one data can have multiple rollouts.
                 rollout_id = await self.server.queue_task(
@@ -288,6 +298,7 @@ class AgentModeDaemon:
                 )
                 # Store original sample data to reconstruct batch information later
                 self._task_id_to_original_sample[rollout_id] = original_sample
+                self._task_logical_slots[rollout_id] = (data_id, j)
                 self._total_tasks_queued += 1
 
         print(f"Total tasks queued: {self._total_tasks_queued}")
@@ -428,37 +439,53 @@ class AgentModeDaemon:
             if temporary.exists():
                 temporary.unlink()
     
-    def _validate_rollout_for_retry(self, rollout: Rollout) -> bool:                                                                                                                                                                                                       
-          """Returns True if rollout should be retried due to empty/invalid data"""                                                                                                                                                                                          
-          if not self.enable_rollout_validation:                                                                                                                                                                                                                             
-              return False                                                                                                                                                                                                                                                   
-                                                                                                                                                                                                                                                                             
-          # Check for empty/invalid rollouts                                                                                                                                                                                                                                 
-          is_invalid = (                                                                                                                                                                                                                                                     
-              rollout.triplets is None or                                                                                                                                                                                                                                    
-              len(rollout.triplets) == 0 or
-              any(not r.response.get("token_ids", []) for r in rollout.triplets) or
-              any(not r.prompt.get("token_ids", []) for r in rollout.triplets)
-          )
+    def _validate_rollout_for_retry(self, rollout: Rollout) -> bool:
+        """Return whether an invalid logical slot should be retried."""
+        if not self.enable_rollout_validation or not self._rollout_is_invalid(rollout):
+            return False
 
-          if is_invalid:
-              data_id = self._get_data_id_from_rollout(rollout)
-              retry_count = self._empty_rollout_counts.get(data_id, 0)
+        logical_slot = self._get_logical_slot_from_rollout(rollout)
+        retry_count = self._empty_rollout_counts.get(logical_slot, 0)
+        if retry_count < self.max_empty_retries:
+            self._empty_rollout_counts[logical_slot] = retry_count + 1
+            logger.warning(
+                "Retrying invalid rollout for data_id=%s slot=%s (attempt %s)",
+                logical_slot[0], logical_slot[1], retry_count + 1,
+            )
+            return True
 
-              if retry_count < self.max_empty_retries:
-                  self._empty_rollout_counts[data_id] = retry_count + 1
-                  logger.warning(f"Retrying empty rollout for data_id {data_id} (attempt {retry_count + 1})")
-                  return True
-              else:
-                  logger.error(f"Data_id {data_id} exceeded max empty retries, using fallback")
+        logger.error(
+            "Logical rollout slot exceeded max retries: data_id=%s slot=%s",
+            logical_slot[0], logical_slot[1],
+        )
+        return False
 
-          return False
+    @staticmethod
+    def _rollout_is_invalid(rollout: Rollout) -> bool:
+        return (
+            rollout.triplets is None
+            or len(rollout.triplets) == 0
+            or any(not r.response.get("token_ids", []) for r in rollout.triplets)
+            or any(not r.prompt.get("token_ids", []) for r in rollout.triplets)
+        )
 
-    def _get_data_id_from_rollout(self, rollout: Rollout) -> str:
-        """Extract data_id from rollout for retry tracking"""
+    def _get_logical_slot_from_rollout(self, rollout: Rollout) -> tuple[str, int]:
+        """Extract the stable logical slot used for bounded retry tracking."""
+        if rollout.rollout_id in self._task_logical_slots:
+            return self._task_logical_slots[rollout.rollout_id]
         # Find the original sample data for this rollout
         original_sample = self._task_id_to_original_sample.get(rollout.rollout_id, {})
-        return original_sample.get("data_id", rollout.rollout_id)
+        return original_sample.get("data_id", rollout.rollout_id), 0
+
+    @staticmethod
+    def transition_should_drop(
+        prompt_length: int,
+        response_length: int,
+        max_prompt_length: int,
+        max_response_length: int,
+    ) -> bool:
+        """Whether truncation would make a transition unsafe for PPO training."""
+        return prompt_length > max_prompt_length or response_length > max_response_length
 
     async def _async_run_until_finished(self, verbose=True, avg_task_time_sec=150):
         """Async helper to wait for all tasks to complete with dynamic timeout and smart completion"""
@@ -491,23 +518,24 @@ class AgentModeDaemon:
             current_time = time.time()
             elapsed = current_time - start_time
             completed_count = len(self._completed_rollouts)
-            completion_rate = completed_count / original_task_count if original_task_count > 0 else 0
+            logical_completed_count = completed_count + len(self._failed_logical_slots)
+            completion_rate = logical_completed_count / original_task_count if original_task_count > 0 else 0
 
             # Check completion conditions
-            if completed_count >= self._total_tasks_queued:
+            if logical_completed_count >= self._total_tasks_queued:
                 print("All tasks completed")
                 break
 
             # Smart early exit: if >90% done and no progress for 2 minutes
             if completion_rate >= 0.9 and (current_time - last_progress_time) > 120:
-                print(f"Early completion: {completion_rate:.1%} tasks done ({completed_count}/{original_task_count})")
+                print(f"Early completion: {completion_rate:.1%} tasks done ({logical_completed_count}/{original_task_count})")
                 self._cleanup_reason = "early_completion_no_progress"
                 await self.server.stop_accepting_tasks(reason=self._cleanup_reason)
                 break
 
             # Dynamic timeout check
             if elapsed > dynamic_timeout:
-                print(f"Timeout after {elapsed/60:.1f} minutes. Completed {completion_rate:.1%} ({completed_count}/{original_task_count})")
+                print(f"Timeout after {elapsed/60:.1f} minutes. Completed {completion_rate:.1%} ({logical_completed_count}/{original_task_count})")
                 self._cleanup_reason = "wait_timeout"
                 await self.server.stop_accepting_tasks(reason=self._cleanup_reason)
                 break
@@ -540,13 +568,20 @@ class AgentModeDaemon:
                     continue
 
                 # Only retry during training and if this rollout hasn't been retried before
-                if (self.is_train and
-                    rollout.rollout_id not in retried_rollout_ids and
-                    self._validate_rollout_for_retry(rollout)):
+                is_invalid = self._rollout_is_invalid(rollout)
+                if (self.is_train and rollout.rollout_id not in retried_rollout_ids and is_invalid
+                        and self._validate_rollout_for_retry(rollout)):
 
-                    retry_task_metadata = {"retry": True, "original_rollout_id": rollout.rollout_id}
+                    logical_slot = self._get_logical_slot_from_rollout(rollout)
                     original_sample = self._task_id_to_original_sample[rollout.rollout_id]
-
+                    retry_task_metadata = {
+                        "retry": True,
+                        "original_rollout_id": rollout.rollout_id,
+                        "data_id": logical_slot[0],
+                        "prompt_id": original_sample.get("prompt_id", ""),
+                        "logical_slot": logical_slot[1],
+                        "is_train": self.is_train,
+                    }
                     try:
                         new_rollout_id = await self.server.queue_task(
                             sample=original_sample,
@@ -555,26 +590,33 @@ class AgentModeDaemon:
                             metadata=retry_task_metadata
                         )
                         self._task_id_to_original_sample[new_rollout_id] = original_sample
+                        self._task_logical_slots[new_rollout_id] = logical_slot
                         retried_rollout_ids.add(rollout.rollout_id)
-                        self._total_tasks_queued += 1
                         new_retries += 1
                         logger.info(f"Resubmitted rollout {rollout.rollout_id} as {new_rollout_id}")
                     except Exception as e:
                         logger.error(f"Failed to resubmit rollout {rollout.rollout_id}: {e}")
-                        # Accept the original rollout even if retry fails
-                        self._completed_rollouts[rollout.rollout_id] = rollout
+                        self._failed_logical_slots.add(logical_slot)
                 else:
-                    self._completed_rollouts[rollout.rollout_id] = rollout
+                    if is_invalid:
+                        logical_slot = self._get_logical_slot_from_rollout(rollout)
+                        self._failed_logical_slots.add(logical_slot)
+                        logger.error(
+                            "Dropping invalid logical rollout slot after bounded retries: "
+                            f"data_id={logical_slot[0]} slot={logical_slot[1]}"
+                        )
+                    else:
+                        self._completed_rollouts[rollout.rollout_id] = rollout
 
             if verbose and (elapsed % 30 < 5 or new_retries > 0):  # Log every 30s or when retries happen
                 eta_minutes = (dynamic_timeout - elapsed) / 60
                 if self.is_train:
                     valid_rollouts = len([r for r in self._completed_rollouts.values()
                                         if r.triplets and len(r.triplets) > 0])
-                    print(f"[{elapsed/60:.1f}m] Progress: {completion_rate:.1%} ({completed_count}/{original_task_count}), "
+                    print(f"[{elapsed/60:.1f}m] Progress: {completion_rate:.1%} ({logical_completed_count}/{original_task_count}), "
                           f"Valid: {valid_rollouts}, Retries: {new_retries}, ETA: {eta_minutes:.1f}m")
                 else:
-                    print(f"[{elapsed/60:.1f}m] Validation: {completion_rate:.1%} ({completed_count}/{original_task_count})")
+                    print(f"[{elapsed/60:.1f}m] Validation: {completion_rate:.1%} ({logical_completed_count}/{original_task_count})")
 
             # Adaptive sleep based on progress
             if len(completed_batch) > 0 or new_retries > 0:
@@ -589,8 +631,10 @@ class AgentModeDaemon:
         final_elapsed = time.time() - start_time
         final_rate = len(self._completed_rollouts) / original_task_count if original_task_count > 0 else 0
 
+        final_logical_count = len(self._completed_rollouts) + len(self._failed_logical_slots)
+        final_rate = final_logical_count / original_task_count if original_task_count > 0 else 0
         print(f"Finished after {final_elapsed/60:.1f} minutes. "
-              f"Completion rate: {final_rate:.1%} ({len(self._completed_rollouts)}/{original_task_count}), "
+              f"Completion rate: {final_rate:.1%} ({final_logical_count}/{original_task_count}), "
               f"Valid rollouts: {valid_rollouts}")
 
     def get_cleanup_reason(self) -> str:
@@ -675,6 +719,41 @@ class AgentModeDaemon:
         finished_id_to_sample_info = {}
         skipped_rollouts = 0
 
+        # A logical prompt group is complete only when every requested rollout
+        # slot has a valid final result.  Retries reuse the same slot and must
+        # never inflate the GRPO denominator.
+        group_rollout_ids: Dict[tuple[str, str], set[str]] = {}
+        group_slots: Dict[tuple[str, str], set[int]] = {}
+        for rollout_id, rollout in self._completed_rollouts.items():
+            original_sample = self._task_id_to_original_sample.get(rollout_id)
+            if original_sample is None or self._rollout_is_invalid(rollout):
+                continue
+            group_key = (str(original_sample.get("prompt_id", "")), str(original_sample["data_id"]))
+            group_rollout_ids.setdefault(group_key, set()).add(str(rollout_id))
+            group_slots.setdefault(group_key, set()).add(
+                self._get_logical_slot_from_rollout(rollout)[1]
+            )
+        expected_groups = {
+            (str(sample.get("prompt_id", "")), str(sample["data_id"]))
+            for sample in self._task_id_to_original_sample.values()
+            if sample.get("prompt_id") is not None and sample.get("data_id") is not None
+        }
+        incomplete_groups = {
+            key: {
+                "rollouts": len(group_rollout_ids.get(key, set())),
+                "slots": sorted(group_slots.get(key, set())),
+            }
+            for key in expected_groups
+            if len(group_rollout_ids.get(key, set())) != self.train_rollout_n
+            or len(group_slots.get(key, set())) != self.train_rollout_n
+            or group_slots.get(key, set()) != set(range(self.train_rollout_n))
+        }
+        if incomplete_groups:
+            raise ValueError(
+                "incomplete rollout groups cannot enter PPO batch: "
+                f"expected_n={self.train_rollout_n} groups={incomplete_groups}"
+            )
+
         for rollout_id, rollout in self._completed_rollouts.items():
             # Skip orphaned rollouts that don't have original sample data
             if rollout_id not in self._task_id_to_original_sample:
@@ -700,6 +779,7 @@ class AgentModeDaemon:
                 "reward": final_reward,
                 "trace_list": trace_list,
                 "data_id": original_sample["data_id"],
+                "prompt_id": original_sample["prompt_id"],
             }
             finished_id_to_sample_info[rollout_id] = info
 
@@ -725,7 +805,8 @@ class AgentModeDaemon:
         input_ids_list, input_attention_mask_list = [], []
         response_ids_list, response_attention_mask_list = [], []
         raw_prompt_lengths, raw_response_lengths = [], []
-        reward_list, data_id_list, rollout_id_list, turn_index_list, is_drop_list = [], [], [], [], []
+        reward_list, prompt_id_list, data_id_list = [], [], []
+        rollout_id_list, rollout_reward_list, turn_index_list, is_drop_list = [], [], [], []
         n_trunc_sample_because_of_response = 0
         valid_samples = 0
         all_samples_num = 0
@@ -746,11 +827,11 @@ class AgentModeDaemon:
                 raw_response_lengths.append(len(response_ids))
 
                 # Mark samples with prompts exceeding max_prompt_length to be dropped later
+                drop_transition = self.transition_should_drop(
+                    len(prompt_ids), len(response_ids), max_prompt_length, max_response_length
+                )
                 if len(prompt_ids) > max_prompt_length:
                     prompt_ids = prompt_ids[:max_prompt_length]
-                    is_drop_list.append(True)
-                else:
-                    is_drop_list.append(False)
 
                 # Truncate responses that exceed max_response_length
                 if len(response_ids) > max_response_length:
@@ -764,9 +845,12 @@ class AgentModeDaemon:
                 input_ids_list.append(one_input_ids)
                 input_attention_mask_list.append(one_input_attention_mask)
                 response_ids_list.append(response_ids)
+                prompt_id_list.append(sample_info["prompt_id"])
                 data_id_list.append(sample_info["data_id"])
                 rollout_id_list.append(rollout_id)
+                rollout_reward_list.append(sample_info["reward"])
                 turn_index_list.append(turn_index)
+                is_drop_list.append(drop_transition)
 
         print(f"[STEP-WISE DEBUG]: valid response trace length in this training step is [{valid_samples}/{all_samples_num}]")
         if valid_samples == 0:
@@ -894,8 +978,10 @@ class AgentModeDaemon:
         }
 
         # Add non-tensor data for advantage calculation and logging
+        data_proto.non_tensor_batch["prompt_id_list"] = np.array(prompt_id_list)
         data_proto.non_tensor_batch["data_id_list"] = np.array(data_id_list)
         data_proto.non_tensor_batch["rollout_id_list"] = np.array(rollout_id_list)
+        data_proto.non_tensor_batch["rollout_reward_list"] = np.array(rollout_reward_list, dtype=np.float32)
         data_proto.non_tensor_batch["turn_index_list"] = np.array(turn_index_list)
 
         return data_proto, data_metrics
@@ -905,6 +991,8 @@ class AgentModeDaemon:
         self.backend_llm_server_addresses = []
         self._completed_rollouts.clear()
         self._task_id_to_original_sample.clear()
+        self._failed_logical_slots.clear()
+        self._task_logical_slots.clear()
         self._total_tasks_queued = 0
         self._empty_rollout_counts.clear()  # Clear retry counters
         self._current_resources_id = None

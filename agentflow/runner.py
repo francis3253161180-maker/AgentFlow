@@ -19,6 +19,39 @@ from .tracer import TripletExporter
 logger = logging.getLogger(__name__)
 
 
+def filter_trainable_triplets(triplets: List[Triplet], unified_local: bool) -> tuple[List[Triplet], dict[str, int]]:
+    """Keep only planner_main transitions in unified-local mode.
+
+    Fixed-role tokenized spans remain in the raw trace/evidence, but cannot
+    enter the PPO batch.  Missing role/model attribution fails closed.
+    """
+    if not unified_local:
+        return triplets, {"kept": len(triplets), "excluded_fixed": 0, "excluded_unattributed": 0}
+    kept: List[Triplet] = []
+    excluded_fixed = 0
+    excluded_unattributed = 0
+    for triplet in triplets:
+        has_tokens = bool(triplet.prompt.get("token_ids")) and bool(triplet.response.get("token_ids"))
+        if not has_tokens:
+            continue
+        metadata = triplet.metadata or {}
+        role = metadata.get("role")
+        model_name = metadata.get("model_name")
+        trainable = metadata.get("trainable")
+        if role is None or model_name is None or trainable is None:
+            excluded_unattributed += 1
+            continue
+        if role == "planner_main" and trainable is True and "qwen-actor" in str(model_name).lower():
+            kept.append(triplet)
+        else:
+            excluded_fixed += 1
+    return kept, {
+        "kept": len(kept),
+        "excluded_fixed": excluded_fixed,
+        "excluded_unattributed": excluded_unattributed,
+    }
+
+
 class AgentRunner(ParallelWorkerBase):
     """Manages the agent's execution loop and integrates with AgentOps.
 
@@ -126,11 +159,12 @@ class AgentRunner(ParallelWorkerBase):
         # Only tokenized prompt/response pairs are usable by the trainable
         # policy. Fixed-model/tool spans are intentionally represented by
         # empty token ids and must not invalidate the whole rollout.
+        filter_stats = {"kept": 0, "excluded_fixed": 0, "excluded_unattributed": 0}
         if triplets:
-            triplets = [
-                triplet for triplet in triplets
-                if triplet.prompt.get("token_ids") and triplet.response.get("token_ids")
-            ]
+            unified_local = os.environ.get("AGENTFLOW_UNIFIED_LOCAL_ROLES", "0").lower() in {
+                "1", "true", "yes", "on"
+            }
+            triplets, filter_stats = filter_trainable_triplets(triplets, unified_local)
 
         # Create the Rollout object with standardized fields
         result_dict: Dict[str, Any] = {
@@ -142,6 +176,7 @@ class AgentRunner(ParallelWorkerBase):
             result_dict["triplets"] = triplets
         if trace is not None:
             result_dict["trace"] = trace
+        result_dict["metadata"] = {"trainable_transition_filter": filter_stats}
 
         if isinstance(result, Rollout):
             return result.model_copy(update=result_dict)

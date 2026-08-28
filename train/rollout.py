@@ -15,7 +15,11 @@ from filelock import FileLock
 import asyncio
 
 from utils import compute_score
-from agentflow.models.structured_outputs import extract_game24_numbers, parse_game24_answer
+from agentflow.models.structured_outputs import (
+    extract_game24_numbers,
+    game24_reward_decision,
+    parse_game24_answer,
+)
 
 configure_logger()
 
@@ -43,7 +47,11 @@ async def eval(question: str, groundtruth: any, answer_extracted: any, val: bool
     groundtruth_str = str(groundtruth)
     answer_extracted_str = str(answer_extracted)
 
-    is_correct = compute_score(question_str, groundtruth_str, answer_extracted_str)
+    game24_decision, _ = game24_reward_decision(question_str, answer_extracted_str)
+    if game24_decision is None:
+        is_correct = compute_score(question_str, groundtruth_str, answer_extracted_str)
+    else:
+        is_correct = game24_decision
     
     return 1.0 if is_correct else 0.0
 

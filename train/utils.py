@@ -623,8 +623,21 @@ def deterministic_fallback_score(groundtruth: str, answer_extracted: str) -> boo
 
 
 def compute_score(question: str, groundtruth: str, answer_extracted: str,) -> bool:
-    """Score with high-confidence local rules, then the configured DeepSeek judge."""
+    """Score with strict task-specific local rules, then the hybrid scorer.
+
+    Identifiable Game24 questions are deliberately handled before the generic
+    semantic scorer: the answer must be a marked arithmetic expression using
+    the exact four-number multiset and evaluating to 24.  This prevents a
+    generic numeric match from rewarding a repaired or unrelated expression.
+    """
     global _default_reward_scorer
+    try:
+        from agentflow.models.structured_outputs import game24_reward_decision
+        game24_decision, _ = game24_reward_decision(str(question), str(answer_extracted))
+    except (ImportError, TypeError, ValueError):
+        game24_decision = None
+    if game24_decision is not None:
+        return bool(game24_decision)
     if _default_reward_scorer is None:
         try:
             from train.reward_judge import HybridRewardScorer

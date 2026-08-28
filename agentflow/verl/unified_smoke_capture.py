@@ -278,6 +278,95 @@ def _field_digest(tensors: dict[str, Any], non_tensor: dict[str, Any], meta_info
     return digest.hexdigest()
 
 
+def validate_replay_pack_for_update(
+    pack: dict[str, Any],
+    *,
+    expected_model_path: str,
+    expected_rollout_n: int,
+    expected_temperature: float,
+    expected_seed: str | int | None,
+    current_lora_hash: str,
+) -> dict[str, Any]:
+    """Fail closed unless a replay pack is authentic for this update.
+
+    Replay data is an input to an optimizer, so structural and behavior
+    identity checks are intentionally stricter than the diagnostic capture
+    path.  In particular, a missing identity/hash is not treated as a match.
+    """
+    if not isinstance(pack, dict) or pack.get("kind") != "agentflow_unified_authentic_pre_update_replay_pack":
+        raise ValueError("unsupported replay pack kind")
+    schema_version = int(pack.get("schema_version", 0))
+    if schema_version < 2:
+        raise ValueError("replay pack schema is too old")
+    metadata = pack.get("metadata")
+    tensors = pack.get("tensor_fields")
+    non_tensor = pack.get("non_tensor_batch", {})
+    meta_info = pack.get("meta_info", {})
+    if not isinstance(metadata, dict) or not isinstance(tensors, dict) or not isinstance(non_tensor, dict):
+        raise ValueError("replay pack has invalid field containers")
+
+    required_tensors = {
+        "prompts", "responses", "input_ids", "attention_mask", "position_ids",
+        "response_mask", "old_log_probs", "token_level_scores", "token_level_rewards",
+        "advantages", "returns", "is_drop_mask",
+    }
+    missing_tensors = sorted(required_tensors.difference(tensors))
+    required_non_tensor = {"prompt_id_list", "data_id_list", "rollout_id_list", "rollout_reward_list"}
+    missing_non_tensor = sorted(required_non_tensor.difference(non_tensor))
+    if missing_tensors or missing_non_tensor:
+        raise ValueError(
+            f"replay pack missing fields: tensors={missing_tensors} non_tensor={missing_non_tensor}"
+        )
+    inventory = pack.get("field_inventory")
+    if not isinstance(inventory, dict):
+        raise ValueError("replay pack is missing field inventory")
+    if set(inventory.get("tensor_fields", [])) != set(tensors):
+        raise ValueError("replay pack tensor field inventory mismatch")
+    if set(inventory.get("non_tensor_fields", [])) != set(non_tensor):
+        raise ValueError("replay pack non-tensor field inventory mismatch")
+
+    expected_digest = pack.get("captured_field_digest")
+    actual_digest = _field_digest(tensors, non_tensor, meta_info)
+    if not expected_digest or expected_digest != actual_digest:
+        raise ValueError("replay pack field digest mismatch")
+
+    identity = ("model_path", "temperature", "rollout_n", "seed")
+    if any(key not in metadata or metadata[key] in (None, "") for key in identity):
+        raise ValueError("replay pack is missing behavior identity metadata")
+    if str(metadata["model_path"]) != str(expected_model_path):
+        raise ValueError("replay pack model path mismatch")
+    if abs(float(metadata["temperature"]) - float(expected_temperature)) > 1e-12:
+        raise ValueError("replay pack temperature mismatch")
+    if int(metadata["rollout_n"]) != int(expected_rollout_n):
+        raise ValueError("replay pack rollout_n mismatch")
+    if expected_seed is not None and str(metadata["seed"]) != str(expected_seed):
+        raise ValueError("replay pack seed mismatch")
+
+    expected_lora_hash = metadata.get("lora_pre_hash")
+    if not expected_lora_hash:
+        snapshot = metadata.get("behavior_snapshot")
+        if isinstance(snapshot, dict):
+            expected_lora_hash = snapshot.get("lora_hash") or snapshot.get("hash")
+    if not expected_lora_hash or not current_lora_hash:
+        raise ValueError("replay pack lacks verifiable LoRA identity")
+    if str(expected_lora_hash) != str(current_lora_hash):
+        raise ValueError("replay pack LoRA hash mismatch")
+
+    drop_mask = tensors["is_drop_mask"]
+    if isinstance(drop_mask, torch.Tensor) and bool(torch.any(drop_mask).item()):
+        raise ValueError("replay pack contains truncated/dropped transitions")
+    batch_size = int(pack.get("batch_size", -1))
+    if batch_size < 1 or int(tensors["input_ids"].shape[0]) != batch_size:
+        raise ValueError("replay pack batch size mismatch")
+    return {
+        "status": "validated",
+        "schema_version": schema_version,
+        "batch_size": batch_size,
+        "field_digest": actual_digest,
+        "lora_hash": str(current_lora_hash),
+    }
+
+
 def capture_lora_pre(module: torch.nn.Module) -> None:
     global _PRE_HASH
     if not _enabled("AGENTFLOW_LORA_CHECKSUM_ENABLED") or _PRE_HASH is not None:

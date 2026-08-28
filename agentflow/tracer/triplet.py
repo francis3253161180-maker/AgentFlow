@@ -37,6 +37,30 @@ class RewardMatchPolicy(str, Enum):
     """
 
 
+def role_identity_from_attributes(attributes: Dict[str, Any], agent_name: Optional[str] = None) -> dict[str, Any]:
+    """Extract explicit model/role identity used by the training filter."""
+    model_name = (
+        attributes.get("agentflow.model")
+        or attributes.get("gen_ai.request.model")
+        or attributes.get("gen_ai.response.model")
+    )
+    explicit_role = attributes.get("agentflow.role")
+    role = str(explicit_role) if explicit_role else None
+    normalized_model = str(model_name).lower() if model_name is not None else ""
+    if role is None:
+        if "qwen-actor" in normalized_model:
+            role = "planner_main"
+        elif "qwen-base" in normalized_model:
+            role = "fixed"
+    trainable = role == "planner_main" and "qwen-actor" in normalized_model
+    return {
+        "role": role,
+        "model_name": str(model_name) if model_name is not None else None,
+        "trainable": trainable,
+        "agent_name": agent_name,
+    }
+
+
 class TraceTree:
     """
     A trace item, along with its span and children.
@@ -475,7 +499,7 @@ class TraceTree:
                         response_id=llm_call.span.attributes.get(
                             "gen_ai.response.id", None
                         ),  # it works at least for OpenAI
-                        agent_name=agent_name,
+                        **role_identity_from_attributes(dict(llm_call.span.attributes), agent_name),
                     ),
                 ),
             )

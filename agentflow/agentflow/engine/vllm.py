@@ -91,11 +91,11 @@ class ChatVLLM(EngineLM, CachedEngine):
             print(f"Error in generate method: {str(e)}")
             print(f"Error type: {type(e).__name__}")
             print(f"Error details: {e.args}")
-            return {
-                "error": type(e).__name__,
-                "message": str(e),
-                "details": getattr(e, 'args', None)
-            }
+            # Preserve the exception so tenacity can retry and the caller can
+            # classify this as an infrastructure failure.  Returning an error
+            # dictionary here makes the agent report an ordinary zero-reward
+            # rollout and contaminates GRPO outcomes.
+            raise
         
     def _generate_text(
         self, prompt, system_prompt=None, max_tokens=None, top_p=0.99, response_format=None, **kwargs

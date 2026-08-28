@@ -29,7 +29,11 @@ from verl.utils.metric import reduce_metrics
 from verl.utils.tracking import Tracking
 
 from .daemon import AgentModeDaemon
-from .unified_smoke_capture import write_replay_pack_from_dataproto
+from .advantage import compute_rollout_group_advantage
+from .unified_smoke_capture import (
+    validate_replay_pack_for_update,
+    write_replay_pack_from_dataproto,
+)
 
 import os
 import json
@@ -123,20 +127,16 @@ class AgentFlowTrainer(RayPPOTrainer):
         )
         if replay is None:
             raise RuntimeError("cannot build replay pack: no valid rollout transitions")
-        replay.non_tensor_batch["uid"] = np.asarray(replay.non_tensor_batch["data_id_list"], dtype=object)
+        replay.non_tensor_batch["uid"] = np.asarray(replay.non_tensor_batch["prompt_id_list"], dtype=object)
         replay.batch["response_mask"] = compute_response_mask(replay)
         replay.batch["token_level_rewards"] = replay.batch["token_level_scores"]
         replay.meta_info["temperature"] = float(self.config.actor_rollout_ref.rollout.temperature)
         old_log_prob = self.actor_rollout_wg.compute_log_prob(replay)
         replay = replay.union(old_log_prob)
-        replay = compute_advantage(
+        replay = compute_rollout_group_advantage(
             replay,
-            adv_estimator=AdvantageEstimator.GRPO,
-            gamma=self.config.algorithm.gamma,
-            lam=self.config.algorithm.lam,
-            num_repeat=self.config.actor_rollout_ref.rollout.n,
-            norm_adv_by_std_in_grpo=self.config.algorithm.get("norm_adv_by_std_in_grpo", True),
-            config=self.config.algorithm,
+            rollout_n=int(self.config.actor_rollout_ref.rollout.n),
+            normalize_by_std=self.config.algorithm.get("norm_adv_by_std_in_grpo", True),
         )
         snapshot_meta = {}
         snapshot_metadata_path = os.environ.get("AGENTFLOW_BEHAVIOR_SNAPSHOT_METADATA_PATH", "").strip()
@@ -163,6 +163,7 @@ class AgentFlowTrainer(RayPPOTrainer):
             "replay_only": True,
             "batch_metrics": batch_metrics,
             "behavior_snapshot": snapshot_meta,
+            "lora_pre_hash": snapshot_meta.get("lora_hash") if isinstance(snapshot_meta, dict) else None,
             "role_route_state": route,
         }
         result = write_replay_pack_from_dataproto(replay, output, metadata)
@@ -284,7 +285,26 @@ class AgentFlowTrainer(RayPPOTrainer):
                     pack.get("metadata", {}).get("temperature", 0.7) or 0.7
                 )
             replay.meta_info["multi_turn"] = self.config.actor_rollout_ref.rollout.multi_turn.enable
-            expected_hash = pack.get("metadata", {}).get("lora_pre_hash")
+            metadata = pack.get("metadata", {})
+            if not isinstance(metadata, dict):
+                raise ValueError("offline replay metadata must be a mapping")
+            source_path = os.environ.get("AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH", "").strip()
+            if not source_path:
+                raise ValueError("offline replay update requires AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH")
+            verify = getattr(self.actor_rollout_wg, "restore_agentflow_behavior_snapshot", None)
+            if not callable(verify):
+                raise ValueError("actor worker cannot verify behavior snapshot")
+            verified = verify()
+            current_lora_hash = verified.get("lora_hash") if isinstance(verified, dict) else None
+            validate_replay_pack_for_update(
+                pack,
+                expected_model_path=self.config.actor_rollout_ref.model.path,
+                expected_rollout_n=int(self.config.actor_rollout_ref.rollout.n),
+                expected_temperature=float(self.config.actor_rollout_ref.rollout.temperature),
+                expected_seed=os.environ.get("AGENTFLOW_UNIFIED_SEED"),
+                current_lora_hash=str(current_lora_hash or ""),
+            )
+            expected_hash = metadata.get("lora_pre_hash")
             print(
                 "AGENTFLOW_OFFLINE_REPLAY_UPDATE "
                 f"pack={offline_pack_path} batch={len(replay)} expected_lora_pre={expected_hash} "
@@ -373,7 +393,7 @@ class AgentFlowTrainer(RayPPOTrainer):
                     del gen_baseline_batch, gen_baseline_output
 
             # uid is used for algorithm like GRPO, should be aligned to data id
-            batch.non_tensor_batch["uid"] = batch.non_tensor_batch["data_id_list"]
+            batch.non_tensor_batch["uid"] = batch.non_tensor_batch["prompt_id_list"]
 
             batch.batch["response_mask"] = compute_response_mask(batch)
 
@@ -438,19 +458,26 @@ class AgentFlowTrainer(RayPPOTrainer):
                     "norm_adv_by_std_in_grpo", True
                 )  # GRPO adv normalization factor
 
-                batch = compute_advantage(
-                    batch,
-                    adv_estimator=self.config.algorithm.adv_estimator,
-                    gamma=self.config.algorithm.gamma,
-                    lam=self.config.algorithm.lam,
-                    num_repeat=self.config.actor_rollout_ref.rollout.n,
-                    norm_adv_by_std_in_grpo=norm_adv_by_std_in_grpo,
-                    config=self.config.algorithm,
-                )
+                if self.config.algorithm.adv_estimator == AdvantageEstimator.GRPO:
+                    batch = compute_rollout_group_advantage(
+                        batch,
+                        rollout_n=int(self.config.actor_rollout_ref.rollout.n),
+                        normalize_by_std=norm_adv_by_std_in_grpo,
+                    )
+                else:
+                    batch = compute_advantage(
+                        batch,
+                        adv_estimator=self.config.algorithm.adv_estimator,
+                        gamma=self.config.algorithm.gamma,
+                        lam=self.config.algorithm.lam,
+                        num_repeat=self.config.actor_rollout_ref.rollout.n,
+                        norm_adv_by_std_in_grpo=norm_adv_by_std_in_grpo,
+                        config=self.config.algorithm,
+                    )
 
             # after advantages are assinged, we begin to drop (1) long prompt (2) floor to ppo minisize
             keep_indices = (~batch.batch["is_drop_mask"]).nonzero(as_tuple=True)[0]
-            metrics["agent_mode/n_dropped_sample_because_of_prompt"] = (
+            metrics["agent_mode/n_dropped_sample_because_of_length"] = (
                 batch.batch["is_drop_mask"].shape[0] - keep_indices.shape[0]
             )
             batch = batch[keep_indices]
