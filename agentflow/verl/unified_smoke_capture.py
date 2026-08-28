@@ -203,8 +203,25 @@ def capture_replay_pre_update(data: Any) -> None:
     output = os.getenv("AGENTFLOW_REPLAY_PACK_PATH", "").strip()
     if not output:
         return
-    _REPLAY_CAPTURED = True
     tensors = _batch_fields(data)
+    # A replay pack is useful for proving the update path only when it carries
+    # authentic algorithm signal.  Do not consume the one-shot capture slot on
+    # an all-zero warm-up batch; the next real pre-update batch can then be
+    # captured without fabricating rewards or advantages.
+    signal = tensors.get("advantages")
+    if isinstance(signal, torch.Tensor):
+        has_signal = bool(torch.any(torch.abs(signal.float()) > 0).item())
+    else:
+        has_signal = False
+        for key in ("token_level_rewards", "token_level_scores"):
+            candidate = tensors.get(key)
+            if isinstance(candidate, torch.Tensor) and bool(torch.any(torch.abs(candidate.float()) > 0).item()):
+                has_signal = True
+                break
+    if not has_signal:
+        print("UNIFIED_REPLAY_CAPTURE skipped=zero_reward_or_advantage", flush=True)
+        return
+    _REPLAY_CAPTURED = True
     non_tensor = _cpu_value(getattr(data, "non_tensor_batch", {}))
     meta_info = _json_safe(getattr(data, "meta_info", {}))
     captured_field_digest = _field_digest(tensors, non_tensor, meta_info)
@@ -222,6 +239,8 @@ def capture_replay_pre_update(data: Any) -> None:
             "rollout_n": os.getenv("AGENTFLOW_UNIFIED_ROLLOUT_N", ""),
             "seed": os.getenv("AGENTFLOW_UNIFIED_SEED", ""),
             "scorer": os.getenv("AGENTFLOW_UNIFIED_SCORER", "hybrid; external disabled"),
+            "ppo_epochs": os.getenv("AGENTFLOW_UNIFIED_PPO_EPOCHS", ""),
+            "max_response_length": os.getenv("AGENTFLOW_UNIFIED_MAX_RESPONSE_LENGTH", ""),
             "lora_pre_hash": _PRE_HASH["hash"] if _PRE_HASH else None,
             "role_route_state": _route_snapshot(),
         },

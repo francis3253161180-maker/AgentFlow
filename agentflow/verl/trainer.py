@@ -195,6 +195,43 @@ class AgentFlowTrainer(RayPPOTrainer):
 
     def _train_step(self, batch_dict: dict) -> dict:
         # Isolate in a separate method to automatically recycle the variables before validation.
+        offline_pack_path = os.environ.get("AGENTFLOW_OFFLINE_REPLAY_PACK_PATH", "").strip()
+        if offline_pack_path:
+            # Opt-in diagnostic path: use the exact pre-update DataProto captured
+            # by the actor worker.  No AgentFlow task is queued and no rollout
+            # or reward computation is performed here.
+            pack = torch.load(offline_pack_path, map_location="cpu", weights_only=False)
+            if pack.get("kind") != "agentflow_unified_authentic_pre_update_replay_pack":
+                raise ValueError(f"unsupported offline replay pack kind: {pack.get('kind')!r}")
+            replay = DataProto.from_dict(
+                tensors=pack["tensor_fields"],
+                non_tensors=pack.get("non_tensor_batch", {}),
+                meta_info=pack.get("meta_info", {}),
+            )
+            if "temperature" not in replay.meta_info:
+                replay.meta_info["temperature"] = float(
+                    pack.get("metadata", {}).get("temperature", 0.7) or 0.7
+                )
+            replay.meta_info["multi_turn"] = self.config.actor_rollout_ref.rollout.multi_turn.enable
+            expected_hash = pack.get("metadata", {}).get("lora_pre_hash")
+            print(
+                "AGENTFLOW_OFFLINE_REPLAY_UPDATE "
+                f"pack={offline_pack_path} batch={len(replay)} expected_lora_pre={expected_hash} "
+                "rollout_requests=0 external_calls=0",
+                flush=True,
+            )
+            output = self.actor_rollout_wg.update_actor(replay)
+            replay_metrics = reduce_metrics(output.meta_info["metrics"])
+            replay_metrics.update(
+                {
+                    "offline_replay/batch_size": len(replay),
+                    "offline_replay/rollout_requests": 0,
+                    "offline_replay/external_calls": 0,
+                }
+            )
+            print(f"AGENTFLOW_OFFLINE_REPLAY_METRICS {replay_metrics}", flush=True)
+            return replay_metrics
+
         batch: DataProto = DataProto.from_single_dict(batch_dict)
         metrics = {}
         timing_raw = {}

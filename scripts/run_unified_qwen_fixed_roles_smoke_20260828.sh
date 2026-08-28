@@ -18,6 +18,7 @@ VLLM_UTIL="${AGENTFLOW_SMOKE_VLLM_GPU_UTIL:-0.60}"
 FSDP2_OFFLOAD_POLICY="${AGENTFLOW_SMOKE_FSDP2_OFFLOAD_POLICY:-true}"
 SMOKE_N="${AGENTFLOW_SMOKE_N:-2}"
 SMOKE_MAX_RESPONSE="${AGENTFLOW_SMOKE_MAX_RESPONSE:-64}"
+SMOKE_PPO_EPOCHS="${AGENTFLOW_SMOKE_PPO_EPOCHS:-1}"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 EXP="unified-${TAG}-fixed-roles-smoke-20260828"
 CONFIG="$TMP/${EXP}_${STAMP}.yaml"
@@ -28,6 +29,7 @@ ROLE_ROUTE_STATE="$TMP/${EXP}_${STAMP}_role_routes.json"
 REPLAY_PACK="$TMP/${EXP}_${STAMP}_authentic_replay_pack.pt"
 LORA_CHECKSUM="$TMP/${EXP}_${STAMP}_lora_checksum.json"
 REPLAY_VALIDATION="$TMP/${EXP}_${STAMP}_replay_validation.json"
+LENGTH_AUDIT="$TMP/${EXP}_${STAMP}_response_lengths.json"
 
 cd "$REPO"
 source /root/.env
@@ -50,10 +52,13 @@ export AGENTFLOW_UNIFIED_MODEL_PATH="$MODEL"
 export AGENTFLOW_UNIFIED_SMOKE_RUN_ID="${EXP}_${STAMP}"
 export AGENTFLOW_UNIFIED_TEMPERATURE=0.7
 export AGENTFLOW_UNIFIED_ROLLOUT_N="$SMOKE_N"
+export AGENTFLOW_UNIFIED_PPO_EPOCHS="$SMOKE_PPO_EPOCHS"
+export AGENTFLOW_UNIFIED_MAX_RESPONSE_LENGTH="$SMOKE_MAX_RESPONSE"
 export AGENTFLOW_UNIFIED_SEED=20260828
 export AGENTFLOW_UNIFIED_SCORER="hybrid; external disabled; local deterministic fallback"
 export AGENTFLOW_REPLAY_CAPTURE_ENABLED=1
 export AGENTFLOW_REPLAY_PACK_PATH="$REPLAY_PACK"
+export AGENTFLOW_RESPONSE_LENGTH_AUDIT_PATH="$LENGTH_AUDIT"
 export AGENTFLOW_LORA_CHECKSUM_ENABLED=1
 export AGENTFLOW_LORA_CHECKSUM_PATH="$LORA_CHECKSUM"
 export AGENTFLOW_VLLM_CLEANUP_DRAIN_TIMEOUT_SECONDS=30
@@ -117,13 +122,14 @@ check_abort() {
 }
 
 echo "UNIFIED_QWEN_SMOKE size=$SIZE model=$MODEL"
-echo "UNIFIED_QWEN_PROTOCOL lora_rank=8 lora_alpha=16 target_modules=all-linear temp=0.7 rollout_n=$SMOKE_N max_response_length=$SMOKE_MAX_RESPONSE train_prompts=4 train_batch=2 ppo_mini_batch=2 micro_batch=1 ppo_epochs=1 fsdp_model_dtype=bf16 fsdp2_offload_policy=$FSDP2_OFFLOAD_POLICY save_freq=0 external_llm=disabled"
+echo "UNIFIED_QWEN_PROTOCOL lora_rank=8 lora_alpha=16 target_modules=all-linear temp=0.7 rollout_n=$SMOKE_N max_response_length=$SMOKE_MAX_RESPONSE train_prompts=4 train_batch=2 ppo_mini_batch=2 micro_batch=1 ppo_epochs=$SMOKE_PPO_EPOCHS fsdp_model_dtype=bf16 fsdp2_offload_policy=$FSDP2_OFFLOAD_POLICY save_freq=0 external_llm=disabled dynamic_response_padding=${AGENTFLOW_DYNAMIC_RESPONSE_PADDING:-0}"
 echo "UNIFIED_QWEN_ROLES planner_main=trainable_actor_lora planner_fixed=frozen_base_no_lora verifier=frozen_base_no_lora executor=frozen_base_no_lora tool=frozen_base_no_lora"
 echo "UNIFIED_QWEN_MEMORY vllm_gpu_memory_utilization=$VLLM_UTIL max_num_seqs=1 max_num_batched_tokens=1024"
 echo "UNIFIED_QWEN_CONFIG=$CONFIG"
 echo "UNIFIED_QWEN_ROLE_ROUTE_STATE=$ROLE_ROUTE_STATE"
 echo "UNIFIED_QWEN_REPLAY_PACK=$REPLAY_PACK"
 echo "UNIFIED_QWEN_LORA_CHECKSUM=$LORA_CHECKSUM"
+echo "UNIFIED_QWEN_RESPONSE_LENGTH_AUDIT=$LENGTH_AUDIT"
 echo "UNIFIED_QWEN_TRAIN_LOG=$TRAIN_LOG"
 echo "UNIFIED_QWEN_ROLLOUT_LOG=$ROLLOUT_LOG"
 
@@ -131,6 +137,7 @@ PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" \
   trainer.val_before_train=false trainer.val_only=false trainer.test_freq=0 trainer.save_freq=0 \
   trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" \
   actor_rollout_ref.rollout.n="$SMOKE_N" actor_rollout_ref.rollout.temperature=0.7 data.max_response_length="$SMOKE_MAX_RESPONSE" \
+  actor_rollout_ref.actor.ppo_epochs="$SMOKE_PPO_EPOCHS" \
   +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 \
   actor_rollout_ref.actor.fsdp_config.offload_policy="$FSDP2_OFFLOAD_POLICY" \
   actor_rollout_ref.rollout.gpu_memory_utilization="$VLLM_UTIL" \

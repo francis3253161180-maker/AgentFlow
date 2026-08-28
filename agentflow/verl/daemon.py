@@ -7,6 +7,7 @@ import socket
 import threading
 import time
 import uuid
+from pathlib import Path
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -18,6 +19,7 @@ from openai.types.chat.chat_completion import ChatCompletion
 from tensordict import TensorDict
 
 from verl import DataProto
+from .dynamic_padding import make_response_padding_plan
 
 configure_logger()
 
@@ -677,6 +679,7 @@ class AgentModeDaemon:
         #   - The discard for the PPO mini-batch should also be handled this way.
         input_ids_list, input_attention_mask_list = [], []
         response_ids_list, response_attention_mask_list = [], []
+        raw_prompt_lengths, raw_response_lengths = [], []
         reward_list, data_id_list, rollout_id_list, turn_index_list, is_drop_list = [], [], [], [], []
         n_trunc_sample_because_of_response = 0
         valid_samples = 0
@@ -694,6 +697,9 @@ class AgentModeDaemon:
                 else:
                     valid_samples += 1
 
+                raw_prompt_lengths.append(len(prompt_ids))
+                raw_response_lengths.append(len(response_ids))
+
                 # Mark samples with prompts exceeding max_prompt_length to be dropped later
                 if len(prompt_ids) > max_prompt_length:
                     prompt_ids = prompt_ids[:max_prompt_length]
@@ -710,14 +716,9 @@ class AgentModeDaemon:
                 one_input_ids, one_input_attention_mask = get_left_padded_ids_and_attention_mask(
                     prompt_ids, max_prompt_length, self.pad_token_id
                 )
-                one_response_ids, one_response_attention_mask = get_right_padded_ids_and_attention_mask(
-                    response_ids, max_response_length, self.pad_token_id
-                )
-
                 input_ids_list.append(one_input_ids)
                 input_attention_mask_list.append(one_input_attention_mask)
-                response_ids_list.append(one_response_ids)
-                response_attention_mask_list.append(one_response_attention_mask)
+                response_ids_list.append(response_ids)
                 data_id_list.append(sample_info["data_id"])
                 rollout_id_list.append(rollout_id)
                 turn_index_list.append(turn_index)
@@ -739,6 +740,65 @@ class AgentModeDaemon:
             raise ValueError("No transitions to process. Cannot create training batch.")
 
         n_transition = len(input_ids_list)
+        dynamic_enabled = os.environ.get("AGENTFLOW_DYNAMIC_RESPONSE_PADDING", "0").lower() in {
+            "1", "true", "yes", "on"
+        }
+        padding_plan = make_response_padding_plan(raw_response_lengths, max_response_length)
+        response_width = padding_plan.effective_width if dynamic_enabled else max_response_length
+        if response_width <= 0:
+            raise ValueError("No non-empty response remains after rollout validation")
+        for response_ids in response_ids_list:
+            padded_ids, padded_mask = get_right_padded_ids_and_attention_mask(
+                response_ids, response_width, self.pad_token_id
+            )
+            response_attention_mask_list.append(padded_mask)
+            response_ids[:] = padded_ids
+
+        length_audit_path = os.environ.get("AGENTFLOW_RESPONSE_LENGTH_AUDIT_PATH", "").strip()
+        if length_audit_path:
+            audit_path = Path(length_audit_path)
+            audit_path.parent.mkdir(parents=True, exist_ok=True)
+            prior = []
+            if audit_path.exists():
+                try:
+                    existing = json.loads(audit_path.read_text(encoding="utf-8"))
+                    prior = existing.get("batches", []) if isinstance(existing, dict) else existing
+                    if not isinstance(prior, list):
+                        prior = []
+                except (OSError, ValueError):
+                    prior = []
+            records = []
+            for index, (prompt_len, response_len) in enumerate(zip(raw_prompt_lengths, raw_response_lengths)):
+                records.append(
+                    {
+                        "transition_index": index,
+                        "prompt_length": int(prompt_len),
+                        "response_length_raw": int(response_len),
+                        "response_length_after_cap": int(min(response_len, max_response_length)),
+                        "response_cap": int(max_response_length),
+                        "response_hit_cap": bool(response_len >= max_response_length),
+                        "response_truncated": bool(response_len > max_response_length),
+                    }
+                )
+            payload = {
+                "schema_version": 1,
+                "hard_response_cap": int(max_response_length),
+                "dynamic_padding_enabled": dynamic_enabled,
+                "batches": prior + [
+                    {
+                        "transition_count": n_transition,
+                        "raw_max_response_length": padding_plan.raw_max,
+                        "effective_response_width": response_width,
+                        "fixed_tensor_elements": padding_plan.fixed_elements,
+                        "dynamic_tensor_elements": n_transition * response_width,
+                        "padding_elements_saved": n_transition * max_response_length - n_transition * response_width,
+                        "padding_ratio": padding_plan.padding_ratio if dynamic_enabled else 0.0,
+                        "transitions": records,
+                    }
+                ],
+            }
+            audit_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
         batch_input_ids = torch.LongTensor(input_ids_list).to(device)
         input_attention_mask = torch.LongTensor(input_attention_mask_list).to(device)
         batch_response_ids = torch.LongTensor(response_ids_list).to(device)
@@ -758,7 +818,7 @@ class AgentModeDaemon:
         eos_mask_idx = torch.argmax(position_ids * attention_mask, dim=-1)  # (bsz,)
         token_level_scores[torch.arange(n_transition), eos_mask_idx] = scores
         # Only take the last response_length part of the sequence to get the token-level scores for the model's response part.
-        token_level_scores = token_level_scores[:, -max_response_length:]
+        token_level_scores = token_level_scores[:, -response_width:]
 
         # Form the final batch using TensorDict
         batch = TensorDict(
@@ -778,6 +838,14 @@ class AgentModeDaemon:
         data_metrics = {
             "agent_mode/n_trunc_sample_because_of_response": n_trunc_sample_because_of_response,
             "agent_mode/n_sample_to_train": n_transition,
+            "agent_mode/response_raw_max_length": padding_plan.raw_max,
+            "agent_mode/response_effective_padded_width": response_width,
+            "agent_mode/response_fixed_tensor_elements": padding_plan.fixed_elements,
+            "agent_mode/response_dynamic_tensor_elements": n_transition * response_width,
+            "agent_mode/response_padding_elements_saved": (
+                n_transition * max_response_length - n_transition * response_width
+            ),
+            "agent_mode/response_padding_ratio": padding_plan.padding_ratio if dynamic_enabled else 0.0,
         }
 
         # Add non-tensor data for advantage calculation and logging
