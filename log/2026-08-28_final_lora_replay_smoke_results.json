@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "scope": "final_lora_replay_smoke",
+  "status": "passed",
+  "repository": {
+    "branch": "experiment/flow-grpo-3b-lora",
+    "head_before_artifact_commit": "b2bf488"
+  },
+  "run": {
+    "run_id": "unified-qwen7b-fixed-roles-smoke-20260828_20260828_093406",
+    "model_path": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "data_path": "/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/mixed_signal_smoke_4.parquet",
+    "train_log": "log/unified-qwen7b-fixed-roles-smoke-20260828_20260828_093406_train.log",
+    "rollout_log": "log/unified-qwen7b-fixed-roles-smoke-20260828_20260828_093406_rollout.log",
+    "config_path": "/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/unified-qwen7b-fixed-roles-smoke-20260828_20260828_093406.yaml",
+    "seed": 20260828,
+    "external_llm": "disabled"
+  },
+  "protocol": {
+    "model": "Qwen2.5-7B-Instruct",
+    "temperature": 0.7,
+    "rollout_n": 4,
+    "train_rows": 4,
+    "train_batch_size": 2,
+    "ppo_mini_batch_size": 2,
+    "ppo_micro_batch_size_per_gpu": 1,
+    "ppo_epochs": 1,
+    "max_prompt_length": 1280,
+    "max_response_length": 128,
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "target_modules": "all-linear",
+    "fsdp_strategy": "fsdp2",
+    "fsdp_model_dtype": "bf16",
+    "param_offload": true,
+    "optimizer_offload": true,
+    "offload_policy": true,
+    "vllm_gpu_memory_utilization": 0.6,
+    "vllm_max_num_seqs": 1,
+    "vllm_max_num_batched_tokens": 1024,
+    "save_freq": 0,
+    "checkpoint_written": false
+  },
+  "gates": {
+    "gate_1_lora_update": {
+      "status": "PASS",
+      "nonzero_gradient_step": 2,
+      "grad_norm": 0.51171875,
+      "pg_loss": 0.0002660676836967468,
+      "pre_hash": "157a12bb25be81199d718dd83df0c2f086467ee8803fabc99c66ee6cfd0c888b",
+      "post_hash": "95eaa9b123292ab203182579b7cd0a443733994155e656048bb6946cd9748d34",
+      "hash_changed": true,
+      "tensor_count": 392,
+      "total_numel": 20185088,
+      "changed_tensor_count": 196
+    },
+    "gate_2_authentic_replay": {
+      "status": "PASS",
+      "pack_path": "/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/unified-qwen7b-fixed-roles-smoke-20260828_20260828_093406_authentic_replay_pack.pt",
+      "pack_sha256": "fd0f12c4b5bef1cf8ec07d378b2472a6c4e98ef6ec2b7602e30838e0250a085f",
+      "token_ids_available": true,
+      "roundtrip_field_equal": true,
+      "captured_field_digest": "0258031c6f6c0adf7cb253e584e23ea9e18a4cc62763e55bf86e69ff157a7a35",
+      "batch_size": 50,
+      "offline_replay_dry_run": true,
+      "captured_before_update_batch_reward_mean": 0.0,
+      "note": "The pack is the first actual pre-update DataProto batch; the later step-2 batch supplied the nonzero GRPO signal used by Gate 1. No fields were reconstructed from rollout JSON."
+    }
+  },
+  "step_metrics": {
+    "step_1": {
+      "reward_mean": 0.0,
+      "advantage_min": 0.0,
+      "advantage_max": 0.0,
+      "pg_loss": 0.0,
+      "grad_norm": 0.0,
+      "timing_step_seconds": 170.84734030254185
+    },
+    "step_2": {
+      "reward_mean": 0.25,
+      "advantage_min": -0.9765625,
+      "advantage_max": 0.9765625,
+      "pg_loss": 0.0002660676836967468,
+      "grad_norm": 0.59619140625,
+      "timing_step_seconds": 115.80012540053576
+    }
+  },
+  "replay_field_inventory": {
+    "tensor_fields": ["advantages", "attention_mask", "input_ids", "is_drop_mask", "old_log_probs", "position_ids", "prompts", "response_mask", "responses", "returns", "token_level_rewards", "token_level_scores"],
+    "non_tensor_fields": ["data_id_list", "rollout_id_list", "turn_index_list", "uid"],
+    "meta_info_fields": ["global_token_num", "multi_turn", "temperature"]
+  },
+  "role_routing": {
+    "route_state_path": "/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/unified-qwen7b-fixed-roles-smoke-20260828_20260828_093406_role_routes.json",
+    "captured_snapshot": {
+      "base_role": "qwen-base",
+      "actor_role": "qwen-actor",
+      "actor_adapter": "registered qwen-actor LoRA",
+      "fixed_roles": "qwen-base without adapter"
+    },
+    "rollout_log_request_counts": {"qwen-base": 75, "qwen-actor": 23},
+    "local_engine_client_counts": {"vllm-qwen-base": 5, "vllm-qwen-actor": 1},
+    "duplicate_fixed_model_process": false
+  },
+  "resources": {
+    "gpu_peak_sampled_memory_mib": 21034,
+    "fsdp_max_memory_allocated_gib": 22.22537660598755,
+    "fsdp_max_memory_reserved_gib": 25.62109375,
+    "gpu_final_memory_mib": 2,
+    "cleanup_markers": [
+      {"reason": "normal_complete", "drained": true, "outstanding_before": 0, "abort_count": 0, "abort_errors": 0, "sleep_started": true, "cleanup_duration_seconds": 0.6989099541679025},
+      {"reason": "normal_complete", "drained": true, "outstanding_before": 0, "abort_count": 0, "abort_errors": 0, "sleep_started": true, "cleanup_duration_seconds": 0.6962944185361266}
+    ],
+    "cuda_oom": false,
+    "cuda_illegal_memory_access": false,
+    "prefix_cache_race": false,
+    "deadlock": false,
+    "final_matching_processes": false,
+    "runtime_seconds_approx": 384
+  },
+  "warnings": [
+    "The existing rollout launcher logged a non-fatal lsof-not-found message while attempting to clear port 9998; the run completed and cleanup drained successfully."
+  ],
+  "verification": {
+    "focused_unittest": "25 passed",
+    "py_compile": "passed",
+    "bash_n": "passed",
+    "secret_review": "no credentials or API keys added; external calls disabled",
+    "formal_training_started": false
+  }
+}

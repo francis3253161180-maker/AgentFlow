@@ -25,6 +25,9 @@ TRAIN_LOG="$REPO/log/${EXP}_${STAMP}_train.log"
 ROLLOUT_LOG="$REPO/log/${EXP}_${STAMP}_rollout.log"
 GPU_LOG="$TMP/${EXP}_${STAMP}_gpu.tsv"
 ROLE_ROUTE_STATE="$TMP/${EXP}_${STAMP}_role_routes.json"
+REPLAY_PACK="$TMP/${EXP}_${STAMP}_authentic_replay_pack.pt"
+LORA_CHECKSUM="$TMP/${EXP}_${STAMP}_lora_checksum.json"
+REPLAY_VALIDATION="$TMP/${EXP}_${STAMP}_replay_validation.json"
 
 cd "$REPO"
 source /root/.env
@@ -43,6 +46,16 @@ export AGENTFLOW_REWARD_SCORER_LOG=1
 export AGENTFLOW_UNIFIED_MEMORY_LOG=1
 export AGENTFLOW_ROLE_ROUTING_STATE="$ROLE_ROUTE_STATE"
 export AGENTFLOW_UNIFIED_BASE_MODEL_NAME="qwen-base"
+export AGENTFLOW_UNIFIED_MODEL_PATH="$MODEL"
+export AGENTFLOW_UNIFIED_SMOKE_RUN_ID="${EXP}_${STAMP}"
+export AGENTFLOW_UNIFIED_TEMPERATURE=0.7
+export AGENTFLOW_UNIFIED_ROLLOUT_N="$SMOKE_N"
+export AGENTFLOW_UNIFIED_SEED=20260828
+export AGENTFLOW_UNIFIED_SCORER="hybrid; external disabled; local deterministic fallback"
+export AGENTFLOW_REPLAY_CAPTURE_ENABLED=1
+export AGENTFLOW_REPLAY_PACK_PATH="$REPLAY_PACK"
+export AGENTFLOW_LORA_CHECKSUM_ENABLED=1
+export AGENTFLOW_LORA_CHECKSUM_PATH="$LORA_CHECKSUM"
 export AGENTFLOW_VLLM_CLEANUP_DRAIN_TIMEOUT_SECONDS=30
 export AGENTFLOW_VLLM_CLEANUP_DRAIN_POLL_SECONDS=0.05
 export AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS=900
@@ -109,6 +122,8 @@ echo "UNIFIED_QWEN_ROLES planner_main=trainable_actor_lora planner_fixed=frozen_
 echo "UNIFIED_QWEN_MEMORY vllm_gpu_memory_utilization=$VLLM_UTIL max_num_seqs=1 max_num_batched_tokens=1024"
 echo "UNIFIED_QWEN_CONFIG=$CONFIG"
 echo "UNIFIED_QWEN_ROLE_ROUTE_STATE=$ROLE_ROUTE_STATE"
+echo "UNIFIED_QWEN_REPLAY_PACK=$REPLAY_PACK"
+echo "UNIFIED_QWEN_LORA_CHECKSUM=$LORA_CHECKSUM"
 echo "UNIFIED_QWEN_TRAIN_LOG=$TRAIN_LOG"
 echo "UNIFIED_QWEN_ROLLOUT_LOG=$ROLLOUT_LOG"
 
@@ -151,4 +166,15 @@ if ! grep -q 'Training finished at step' "$TRAIN_LOG"; then
   echo "ABORT_CONDITION missing_training_finished" >&2
   exit 2
 fi
+if [[ ! -s "$REPLAY_PACK" ]]; then
+  echo "ABORT_CONDITION missing_authentic_replay_pack=$REPLAY_PACK" >&2
+  exit 2
+fi
+if [[ ! -s "$LORA_CHECKSUM" ]]; then
+  echo "ABORT_CONDITION missing_lora_checksum=$LORA_CHECKSUM" >&2
+  exit 2
+fi
+PYTHONUNBUFFERED=1 "$PY" scripts/validate_unified_replay_pack_20260828.py \
+  --pack "$REPLAY_PACK" --output "$REPLAY_VALIDATION"
+echo "UNIFIED_QWEN_REPLAY_VALIDATION=$REPLAY_VALIDATION"
 echo "UNIFIED_QWEN_STATUS=passed"

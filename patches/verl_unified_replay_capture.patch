@@ -1,0 +1,38 @@
+diff --git a/verl/workers/actor/dp_actor.py b/verl/workers/actor/dp_actor.py
+--- a/verl/workers/actor/dp_actor.py
++++ b/verl/workers/actor/dp_actor.py
+@@ -31,6 +31,19 @@
+ from verl.workers.actor import BasePPOActor
+ 
++try:
++    from agentflow.verl.unified_smoke_capture import capture_lora_post, capture_lora_pre, capture_replay_pre_update
++except Exception:
++    # Keep the pinned VERL worker usable when the AgentFlow source tree is not
++    # on PYTHONPATH; the smoke instrumentation is strictly opt-in.
++    def capture_lora_pre(module):
++        return None
++
++    def capture_lora_post(module, grad_norm):
++        return None
++
++    def capture_replay_pre_update(data):
++        return None
++
+ 
+ if is_cuda_available:
+@@ -348,6 +361,9 @@
+     def update_policy(self, data: DataProto):
+         # make sure we are in training mode
+         self.actor_module.train()
+ 
++        capture_lora_pre(self.actor_module)
++        capture_replay_pre_update(data)
++
+         temperature = data.meta_info["temperature"]  # temperature must be in the data.meta_info to avoid silent error
+ 
+@@ -477,6 +493,7 @@
+ 
+                 grad_norm = self._optimizer_step()
++                capture_lora_post(self.actor_module, grad_norm)
+                 mini_batch_metrics = {"actor/grad_norm": grad_norm.detach().item()}
+                 append_to_dict(metrics, mini_batch_metrics)
