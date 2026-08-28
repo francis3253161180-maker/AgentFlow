@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "purpose": "rollout-only response-length/context diagnostic; probe data is not a training result",
+  "selection_seed": 20260828,
+  "selection_count": 30,
+  "selection_rule": "random.sample over valid official XoT train rows after excluding normalized puzzle content present in historical GameOf24 probe manifests; no reward, difficulty, or answer criterion",
+  "source": {
+    "name": "Microsoft Everything-of-Thoughts-XoT official Game24 training split",
+    "repo_url": "https://github.com/microsoft/Everything-of-Thoughts-XoT",
+    "repo_commit": "d69d3b8ddb75f888732e893394e8e5e5df4f4e6f",
+    "path": "xot_mcts/game24/data/train.csv",
+    "sha256": "8fb0cbd833ed083bd26c24d9f952d7952189d251bb2905bc58171939b6c3c803",
+    "row_count": 1225,
+    "split_role": "XoT train; not used as the fixed stage-2 evaluation set"
+  },
+  "excluded_manifests": [
+    {"path": "log/2026-08-27_remaining_benchmark_screen_sample_manifest.json", "sha256": "d22aa259cf13fe25dfc5a2fd0bb9f84de1c07b069eaa33c49bd3d6921b678b03"},
+    {"path": "log/2026-08-27_stage2_30prompt_confirmation_sample_manifest.json", "sha256": "653635444975bfb952ea03d03595ab47d92afe2e4d8d77326c37d1581d646551"}
+  ],
+  "overlap_check": {
+    "eligible_xot_train_rows": 1197,
+    "xot_train_test_normalized_overlap": 0,
+    "xot_train_stage2_normalized_overlap": 28,
+    "selected_stage2_normalized_overlap": 0,
+    "selected_row_ids_unique": true,
+    "selected_normalized_puzzles_unique": true
+  },
+  "rows": [
+    {"source_row_index": 43, "source_id": "43", "puzzle": [3, 8, 12, 13], "normalized_puzzle": [3, 8, 12, 13], "normalized_puzzle_sha256": "b5da5c3bd4f4b3b146610863a33ad218a53a8a07aed26845b752535e1ef7fc83"},
+    {"source_row_index": 58, "source_id": "58", "puzzle": [2, 3, 4, 4], "normalized_puzzle": [2, 3, 4, 4], "normalized_puzzle_sha256": "16d98e8dc1d99705e99a27ce0334dca481599d6a8ece33db7fc5f697ce88992e"},
+    {"source_row_index": 181, "source_id": "181", "puzzle": [6, 9, 9, 11], "normalized_puzzle": [6, 9, 9, 11], "normalized_puzzle_sha256": "b6cb20746e72c026c1aecf433c34ddf29e7530175805e1933f5e114d765c599b"},
+    {"source_row_index": 207, "source_id": "207", "puzzle": [3, 3, 6, 12], "normalized_puzzle": [3, 3, 6, 12], "normalized_puzzle_sha256": "f656fff5ac32d8f9a80188631916629d79b0fa7cb6b1fb90c6fc2f1c024f53f1"},
+    {"source_row_index": 226, "source_id": "226", "puzzle": [5, 6, 11, 12], "normalized_puzzle": [5, 6, 11, 12], "normalized_puzzle_sha256": "f9d01b97b4562575eb54cc9d48df049b0ac452d9c7ec12bd6eb7d765af2c2b15"},
+    {"source_row_index": 245, "source_id": "245", "puzzle": [2, 5, 9, 11], "normalized_puzzle": [2, 5, 9, 11], "normalized_puzzle_sha256": "ed315eee074b883f60efcd412495fdebb1d3a411bac6a61b360f9ff1f4ae6cc3"},
+    {"source_row_index": 345, "source_id": "345", "puzzle": [1, 2, 2, 11], "normalized_puzzle": [1, 2, 2, 11], "normalized_puzzle_sha256": "c9385bf3d97a383c40fa34aeaf85cf137406f663c1aea6fc11b3488f9fb2204e"},
+    {"source_row_index": 433, "source_id": "433", "puzzle": [2, 7, 9, 13], "normalized_puzzle": [2, 7, 9, 13], "normalized_puzzle_sha256": "2e323b52c59c240d616325e3b0066763ed003fd0c92875cff5a667fc8de38086"},
+    {"source_row_index": 454, "source_id": "454", "puzzle": [1, 3, 6, 11], "normalized_puzzle": [1, 3, 6, 11], "normalized_puzzle_sha256": "46bb1e9465dd05eadea8c79ebc3b458e473418a7318458faa45313dec336af91"},
+    {"source_row_index": 462, "source_id": "462", "puzzle": [1, 7, 8, 12], "normalized_puzzle": [1, 7, 8, 12], "normalized_puzzle_sha256": "8db06c32fd651add3838980c040d2525c7b28faa4220462f5dd011b72016035b"},
+    {"source_row_index": 511, "source_id": "511", "puzzle": [3, 6, 8, 12], "normalized_puzzle": [3, 6, 8, 12], "normalized_puzzle_sha256": "0c9f00cdab8733e47d360a1d91ccee306f83bc5f5ad259358a09454b12b6e876"},
+    {"source_row_index": 523, "source_id": "523", "puzzle": [2, 4, 8, 13], "normalized_puzzle": [2, 4, 8, 13], "normalized_puzzle_sha256": "1f9c4f993b8479312f6775ed9f09fd15bd89feca8487bf6aa6cd0469baa237c9"},
+    {"source_row_index": 568, "source_id": "568", "puzzle": [2, 8, 10, 11], "normalized_puzzle": [2, 8, 10, 11], "normalized_puzzle_sha256": "97bb11f023ac11941f8a82be1dbdd9f8663b1e935b1b9dcdc29fc65359b2a084"},
+    {"source_row_index": 576, "source_id": "576", "puzzle": [2, 2, 3, 12], "normalized_puzzle": [2, 2, 3, 12], "normalized_puzzle_sha256": "689593ffabd718663b456782c46a444538e2511e76e575c836e14b1c6b2b4efe"},
+    {"source_row_index": 617, "source_id": "617", "puzzle": [1, 4, 6, 6], "normalized_puzzle": [1, 4, 6, 6], "normalized_puzzle_sha256": "4720f1b2c5d298be83d14bc11620af5def112e5324d62f3032211dc3638ce1b1"},
+    {"source_row_index": 690, "source_id": "690", "puzzle": [1, 2, 6, 10], "normalized_puzzle": [1, 2, 6, 10], "normalized_puzzle_sha256": "24a44013900838a1a5464f43c992cd994f33d299b7b7b69a4997bc56c3b799b5"},
+    {"source_row_index": 767, "source_id": "767", "puzzle": [3, 3, 4, 7], "normalized_puzzle": [3, 3, 4, 7], "normalized_puzzle_sha256": "6d551d60b1ee47909595a7a153211c835861fd7abffd0ee87b2661d9c2370949"},
+    {"source_row_index": 780, "source_id": "780", "puzzle": [2, 6, 7, 12], "normalized_puzzle": [2, 6, 7, 12], "normalized_puzzle_sha256": "fa8a2606f77e3bbf4bfddb7271fc924989143de108ea0a32dbf1a834e16f6deb"},
+    {"source_row_index": 782, "source_id": "782", "puzzle": [3, 3, 12, 12], "normalized_puzzle": [3, 3, 12, 12], "normalized_puzzle_sha256": "ec53046d7bf599ac797bbd0f5081104bbc32b4d2a0919d264592f5c35170b4c4"},
+    {"source_row_index": 808, "source_id": "808", "puzzle": [4, 4, 4, 5], "normalized_puzzle": [4, 4, 4, 5], "normalized_puzzle_sha256": "f814d096511b5c3bb0875064cd2b47d329f86b96f43820bbf38508d04c2ad723"},
+    {"source_row_index": 902, "source_id": "902", "puzzle": [2, 3, 4, 8], "normalized_puzzle": [2, 3, 4, 8], "normalized_puzzle_sha256": "60f977a52a34668afe7805005cf3ca13625be2a0cfb87af3ea756c1b16bac07c"},
+    {"source_row_index": 960, "source_id": "960", "puzzle": [2, 12, 13, 13], "normalized_puzzle": [2, 12, 13, 13], "normalized_puzzle_sha256": "c106a9f269b7353b04f775d7ff3b6b35f81b337605d06c3c324c653af20dbe3f"},
+    {"source_row_index": 1007, "source_id": "1007", "puzzle": [1, 2, 11, 13], "normalized_puzzle": [1, 2, 11, 13], "normalized_puzzle_sha256": "7b2bc73b212438df173146ef3c1cd91267c3bda83a681b11fcd834b91937632c"},
+    {"source_row_index": 1031, "source_id": "1031", "puzzle": [5, 9, 12, 13], "normalized_puzzle": [5, 9, 12, 13], "normalized_puzzle_sha256": "2b3d489e813f0398ed754414a3a8af2c89464bf17ac2a3a2eacfae036f7b2944"},
+    {"source_row_index": 1115, "source_id": "1115", "puzzle": [4, 6, 11, 11], "normalized_puzzle": [4, 6, 11, 11], "normalized_puzzle_sha256": "8687329dcbbd3096749ec993e5ec7fe1180b5a8275bdc6ad66cd8a260bb72b6f"},
+    {"source_row_index": 1184, "source_id": "1184", "puzzle": [2, 4, 5, 10], "normalized_puzzle": [2, 4, 5, 10], "normalized_puzzle_sha256": "554bb931a8b1693d0812b9e9224053942a5b20806cd6b85bacab4341c6c0a26e"},
+    {"source_row_index": 1186, "source_id": "1186", "puzzle": [1, 2, 4, 12], "normalized_puzzle": [1, 2, 4, 12], "normalized_puzzle_sha256": "9f92fcdf0666681c99d55272df4190883081bd6a9dc98b251c7b4d0cc054ff6b"},
+    {"source_row_index": 1204, "source_id": "1204", "puzzle": [6, 10, 12, 13], "normalized_puzzle": [6, 10, 12, 13], "normalized_puzzle_sha256": "2b94626336be15f8f3ecdedc9868669b35f50e077565eab42aec23c168b7e386"},
+    {"source_row_index": 1213, "source_id": "1213", "puzzle": [4, 5, 6, 11], "normalized_puzzle": [4, 5, 6, 11], "normalized_puzzle_sha256": "787ff875ccc1a336e496d9bf6f0a69835a9a9bcdffa85a333a09201e53dfb21c"},
+    {"source_row_index": 1222, "source_id": "1222", "puzzle": [2, 5, 8, 10], "normalized_puzzle": [2, 5, 8, 10], "normalized_puzzle_sha256": "1adf8b7413f5b249301caddc69114b5bba69e1c64a5905b7a375ac5354c8bf4f"}
+  ]
+}

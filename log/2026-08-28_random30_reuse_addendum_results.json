@@ -1,0 +1,36 @@
+{
+  "status": "blocked_before_rollout",
+  "reason": "exact initial behavior-policy adapter state was not persisted, and no 30x4 random30 rollout corpus exists to preserve",
+  "source_head": "03d7371",
+  "addendum_sha256": "55b987f07e8dee0b83f1c1bbabc1716fa3a509e541c462624a342e305cb9634b",
+  "frozen_manifest": {
+    "path": "log/2026-08-28_random30_len1024_context4096_probe_sample_manifest.json",
+    "sha256": "f2c8db2b44bf1d8e0879565a2c49215c212090e48cd15d267529f14ea098136d",
+    "selection_count": 30,
+    "selection_seed": 20260828,
+    "source_repo_commit": "d69d3b8ddb75f888732e893394e8e5e5df4f4e6f",
+    "source_train_sha256": "8fb0cbd833ed083bd26c24d9f952d7952189d251bb2905bc58171939b6c3c803",
+    "normalized_puzzle_hashes_complete": true,
+    "selected_ids_and_puzzles_match_preparation_manifest": true,
+    "selected_stage2_content_overlap": 0
+  },
+  "prepared_local_inputs": {
+    "manifest": "/root/autodl-tmp/tmp/random30_len1024_context4096_20260828/random30_manifest.json",
+    "manifest_sha256": "da3c7fe62d4c6531a6ff3423d8ebfade5bafb20f5314b88116c7511d8a5d9f9a",
+    "train_parquet": "/root/autodl-tmp/tmp/random30_len1024_context4096_20260828/random30_train.parquet",
+    "train_parquet_exists": true,
+    "target_rollouts": 120,
+    "observed_random30_rollouts": 0,
+    "observed_random30_replay_packs": 0
+  },
+  "behavior_policy_identity": {
+    "base_model_path": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "role_route_for_future_run": "planner_main=qwen-base+LoRA; fixed planner/verifier/executor/tool=qwen-base without LoRA",
+    "sampling": {"temperature": 0.7, "rollout_n": 4, "max_prompt_length": 1536, "max_response_length": 1024, "max_model_len": 4096},
+    "exact_random30_initial_lora_state": "missing",
+    "exact_random30_rng_state": "missing",
+    "related_prior_4_prompt_smoke_checksum": "not valid as random30 behavior-policy identity"
+  },
+  "reusable_artifacts": {"rollout_corpus": "not created", "pre_update_replay_pack": "not created", "fresh_process_validation": "not run"},
+  "safety": {"rollout_started": false, "optimizer_step": false, "formal_training": false, "external_llm_calls": false, "gpu_touched": false}
+}
