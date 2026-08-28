@@ -1,73 +1,59 @@
-# Unified local Qwen fixed-role architecture smoke handoff
+# Unified Qwen fixed-role architecture smoke handoff
 
-## Scope and outcome
+## Observed facts
 
-This was an engineering smoke only. No formal 60-prompt training, HOB, sweep, validation, checkpoint, DeepSeek, Doubao, GPT, or other external judge call was started. The 7B path was attempted first, as required. It failed at actor/FSDP2 initialization on the single RTX 5090 32 GB. The same unified role design was then checked with 3B and completed safely.
+- Repository: `/root/autodl-tmp/AgentFlow`, branch `experiment/flow-grpo-3b-lora`; source baseline before this work was `4d7736a`.
+- Environment: `verl==0.5.0`, `vllm==0.9.2`, `torch==2.7.1+cu128`, one RTX 5090 (32,607 MiB reported), Qwen2.5-7B-Instruct already present locally at `/root/autodl-tmp/models/Qwen2.5-7B-Instruct`.
+- No formal baseline, benchmark sweep, checkpoint, DeepSeek/Doubao/GPT request, or optimizer configuration change was started. The smoke script sets `AGENTFLOW_DISABLE_EXTERNAL_LLM=1` and `AGENTFLOW_REWARD_JUDGE_ENABLED=0`; reward telemetry in the successful run shows only local deterministic/conservative-fallback routes.
+- Initial 7B actor initialization with default FP32 failed near the GPU limit. BF16 initial load plus FSDP2 `offload_policy=true` then initialized and ran successfully with vLLM co-location at `gpu_memory_utilization=0.60`.
+- A first signal attempt was intentionally stopped after detecting configuration drift: the generated AgentFlow server still had `rollout.n=2` while the trainer override was `n=4`, and progress stopped at 8/8. Its logs are preserved as interrupted evidence and are not counted as a successful smoke.
 
-The tracked aggregate is in `log/2026-08-28_unified_qwen7b_fixed_roles_smoke_results.json`. The large raw logs and rollout JSON remain local and are intentionally not tracked.
+## Hypotheses
 
-## Architecture audit
+- The default actor FP32 load was the main 7B initialization failure mechanism; BF16 plus the verified FSDP2 CPU offload path removes that memory pressure sufficiently for this 32 GB card.
+- The stable logical aliases prevent fixed roles from inheriting the trainable adapter, while the runtime route registry bridges VERL's ephemeral in-memory LoRA id to `qwen-actor`.
 
-`agentflow/agentflow/solver.py::construct_solver` is the role assembly point. It receives `[planner_main, planner_fixed, verifier, executor]`, creates the `Initializer`, `Planner`, `Verifier`, and `Executor`, and passes the local vLLM endpoint to each local role. The new opt-in contract is `['trainable', 'frozen', 'frozen', 'frozen']`, with `TOOL_ENGINE=['frozen']`.
+## Conclusions
 
-`train/train_agent.py`/VERL instantiate the actor through PyTorch FSDP2 and apply the existing PEFT LoRA to the actor. The rollout path is a VERL/vLLM engine. The fixed roles use the same local Qwen endpoint and are marked base-only/frozen; they do not create separate fixed-agent model processes. Role behavior remains prompt/role logic, not separate paid providers or model copies.
+- 7B unified-base is feasible for this tiny single-GPU smoke with the documented conservative settings. It is not yet evidence that a 60-prompt formal run will fit at the same margin.
+- In the final consistent signal smoke, all 4 groups produced 16/16 valid raw records and the reward vectors were: `17845=[0,0,0,0]`, `90185=[0,0,0,0]`, `50365=[0,1,1,0]`, `51933=[0,0,0,0]`. Reward mean was `2/16=0.125`; one group was mixed.
+- Training step 1 was all-zero. Step 2 logged `critic/rewards/mean=0.25`, `critic/advantages` min/max `-0.9765625/0.9765625`, `actor/pg_loss=0.0015756587187449138`, `actor/grad_norm=0.5930989583333334`, and `actor/ppo_kl=0.0016729555351076564`. This is a real nonzero policy-gradient signal and update path, not a zero-gradient-only smoke.
+- Runtime OpenTelemetry request attributes in the successful logs contain both `qwen-base` and `qwen-actor` (train log counts 150/46; rollout log counts 75/23). The route state was atomically published with a final adapter id/version, and two adapter-registration warnings mark the two post-update synchronizations. Fixed-role requests used the base alias; actor requests used the registered actor alias. A direct LoRA tensor checksum was not persisted, so the parameter-change claim is supported by nonzero optimizer metrics plus synchronized adapter registration, not by a saved full parameter diff.
+- Cleanup was clean in the successful run: both normal-completion markers report `drained=True`, `outstanding_before=0`, `abort_errors=0`, reset/sleep completed, and final GPU usage was 2 MiB with no matching AgentFlow/Ray/vLLM process. No CUDA illegal access, OOM, prefix-cache reset failure, or deadlock appeared in the successful run.
 
-KL is disabled in this smoke, so no separate `RefPolicy` is created. When reference semantics are needed by the existing actor path, the intended semantic is the same base with the LoRA adapter disabled; this task did not enable KL merely to manufacture a reference model.
+## Recommended minimal fix
 
-One pinned-stack limitation is material: VERL 0.5.0/vLLM 0.9.2's async OpenAI-compatible request path does not provide a per-request LoRA selector. Therefore the smoke proves the actor's LoRA wiring and a shared local inference endpoint, but it does not prove that direct AgentFlow planner_main HTTP calls select the synchronized actor adapter. This must be resolved or explicitly accepted before a formal unified baseline.
+- Use `+actor_rollout_ref.actor.fsdp_config.model_dtype=bf16` and `actor_rollout_ref.actor.fsdp_config.offload_policy=true` only in the unified 7B smoke/formal config after separate approval; do not broaden the global defaults.
+- Keep the one-base route contract: `qwen-base` has no adapter, and `qwen-actor` is refreshed from the latest VERL `TensorLoRARequest` publication. Keep KL disabled, so no separate RefPolicy model is required.
+- The route-serving code now points the vLLM registry tokenizer lookup at the already-loaded base model path rather than an ephemeral numeric adapter path. The successful run was executed immediately before that last warning cleanup and therefore still contains the harmless historical `simon_lora_path` tokenizer fallback warning; the new behavior is covered by the focused unit test.
+- Do not start formal training from this handoff. Before any formal run, add optional pre/post LoRA checksum instrumentation if a direct parameter-delta proof is required.
 
-## Model source
+## Exact configuration and implementation deltas
 
-Qwen2.5-7B-Instruct was downloaded first through ModelScope using `Qwen/Qwen2.5-7B-Instruct` into `/root/autodl-tmp/models/Qwen2.5-7B-Instruct`. The local four safetensors shards and SHA256 values are recorded in the JSON artifact. The download command did not pin a ModelScope revision, so no unverified revision claim is made. The existing local Qwen2.5-3B-Instruct model was reused for fallback; no model artifacts were deleted.
+- Smoke-only: model `/root/autodl-tmp/models/Qwen2.5-7B-Instruct`; BF16 actor; FSDP2; `fsdp2.offload_policy=true`; vLLM TP=1; vLLM GPU utilization `0.60`; `max_num_seqs=1`; `max_num_batched_tokens=1024`; gradient checkpointing on.
+- Signal smoke: 4 existing non-evaluation training prompts; `temperature=0.7`; `rollout.n=4`; `max_response_length=128`; train batch 2; PPO mini-batch 2; micro-batch 1; LR `1e-5`; `ppo_epochs=1`; total epochs 1; `save_freq=0`; no validation/checkpoint.
+- Added stable role routing in `agentflow/agentflow/engine/role_routing.py`, unified aliases in `agentflow/agentflow/solver.py`, and request registry refresh/alias isolation in `agentflow/verl/async_server.py`.
+- Added the reproducible VERL 0.5.0 site-package backport at `patches/verl_vllm_unified_route_backport.patch`. The installed site-package change is not itself tracked; the patch applies with `patch --dry-run` to a pristine VERL 0.5.0 wheel.
+- Added `scripts/export_unified_replay_pack_20260828.py` and a dry-run test. The exporter was corrected to match the actual writer layout `train/step_N/idx_<id>/*.json`.
 
-## 7B failure evidence
+## Replay artifact
 
-Two 7B attempts were made before fallback:
+- Successful run raw root (local, untracked): `rollout_data/46.38.243.197/unified-qwen7b-fixed-roles-smoke-20260828_20260828-084052`.
+- Immutable pre-update pack (local, untracked): `/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/replay_pack_pre_update_signal_step1.json`.
+- Pack dry-run result: `status=ok`, `records=5`, `token_ids_available=false`.
+- Pack SHA256: `d3f4317ef91346086225803d0cf3f46b4ef592e633e8c1dbf933c09b388beb93`.
+- Limitation: the current AgentFlow JSON writer does not persist response token ids or old log-probs. The pack preserves the full available trajectory/reward metadata and records a deterministic pre-update recomputation contract. Step directories are per writer task, so `step_1` is the pinned pre-update slice, not a claim that all 16 records share one optimizer batch.
 
-* `20260827_233700`, vLLM GPU utilization 0.14;
-* `20260827_233813`, vLLM GPU utilization 0.10.
+## Evidence paths and checks
 
-Both failed before rollout during actor FSDP2 initialization with the same CUDA OOM: an attempted 2.03 GiB allocation with 1.17 GiB free, 30.18 GiB in use, and 28.58 GiB allocated by PyTorch. Lowering vLLM reservation did not change this actor-init failure, so the 7B unified design is not feasible on this single 32 GB card under the current FSDP2+vLLM layout and conservative smoke settings.
+- Successful train log: `log/unified-qwen7b-fixed-roles-smoke-20260828_20260828_083919_train.log`.
+- Successful rollout log: `log/unified-qwen7b-fixed-roles-smoke-20260828_20260828_083919_rollout.log`.
+- Interrupted drift log: `log/unified-qwen7b-fixed-roles-smoke-20260828_20260828_082935_train.log`.
+- Runtime route state: `/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/unified-qwen7b-fixed-roles-smoke-20260828_20260828_083919_role_routes.json`.
+- Focused unittest command: `python -m unittest test.test_unified_role_routing test.test_unified_local_roles test.test_vllm_timeout_cleanup test.test_unified_replay_pack -v`.
+- `git diff --check` passes for source/tests/report artifacts; the two tracked unified patch files contain required single-space blank context lines, so the equivalent check uses `git -c core.whitespace=-blank-at-eol diff --check`. Both patches independently pass `patch --dry-run` against pristine VERL 0.5.0.
+- The successful run's two cleanup markers, BF16/FSDP memory markers, route request telemetry, raw reward vectors, and final GPU/process state are summarized in the companion JSON.
 
-Evidence is preserved in:
+## Observed facts / Hypotheses / Conclusions / Recommended minimal fix boundary
 
-* `log/unified-qwen7b-fixed-roles-smoke-20260828_20260827_233700_train.log`
-* `log/unified-qwen7b-fixed-roles-smoke-20260828_20260827_233813_train.log`
-
-## 3B fallback smoke
-
-The final successful run used `/root/autodl-tmp/models/Qwen2.5-3B-Instruct`, vLLM utilization 0.24, TP=1, max model length 2048, max sequences 1, max batched tokens 1024, and a smoke-only response cap of 64 tokens. The cap was propagated through the local ChatVLLM factory because the AgentFlow role context otherwise exceeded the intentionally small vLLM context budget; formal experiment configuration was not changed.
-
-The four-prompt, `n=2` run produced 8 raw rollout files, all valid, with zero retries and no errors. The role log reports:
-
-`planner_main=trainable_actor_lora planner_fixed=frozen_base_no_lora verifier=local_base_no_lora executor=local_base_no_lora tools=local_base_no_lora`
-
-The run loaded one local vLLM engine path and did not spawn a separate fixed-model process. Six role/tool client objects are visible in the role construction logs, but they are clients to the one local endpoint, not six model instances. The actor log reports PEFT LoRA application and a 3.10B-parameter actor.
-
-All eight rewards were 0.0. With no mixed reward group, theoretical group-normalized advantages were all zero; both logged steps consequently had `actor/pg_loss=0.0`, `actor/grad_norm=0.0`, and `critic/advantages/mean=0.0`. This is an uninformative all-zero sample, not evidence that the LoRA backward path is broken, and the smoke does not claim a nonzero update was observed. No extra prompts were run after seeing this outcome because the requested architecture smoke was limited to 2–4 prompts.
-
-The local scorer was explicitly run with external judge disabled. Its eight events were conservative fallback events (`reason=conflicting_numbers`, `error=unavailable`), not DeepSeek calls. This keeps the smoke within the zero-external-LLM requirement; it also means this run does not validate the paid judge route.
-
-## Cleanup and resource evidence
-
-The final 3B train log contains two normal-completion markers. Each reports `drained=True`, `outstanding_before=0`, `abort_count=0`, then `sleep_started=True`; cleanup duration was about 0.49–0.51 seconds. There were no prefix-cache reset failures, “blocks are not freed yet” messages, CUDA illegal memory accesses, deadlocks, Ray worker deaths, or CUDA OOMs in the successful run.
-
-The local GPU monitor recorded a peak of 20,916 MiB used out of 32,607 MiB. Actor metrics recorded approximately 20.86–20.87 GiB allocated and 24.11–24.40 GiB reserved. After cleanup, `nvidia-smi` reported 2 MiB used and no matching Ray/vLLM/training process. `trainer.save_freq=0`; no checkpoint was written. Validation was disabled (`trainer.test_freq=0`, final validation metrics `None`).
-
-There was one non-fatal environment warning because the port cleanup helper could not find `lsof`; the control server and the safe cleanup path still completed. It is recorded for follow-up, but it did not cause a model or lifecycle failure.
-
-## Code changes
-
-The isolated changes:
-
-* forward the local endpoint and response cap into initializer tools, planner/verifier fixed engines, executor, and local ChatVLLM;
-* add the opt-in unified local role contract and external-provider safety guard;
-* retain only planner_main as the trainable actor-LoRA role while fixed roles are explicitly frozen/base-only;
-* add four small wiring/guard contract tests;
-* add the reproducible smoke launcher with no-validation/no-checkpoint and external-LLM-disabled safeguards.
-
-No Flow-GRPO algorithm, reward range, model weights, optimizer hyperparameters, or formal training configuration was changed.
-
-## Recommendation
-
-Do not launch the formal GameOf24 60-prompt baseline or HOB from this smoke. The 7B unified architecture should be rejected for this single 32 GB GPU unless the memory layout is materially redesigned. The 3B unified endpoint is operationally feasible and cleanup-safe, but a controlled follow-up is required to verify how planner_main's synchronized LoRA is selected on this pinned async vLLM API. Only after that adapter-selection question is answered should a formal retraining decision be made.
+This smoke is an infrastructure feasibility result only. It does not authorize a formal 60-prompt baseline, PPO epoch change, HOB implementation, benchmark evaluation, or any new training run.

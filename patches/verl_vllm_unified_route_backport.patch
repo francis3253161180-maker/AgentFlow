@@ -1,0 +1,70 @@
+diff --git a/verl/workers/sharding_manager/fsdp_vllm.py b/verl/workers/sharding_manager/fsdp_vllm.py
+--- a/verl/workers/sharding_manager/fsdp_vllm.py
++++ b/verl/workers/sharding_manager/fsdp_vllm.py
+@@ -13,8 +13,10 @@
+ # limitations under the License.
+ 
+ import inspect
++import json
+ import logging
+ import os
++import tempfile
+ import time
+ from collections import OrderedDict
+ 
+@@ -52,6 +54,42 @@ logger = logging.getLogger(__file__)
+ logger.setLevel(os.getenv("VERL_LOGGING_LEVEL", "WARN"))
+ 
+ 
++def _publish_unified_lora_route(lora_name: str, lora_int_id: int) -> None:
++    """Publish only adapter identity for the AgentFlow HTTP role bridge."""
++    path = os.getenv("AGENTFLOW_ROLE_ROUTING_STATE", "").strip()
++    if not path:
++        return
++    payload = {
++        "schema_version": 1,
++        "base_role": "qwen-base",
++        "actor_role": "qwen-actor",
++        "base_model": os.getenv("AGENTFLOW_UNIFIED_BASE_MODEL_NAME", "qwen-base"),
++        "actor": {
++            "lora_name": str(lora_name),
++            "lora_int_id": int(lora_int_id),
++            "version": str(time.time_ns()),
++        },
++    }
++    target_dir = os.path.dirname(path) or "."
++    os.makedirs(target_dir, exist_ok=True)
++    fd, temporary = tempfile.mkstemp(prefix=".agentflow-role-route.", dir=target_dir)
++    try:
++        with os.fdopen(fd, "w", encoding="utf-8") as handle:
++            json.dump(payload, handle, sort_keys=True, separators=(",", ":"))
++            handle.write("\n")
++            handle.flush()
++            os.fsync(handle.fileno())
++        os.replace(temporary, path)
++    finally:
++        if os.path.exists(temporary):
++            os.unlink(temporary)
++    logger.info(
++        "UNIFIED_ROLE_ROUTE published role=qwen-actor adapter_id=%s version=%s",
++        lora_int_id,
++        payload["actor"]["version"],
++    )
++
++
+ class FSDPVLLMShardingManager(BaseShardingManager):
+     """Sharding manager for FSDP models with vLLM inference engine integration.
+
+@@ -291,7 +329,11 @@ class FSDPVLLMShardingManager(BaseShardingManager):
+                     peft_config=asdict(peft_config),
+                     lora_tensors=updated_params,
+                 )
+-                self.inference_engine.llm_engine.add_lora(lora_reqest)
++                if hasattr(self.inference_engine, "llm_engine"):
++                    self.inference_engine.llm_engine.add_lora(lora_reqest)
++                else:
++                    self.inference_engine.add_lora(lora_reqest)
++                _publish_unified_lora_route(lora_reqest.lora_name, lora_reqest.lora_int_id)
+                 logger.info(f"vLLM load weights, loaded_params: {len(updated_params)}")
+                 return
+             else:

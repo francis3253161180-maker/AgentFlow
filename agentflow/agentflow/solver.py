@@ -220,19 +220,28 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
     # Both markers refer to the same local base endpoint.  The distinction is
     # intentional: only planner_main is allowed to use the actor LoRA;
     # frozen roles are base-only.  The async OpenAI-compatible vLLM route in
-    # the pinned VERL/vLLM stack has no per-request LoRA selector, so the
-    # frozen path is represented explicitly and never creates another model.
-    def resolve_role_engine(spec: str) -> str:
-        return llm_engine_name if spec in {"trainable", "frozen"} else spec
-
-    planner_main_engine = resolve_role_engine(model_engine[0])
-    planner_fixed_engine = resolve_role_engine(model_engine[1])
-    verifier_engine = resolve_role_engine(model_engine[2])
-    executor_engine = resolve_role_engine(model_engine[3])
-
+    # the pinned VERL/vLLM stack is given stable request-level aliases below;
+    # the frozen path is represented explicitly and never creates another model.
     unified_local_roles = os.getenv("AGENTFLOW_UNIFIED_LOCAL_ROLES", "0").lower() in {
         "1", "true", "yes", "on"
     }
+    if unified_local_roles:
+        # These are logical OpenAI-compatible model ids.  PatchedvLLMServer
+        # maps qwen-base to no adapter and qwen-actor to the latest synced
+        # TensorLoRARequest.  They must remain distinct at request time.
+        planner_main_engine = "vllm-qwen-actor"
+        planner_fixed_engine = "vllm-qwen-base"
+        verifier_engine = "vllm-qwen-base"
+        executor_engine = "vllm-qwen-base"
+    else:
+        def resolve_role_engine(spec: str) -> str:
+            return llm_engine_name if spec in {"trainable", "frozen"} else spec
+
+        planner_main_engine = resolve_role_engine(model_engine[0])
+        planner_fixed_engine = resolve_role_engine(model_engine[1])
+        verifier_engine = resolve_role_engine(model_engine[2])
+        executor_engine = resolve_role_engine(model_engine[3])
+
     if unified_local_roles:
         if model_engine != ["trainable", "frozen", "frozen", "frozen"]:
             raise ValueError(
@@ -253,7 +262,7 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
     initializer = Initializer(
         enabled_tools=enabled_tools,
         tool_engine=tool_engine,
-        model_string=llm_engine_name,
+        model_string="vllm-qwen-base" if unified_local_roles else llm_engine_name,
         verbose=verbose,
         vllm_config_path=vllm_config_path,
         base_url=base_url,
@@ -280,8 +289,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         toolbox_metadata=initializer.toolbox_metadata,
         available_tools=initializer.available_tools,
         verbose=verbose,
-        base_url=base_url if verifier_engine == llm_engine_name else None,
-        fixed_base_url=base_url if planner_fixed_engine == llm_engine_name else None,
+        base_url=base_url if (unified_local_roles or verifier_engine == llm_engine_name) else None,
+        fixed_base_url=base_url if (unified_local_roles or planner_fixed_engine == llm_engine_name) else None,
         max_tokens=max_tokens,
         temperature=temperature
     )
@@ -294,7 +303,7 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         llm_engine_name=executor_engine,
         root_cache_dir=root_cache_dir,
         verbose=verbose,
-        base_url=base_url if executor_engine == llm_engine_name else None,  # Only use base_url for trainable model
+        base_url=base_url if (unified_local_roles or executor_engine == llm_engine_name) else None,
         temperature=temperature,
         tool_instances_cache=initializer.tool_instances_cache,  # Pass the cached tool instances
         max_tokens=max_tokens,

@@ -10,7 +10,11 @@ from starlette.requests import Request
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse, StreamingResponse
 from vllm.entrypoints.openai.protocol import ChatCompletionRequest, ErrorResponse
+from vllm.entrypoints.openai.serving_models import BaseModelPath
+from vllm.lora.request import LoRARequest
 from verl.workers.rollout.vllm_rollout.vllm_async_server import AsyncvLLMServer
+
+from agentflow.engine.role_routing import ACTOR_ROLE, BASE_ROLE, read_actor_route, route_state_path
 
 
 logger = logging.getLogger(__name__)
@@ -40,6 +44,9 @@ class PatchedvLLMServer(_unwrap_ray_remote(AsyncvLLMServer)):
         self._active_chat_requests = 0
         self._test_hold_requests_seen = 0
         self._test_hold_requests_used = 0
+        self._role_route_path = route_state_path()
+        self._base_model_name = None
+        self._actor_route_version = None
 
     def _request_ids(self):
         """Return vLLM request ids using the 0.9.2 public-ish state surface."""
@@ -72,6 +79,63 @@ class PatchedvLLMServer(_unwrap_ray_remote(AsyncvLLMServer)):
         async with self._request_state_lock:
             self._accepting_requests = True
         logger.info("VLLM_CLEANUP wake_up complete; request acceptance resumed")
+
+    async def init_engine(self):
+        await super().init_engine()
+        # Keep the normal model id for VERL compatibility and add one explicit
+        # base alias. Fixed AgentFlow roles use only this no-adapter alias.
+        self._base_model_name = self.openai_serving_chat.models.base_model_paths[0].name
+        if not any(model.name == BASE_ROLE for model in self.openai_serving_chat.models.base_model_paths):
+            self.openai_serving_chat.models.base_model_paths.append(
+                BaseModelPath(name=BASE_ROLE, model_path=self.config.model.path)
+            )
+
+    def _refresh_actor_route(self):
+        """Expose the latest worker-loaded adapter through a stable HTTP alias."""
+
+        route = read_actor_route(self._role_route_path)
+        if not route or route.get("version") == self._actor_route_version:
+            return route
+        models = self.openai_serving_chat.models
+        models.lora_requests = [item for item in models.lora_requests if item.lora_name != ACTOR_ROLE]
+        models.lora_requests.append(
+            LoRARequest(
+                lora_name=ACTOR_ROLE,
+                lora_int_id=route["lora_int_id"],
+                # The adapter is registered in-memory by VERL's
+                # TensorLoRARequest.  Point the registry's tokenizer lookup at
+                # the already-loaded base model; it must not treat the
+                # ephemeral numeric adapter id as a filesystem path.
+                lora_path=str(self.config.model.path),
+                base_model_name=BASE_ROLE,
+            )
+        )
+        self._actor_route_version = route["version"]
+        logger.info(
+            "UNIFIED_ROLE_ROUTE adapter_registered role=%s adapter_id=%s version=%s",
+            ACTOR_ROLE,
+            route["lora_int_id"],
+            route["version"],
+        )
+        return route
+
+    def _prepare_role_request(self, request_json):
+        requested_model = request_json.get("model")
+        if requested_model == ACTOR_ROLE:
+            route = self._refresh_actor_route()
+            if not route:
+                raise RuntimeError("qwen-actor requested before a synchronized LoRA adapter is available")
+            logger.info(
+                "UNIFIED_ROLE_ROUTE request role=%s adapter_id=%s version=%s",
+                ACTOR_ROLE,
+                route["lora_int_id"],
+                route["version"],
+            )
+        elif requested_model == BASE_ROLE:
+            # No adapter object is attached to this request: fixed roles are
+            # isolated from the trainable planner adapter.
+            logger.info("UNIFIED_ROLE_ROUTE request role=%s adapter_id=none", BASE_ROLE)
+        return request_json
 
     async def _abort_and_drain(self, reason: str):
         """Abort vLLM 0.9.2 requests and wait for both layers to quiesce."""
@@ -203,7 +267,14 @@ class PatchedvLLMServer(_unwrap_ray_remote(AsyncvLLMServer)):
         request = None
         stream_response = False
         try:
-            request_json = await raw_request.json()
+            try:
+                request_json = self._prepare_role_request(await raw_request.json())
+            except RuntimeError as exc:
+                logger.warning("UNIFIED_ROLE_ROUTE rejected request reason=%s", str(exc))
+                return JSONResponse(
+                    content={"error": {"message": str(exc), "type": "server_error"}},
+                    status_code=503,
+                )
             request = ChatCompletionRequest(**request_json)
             completion = self.openai_serving_chat.create_chat_completion(request, raw_request)
             test_hold = float(os.environ.get("AGENTFLOW_VLLM_TEST_REQUEST_HOLD_SECONDS", "0"))
