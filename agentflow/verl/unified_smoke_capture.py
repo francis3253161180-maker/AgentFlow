@@ -197,7 +197,7 @@ def capture_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
 
 
 def restore_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
-    """Restore an opt-in LoRA snapshot and verify its deterministic hash."""
+    """Restore an opt-in LoRA snapshot into an ordinary, pre-FSDP module."""
     source = os.getenv("AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH", "").strip()
     if not source:
         return {"status": "disabled"}
@@ -227,6 +227,32 @@ def restore_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
     }
     print(
         f"AGENTFLOW_BEHAVIOR_SNAPSHOT status=restored hash={actual} tensors={len(state)}",
+        flush=True,
+    )
+    return result
+
+
+def verify_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
+    """Verify a snapshot hash without copying CPU tensors into DTensors."""
+    source = os.getenv("AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH", "").strip()
+    if not source:
+        return {"status": "disabled"}
+    payload = torch.load(source, map_location="cpu", weights_only=False)
+    expected = payload.get("lora_hash")
+    state = payload.get("lora_state")
+    if not isinstance(state, dict) or not expected:
+        raise RuntimeError("invalid behavior snapshot payload")
+    actual = _lora_hash(module)["hash"]
+    if actual != expected:
+        raise RuntimeError(f"behavior snapshot hash mismatch: expected={expected} actual={actual}")
+    result = {
+        "status": "verified",
+        "source": source,
+        "lora_hash": actual,
+        "tensor_count": len(state),
+    }
+    print(
+        f"AGENTFLOW_BEHAVIOR_SNAPSHOT status=verified hash={actual} tensors={len(state)}",
         flush=True,
     )
     return result

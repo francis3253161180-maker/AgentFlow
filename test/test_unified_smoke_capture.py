@@ -81,7 +81,49 @@ class UnifiedSmokeCaptureTest(unittest.TestCase):
             self.assertIn("input_ids", loaded["field_inventory"]["tensor_fields"])
             self.assertEqual(loaded["metadata"]["model_path"], "local-model")
 
+    @unittest.skipUnless(
+        Path(
+            os.getenv(
+                "AGENTFLOW_BEHAVIOR_SNAPSHOT_TEST_PATH",
+                "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/"
+                "random30-fresh-rollout-replay-20260828_20260828_115632_behavior_snapshot.pt",
+            )
+        ).exists(),
+        "saved 392-tensor behavior snapshot is not available",
+    )
+    def test_saved_392_lora_tensors_restore_and_hash_exactly(self):
+        source = Path(
+            os.getenv(
+                "AGENTFLOW_BEHAVIOR_SNAPSHOT_TEST_PATH",
+                "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/"
+                "random30-fresh-rollout-replay-20260828_20260828_115632_behavior_snapshot.pt",
+            )
+        )
+        payload = torch.load(source, map_location="cpu", weights_only=False)
+        state = payload["lora_state"]
+        self.assertEqual(len(state), 392)
+
+        # Recreate only the PEFT parameter tree on CPU.  This exercises the
+        # same pre-FSDP restore function without loading the 7B base model.
+        module = nn.Module()
+        for name, tensor in state.items():
+            parent = module
+            parts = name.split(".")
+            for part in parts[:-1]:
+                child = parent._modules.get(part)
+                if child is None:
+                    child = nn.Module()
+                    parent.add_module(part, child)
+                parent = child
+            parent.register_parameter(parts[-1], nn.Parameter(torch.zeros_like(tensor)))
+
+        with patch.dict(os.environ, {"AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH": str(source)}, clear=False):
+            result = capture.restore_behavior_snapshot(module)
+        self.assertEqual(result["status"], "restored")
+        self.assertEqual(result["tensor_count"], 392)
+        self.assertEqual(result["lora_hash"], payload["lora_hash"])
+        self.assertEqual(capture._lora_hash(module)["hash"], payload["lora_hash"])
+
 
 if __name__ == "__main__":
     unittest.main()
-

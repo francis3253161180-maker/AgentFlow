@@ -4,38 +4,49 @@
  from verl.workers.sharding_manager.fsdp_ulysses import FSDPUlyssesShardingManager
 +
 +try:
-+    from agentflow.verl.unified_smoke_capture import capture_behavior_snapshot, restore_behavior_snapshot
++    from agentflow.verl.unified_smoke_capture import (
++        capture_behavior_snapshot,
++        restore_behavior_snapshot,
++        verify_behavior_snapshot,
++    )
 +except Exception:
 +    def capture_behavior_snapshot(module):
 +        return {"status": "unavailable"}
 +    def restore_behavior_snapshot(module):
 +        return {"status": "unavailable"}
++    def verify_behavior_snapshot(module):
++        return {"status": "unavailable"}
 @@
-             self.checkpoint_manager = FSDPCheckpointManager(
+         self._is_actor = self.role in ["actor", "actor_rollout", "actor_rollout_ref"]
+         self._is_rollout = self.role in ["rollout", "actor_rollout", "actor_rollout_ref"]
+         self._is_ref = self.role in ["ref", "actor_rollout_ref"]
++        self._agentflow_behavior_snapshot_pre_restored = False
 @@
-                 checkpoint_config=checkpoint_contents,
-             )
-+
-+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
-+    def capture_agentflow_behavior_snapshot(self):
-+        """Opt-in pre-rollout LoRA/RNG snapshot; never updates the actor."""
-+        assert self._is_actor
-+        if self._is_offload_param:
-+            load_fsdp_model_to_gpu(self.actor_module_fsdp)
-+        try:
-+            return capture_behavior_snapshot(self.actor_module_fsdp)
-+        finally:
-+            if self._is_offload_param:
-+                offload_fsdp_model_to_cpu(self.actor_module_fsdp)
-+
-+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
-+    def restore_agentflow_behavior_snapshot(self):
-+        """Opt-in restore/hash check for a pre-rollout LoRA snapshot."""
-+        assert self._is_actor
-+        if self._is_offload_param:
-+            load_fsdp_model_to_gpu(self.actor_module_fsdp)
-+        try:
-+            return restore_behavior_snapshot(self.actor_module_fsdp)
-+        finally:
-+            if self._is_offload_param:
-+                offload_fsdp_model_to_cpu(self.actor_module_fsdp)
+                 actor_module = get_peft_model(actor_module, LoraConfig(**lora_config))
+                 # PEFT initializes adapter tensors in fp32; FSDP2 requires a
+                 # uniform original dtype when the actor is loaded in bf16.
+                 actor_module.to(torch_dtype)
++                if os.getenv("AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH", "").strip():
++                    result = restore_behavior_snapshot(actor_module)
++                    if result.get("status") != "restored":
++                        raise RuntimeError(f"pre-FSDP behavior snapshot restore failed: {result}")
++                    self._agentflow_behavior_snapshot_pre_restored = True
++                    print(
++                        "AGENTFLOW_BEHAVIOR_SNAPSHOT_PRE_FSDP "
++                        f"status=restored hash={result['lora_hash']} tensors={result['tensor_count']}",
++                        flush=True,
++                    )
+@@
+     def restore_agentflow_behavior_snapshot(self):
+         """Opt-in restore/hash check for a pre-rollout LoRA snapshot."""
+         assert self._is_actor
+         if self._is_offload_param:
+             load_fsdp_model_to_gpu(self.actor_module_fsdp)
+         try:
+-            return restore_behavior_snapshot(self.actor_module_fsdp)
++            if not self._agentflow_behavior_snapshot_pre_restored:
++                raise RuntimeError("behavior snapshot was not restored before FSDP2 wrapping")
++            return verify_behavior_snapshot(self.actor_module_fsdp)
+         finally:
+             if self._is_offload_param:
+                 offload_fsdp_model_to_cpu(self.actor_module_fsdp)

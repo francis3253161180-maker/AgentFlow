@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "scope": "FSDP2-safe LoRA restore, then the frozen 8-group 2048/8192 rollout-only probe and offline role audit",
+  "external_calls": 0,
+  "optimizer_steps": 0,
+  "formal_training": false,
+  "restore": {
+    "source_snapshot": "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/random30-fresh-rollout-replay-20260828_20260828_115632_behavior_snapshot.pt",
+    "source_snapshot_sha256": "88be88645ccb737de45c30750d3560255ea5d953d5b0005d185636cf0c6c53a3",
+    "expected_lora_hash": "2f46d9002978cbbf623f28d5113a3d03634246a9332d308d768fc13b86ddf8c9",
+    "actual_pre_fsdp_lora_hash": "2f46d9002978cbbf623f28d5113a3d03634246a9332d308d768fc13b86ddf8c9",
+    "actual_post_fsdp_lora_hash": "2f46d9002978cbbf623f28d5113a3d03634246a9332d308d768fc13b86ddf8c9",
+    "tensor_count": 392,
+    "method": "restore ordinary PEFT module before FSDP2 wrapping; verify hash after wrapping without CPU Tensor-to-DTensor copy",
+    "verified": true
+  },
+  "phase_a_saved_random30_audit": {
+    "trajectory_count": 120,
+    "group_count": 30,
+    "stored_reward_counts": {"0.0": 120},
+    "original_audit_causes": {
+      "wrong_number_multiset": 95,
+      "invalid_or_no_expression": 23,
+      "context_error_affected": 2
+    },
+    "independent_fraction_oracle_known_solution_groups": 30,
+    "generic_fixed_scorer_accepts_known_solution_count": 30,
+    "generic_fixed_scorer_rejects_known_solution_count": 0,
+    "evidence_unchanged": true,
+    "role_audit_artifact_sha256": "00e2c74c7eba045ce0ca25f828b42801f10d305d061022fb3dc72e435aec0370"
+  },
+  "phase_b_probe": {
+    "selected_group_count": 8,
+    "outer_rollout_count": 32,
+    "valid_rollout_count": 32,
+    "group_size_counts": {"4": 8},
+    "reward_counts": {"0.0": 32},
+    "group_reward_bins": {"0/4": 8, "1/4": 0, "2/4": 0, "3/4": 0, "4/4": 0},
+    "mixed_group_count": 0,
+    "response_request_count_in_evidence": 260,
+    "sampling": {
+      "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+      "temperature": 0.7,
+      "rollout_n": 4,
+      "max_prompt_length": 3072,
+      "max_response_length": 2048,
+      "max_model_len": 8192,
+      "dynamic_response_padding": true,
+      "vllm_gpu_memory_utilization": 0.5,
+      "max_num_seqs": 1,
+      "max_num_batched_tokens": 1024,
+      "rollout_only": true,
+      "val_only": true,
+      "checkpoint_disabled": true
+    },
+    "response_tokens": {
+      "count": 260,
+      "mean": 217.5346153846154,
+      "p50": 167.5,
+      "p95": 509.2499999999999,
+      "max": 740,
+      "equal_cap_count": 0,
+      "equal_cap_rate": 0.0
+    },
+    "prompt_tokens": {"count": 260, "mean": 938.3153846153846, "p50": 804.5, "p95": 2079.95, "max": 2609},
+    "finish_reason_counts": {"stop": 260},
+    "context_overflow_or_400_events": 0,
+    "scorer_routing": {"deterministic": 32, "judge_fallback": 0, "cache_hit": 0, "api_or_parse_errors": 0},
+    "local_tool_response_parse_warnings": 147,
+    "retry_count": 0,
+    "gpu_peak_mib": 16992,
+    "gpu_peak_utilization_percent": 79,
+    "cleanup": {
+      "pre_rollout_drained": true,
+      "post_rollout_drained": true,
+      "prefix_cache_reset_failure": false,
+      "cuda_illegal_memory_access": false,
+      "cuda_oom": false,
+      "cleanup_log_markers": ["abort_start", "drain_complete=1", "reset_prefix_cache complete=1", "sleep_complete=1", "complete=1 drained=1"]
+    },
+    "artifacts": {
+      "selection_manifest_sha256": "052bd36c437cd18fed81e9100a25fcbc3ae05aededf7adf95b44e88131748365",
+      "prepared_parquet_sha256": "1b16e575499f4b9f628ddbf4cd2aceb37e90f877982068fca57b907f7a822626",
+      "train_log_sha256": "e3e0b0e84c15d145b5fb2f3a798ea7504f177a2ee38d6bc06357a249d778ce70",
+      "rollout_log_sha256": "119b4805ed247c1c6481ac1079a07c303069af3b08c0706e49ef9748d7ee2018",
+      "aggregate_sha256": "a908de96c5c4be7183e0b9117294af99fcad476cc8499e57f8efb2a709c68991",
+      "gpu_log_sha256": "de3c9fe8525bf1cd6e061047730224a8ee7e13f23e2fc4c0e137310521659aa9"
+    }
+  },
+  "phase_c_role_audit": {
+    "source": "saved random30_fresh_rollout_replay trajectories; no new generation",
+    "trajectory_count": 120,
+    "group_count": 30,
+    "oracle_categories": {"wrong_number_multiset": 96, "invalid_or_no_expression": 24},
+    "first_observed_failure_stage": {
+      "planner_main": 1,
+      "planner_fixed": 1,
+      "verifier_revision": 19,
+      "final_assembly": 38,
+      "final_extraction": 37,
+      "final_assembly_or_extraction": 17,
+      "insufficient_evidence": 7
+    },
+    "wrong_number_multiset_stage_counts": {
+      "planner_main": 1,
+      "planner_fixed": 1,
+      "verifier_revision": 19,
+      "final_assembly": 38,
+      "final_extraction": 37
+    },
+    "triplet_count_distribution": {"4": 1, "6": 52, "8": 3, "10": 64},
+    "interpretation": "Most wrong-number cases first expose a non-target arithmetic expression at final assembly/extraction; 20 are first observed earlier in verifier/planner stages. This is observational attribution, not causal proof, because malformed untagged prose and repeated candidate expressions are present.",
+    "full_rows_local_artifact": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/random30_role_failure_audit.json"
+  },
+  "tests": {
+    "pytest": "20 passed, 1 warning, 34 subtests passed",
+    "py_compile": "passed",
+    "bash_n": "passed",
+    "git_diff_check": "passed",
+    "secret_scan": "passed; no credential material added"
+  }
+}
