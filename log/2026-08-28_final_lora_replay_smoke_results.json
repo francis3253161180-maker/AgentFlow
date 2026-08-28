@@ -4,7 +4,8 @@
   "status": "passed",
   "repository": {
     "branch": "experiment/flow-grpo-3b-lora",
-    "head_before_artifact_commit": "b2bf488"
+    "head_before_artifact_commit": "b2bf488",
+    "instrumentation_commit": "a4933a66f9c11d1368f1f5cf69e8e41083223f79"
   },
   "run": {
     "run_id": "unified-qwen7b-fixed-roles-smoke-20260828_20260828_093406",

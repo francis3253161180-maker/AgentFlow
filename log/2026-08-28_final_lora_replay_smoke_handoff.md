@@ -50,7 +50,7 @@ The existing launcher emitted one non-fatal `lsof`-not-found message while attem
 - Focused suite: 25 tests passed, including scorer, role routing, replay-capture, and cleanup tests.
 - `py_compile`, `bash -n`, JSON validation, and scoped secret review passed.
 
-The large raw logs, rollout data, model/cache files, checksum, and Replay Pack remain local and are not committed. The small report/results/source/test/patch artifacts are the only intended additions. The final artifact commit SHA is supplied in the completion handoff after commit/push; the code was based on `b2bf488`.
+The large raw logs, rollout data, model/cache files, checksum, and Replay Pack remain local and are not committed. The small report/results/source/test/patch artifacts are the only intended additions. The instrumentation/source artifact commit is `a4933a66f9c11d1368f1f5cf69e8e41083223f79`; the report metadata update is pushed in the follow-up commit reported at completion. The code was based on `b2bf488`.
 
 ## Recommendation
 
