@@ -103,6 +103,9 @@ class AgentFlowTrainer(RayPPOTrainer):
 
     def _capture_behavior_policy_snapshot(self) -> None:
         """Capture actor LoRA/RNG state before any rollout request is issued."""
+        if os.environ.get("AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH", "").strip():
+            result = self.actor_rollout_wg.restore_agentflow_behavior_snapshot()
+            print(f"AGENTFLOW_BEHAVIOR_SNAPSHOT_RESTORE_DRIVER result={result}", flush=True)
         if not os.environ.get("AGENTFLOW_BEHAVIOR_SNAPSHOT_PATH", "").strip():
             return
         result = self.actor_rollout_wg.capture_agentflow_behavior_snapshot()

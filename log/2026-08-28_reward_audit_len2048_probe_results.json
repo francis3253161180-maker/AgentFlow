@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "status": "blocked_before_generation",
+  "task": "offline_random30_reward_audit_and_len2048_context8192_probe",
+  "phase_a_offline_audit": {
+    "status": "complete",
+    "external_calls": 0,
+    "source_run": "random30-fresh-rollout-replay-20260828_20260828_115632",
+    "manifest": {
+      "path": "log/2026-08-28_random30_len1024_context4096_probe_sample_manifest.json",
+      "sha256": "f2c8db2b44bf1d8e0879565a2c49215c212090e48cd15d267529f14ea098136d"
+    },
+    "evidence": {
+      "trajectory_count": 120,
+      "group_count": 30,
+      "group_size_counts": {"4": 30},
+      "stored_reward_counts": {"0.0": 120},
+      "zero_reward_causes": {
+        "invalid_or_no_expression": 23,
+        "wrong_number_multiset": 95,
+        "context_error_affected": 2
+      }
+    },
+    "independent_fraction_oracle": {
+      "groups_with_known_solution": 30,
+      "known_solution_production_accept_count_after_fix": 30,
+      "known_solution_production_reject_count_after_fix": 0,
+      "production_oracle_disagreement_count": 1,
+      "original_rewards_modified": false
+    },
+    "overlay": {
+      "kind": "offline_reward_overlay_never_written_back",
+      "path": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/random30_reward_overlay.json",
+      "sha256": "a0a3d43168e3a609c992b434232d97801c5eb49cdb48d4e2786b91efac7085b4"
+    }
+  },
+  "scorer_change": {
+    "generic": true,
+    "summary": "Explicit numeric arithmetic candidates are evaluated as complete expressions before scalar numeric-token matching; unmarked prose is not promoted.",
+    "files": ["train/utils.py", "test/test_reward_scorer.py"]
+  },
+  "phase_b_probe": {
+    "status": "not_started_generation",
+    "selected_group_count": 8,
+    "selected_rollout_count": 32,
+    "selection_manifest": {
+      "path": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/len2048_probe_selection_manifest.json",
+      "sha256": "052bd36c437cd18fed81e9100a25fcbc3ae05aededf7adf95b44e88131748365"
+    },
+    "protocol": {
+      "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+      "temperature": 0.7,
+      "rollout_n": 4,
+      "max_prompt_length": 3072,
+      "max_response_length": 2048,
+      "max_model_len": 8192,
+      "dynamic_response_padding": true,
+      "vllm_gpu_memory_utilization": 0.5,
+      "rollout_only": true,
+      "optimizer_steps": 0,
+      "checkpoint_disabled": true,
+      "external_calls_disabled": true
+    },
+    "run": {
+      "timestamp_id": "20260828_135051",
+      "config_sha256": "1d883f08e781ea052907445561eb82fa529f29928eb5245a902b8dce85d21701",
+      "prepared_parquet_sha256": "1b16e575499f4b9f628ddbf4cd2aceb37e90f877982068fca57b907f7a822626",
+      "source_snapshot_sha256": "88be88645ccb737de45c30750d3560255ea5d953d5b0005d185636cf0c6c53a3",
+      "expected_lora_hash": "2f46d9002978cbbf623f28d5113a3d03634246a9332d308d768fc13b86ddf8c9",
+      "train_log": "log/reward-audit-len2048-context8192-20260828_20260828_135051_train.log",
+      "rollout_log_created": false,
+      "trajectory_files_created": 0
+    },
+    "blocker": {
+      "phase": "pre_rollout_snapshot_restore",
+      "exception": "RuntimeError",
+      "reason": "FSDP2 DTensor parameters cannot be populated by the current CPU Tensor state_dict restore path",
+      "signature": "aten.copy_.default: got mixed torch.Tensor and DTensor",
+      "affected_snapshot_tensors": 392,
+      "generation_requests_issued": 0,
+      "optimizer_updates": 0
+    },
+    "resources": {
+      "gpu_peak_memory_mib": 15970,
+      "gpu_peak_utilization_percent": 16,
+      "final_gpu_memory_mib": 2,
+      "final_relevant_processes": 0,
+      "cuda_oom": false,
+      "cuda_illegal_memory_access": false,
+      "prefix_cache_reset_failure": false,
+      "cleanup_drained_false": false
+    }
+  },
+  "comparison_previous_probe": {
+    "previous_max_response_length": 1024,
+    "previous_max_model_len": 4096,
+    "previous_response_at_cap_count": 18,
+    "new_probe_response_length_statistics": null,
+    "reason": "No rollout generation occurred, so no 2048/8192 length statistics are valid."
+  },
+  "tests": {
+    "pytest_command": "python -m pytest -q test/test_reward_scorer.py test/test_unified_replay_pack.py test/test_unified_smoke_capture.py test/test_vllm_timeout_cleanup.py",
+    "pytest_result": "19 passed, 1 warning, 34 subtests passed",
+    "py_compile": "passed",
+    "bash_n": "passed"
+  }
+}

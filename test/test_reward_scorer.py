@@ -61,6 +61,35 @@ class HybridRewardScorerTest(unittest.TestCase):
         self.assertScore("x + 1", r"f(x) = x + 1")
         self.assertEqual(len(self.judge.calls), 0)
 
+    def test_explicit_numeric_arithmetic_expression_is_local(self):
+        # Game24 stores the scalar target ``24``.  A tagged arithmetic
+        # expression must be evaluated as a whole, not rejected because its
+        # intermediate numbers are also present in the answer.
+        result = self.scorer.score_with_metadata(
+            "Game24 arithmetic task", "24", "<answer>(12 * (13 - (3 + 8)))</answer>"
+        )
+        self.assertTrue(result.score)
+        self.assertEqual(result.route, "deterministic")
+        self.assertEqual(result.reason, "proved_numeric_expression")
+
+        wrong = self.scorer.score_with_metadata(
+            "Game24 arithmetic task", "24", "<answer>(11 - 2) * (2 + 1)</answer>"
+        )
+        self.assertFalse(wrong.score)
+        self.assertEqual(wrong.route, "deterministic")
+        self.assertEqual(wrong.reason, "numeric_expression_mismatch")
+        self.assertEqual(len(self.judge.calls), 0)
+
+    def test_numeric_expression_does_not_promote_unmarked_prose(self):
+        # Without a final-answer marker, the full response remains on the
+        # conservative numeric-token path; an incidental 24 is not a proof.
+        self.judge.verdict = False
+        result = self.scorer.score_with_metadata(
+            "Game24 arithmetic task", "24", "I tried (12 * 2), but the final answer is unknown."
+        )
+        self.assertFalse(result.score)
+        self.assertNotEqual(result.reason, "proved_numeric_expression")
+
     def test_math_conclusion_extraction_is_local_and_conservative(self):
         # An affirmative prose wrapper around an equivalent equality is a
         # high-confidence math claim, not an open-ended entity answer.

@@ -196,6 +196,42 @@ def capture_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
     return result
 
 
+def restore_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
+    """Restore an opt-in LoRA snapshot and verify its deterministic hash."""
+    source = os.getenv("AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH", "").strip()
+    if not source:
+        return {"status": "disabled"}
+    payload = torch.load(source, map_location="cpu", weights_only=False)
+    state = payload.get("lora_state")
+    expected = payload.get("lora_hash")
+    if not isinstance(state, dict) or not expected:
+        raise RuntimeError("invalid behavior snapshot payload")
+    current = dict(module.state_dict())
+    missing = []
+    for name, tensor in state.items():
+        if name not in current:
+            missing.append(name)
+            continue
+        current[name] = tensor
+    if missing:
+        raise RuntimeError(f"behavior snapshot tensor names missing: {missing[:3]}")
+    module.load_state_dict(current, strict=True)
+    actual = _lora_hash(module)["hash"]
+    if actual != expected:
+        raise RuntimeError(f"behavior snapshot hash mismatch: expected={expected} actual={actual}")
+    result = {
+        "status": "restored",
+        "source": source,
+        "lora_hash": actual,
+        "tensor_count": len(state),
+    }
+    print(
+        f"AGENTFLOW_BEHAVIOR_SNAPSHOT status=restored hash={actual} tensors={len(state)}",
+        flush=True,
+    )
+    return result
+
+
 def _field_digest(tensors: dict[str, Any], non_tensor: dict[str, Any], meta_info: Any) -> str:
     digest = hashlib.sha256()
     for namespace, values in (("tensor", tensors), ("non_tensor", non_tensor), ("meta_info", meta_info)):

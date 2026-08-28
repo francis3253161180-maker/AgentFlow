@@ -356,11 +356,47 @@ def _math_match(groundtruth: str, candidates: list[str]) -> bool:
     return False
 
 
+def _numeric_expression_decision(target: str, candidate: str) -> bool | None:
+    """Safely compare one explicit arithmetic answer with a scalar target.
+
+    This is intentionally limited to an explicit answer candidate.  It fixes
+    the common ``GT=24, answer=(... arithmetic ...)`` case without promoting
+    an arbitrary numeric token embedded in open-ended prose.
+    """
+    if sympy is None or not re.search(r"[+*/×÷()-]", str(candidate)):
+        return None
+    parsed_target = _to_sympy(target)
+    if parsed_target is None or isinstance(parsed_target, sympy.Equality):
+        return None
+    parsed_any = False
+    for expression in _math_expressions(candidate):
+        if not re.search(r"[+*/×÷()-]", expression):
+            continue
+        # A pure arithmetic expression cannot contain prose identifiers.  A
+        # TeX fraction/root is still accepted by _to_sympy below.
+        if re.search(r"[A-Za-z]", expression) and not re.search(r"\\(?:frac|d?frac|sqrt)", expression):
+            continue
+        parsed = _to_sympy(expression)
+        if parsed is None or isinstance(parsed, sympy.Equality):
+            continue
+        parsed_any = True
+        try:
+            if bool(sympy.simplify(parsed - parsed_target) == 0):
+                return True
+        except (TypeError, ValueError):
+            continue
+    return False if parsed_any else None
+
+
 def _looks_mathematical(value: str) -> bool:
     text = str(value)
     return bool(
         re.search(r"\\(?:d?frac|sqrt)|√|\^|=", text)
         or re.fullmatch(r"\s*[-+]?\d+(?:\.\d+)?\s*", text)
+        or (
+            re.fullmatch(r"\s*[0-9\s()+\-*/×÷.]+\s*", text)
+            and re.search(r"[+*/×÷()-]", text)
+        )
         or re.search(r"[A-Za-z]\w*\s*[+*/^=]\s*[-+A-Za-z0-9]", text)
     )
 
@@ -508,6 +544,13 @@ def deterministic_decision(groundtruth: str, answer_extracted: str) -> Determini
         return DeterministicDecision(None, "uncertain_date")
 
     numeric_target = _numeric_target(truth)
+    if numeric_target is not None and explicit:
+        numeric_expression = _numeric_expression_decision(numeric_target, candidate)
+        if numeric_expression is not None and not _answer_has_conflict(candidate):
+            return DeterministicDecision(
+                numeric_expression,
+                "proved_numeric_expression" if numeric_expression else "numeric_expression_mismatch",
+            )
     if numeric_target is not None:
         for candidate_text in candidates:
             values = _numeric_occurrences(candidate_text)
