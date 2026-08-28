@@ -100,21 +100,10 @@ Detailed Instructions:
 5. Final Determination:
    Based on your thorough analysis, decide if the memory is complete and accurate enough to generate the final output, or if additional tool usage is necessary.
 
-Response Format:
+Response Format (JSON object only; match the MemoryVerification schema exactly):
+{{"analysis": "<evidence-based completeness and accuracy analysis>", "stop_signal": true}}
 
-If the memory is complete, accurate, AND verified:
-Explanation:
-<Provide a detailed explanation of why the memory is sufficient. Reference specific information from the memory and explain its relevance to each aspect of the task. Address how each main point of the query has been satisfied.>
-
-Conclusion: STOP
-
-If the memory is incomplete, insufficient, or requires further verification:
-Explanation:
-<Explain in detail why the memory is incomplete. Identify specific information gaps or unaddressed aspects of the query. Suggest which additional tools could be used, how they might contribute, and why their input is necessary for a comprehensive response.>
-
-Conclusion: CONTINUE
-
-IMPORTANT: Your response MUST end with either 'Conclusion: STOP' or 'Conclusion: CONTINUE' and nothing else. Ensure your explanation thoroughly justifies this conclusion.
+Set `stop_signal` to true only when the memory is complete and verified; otherwise set it to false. Do not emit markdown, conclusion headings, or any text outside the JSON object.
 """
         else:
             prompt_memory_verification = f"""
@@ -135,11 +124,10 @@ Instructions:
     -   Is any information ambiguous or in need of verification?
 4.  Determine if any unused tools could provide missing information.
 
-Final Determination:
--   If the memory is sufficient, explain why and conclude with "STOP".
--   If more information is needed, explain what's missing, which tools could help, and conclude with "CONTINUE".
+Response Format (JSON object only; match the MemoryVerification schema exactly):
+{{"analysis": "<evidence-based completeness and accuracy analysis>", "stop_signal": true}}
 
-IMPORTANT: The response must end with either "Conclusion: STOP" or "Conclusion: CONTINUE".
+Set `stop_signal` to true only when the memory is complete and verified; otherwise set it to false. Do not emit markdown, conclusion headings, or any text outside the JSON object.
 """
 
         input_data = [prompt_memory_verification]

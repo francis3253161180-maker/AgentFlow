@@ -45,6 +45,9 @@ class ChatVLLM(EngineLM, CachedEngine):
         self.use_cache = use_cache
         self.system_prompt = system_prompt
         self.is_multimodal = is_multimodal
+        self.default_temperature = float(kwargs.get("temperature", 0.7))
+        self.default_top_p = float(kwargs.get("top_p", 0.99))
+        self.default_frequency_penalty = float(kwargs.get("frequency_penalty", 1.2))
         self.default_max_tokens = int(kwargs.get("max_tokens", 2048))
 
         if self.use_cache:
@@ -98,17 +101,40 @@ class ChatVLLM(EngineLM, CachedEngine):
             raise
         
     def _generate_text(
-        self, prompt, system_prompt=None, max_tokens=None, top_p=0.99, response_format=None, **kwargs
+        self,
+        prompt,
+        system_prompt=None,
+        max_tokens=None,
+        temperature=None,
+        top_p=None,
+        frequency_penalty=None,
+        response_format=None,
+        **kwargs,
     ):
 
         if max_tokens is None:
             max_tokens = self.default_max_tokens
+        if temperature is None:
+            temperature = self.default_temperature
+        if top_p is None:
+            top_p = self.default_top_p
+        if frequency_penalty is None:
+            frequency_penalty = self.default_frequency_penalty
 
         sys_prompt_arg = system_prompt if system_prompt else self.system_prompt
 
         guided_json = self._guided_json_schema(response_format)
         if self.use_cache:
-            cache_key = sys_prompt_arg + prompt + json.dumps(guided_json, sort_keys=True)
+            cache_key = sys_prompt_arg + prompt + json.dumps(
+                {
+                    "guided_json": guided_json,
+                    "temperature": temperature,
+                    "top_p": top_p,
+                    "frequency_penalty": frequency_penalty,
+                    "max_tokens": max_tokens,
+                },
+                sort_keys=True,
+            )
             cache_or_none = self._check_cache(cache_key)
             if cache_or_none is not None:
                 return cache_or_none
@@ -129,10 +155,10 @@ class ChatVLLM(EngineLM, CachedEngine):
                 {"role": "system", "content": sys_prompt_arg},
                 {"role": "user", "content": prompt},
             ],
-            frequency_penalty=kwargs.get("frequency_penalty", 1.2),
+            frequency_penalty=frequency_penalty,
             presence_penalty=0,
             stop=None,
-            temperature=kwargs.get("temperature", 0.7),
+            temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
             **request_kwargs,
@@ -180,13 +206,37 @@ class ChatVLLM(EngineLM, CachedEngine):
         return formatted_content
 
     def _generate_multimodal(
-        self, content: List[Union[str, bytes]], system_prompt=None, temperature=0, max_tokens=2048, top_p=0.99, response_format=None
+        self,
+        content: List[Union[str, bytes]],
+        system_prompt=None,
+        temperature=None,
+        max_tokens=None,
+        top_p=None,
+        frequency_penalty=None,
+        response_format=None,
     ):
+        if temperature is None:
+            temperature = self.default_temperature
+        if max_tokens is None:
+            max_tokens = self.default_max_tokens
+        if top_p is None:
+            top_p = self.default_top_p
+        if frequency_penalty is None:
+            frequency_penalty = self.default_frequency_penalty
         sys_prompt_arg = system_prompt if system_prompt else self.system_prompt
         formatted_content = self._format_content(content)
 
         if self.use_cache:
-            cache_key = sys_prompt_arg + json.dumps(formatted_content)
+            cache_key = sys_prompt_arg + json.dumps(
+                {
+                    "content": formatted_content,
+                    "temperature": temperature,
+                    "top_p": top_p,
+                    "frequency_penalty": frequency_penalty,
+                    "max_tokens": max_tokens,
+                },
+                sort_keys=True,
+            )
             cache_or_none = self._check_cache(cache_key)
             if cache_or_none is not None:
                 return cache_or_none
@@ -202,6 +252,7 @@ class ChatVLLM(EngineLM, CachedEngine):
                 {"role": "system", "content": sys_prompt_arg},
                 {"role": "user", "content": formatted_content},
             ],
+            frequency_penalty=frequency_penalty,
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,

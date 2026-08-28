@@ -98,25 +98,10 @@ Instructions:
 4.  Each `tool.execute()` call must be assigned to a variable named **`execution`**.
 5.  Please give the exact numbers and parameters should be used in the `tool.execute()` call.
 
-Output Format:
-Present your response in the following structured format. Do not include any extra text or explanations.
+Output Format (JSON object only; match the ToolCommand schema exactly):
+{{"analysis": "<tool-parameter analysis>", "explanation": "<why this command addresses the sub-goal>", "command": "<valid Python command containing execution = tool.execute(...)>"}}
 
-Generated Command:
-```python
-<command>
-```
-
-Example1:
-Generated Command:
-```python
-execution = tool.execute(query="Summarize the following porblom:"Isaac has 100 toys, masa gets ...., how much are their together?")
-```
-
-Example2:
-Generated Command:
-```python
-execution = tool.execute(query=["Methanol", "function of hyperbola", "Fermat's Last Theorem"])
-```
+Use the exact field names above. Do not emit markdown fences, legacy section headings, examples, or any text outside the JSON object.
 """
 
         tool_command = self.llm_generate_tool_command(prompt_generate_tool_command, response_format=ToolCommand)

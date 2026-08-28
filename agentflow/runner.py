@@ -25,15 +25,23 @@ def filter_trainable_triplets(triplets: List[Triplet], unified_local: bool) -> t
     Fixed-role tokenized spans remain in the raw trace/evidence, but cannot
     enter the PPO batch.  Missing role/model attribution fails closed.
     """
+    valid_triplets = [
+        triplet
+        for triplet in triplets
+        if bool(triplet.prompt.get("token_ids")) and bool(triplet.response.get("token_ids"))
+    ]
+    excluded_invalid = len(triplets) - len(valid_triplets)
     if not unified_local:
-        return triplets, {"kept": len(triplets), "excluded_fixed": 0, "excluded_unattributed": 0}
+        return valid_triplets, {
+            "kept": len(valid_triplets),
+            "excluded_fixed": 0,
+            "excluded_unattributed": 0,
+            "excluded_invalid": excluded_invalid,
+        }
     kept: List[Triplet] = []
     excluded_fixed = 0
     excluded_unattributed = 0
-    for triplet in triplets:
-        has_tokens = bool(triplet.prompt.get("token_ids")) and bool(triplet.response.get("token_ids"))
-        if not has_tokens:
-            continue
+    for triplet in valid_triplets:
         metadata = triplet.metadata or {}
         role = metadata.get("role")
         model_name = metadata.get("model_name")
@@ -49,6 +57,7 @@ def filter_trainable_triplets(triplets: List[Triplet], unified_local: bool) -> t
         "kept": len(kept),
         "excluded_fixed": excluded_fixed,
         "excluded_unattributed": excluded_unattributed,
+        "excluded_invalid": excluded_invalid,
     }
 
 
@@ -159,7 +168,7 @@ class AgentRunner(ParallelWorkerBase):
         # Only tokenized prompt/response pairs are usable by the trainable
         # policy. Fixed-model/tool spans are intentionally represented by
         # empty token ids and must not invalidate the whole rollout.
-        filter_stats = {"kept": 0, "excluded_fixed": 0, "excluded_unattributed": 0}
+        filter_stats = {"kept": 0, "excluded_fixed": 0, "excluded_unattributed": 0, "excluded_invalid": 0}
         if triplets:
             unified_local = os.environ.get("AGENTFLOW_UNIFIED_LOCAL_ROLES", "0").lower() in {
                 "1", "true", "yes", "on"

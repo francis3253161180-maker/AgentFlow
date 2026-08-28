@@ -199,41 +199,41 @@ class Rollout(LitAgent):
 
     async def _solve_and_evaluate(self, rollout: AgentFlowRollout, task: Any, step_n: int, val: bool = False):
         """A helper function to run the agent, parse the result, and evaluate it."""
-        result = {}
+        output_format = "When ready, output the final answer enclosed in <answer> and </answer> tags. Do not generate any content after the </answer> tag."
+        prompt = task["question"] + " " + output_format
         try:
-            output_format = "When ready, output the final answer enclosed in <answer> and </answer> tags. Do not generate any content after the </answer> tag."
-            prompt = task["question"] + " " + output_format
-            # prompt = task["question"]
+            # Infrastructure and agent execution failures must reach
+            # AgentRunner, which reports an invalid rollout for bounded retry
+            # or drop handling.  They must not be converted into a scored
+            # answer of "None".
             result = rollout.solve(question=prompt)
-            
-            # Safely check for and extract the final answer
-            if "direct_output" in result and result["direct_output"]:
-                final_output = result["direct_output"]
-                if os.getenv("AGENTFLOW_STRUCTURED_OUTPUT_HARNESS", "0").lower() in {"1", "true", "yes", "on"}:
-                    numbers = extract_game24_numbers(task["question"])
-                    parsed, validation = parse_game24_answer(final_output, numbers or ())
-                    if parsed is None:
-                        print(
-                            "STRUCTURED_HARNESS_ROLLOUT schema_or_semantic_failure "
-                            f"reason={validation.get('reason')}",
-                            flush=True,
-                        )
-                        answer = "None"
-                    else:
-                        answer = parsed.expression
-                        print("STRUCTURED_HARNESS_ROLLOUT validated=1", flush=True)
+        except Exception as exc:
+            print(f"Agent execution failed; propagating infrastructure error: {type(exc).__name__}", flush=True)
+            raise
+
+        # A missing/invalid model answer is an ordinary semantic/schema
+        # failure and may conservatively receive reward zero.  It is distinct
+        # from an exception raised while contacting or executing the agent.
+        answer = "None"
+        if isinstance(result, dict) and result.get("direct_output"):
+            final_output = result["direct_output"]
+            if os.getenv("AGENTFLOW_STRUCTURED_OUTPUT_HARNESS", "0").lower() in {"1", "true", "yes", "on"}:
+                numbers = extract_game24_numbers(task["question"])
+                parsed, validation = parse_game24_answer(final_output, numbers or ())
+                if parsed is None:
+                    print(
+                        "STRUCTURED_HARNESS_ROLLOUT schema_or_semantic_failure "
+                        f"reason={validation.get('reason')}",
+                        flush=True,
+                    )
                 else:
-                    all_matches = re.findall(r"<answer>(.*?)</answer>", final_output, re.DOTALL)
-                    if all_matches:
-                        answer = all_matches[-1].strip()
-                    else:
-                        answer = final_output
+                    answer = parsed.expression
+                    print("STRUCTURED_HARNESS_ROLLOUT validated=1", flush=True)
             else:
-                print("Warning: Result has no direct_output or direct_output is empty.")
-                answer = "None"
-        except Exception as e:
-            print(f"Failure during agent execution: {str(e)}. Defaulting to 'None'.")
-            answer = "None"
+                all_matches = re.findall(r"<answer>(.*?)</answer>", str(final_output), re.DOTALL)
+                answer = all_matches[-1].strip() if all_matches else str(final_output)
+        else:
+            print("Warning: Result has no direct_output or direct_output is empty.")
 
         # Keep the validated structured expression inside the explicit answer
         # boundary expected by the existing numeric deterministic scorer.  The

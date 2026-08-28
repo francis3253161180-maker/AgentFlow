@@ -300,41 +300,14 @@ Instructions:
 
 4. Formulate a specific, achievable sub-goal for the selected tool that maximizes progress towards answering the query.
 
-Response Format:
-Your response MUST follow this structure:
-1. Justification: Explain your choice in detail.
-2. Context, Sub-Goal, and Tool: Present the context, sub-goal, and the selected tool ONCE with the following format:
+Response Format (JSON object only; match the NextStep schema exactly):
+{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective>", "tool_name": "<exact tool name>"}}
 
-Context: <context>
-Sub-Goal: <sub_goal>
-Tool Name: <tool_name>
-
-Where:
-- <context> MUST include ALL necessary information for the tool to function, structured as follows:
-* Relevant data from previous steps
-* File names or paths created or used in previous steps (list EACH ONE individually)
-* Variable names and their values from previous steps' results
-* Any other context-specific information required by the tool
-- <sub_goal> is a specific, achievable objective for the tool, based on its metadata and previous outcomes.
-It MUST contain any involved data, file names, and variables from Previous Steps and Their Results that the tool can act upon.
-- <tool_name> MUST be the exact name of a tool from the available tools list.
-
+Your response MUST be this JSON object and nothing else. Do not use the legacy section format below.
 Rules:
-- Select only ONE tool for this step.
-- The sub-goal MUST directly address the query and be achievable by the selected tool.
-- The Context section MUST include ALL necessary information for the tool to function, including ALL relevant file paths, data, and variables from previous steps.
-- The tool name MUST exactly match one from the available tools list: {self.available_tools}.
-- Avoid redundancy by considering previous steps and building on prior results.
-- Your response MUST conclude with the Context, Sub-Goal, and Tool Name sections IN THIS ORDER, presented ONLY ONCE.
-- Include NO content after these three sections.
-
-Example (do not copy, use only as reference):
-Justification: [Your detailed explanation here]
-Context: Image path: "example/image.jpg", Previous detection results: [list of objects]
-Sub-Goal: Detect and count the number of specific objects in the image "example/image.jpg"
-Tool Name: Object_Detector_Tool
-
-Remember: Your response MUST end with the Context, Sub-Goal, and Tool Name sections, with NO additional content afterwards.
+- Select only ONE tool.
+- Include all relevant query, analysis, prior-step, file, variable, and tool metadata in the `context` field.
+- Use the exact JSON field names above.
                         """
         else:
             prompt_generate_next_step = f"""
@@ -353,17 +326,15 @@ Instructions:
 3. Formulate a specific, achievable **sub-goal** for that tool.
 4. Provide all necessary **context** (data, file names, variables) for the tool to function.
 
-Response Format:
-1.  **Justification:** Explain your choice of tool and sub-goal.
-2.  **Context:** Provide all necessary information for the tool.
-3.  **Sub-Goal:** State the specific objective for the tool.
-4.  **Tool Name:** State the exact name of the selected tool.
+Response Format (JSON object only; match the NextStep schema exactly):
+{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective>", "tool_name": "<exact tool name>"}}
+
+Use the exact JSON field names above. Do not emit markdown, section headings, or any text outside the JSON object.
 
 Rules:
 - Select only ONE tool.
 - The sub-goal must be directly achievable by the selected tool.
-- The Context section must contain all information the tool needs to function.
-- The response must end with the Context, Sub-Goal, and Tool Name sections in that order, with no extra content.
+- Put all required tool context in the `context` field.
                     """
             
         next_step = self.llm_engine(
