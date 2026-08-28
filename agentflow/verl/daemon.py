@@ -383,6 +383,50 @@ class AgentModeDaemon:
             print(f"Warning: Rollout {rollout.rollout_id} contains empty response: {rollout.triplets}")
         elif any(not r.prompt.get("token_ids", []) for r in rollout.triplets):
             print(f"Warning: Rollout {rollout.rollout_id} contains empty prompt: {rollout.triplets}")
+
+    def _persist_rollout_evidence(self, rollout: Rollout) -> None:
+        """Persist the complete current-run Rollout before in-memory cleanup.
+
+        The legacy client-side JSON intentionally contains only a text summary.
+        This opt-in evidence writer retains the server Rollout, including the
+        tokenized triplets and full trace, so a rollout-only run can be replayed
+        without regenerating requests.
+        """
+        root = os.environ.get("AGENTFLOW_ROLLOUT_EVIDENCE_DIR", "").strip()
+        if not root:
+            return
+        original = self._task_id_to_original_sample.get(rollout.rollout_id, {})
+        try:
+            rollout_payload = rollout.model_dump(mode="json")
+        except AttributeError:
+            rollout_payload = json.loads(rollout.json())
+        payload = {
+            "schema_version": 1,
+            "rollout": rollout_payload,
+            "original_sample": original,
+            "run_metadata": {
+                "model": os.environ.get("AGENTFLOW_UNIFIED_MODEL_PATH", ""),
+                "temperature": os.environ.get("AGENTFLOW_UNIFIED_TEMPERATURE", ""),
+                "rollout_n": os.environ.get("AGENTFLOW_UNIFIED_ROLLOUT_N", ""),
+                "max_prompt_length": os.environ.get("AGENTFLOW_UNIFIED_MAX_PROMPT_LENGTH", ""),
+                "max_response_length": os.environ.get("AGENTFLOW_UNIFIED_MAX_RESPONSE_LENGTH", ""),
+                "max_model_len": os.environ.get("AGENTFLOW_UNIFIED_MAX_MODEL_LEN", ""),
+                "code_commit": os.environ.get("AGENTFLOW_UNIFIED_CODE_COMMIT", ""),
+            },
+        }
+        path = Path(root) / f"rollout_{rollout.rollout_id}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_name(f".{path.name}.tmp")
+        try:
+            with temporary.open("w", encoding="utf-8") as handle:
+                json.dump(payload, handle, ensure_ascii=False, sort_keys=True, indent=2, default=str)
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, path)
+        finally:
+            if temporary.exists():
+                temporary.unlink()
     
     def _validate_rollout_for_retry(self, rollout: Rollout) -> bool:                                                                                                                                                                                                       
           """Returns True if rollout should be retried due to empty/invalid data"""                                                                                                                                                                                          
@@ -487,6 +531,7 @@ class AgentModeDaemon:
 
             new_retries = 0
             for rollout in completed_batch:
+                self._persist_rollout_evidence(rollout)
                 self._validate_data(rollout)
 
                 # Check if this rollout is from our current session

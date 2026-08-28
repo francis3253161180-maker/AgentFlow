@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import random
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -114,6 +115,85 @@ def _write_json_atomic(path: Path, payload: Any) -> None:
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
+
+
+def _rng_snapshot() -> dict[str, Any]:
+    """Capture worker-local RNG state without putting it in a text log."""
+    return {
+        "python": random.getstate(),
+        "numpy": np.random.get_state(),
+        "torch_cpu": torch.get_rng_state(),
+        "torch_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
+        "explicit_seeds": {
+            key: os.getenv(key)
+            for key in ("PYTHONHASHSEED", "AGENTFLOW_UNIFIED_SEED", "SEED")
+            if os.getenv(key) is not None
+        },
+    }
+
+
+def capture_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
+    """Persist an exact, reloadable LoRA/RNG snapshot for a rollout-only run.
+
+    This is opt-in and called from the actor worker after model construction and
+    before the first rollout request.  Only trainable LoRA tensors are saved;
+    the base model remains identified by the run metadata.
+    """
+    output = os.getenv("AGENTFLOW_BEHAVIOR_SNAPSHOT_PATH", "").strip()
+    metadata_output = os.getenv("AGENTFLOW_BEHAVIOR_SNAPSHOT_METADATA_PATH", "").strip()
+    if not output:
+        return {"status": "disabled"}
+
+    state: dict[str, torch.Tensor] = {}
+    for name, parameter in sorted(module.named_parameters(), key=lambda item: item[0]):
+        if parameter.requires_grad and "lora_" in name.lower():
+            _, tensor = _tensor_bytes(parameter)
+            state[name] = tensor.clone()
+    if not state:
+        raise RuntimeError("behavior snapshot found no trainable LoRA tensors")
+
+    tensor_descriptors = []
+    digest = hashlib.sha256()
+    for name in sorted(state):
+        tensor = state[name].contiguous()
+        raw = tensor.view(torch.uint8).numpy().tobytes()
+        descriptor = {
+            "name": name,
+            "shape": list(tensor.shape),
+            "dtype": str(tensor.dtype),
+            "numel": int(tensor.numel()),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+        }
+        tensor_descriptors.append(descriptor)
+        digest.update(json.dumps(descriptor, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+    lora_hash = digest.hexdigest()
+    payload = {
+        "schema_version": 1,
+        "kind": "agentflow_behavior_policy_snapshot",
+        "lora_state": state,
+        "rng_state": _rng_snapshot(),
+        "lora_hash": lora_hash,
+        "tensor_descriptors": tensor_descriptors,
+    }
+    path = Path(output)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.tmp")
+    torch.save(payload, temporary)
+    os.replace(temporary, path)
+    result = {
+        "status": "captured",
+        "path": str(path),
+        "lora_hash": lora_hash,
+        "tensor_count": len(state),
+        "total_numel": sum(int(item["numel"]) for item in tensor_descriptors),
+    }
+    if metadata_output:
+        _write_json_atomic(Path(metadata_output), result)
+    print(
+        f"AGENTFLOW_BEHAVIOR_SNAPSHOT status=captured hash={lora_hash} tensors={len(state)}",
+        flush=True,
+    )
+    return result
 
 
 def _field_digest(tensors: dict[str, Any], non_tensor: dict[str, Any], meta_info: Any) -> str:
@@ -260,3 +340,52 @@ def capture_replay_pre_update(data: Any) -> None:
     temporary = path.with_name(f".{path.name}.tmp")
     torch.save(payload, temporary)
     os.replace(temporary, path)
+
+
+def write_replay_pack_from_dataproto(data: Any, output: str, metadata: dict[str, Any]) -> dict[str, Any]:
+    """Write a replay pack from an already-collected DataProto.
+
+    The caller must have built the batch from saved rollout triplets and may
+    recompute old log-probabilities/advantages, but this helper never generates
+    text and never calls an optimizer.
+    """
+    tensors = _batch_fields(data)
+    non_tensor = _cpu_value(getattr(data, "non_tensor_batch", {}))
+    meta_info = _json_safe(getattr(data, "meta_info", {}))
+    required = {
+        "prompts", "responses", "input_ids", "attention_mask", "position_ids",
+        "response_mask", "old_log_probs", "token_level_scores", "token_level_rewards",
+        "advantages", "returns", "is_drop_mask",
+    }
+    missing = sorted(required.difference(tensors))
+    if missing:
+        raise ValueError(f"replay pack missing required tensor fields: {missing}")
+    payload = {
+        "schema_version": 3,
+        "kind": "agentflow_unified_authentic_pre_update_replay_pack",
+        "metadata": _json_safe(metadata),
+        "field_inventory": {
+            "tensor_fields": sorted(tensors),
+            "non_tensor_fields": sorted(non_tensor),
+            "meta_info_fields": sorted(meta_info) if isinstance(meta_info, dict) else [],
+        },
+        "batch_size": int(len(data)),
+        "captured_field_digest": _field_digest(tensors, non_tensor, meta_info),
+        "tensor_fields": tensors,
+        "non_tensor_batch": non_tensor,
+        "meta_info": meta_info,
+    }
+    path = Path(output)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.tmp")
+    torch.save(payload, temporary)
+    os.replace(temporary, path)
+    result = {
+        "status": "written",
+        "path": str(path),
+        "batch_size": payload["batch_size"],
+        "field_digest": payload["captured_field_digest"],
+        "tensor_fields": payload["field_inventory"]["tensor_fields"],
+    }
+    print(f"AGENTFLOW_REPLAY_PACK status=written batch={payload['batch_size']} digest={payload['captured_field_digest']}", flush=True)
+    return result

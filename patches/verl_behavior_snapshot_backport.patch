@@ -1,0 +1,27 @@
+--- a/verl/workers/fsdp_workers.py
++++ b/verl/workers/fsdp_workers.py
+@@
+ from verl.workers.sharding_manager.fsdp_ulysses import FSDPUlyssesShardingManager
++
++try:
++    from agentflow.verl.unified_smoke_capture import capture_behavior_snapshot
++except Exception:
++    def capture_behavior_snapshot(module):
++        return {"status": "unavailable"}
+@@
+             self.checkpoint_manager = FSDPCheckpointManager(
+@@
+                 checkpoint_config=checkpoint_contents,
+             )
++
++    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
++    def capture_agentflow_behavior_snapshot(self):
++        """Opt-in pre-rollout LoRA/RNG snapshot; never updates the actor."""
++        assert self._is_actor
++        if self._is_offload_param:
++            load_fsdp_model_to_gpu(self.actor_module_fsdp)
++        try:
++            return capture_behavior_snapshot(self.actor_module_fsdp)
++        finally:
++            if self._is_offload_param:
++                offload_fsdp_model_to_cpu(self.actor_module_fsdp)

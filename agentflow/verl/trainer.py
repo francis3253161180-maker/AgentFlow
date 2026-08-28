@@ -29,11 +29,13 @@ from verl.utils.metric import reduce_metrics
 from verl.utils.tracking import Tracking
 
 from .daemon import AgentModeDaemon
+from .unified_smoke_capture import write_replay_pack_from_dataproto
 
 import os
 import json
 import uuid
 from collections import defaultdict
+from pathlib import Path
 
 import time
 
@@ -98,6 +100,70 @@ class AgentFlowTrainer(RayPPOTrainer):
             raise RuntimeError("cleanup health check unavailable on one or more rollout servers")
         results = ray.get(health_refs)
         print(f"VLLM_CLEANUP_HEALTH_CHECK status=ok results={results}")
+
+    def _capture_behavior_policy_snapshot(self) -> None:
+        """Capture actor LoRA/RNG state before any rollout request is issued."""
+        if not os.environ.get("AGENTFLOW_BEHAVIOR_SNAPSHOT_PATH", "").strip():
+            return
+        result = self.actor_rollout_wg.capture_agentflow_behavior_snapshot()
+        print(f"AGENTFLOW_BEHAVIOR_SNAPSHOT_DRIVER result={result}", flush=True)
+
+    def _capture_pre_update_replay(self) -> None:
+        """Build replay tensors from completed triplets without updating weights."""
+        output = os.environ.get("AGENTFLOW_REPLAY_PACK_PATH", "").strip()
+        if not output:
+            return
+        replay, batch_metrics = self.agent_mode_daemon.get_train_data_batch(
+            max_prompt_length=self.config.data.max_prompt_length,
+            max_response_length=self.config.data.max_response_length,
+            device="cpu",
+        )
+        if replay is None:
+            raise RuntimeError("cannot build replay pack: no valid rollout transitions")
+        replay.non_tensor_batch["uid"] = np.asarray(replay.non_tensor_batch["data_id_list"], dtype=object)
+        replay.batch["response_mask"] = compute_response_mask(replay)
+        replay.batch["token_level_rewards"] = replay.batch["token_level_scores"]
+        replay.meta_info["temperature"] = float(self.config.actor_rollout_ref.rollout.temperature)
+        old_log_prob = self.actor_rollout_wg.compute_log_prob(replay)
+        replay = replay.union(old_log_prob)
+        replay = compute_advantage(
+            replay,
+            adv_estimator=AdvantageEstimator.GRPO,
+            gamma=self.config.algorithm.gamma,
+            lam=self.config.algorithm.lam,
+            num_repeat=self.config.actor_rollout_ref.rollout.n,
+            norm_adv_by_std_in_grpo=self.config.algorithm.get("norm_adv_by_std_in_grpo", True),
+            config=self.config.algorithm,
+        )
+        snapshot_meta = {}
+        snapshot_metadata_path = os.environ.get("AGENTFLOW_BEHAVIOR_SNAPSHOT_METADATA_PATH", "").strip()
+        if snapshot_metadata_path and Path(snapshot_metadata_path).exists():
+            try:
+                snapshot_meta = json.loads(Path(snapshot_metadata_path).read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                snapshot_meta = {"read_error": "snapshot_metadata_unreadable"}
+        route = None
+        route_path = os.environ.get("AGENTFLOW_ROLE_ROUTING_STATE", "").strip()
+        if route_path and Path(route_path).exists():
+            try:
+                route = json.loads(Path(route_path).read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                route = {"read_error": "role_route_unreadable"}
+        metadata = {
+            "source_run_id": os.environ.get("AGENTFLOW_UNIFIED_SMOKE_RUN_ID", ""),
+            "model_path": self.config.actor_rollout_ref.model.path,
+            "temperature": float(self.config.actor_rollout_ref.rollout.temperature),
+            "rollout_n": int(self.config.actor_rollout_ref.rollout.n),
+            "seed": os.environ.get("AGENTFLOW_UNIFIED_SEED", ""),
+            "scorer": os.environ.get("AGENTFLOW_UNIFIED_SCORER", "local deterministic"),
+            "optimizer_steps": 0,
+            "replay_only": True,
+            "batch_metrics": batch_metrics,
+            "behavior_snapshot": snapshot_meta,
+            "role_route_state": route,
+        }
+        result = write_replay_pack_from_dataproto(replay, output, metadata)
+        print(f"AGENTFLOW_PRE_UPDATE_REPLAY_DRIVER result={result}", flush=True)
 
     def _validate(self):
         assert len(self.val_dataloader) == 1, "Please set val_batch_size to None for better throughput."
@@ -182,6 +248,8 @@ class AgentFlowTrainer(RayPPOTrainer):
                 print("Warning: No valid validation rollouts (all have empty triplets), using fallback metrics")
             else:
                 print(f"Validation proceeding with {valid_count} valid rollouts ({valid_count/completed_count:.1%} of completed)")
+
+            self._capture_pre_update_replay()
 
             test_metrics = self.agent_mode_daemon.get_test_metrics(
                 allow_train=rollout_only_group_mode
@@ -517,6 +585,9 @@ class AgentFlowTrainer(RayPPOTrainer):
             max_empty_retries=self.config.agentflow.get("max_empty_retries", 2),
         )
         self.agent_mode_daemon.start()
+        # Capture the behavior policy after actor initialization but before the
+        # validation path wakes the engine or queues its first rollout.
+        self._capture_behavior_policy_snapshot()
 
         # perform validation before training
         # currently, we only support validation using the reward_function.
