@@ -1,0 +1,97 @@
+{
+  "status": "passed_with_limitations",
+  "source_head_before_delivery": "50480e9",
+  "implementation_commit": "6c6fe91",
+  "scope": "diagnostic infrastructure smoke; no formal baseline/HOB training",
+  "protocol": {
+    "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "model_revision": "local path; revision not independently recorded",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "target_modules": "all-linear",
+    "actor_dtype": "bfloat16",
+    "strategy": "FSDP2",
+    "param_offload": true,
+    "optimizer_offload": true,
+    "gradient_checkpointing": true,
+    "temperature": 0.7,
+    "rollout_n": 4,
+    "max_prompt_length": 1280,
+    "max_response_length": 512,
+    "max_model_len": 2048,
+    "ppo_epochs": 2,
+    "trainer_total_epochs": 1,
+    "train_batch_size": 2,
+    "ppo_mini_batch_size": 2,
+    "ppo_micro_batch_size_per_gpu": 1,
+    "save_freq": 0,
+    "external_llm": "disabled",
+    "scorer": "hybrid entrypoint with external disabled; local deterministic fallback",
+    "dynamic_response_padding": true
+  },
+  "online": {
+    "run_id": "unified-qwen7b-fixed-roles-smoke-20260828_20260828_103253",
+    "config_sha256": "2144ecd030fa617ec1f9b147bf3b9da0212d938efd5dac7c282ac7b0a7bbd11a",
+    "train_log": "log/unified-qwen7b-fixed-roles-smoke-20260828_20260828_103253_train.log",
+    "rollout_log": "log/unified-qwen7b-fixed-roles-smoke-20260828_20260828_103253_rollout.log",
+    "train_log_sha256": "9e3fab9c120beaa04617e7fa33fbf0fae0bf770e8bef8ff39408a044ee39e019",
+    "rollout_log_sha256": "ddf8fb284891aa162821146ee33a84183cc1bd5e3c25eafe7150d6e4f11ef9fc",
+    "rollout_data": "rollout_data/46.38.243.197/unified-qwen7b-fixed-roles-smoke-20260828_20260828-103428",
+    "route_state_path": "/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/unified-qwen7b-fixed-roles-smoke-20260828_20260828_103253_role_routes.json",
+    "route_state_sha256": "f8a65bed3bf729ecf145626ba02c9e15e54a321f4eb30424d53c839515e846e4",
+    "completed_training_steps": 2,
+    "valid_transitions_by_step": [34, 48],
+    "response_length_batches": [
+      {"transition_count": 34, "raw_max": 512, "effective_width": 512, "fixed_elements": 17408, "dynamic_elements": 17408, "saved_elements": 0, "padding_ratio": 0.5053423713235294},
+      {"transition_count": 48, "raw_max": 240, "effective_width": 240, "fixed_elements": 24576, "dynamic_elements": 11520, "saved_elements": 13056, "padding_ratio": 0.6534722222222222}
+    ],
+    "step_metrics": {
+      "step_1": {"reward_mean": 0.0, "advantage_mean": 0.0, "pg_loss": 0.0, "grad_norm": 0.0, "update_actor_seconds": 46.73984276596457, "step_seconds": 200.07204262446612, "max_memory_allocated_gib": 22.22872829437256, "max_memory_reserved_gib": 26.126953125},
+      "step_2": {"reward_mean": 0.125, "advantage_mean": -0.01153564453125, "advantage_min": -0.56640625, "advantage_max": 1.6953125, "pg_loss": -0.00016723014414310455, "grad_norm": 0.9227701822916666, "ppo_kl": -0.0014296002250402905, "update_actor_seconds": 66.18945788685232, "step_seconds": 154.04383397754282, "max_memory_allocated_gib": 22.22872829437256, "max_memory_reserved_gib": 26.126953125}
+    },
+    "cleanup": [
+      {"reason": "normal_complete", "drained": true, "outstanding_before": 0, "abort_count": 0, "sleep_started": true, "cleanup_seconds": 0.8484273422509432},
+      {"reason": "normal_complete", "drained": true, "outstanding_before": 0, "abort_count": 0, "sleep_started": true, "cleanup_seconds": 0.8187983296811581}
+    ],
+    "errors": {"context_length_400": true, "cuda_illegal_memory": false, "cuda_oom": false, "prefix_cache_reset_failure": false, "deadlock": false},
+    "context_length_error_count": "observed in rollout log; exact count not used as valid rollout result",
+    "scorer_routing": {"deterministic_or_local": "all reward computation under external-disabled local path", "deepseek_calls": 0, "api_errors": 0, "parse_errors": 0}
+  },
+  "phase_a_length_audit": {
+    "source": "online train transitions; non-eval mixed_signal_smoke_4.parquet",
+    "transition_count": 82,
+    "response_raw_length_percentiles_nearest_rank": {"mean": 153.6951219512195, "p50": 101, "p75": 209, "p90": 360, "p95": 512, "p99": 512, "max": 512},
+    "prompt_length_percentiles_nearest_rank": {"mean": 596.9268292682926, "p50": 659, "p75": 847, "p90": 953, "p95": 968, "p99": 1145, "max": 1467},
+    "response_equal_to_cap": 5,
+    "response_greater_than_cap": 0,
+    "response_equal_to_cap_ratio": 0.06097560975609756,
+    "response_truncated_by_runtime": 0,
+    "cap_hit_interpretation": "responses equal to 512 are censored unless finish_reason/EOS proves natural termination",
+    "empirical_recommendation": "512 is the smallest listed cap with zero observed >cap samples, but this is not a general safety claim; context budgeting must be fixed before formal use"
+  },
+  "phase_b_dynamic_padding": {
+    "same_data_compare": "scripts/compare_dynamic_response_padding_20260828.py",
+    "compare_status": "ok",
+    "pack_batch_size": 48,
+    "hard_cap": 512,
+    "dynamic_width": 240,
+    "fixed_response_elements": 24576,
+    "dynamic_response_elements": 11520,
+    "padding_elements_saved": 13056,
+    "response_tensor_savings_ratio": 0.53125,
+    "estimated_aligned_tensor_bytes_saved": 365568,
+    "checks": "non-pad response ids/masks, scores, rewards, advantages, returns, old log-probs and uid alignment equal"
+  },
+  "phase_c_replay": {
+    "online_pack": "/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/unified-qwen7b-fixed-roles-smoke-20260828_20260828_103253_authentic_replay_pack.pt",
+    "pack_sha256": "0a48d4e685f859261448f351a1b286c6a426e45fde69ed0970489084b0329226",
+    "pack_size_bytes": 2500000,
+    "pack_batch_size": 48,
+    "fields": ["prompts", "responses", "input_ids", "attention_mask", "position_ids", "response_mask", "old_log_probs", "token_level_scores", "token_level_rewards", "advantages", "returns", "is_drop_mask", "uid", "data_id_list", "rollout_id_list", "turn_index_list", "temperature", "multi_turn"],
+    "online": {"pre_lora_hash": "920e1228ae33ef91a3eac346dc23f38fcd8179e082d6693d75eeb577d7899365", "post_lora_hash": "7b8d6e221c6fc47f0ddcf745126ca5d1a17ab71aba9b46951a913e5373a3ff0f", "hash_changed": true, "changed_tensor_count": 196, "checksum_grad_norm": 3.546875, "logged_aggregate_grad_norm": 0.9227701822916666},
+    "offline": {"run_id": "unified-qwen7b-offline-replay-20260828_104133", "log": "log/unified-qwen7b-offline-replay-20260828_104133.log", "config_sha256": "90a797c66f92ab570323e432fd370a23ba0db391b8e8135203c43e88789f0169", "checksum_sha256": "4a1f2e1b5232b1384b593d2bd65a6ef1d02eb41343ea08e6d4a0dd9af7b58d9f", "pre_lora_hash": "8e5bc87630bce72ff9345f18383f92151e3943f7d41b1b5d97b6f049c5bf1fa8", "post_lora_hash": "51a9c9cb3521db749714763e76a2d31f2a2e72ad6f8cdea0052af1c9466dd93b", "hash_changed": true, "changed_tensor_count": 196, "grad_norm": 3.59375, "logged_grad_norm": 0.9849446614583334, "pg_loss": 0.0012388012061516445, "ppo_kl": -0.0018472860525297387, "rollout_requests": 0, "external_calls": 0, "max_memory_allocated_gib": 22.224116325378418, "max_memory_reserved_gib": 25.033203125}, "exact_online_offline_equivalence": false, "equivalence_reason": "offline fresh process did not restore the exact online initial LoRA/RNG/optimizer state; it proves update-path execution, not bitwise replay equivalence", "offline_model_server_note": "current VERL worker topology initializes the local vLLM engine, but the offline branch queued no AgentFlow task and issued no rollout/inference request"
+  },
+  "ppo": {"requested_epochs": 2, "resolved_key": "actor_rollout_ref.actor.ppo_epochs", "trainer_total_epochs": 1, "per_pass_metrics": "not separately exposed by pinned VERL 0.5.0 actor log; aggregate metrics cover both passes and the same DataProto is reused"},
+  "final_state": {"gpu_used_mib": 2, "matching_ray_vllm_training_processes": 0, "formal_training_started": false, "checkpoint_written": false},
+  "tests": {"dynamic_padding_unified_capture_replay": "6 passed", "additional_required": "rerun before delivery commit"}
+}
