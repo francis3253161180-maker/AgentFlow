@@ -106,14 +106,23 @@ class ChatVLLM(EngineLM, CachedEngine):
 
         sys_prompt_arg = system_prompt if system_prompt else self.system_prompt
 
+        guided_json = self._guided_json_schema(response_format)
         if self.use_cache:
-            cache_key = sys_prompt_arg + prompt
+            cache_key = sys_prompt_arg + prompt + json.dumps(guided_json, sort_keys=True)
             cache_or_none = self._check_cache(cache_key)
             if cache_or_none is not None:
                 return cache_or_none
         
 
         # Chat models without structured outputs
+        request_kwargs = {}
+        if guided_json is not None:
+            # vLLM 0.9.2 exposes guided_json on its OpenAI-compatible
+            # ChatCompletionRequest.  OpenAI's client forwards this through
+            # extra_body without requiring a newer vLLM/client pair.
+            # The installed server is initialized with backend=auto and
+            # rejects request-level backend selection, so do not send one.
+            request_kwargs["extra_body"] = {"guided_json": guided_json}
         response = self.client.chat.completions.create(
             model=self.model_string,
             messages=[
@@ -126,12 +135,26 @@ class ChatVLLM(EngineLM, CachedEngine):
             temperature=kwargs.get("temperature", 0.7),
             max_tokens=max_tokens,
             top_p=top_p,
+            **request_kwargs,
         )
         response = response.choices[0].message.content
 
         if self.use_cache:
             self._save_cache(cache_key, response)
         return response
+
+    @staticmethod
+    def _guided_json_schema(response_format):
+        """Convert a Pydantic response model to vLLM 0.9.2 guided_json."""
+        if response_format is None:
+            return None
+        if isinstance(response_format, dict):
+            return response_format
+        if hasattr(response_format, "model_json_schema"):
+            return response_format.model_json_schema()
+        if hasattr(response_format, "schema"):
+            return response_format.schema()
+        return None
 
     def __call__(self, prompt, **kwargs):
         return self.generate(prompt, **kwargs)
@@ -169,6 +192,10 @@ class ChatVLLM(EngineLM, CachedEngine):
                 return cache_or_none
 
 
+        request_kwargs = {}
+        guided_json = self._guided_json_schema(response_format)
+        if guided_json is not None:
+            request_kwargs["extra_body"] = {"guided_json": guided_json}
         response = self.client.chat.completions.create(
             model=self.model_string,
             messages=[
@@ -178,6 +205,7 @@ class ChatVLLM(EngineLM, CachedEngine):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
+            **request_kwargs,
         )
         response_text = response.choices[0].message.content
 

@@ -8,6 +8,13 @@ from PIL import Image
 from agentflow.engine.factory import create_llm_engine
 from agentflow.models.formatters import NextStep, QueryAnalysis
 from agentflow.models.memory import Memory
+from agentflow.models.structured_outputs import (
+    Game24Answer,
+    extract_game24_numbers,
+    game24_prompt,
+    parse_game24_answer,
+    select_valid_candidate,
+)
 
 
 class Planner:
@@ -39,6 +46,52 @@ class Planner:
         self.max_tokens = max_tokens
 
         self.verbose = verbose
+
+    def _structured_game24_output(self, question: str, memory: Memory) -> str:
+        """Return one strictly validated Game24 JSON object, or a failure object.
+
+        Existing marked candidates are checked locally first.  At most one
+        constrained retry is sent to the local fixed Qwen role; free-form
+        output is never promoted to an answer.
+        """
+        numbers = extract_game24_numbers(question)
+        if numbers is None:
+            raise ValueError("structured Game24 harness requires four input numbers")
+        memory_text = str(memory.get_actions())
+        candidate, local_result = select_valid_candidate(memory_text, numbers)
+        if candidate is not None:
+            answer = Game24Answer(expression=candidate)
+            print("STRUCTURED_HARNESS route=deterministic status=validated", flush=True)
+            return answer.model_dump_json() if hasattr(answer, "model_dump_json") else answer.json()
+
+        prompt = game24_prompt(question, memory_text[-12000:])
+        for attempt in range(2):
+            raw = self.llm_engine_fixed([prompt], response_format=Game24Answer)
+            answer, result = parse_game24_answer(raw, numbers)
+            if answer is not None:
+                print(
+                    f"STRUCTURED_HARNESS route=guided_json status=validated attempt={attempt + 1}",
+                    flush=True,
+                )
+                return answer.model_dump_json() if hasattr(answer, "model_dump_json") else answer.json()
+            print(
+                f"STRUCTURED_HARNESS schema_or_semantic_failure attempt={attempt + 1} reason={result.get('reason')}",
+                flush=True,
+            )
+            if attempt == 0:
+                prompt = game24_prompt(
+                    question,
+                    memory_text[-12000:],
+                    feedback=(
+                        f"reason={result.get('reason')}; expected_numbers={list(numbers)}; "
+                        f"used_numbers={result.get('used_numbers', [])}"
+                    ),
+                )
+        print(
+            f"STRUCTURED_HARNESS status=failed reason={local_result.get('reason', 'no_valid_candidate')}",
+            flush=True,
+        )
+        return '{"expression":""}'
     def get_image_info(self, image_path: str) -> Dict[str, Any]:
         image_info = {}
         if image_path and os.path.isfile(image_path):
@@ -325,6 +378,8 @@ Rules:
 
 
     def generate_final_output(self, question: str, image: str, memory: Memory) -> str:
+        if os.getenv("AGENTFLOW_STRUCTURED_OUTPUT_HARNESS", "0").lower() in {"1", "true", "yes", "on"} and extract_game24_numbers(question):
+            return self._structured_game24_output(question, memory)
         image_info = self.get_image_info(image)
         if self.is_multimodal:
             prompt_generate_final_output = f"""
@@ -399,6 +454,8 @@ Instructions:
 
 
     def generate_direct_output(self, question: str, image: str, memory: Memory) -> str:
+        if os.getenv("AGENTFLOW_STRUCTURED_OUTPUT_HARNESS", "0").lower() in {"1", "true", "yes", "on"} and extract_game24_numbers(question):
+            return self._structured_game24_output(question, memory)
         image_info = self.get_image_info(image)
         if self.is_multimodal:
             prompt_generate_final_output = f"""

@@ -15,6 +15,7 @@ from filelock import FileLock
 import asyncio
 
 from utils import compute_score
+from agentflow.models.structured_outputs import extract_game24_numbers, parse_game24_answer
 
 configure_logger()
 
@@ -200,11 +201,25 @@ class Rollout(LitAgent):
             # Safely check for and extract the final answer
             if "direct_output" in result and result["direct_output"]:
                 final_output = result["direct_output"]
-                all_matches = re.findall(r"<answer>(.*?)</answer>", final_output, re.DOTALL)
-                if all_matches:
-                    answer = all_matches[-1].strip()
+                if os.getenv("AGENTFLOW_STRUCTURED_OUTPUT_HARNESS", "0").lower() in {"1", "true", "yes", "on"}:
+                    numbers = extract_game24_numbers(task["question"])
+                    parsed, validation = parse_game24_answer(final_output, numbers or ())
+                    if parsed is None:
+                        print(
+                            "STRUCTURED_HARNESS_ROLLOUT schema_or_semantic_failure "
+                            f"reason={validation.get('reason')}",
+                            flush=True,
+                        )
+                        answer = "None"
+                    else:
+                        answer = parsed.expression
+                        print("STRUCTURED_HARNESS_ROLLOUT validated=1", flush=True)
                 else:
-                    answer = final_output
+                    all_matches = re.findall(r"<answer>(.*?)</answer>", final_output, re.DOTALL)
+                    if all_matches:
+                        answer = all_matches[-1].strip()
+                    else:
+                        answer = final_output
             else:
                 print("Warning: Result has no direct_output or direct_output is empty.")
                 answer = "None"
@@ -212,8 +227,21 @@ class Rollout(LitAgent):
             print(f"Failure during agent execution: {str(e)}. Defaulting to 'None'.")
             answer = "None"
 
+        # Keep the validated structured expression inside the explicit answer
+        # boundary expected by the existing numeric deterministic scorer.  The
+        # stored answer remains the clean expression for replay/inspection.
+        reward_answer = answer
+        if (
+            os.getenv("AGENTFLOW_STRUCTURED_OUTPUT_HARNESS", "0").lower()
+            in {"1", "true", "yes", "on"}
+            and answer != "None"
+            and extract_game24_numbers(task["question"])
+        ):
+            reward_answer = f"<answer>{answer}</answer>"
+            print("STRUCTURED_HARNESS_REWARD_BRIDGE tagged=1", flush=True)
+
         # Evaluate the answer against the ground truth
-        reward_value = await eval(task["question"], str(task["result"]), answer, val)  # reward is tracked with the decorator
+        reward_value = await eval(task["question"], str(task["result"]), reward_answer, val)  # reward is tracked with the decorator
         print("answer: {} ground_truth: {} reward: {}".format(answer, task["result"], reward_value))
 
         idx = task.get("extra_info", {}).get("idx", "unknown_idx")

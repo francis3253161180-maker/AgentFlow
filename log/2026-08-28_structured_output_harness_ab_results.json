@@ -1,0 +1,196 @@
+{
+  "artifact_sha256": {
+    "new_aggregate": "df35e0370d3346d73cd653b533a7c691e6a7e0eeb2a3b741c0b374486e930be0",
+    "new_logs": {
+      "log/structured-output-harness-ab-20260828_20260828_175051_rollout.log": "758fcd94d19dbeec535a628b4de84fa28666e9457fad50c488e9f84737ac3bf5",
+      "log/structured-output-harness-ab-20260828_20260828_175051_train.log": "465d56e957e2c32428f9c7550bfcd385c24597d1a8663e56318c314b193a3eac"
+    },
+    "old_aggregate": "a908de96c5c4be7183e0b9117294af99fcad476cc8499e57f8efb2a709c68991",
+    "old_logs": {
+      "log/reward-audit-len2048-context8192-20260828_20260828_141154_rollout.log": "119b4805ed247c1c6481ac1079a07c303069af3b08c0706e49ef9748d7ee2018",
+      "log/reward-audit-len2048-context8192-20260828_20260828_141154_train.log": "e3e0b0e84c15d145b5fb2f3a798ea7504f177a2ee38d6bc06357a249d778ce70"
+    }
+  },
+  "causal_findings": {
+    "interpretation": "A validated JSON expression was extracted as plain text before compute_score; the current numeric scorer requires an explicit answer boundary for this path. This is an integration handoff issue, not evidence that the validator accepted an invalid expression.",
+    "new_run_all_zero_reward": true,
+    "outer_reward_improved": false,
+    "valid_structured_object_bypassed_reward_bridge": true
+  },
+  "mode": "offline_no_model_no_judge",
+  "new_structured_harness": {
+    "aggregate_reward_counts": {
+      "0.0": 32
+    },
+    "bridge_evidence": [
+      {
+        "file": "rollout_rollout-9d751083-13f0-4cf3-9d60-dcfb698c6426.json",
+        "tagged_scorer_expected_path": "proved_numeric_expression",
+        "untagged_scorer_expected_path": "conflicting_numbers_or_uncertain_number"
+      }
+    ],
+    "evidence_dir": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/structured-output-harness-ab-20260828_20260828_175051_trajectories",
+    "evidence_file_count": 32,
+    "evidence_file_sha256": {
+      "rollout_rollout-06296b7d-7349-4e6e-8283-eed91a1d305e.json": "7c72194652a776afa486911c28a85c5a6bb0f299a59ee2dda44ac897e8567a10",
+      "rollout_rollout-15579641-c011-4890-9dea-3806a4faeca3.json": "c5968dc281e85a80e214853ceea2f1687b2fb3e207ba8db968e42f10a1aff2ab",
+      "rollout_rollout-19693b83-3350-440e-92c8-c8306672b66a.json": "b5612de3c109eb9e8a39964562109d90bff3328b41cc3ff853cbe67e66f1d989",
+      "rollout_rollout-28120217-9fe3-43f1-bad9-4040e047b769.json": "4d667cf33634b7acf578c476f17ccca7560bbae5e082fd376b6ba81992addaaf",
+      "rollout_rollout-2c15bdce-2164-4f7e-8dc3-438d06aeafc6.json": "eecf47677690d34c3f6dea3bc2f493383c86084883f4ff61cb249b99379b5ab0",
+      "rollout_rollout-2da8c1c9-1f9a-41e4-9487-7fe3f03eba38.json": "0f2f5e2d3bf1a7ee9eef54b08898af56ae0c477719bc707fbe34a942cda6bcc2",
+      "rollout_rollout-3913114f-0e92-44c5-9f64-a761bc9cab7f.json": "18f8ad829080e5e00e43ef5ac582736a7b415f5a806b756be3b0dc8c2f383349",
+      "rollout_rollout-45acf22f-81b6-4fa4-8250-f7422c1a6350.json": "db64afd280fb1609d399b02204a05db8e87d0e9ff5e997bdf290931d89b63d79",
+      "rollout_rollout-484a71af-64f3-47dd-b641-63df1805860d.json": "a06e9c5fc308195ad24981b2ff9371746455836a1f96462753bb7bbfe7c7413a",
+      "rollout_rollout-4c04b313-4bdb-4487-baf9-02640c120f30.json": "70c371e4a6d9371bdd258567217ce62d9d343310552ef6e0cfeb0b4e357471ec",
+      "rollout_rollout-4c1eece2-69d6-448c-a266-da45584300f2.json": "be8706e4bd60fee89eb91a254d485194eb21edce0d37bb042087dd226f9a23e2",
+      "rollout_rollout-51e058be-9d99-4e08-996e-1b3b7ddf9fb8.json": "1bd8d3686f7a94224c8112f13b4224fb51d237089ba848a337ffa1a3373293fe",
+      "rollout_rollout-5b2249a2-cbd0-40c1-8ffb-71ecbe23f7c8.json": "0e85e00b57dda4016394485542e8949a4f57d6842a40f18d75b73cdc6be8f976",
+      "rollout_rollout-5eac7dad-7b06-48c2-b4a1-703e06a9e6de.json": "f477a248025810d49d97e6913e6f55c99c8c4a4d100dcdd35956fb531a395770",
+      "rollout_rollout-626a1fab-fe11-4a54-8ed0-62bf2a0dd50b.json": "fbef0a86f7e9c75406a2b1ffbeef8f85663046d7bdea893e2e85a22e7402e39a",
+      "rollout_rollout-7d42a291-5e93-4c21-bc1a-f063195334f6.json": "ff03ad536cf23fffadc13f23c5f90904a1de974a7f786a1000f0790fd85b704a",
+      "rollout_rollout-8006a8b9-ca9a-4875-979d-82b423bd86ff.json": "97ff8813506056394a9f1ae37d51920a18a17008f5cfef73a79a42e9185b5913",
+      "rollout_rollout-89824e01-fe69-4fea-9d56-12e5c02d32cb.json": "b41e6a0db7a0e95609f74a5065a61b121960d25b324f1f0ffd93a50fda949006",
+      "rollout_rollout-9c8682b7-4886-4b39-9863-6bd748f7234a.json": "073ea554d8184c98bee10bf43fc1dee56402c5ce645526ce94e0b9662966f1c5",
+      "rollout_rollout-9d751083-13f0-4cf3-9d60-dcfb698c6426.json": "d7891038e8edb325e28d6f6ec272aa7eb3789150223114e0f903abdf9212be56",
+      "rollout_rollout-aac241d5-365e-4075-a855-344436051b3d.json": "9b0ab06b16a41565de573007ffe0e3d7bdb7079e0919bb96fcf4f2b99db3f97b",
+      "rollout_rollout-ac6ce58f-8f19-4046-b191-98348ef811d3.json": "de8ddec3d8e35ab9d92d3e68bbb9d2b8c7d64674199f8337a957226778faa33c",
+      "rollout_rollout-b3f72593-9af7-4535-ad29-6f971b84ad5f.json": "0c8bb81d361d1667b72173da10197bd70bd8749ee05303e5acfb3b95196bed9d",
+      "rollout_rollout-bbd61f75-b94a-4210-a412-aca809ce550e.json": "3523d18cf5df66371ee6ce4e57c31d6f4a7b1eb163864fb2bbc67f374b6c1812",
+      "rollout_rollout-be2da3e4-8f7c-4d5a-8de5-a331abb30e18.json": "60f3c036cc6d9a949a3e774491d6413717b2dd573f4a2d521c7cc631f6c0b680",
+      "rollout_rollout-dc7998e3-e479-48b2-8822-682647108f0d.json": "5d809cbf1e3fb798056b00d2ba780aefb9344a3130a85b2171901174ede2376b",
+      "rollout_rollout-df25751c-c0ee-40be-9bc4-86dd6db05cbf.json": "dd50f418470e6c022ac5ee4a65fd31506d93b98b6d0a28afd4aa7725016a9997",
+      "rollout_rollout-e1d26f86-2654-4196-a591-84fad323828c.json": "dcce426659eee975b02122df34c195cf3b3a984747c0ebb09dcd626bc5cc5075",
+      "rollout_rollout-e9fb7948-db6d-49ac-bf89-e6bb3f2ca281.json": "e6fa22c7b79873b0566da5a71a11abaa9bdd0e920921c81d91d3d173d6986fa0",
+      "rollout_rollout-edc18096-100e-4afb-8fe2-bc7d552d3018.json": "b9c6258d5d1aeb1105353bca3c0432a620bfabc401b7e65165172b3796dc66a1",
+      "rollout_rollout-f1942780-5c53-4074-99b0-f47ccb661a5b.json": "1f3618fb9dd52139e095667f0cfee8e30311d98651329046ada180631588cf8d",
+      "rollout_rollout-f8c64fa1-de13-4dcb-92ff-8714690dc53f.json": "92986b337a7cc768c1fe4e592b41753a6806692fbf420de676f6b91a8b0a51a3"
+    },
+    "exact_game24_json_objects": 63,
+    "group_count": 8,
+    "marker_counts": {
+      "cleanup_complete_drained": 2,
+      "cleanup_not_drained": 0,
+      "cuda_or_prefix_errors": 0,
+      "hybrid_reward_events": 32,
+      "reasons": {
+        "not_24": 41,
+        "wrong_number_multiset": 21
+      },
+      "retry_attempt_two_failures": 31,
+      "schema_parse_failure_markers": 0,
+      "structured_harness_deterministic_validated": 0,
+      "structured_harness_failed": 31,
+      "structured_harness_guided_validated": 1,
+      "structured_rollout_failures": 31,
+      "structured_rollout_validated": 1,
+      "vllm_http_400": 0
+    },
+    "semantic_validation": {
+      "not_24": 41,
+      "valid": 1,
+      "wrong_number_multiset": 21
+    },
+    "valid_object_reward_bridge_risk": 1,
+    "valid_structured_objects": 1
+  },
+  "old_pre_harness": {
+    "aggregate_reward_counts": {
+      "0.0": 32
+    },
+    "bridge_evidence": [],
+    "evidence_dir": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/reward-audit-len2048-context8192-20260828_20260828_141154_trajectories",
+    "evidence_file_count": 32,
+    "evidence_file_sha256": {
+      "rollout_rollout-0a590011-141d-4596-b2a3-aaade8904750.json": "8bcc2854fb43c862c18fab9f4ed30bee7eaa41d39050d531bf51c3cc0e5d9814",
+      "rollout_rollout-0af44674-3623-413b-9362-10703d5ed50a.json": "b67fe079d2457133af2560fd32d3b5cac41627f33e97000919d14649dbbdfe32",
+      "rollout_rollout-1d5a5f93-d23d-4bc8-95b6-500b0e7f72c2.json": "019c3aeab3e9f2b069ba3a7e84a3a9d380f214776d476887ca924af0b0723318",
+      "rollout_rollout-1f2771e7-a9d7-4c05-a882-763aead6d808.json": "5750bbfc0906559dbbba39f17aa0557c84de598f42093bc5f0f4c4bb5ffa330a",
+      "rollout_rollout-2dbf4af7-0d8e-4265-bcb8-6520d0578a26.json": "7d0afe19be6b49fd3e9b30398de40b37671ebe8dc07af1e4e1dfe248ace297ce",
+      "rollout_rollout-35128806-5323-494b-afd2-0d044cc0b4a9.json": "60adc20f5444d19a5af42376817999602eb5e99df7ebfc93d37d6379eaf44ad2",
+      "rollout_rollout-38b95e22-bb4c-41ba-b219-6cf479bd6dac.json": "97096fbae938d68a1bfb4a05eeb7e87872ed997b9890c20f738aa7e7d787f223",
+      "rollout_rollout-3bbca245-6030-4946-813d-44afbc57f15e.json": "92fcc86b177378be6f227463ea160ec5179591624182f3766d4bea9b847c120a",
+      "rollout_rollout-405ca428-f50b-445b-bbd3-29152392fe6c.json": "e42aca6b5ab3409478cf408926cb2992a2602b001fbdcbee778d93c1d97dc27a",
+      "rollout_rollout-45a46e68-402d-411f-a465-8076b7135af6.json": "1f19382a6de645fc0c0f1f238685f964622d736d320e7fe8919e643a2dc87661",
+      "rollout_rollout-45a74f86-ec33-47d0-9216-e5aad52f7120.json": "e34f83eba95679ede132aa5e5a1bff55c0a0bb4e5e3dfc68381a797e17d21a71",
+      "rollout_rollout-4c4de6bc-db7f-4b31-b850-98ae56bf1f67.json": "576a0535804d411331c09857fd9bd09c291cb9f67837b63747da1ea225799e26",
+      "rollout_rollout-4cd7034b-04c8-4f7b-a056-09c317aa2366.json": "14f552ee9ef11855195ca67e9fb8e2e5bcdfe7a8a4d550bca70e3b4269d1e858",
+      "rollout_rollout-5a00650b-06e5-4727-a8a1-4c63f7e1eda5.json": "13aab030e29ca0ac9ca4fe9775a9844008fc733696bdfd9985d37b0bd03c77e1",
+      "rollout_rollout-6570cebf-16ac-4a15-b511-3c7663150c8b.json": "66ea5ecfd388eb79153d40f3fc40b34785a36651d898dcc955702844dae86e3d",
+      "rollout_rollout-6afc950e-4713-463d-bdc4-9803c48b926b.json": "a51c115493bd5292896a295f128ffb141ec38001e039623d955596f6c63dc1cf",
+      "rollout_rollout-71e07498-8dad-4ede-abc1-b422f3ca7392.json": "ed20b5a9d59533a10586c84c4b42fc1e7181f0b1426beb1625f60ba71f5bcfb3",
+      "rollout_rollout-855bb5ec-5333-44d2-87df-acaa9112303d.json": "d0480a73b89412c38e9da2e59c3f0f98bf1e71eb19fa7d34af58ee7318cd0d8a",
+      "rollout_rollout-977af51f-01a2-4c99-87c0-73ac5aecc54a.json": "9171c670fdd85114571e137b723a013bcaf15b81ef550c9eb86742c1abef7f7a",
+      "rollout_rollout-9fd960f5-126b-4053-b46d-d4af1255776b.json": "2750071220bc2ece522821f41532656c1154f8a8fb3cac6c035cbd0f6db9d3e2",
+      "rollout_rollout-a90c16c8-ad85-4b10-9bd0-491a3048c4c9.json": "30ab756402be8f469ad3fb62e67657a17fc3d2b9068b35289ffa9987503a484e",
+      "rollout_rollout-a9692151-4fdb-48ba-88c0-3456e457619b.json": "872457c7ddbfd71c7f5d7516f66855845c4d9b68c8c9cddd959398935173c4a5",
+      "rollout_rollout-ad0d3b7d-19dd-441c-80fd-169d9502447d.json": "7699e70049b566891bb5a36b4fa255d9d27b6194c051beb821066c26cac44339",
+      "rollout_rollout-b00a03ba-73ab-447a-b6e6-9bc5f0a5f75e.json": "407ce3660e2cb4dd47ea40120bde38899e5d70e19f65f3c62f68577cd32559d1",
+      "rollout_rollout-beac49fa-d0a4-4af9-99dc-a1ff5f6d5b29.json": "dbc1d2107fb89f668e01e3b8b8bb3f2ae15a9727da6dfd8b3904be17bf2b1791",
+      "rollout_rollout-c1b8c410-a7c3-4016-b91b-e489bc2e4675.json": "862d4b8cf70f6e3e5c16edd61d5066be6838117d0a92cdf338d36786ef58c2df",
+      "rollout_rollout-c3411a92-ffa4-4cf2-8ff0-30c122c4b0e1.json": "3af2dbc7ee8de0113d5f9d1a2af630f3fe3a36bb84a85231fba08448a7a37e88",
+      "rollout_rollout-cdf236d6-7c7e-41f7-ac1a-3bb7e673c80a.json": "20f5e2e79c1ac7c8c62d9c79cdd9f4bedd4d6757eda5afaedcd0ac456cab6e73",
+      "rollout_rollout-cfba75d5-e5ac-43a9-a6ad-2ac9d59a95c2.json": "893efd41b4f4b3ebf260bca68cd8317d1c63c8a0d26bf298935d7a85fe88e784",
+      "rollout_rollout-f0f0c434-b8df-43da-a338-86ddd27c197a.json": "db7aabd2d5eaccf141f40daebc3e6e36d5632094a79143e4bb80b78652da8180",
+      "rollout_rollout-f39f6041-7fef-44a9-8dea-561353828110.json": "09f401a1c4752f0e2774ba11a6385a949bbf0319cf17524e986c6b2696bdafb6",
+      "rollout_rollout-f8cf1278-dc6a-4a99-a8e0-9f64536a627b.json": "16959fe6f0edfcbdb4269220cc37189937471c361fbb947ed9aa31dec6268399"
+    },
+    "exact_game24_json_objects": 0,
+    "group_count": 8,
+    "marker_counts": {
+      "cleanup_complete_drained": 2,
+      "cleanup_not_drained": 0,
+      "cuda_or_prefix_errors": 0,
+      "hybrid_reward_events": 32,
+      "reasons": {},
+      "retry_attempt_two_failures": 0,
+      "schema_parse_failure_markers": 0,
+      "structured_harness_deterministic_validated": 0,
+      "structured_harness_failed": 0,
+      "structured_harness_guided_validated": 0,
+      "structured_rollout_failures": 0,
+      "structured_rollout_validated": 0,
+      "vllm_http_400": 0
+    },
+    "semantic_validation": {},
+    "valid_object_reward_bridge_risk": 0,
+    "valid_structured_objects": 0
+  },
+  "protocol_metadata": {
+    "new": {
+      "artifacts": {
+        "gpu_log": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/structured-output-harness-ab-20260828_20260828_175051_gpu.tsv",
+        "rollout_log": "/root/autodl-tmp/AgentFlow/log/structured-output-harness-ab-20260828_20260828_175051_rollout.log",
+        "route_state": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/structured-output-harness-ab-20260828_20260828_175051_role_route.json",
+        "run_meta": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/structured-output-harness-ab-20260828_20260828_175051_run_meta.json",
+        "train_log": "/root/autodl-tmp/AgentFlow/log/structured-output-harness-ab-20260828_20260828_175051_train.log"
+      },
+      "checkpoint_disabled": true,
+      "code_commit": "eac9cf1ea03c4304bffb6b129c379202def01e0f",
+      "config": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/structured-output-harness-ab-20260828_20260828_175051.yaml",
+      "config_sha256": "bf137d4a6c1996a253230e43a60ec935cad988cb127250b057cbce8e64970522",
+      "external_calls_disabled": true,
+      "model_path": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+      "optimizer_steps": 0,
+      "prepared_parquet": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/len2048_probe.parquet",
+      "prepared_parquet_sha256": "1b16e575499f4b9f628ddbf4cd2aceb37e90f877982068fca57b907f7a822626",
+      "rollout_only": true,
+      "sampling": {
+        "dynamic_response_padding": true,
+        "max_model_len": 8192,
+        "max_prompt_length": 3072,
+        "max_response_length": 1024,
+        "rollout_n": 4,
+        "temperature": 0.7
+      },
+      "schema_version": 1,
+      "seed": 20260829,
+      "selection": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/len2048_probe_selection_manifest.json",
+      "selection_sha256": "052bd36c437cd18fed81e9100a25fcbc3ae05aededf7adf95b44e88131748365",
+      "source_behavior_snapshot": "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/random30-fresh-rollout-replay-20260828_20260828_115632_behavior_snapshot.pt",
+      "source_snapshot_sha256": "88be88645ccb737de45c30750d3560255ea5d953d5b0005d185636cf0c6c53a3",
+      "vllm_gpu_memory_utilization": 0.5
+    },
+    "old": null
+  },
+  "schema_version": 1
+}

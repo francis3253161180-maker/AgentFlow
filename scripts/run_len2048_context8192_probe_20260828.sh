@@ -8,7 +8,8 @@ SELECTION=/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/len2048_probe
 SOURCE_SNAPSHOT=/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/random30-fresh-rollout-replay-20260828_20260828_115632_behavior_snapshot.pt
 TMP=/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828
 STAMP="$(date +%Y%m%d_%H%M%S)"
-EXP=reward-audit-len2048-context8192-20260828
+EXP="${AGENTFLOW_LEN2048_EXPERIMENT:-reward-audit-len2048-context8192-20260828}"
+MAX_RESPONSE="${AGENTFLOW_LEN2048_MAX_RESPONSE:-2048}"
 CONFIG="${TMP}/${EXP}_${STAMP}.yaml"
 TRAIN_LOG="${REPO}/log/${EXP}_${STAMP}_train.log"
 ROLLOUT_LOG="${REPO}/log/${EXP}_${STAMP}_rollout.log"
@@ -44,11 +45,12 @@ export AGENTFLOW_UNIFIED_ROLLOUT_N=4
 export AGENTFLOW_UNIFIED_SEED=20260829
 export AGENTFLOW_UNIFIED_SCORER="local deterministic; external judge disabled"
 export AGENTFLOW_UNIFIED_MAX_PROMPT_LENGTH=3072
-export AGENTFLOW_UNIFIED_MAX_RESPONSE_LENGTH=2048
+export AGENTFLOW_UNIFIED_MAX_RESPONSE_LENGTH="$MAX_RESPONSE"
 export AGENTFLOW_UNIFIED_MAX_MODEL_LEN=8192
 export AGENTFLOW_DYNAMIC_RESPONSE_PADDING=1
 export AGENTFLOW_RESPONSE_LENGTH_AUDIT_PATH="$LENGTH_AUDIT"
 export AGENTFLOW_BEHAVIOR_SNAPSHOT_SOURCE_PATH="$SOURCE_SNAPSHOT"
+export AGENTFLOW_STRUCTURED_OUTPUT_HARNESS="${AGENTFLOW_STRUCTURED_OUTPUT_HARNESS:-0}"
 export AGENTFLOW_BEHAVIOR_SNAPSHOT_PATH="$SNAPSHOT"
 export AGENTFLOW_BEHAVIOR_SNAPSHOT_METADATA_PATH="$SNAPSHOT_META"
 export AGENTFLOW_REPLAY_CAPTURE_ENABLED=0
@@ -74,10 +76,10 @@ if manifest.get("status") != "selected_before_generation" or not (1 <= manifest.
 print("LEN2048_PREFLIGHT snapshot_hash_verified=1 selected_groups=%d" % manifest["selected_group_count"])
 PY
 
-"$PY" - "$BASE_CONFIG" "$CONFIG" "$DATA" "$EXP" "$VLLM_UTIL" "$SELECTION" "$SOURCE_SNAPSHOT" "$RUN_META" "$TRAIN_LOG" "$ROLLOUT_LOG" "$GPU_LOG" "$ROUTE_STATE" <<'PY'
+"$PY" - "$BASE_CONFIG" "$CONFIG" "$DATA" "$EXP" "$VLLM_UTIL" "$MAX_RESPONSE" "$SELECTION" "$SOURCE_SNAPSHOT" "$RUN_META" "$TRAIN_LOG" "$ROLLOUT_LOG" "$GPU_LOG" "$ROUTE_STATE" <<'PY'
 from pathlib import Path
 import hashlib, json, os, sys
-base, out, data, exp, util, selection, source_snapshot, run_meta, train_log, rollout_log, gpu_log, route = sys.argv[1:]
+base, out, data, exp, util, max_response, selection, source_snapshot, run_meta, train_log, rollout_log, gpu_log, route = sys.argv[1:]
 text = Path(base).read_text(encoding="utf-8")
 base_data = "$" + "{BASE_DATA_DIR}"
 replacements = {
@@ -89,7 +91,7 @@ replacements = {
     "data.train_files: '" + base_data + "/train/flowgrpo_smoke_2.parquet'": f"data.train_files: '{data}'",
     "data.val_files: '" + base_data + "/val/aime24.parquet'": f"data.val_files: '{data}'",
     "data.max_prompt_length: 1280": "data.max_prompt_length: 3072",
-    "data.max_response_length: 384": "data.max_response_length: 2048",
+    "data.max_response_length: 384": f"data.max_response_length: {max_response}",
     "actor_rollout_ref.rollout.n: 2": "actor_rollout_ref.rollout.n: 4",
     "actor_rollout_ref.rollout.gpu_memory_utilization: 0.24": f"actor_rollout_ref.rollout.gpu_memory_utilization: {util}",
     "actor_rollout_ref.rollout.max_model_len: 2048": "actor_rollout_ref.rollout.max_model_len: 8192",
@@ -117,7 +119,7 @@ payload = {
     "source_behavior_snapshot": source_snapshot, "source_snapshot_sha256": sha(source_snapshot),
     "prepared_parquet": data, "prepared_parquet_sha256": sha(data), "config": out, "config_sha256": sha(out),
     "model_path": os.environ["AGENTFLOW_UNIFIED_MODEL_PATH"], "seed": 20260829,
-    "sampling": {"temperature": 0.7, "rollout_n": 4, "max_prompt_length": 3072, "max_response_length": 2048, "max_model_len": 8192, "dynamic_response_padding": True},
+    "sampling": {"temperature": 0.7, "rollout_n": 4, "max_prompt_length": 3072, "max_response_length": int(max_response), "max_model_len": 8192, "dynamic_response_padding": True},
     "vllm_gpu_memory_utilization": float(util), "rollout_only": True, "optimizer_steps": 0,
     "checkpoint_disabled": True, "external_calls_disabled": True, "code_commit": os.environ["AGENTFLOW_UNIFIED_CODE_COMMIT"],
     "artifacts": {"run_meta": run_meta, "train_log": train_log, "rollout_log": rollout_log, "gpu_log": gpu_log, "route_state": route},
@@ -141,19 +143,19 @@ trap cleanup EXIT INT TERM
 check_abort() {
   for path in "$TRAIN_LOG" "$ROLLOUT_LOG"; do
     [[ -f "$path" ]] || continue
-    if grep -Eqi 'CUDA out of memory|OutOfMemoryError|illegal memory access|blocks are not freed yet|Failed to reset prefix cache|drained[=: ]+false|RayTaskError|deadlock|worker died|No valid (training|validation) rollout' "$path"; then
+    if grep -Eqi 'CUDA out of memory|OutOfMemoryError|illegal memory access|blocks are not freed yet|Failed to reset prefix cache|drained[=: ]+false|RayTaskError|deadlock|worker died|No valid (training|validation) rollout|BadRequestError|HTTP/1.1" 5[0-9][0-9]|structured output backend' "$path"; then
       echo "ABORT_CONDITION log_failure=$path" >&2
       return 1
     fi
   done
   return 0
 }
-echo "LEN2048_PROTOCOL model=Qwen2.5-7B-Instruct temp=0.7 n=4 max_prompt=3072 max_response=2048 max_model_len=8192 seed=20260829"
+echo "LEN2048_PROTOCOL model=Qwen2.5-7B-Instruct temp=0.7 n=4 max_prompt=3072 max_response=$MAX_RESPONSE max_model_len=8192 seed=20260829 structured_harness=$AGENTFLOW_STRUCTURED_OUTPUT_HARNESS"
 echo "LEN2048_MEMORY vllm_gpu_memory_utilization=$VLLM_UTIL max_num_seqs=1 max_num_batched_tokens=1024"
 echo "LEN2048_MODE rollout_only=1 val_only=1 optimizer_steps=0 checkpoint=disabled external_calls=disabled"
 echo "LEN2048_SNAPSHOT source=$SOURCE_SNAPSHOT output=$SNAPSHOT"
 echo "LEN2048_SELECTION=$SELECTION"
-PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=3072 data.max_response_length=2048 +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 & TRAIN_PID=$!
+PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=3072 data.max_response_length="$MAX_RESPONSE" +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 & TRAIN_PID=$!
 (
   while kill -0 "$TRAIN_PID" 2>/dev/null; do
     nvidia-smi --query-gpu=timestamp,index,memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits >>"$GPU_LOG" 2>/dev/null || true
@@ -179,5 +181,5 @@ for _ in $(seq 1 180); do [[ ! -e "/proc/$ROLLOUT_PID" ]] && break; sleep 1; don
 if kill -0 "$ROLLOUT_PID" 2>/dev/null; then kill -TERM "$ROLLOUT_PID" 2>/dev/null || true; fi
 wait "$ROLLOUT_PID" 2>/dev/null || true
 ROLLOUT_PID=""
-"$PY" scripts/aggregate_len2048_probe_20260828.py --evidence-dir "$EVIDENCE_DIR" --selection "$SELECTION" --output "$TMP/"$EXP"_"$STAMP"_aggregate.json" --max-response 2048 --max-model-len 8192
+"$PY" scripts/aggregate_len2048_probe_20260828.py --evidence-dir "$EVIDENCE_DIR" --selection "$SELECTION" --output "$TMP/"$EXP"_"$STAMP"_aggregate.json" --max-response "$MAX_RESPONSE" --max-model-len 8192
 echo "LEN2048_STATUS=passed"
