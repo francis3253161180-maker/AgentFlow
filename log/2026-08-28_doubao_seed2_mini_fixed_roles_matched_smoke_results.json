@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "run_status": "complete",
+  "requested_model": "doubao-seed-2-0-mini-260428",
+  "new_run": {
+    "experiment": "doubao-mini-fixed-role-matched-smoke-20260828",
+    "trajectory_count": 32,
+    "group_count": 8,
+    "rollout_n": 4,
+    "valid_rollouts": 32,
+    "retries": 0,
+    "errors": 0,
+    "reward_mean": 1.0,
+    "reward_counts": {"0.0": 0, "1.0": 32},
+    "group_reward_vectors": {
+      "prompt-0f16cff21770e66c04d86dad656bcbf1": [1.0, 1.0, 1.0, 1.0],
+      "prompt-1e274fce29d81f818eeba3e5aee76b2a": [1.0, 1.0, 1.0, 1.0],
+      "prompt-788cd5b074d67e3e75e194b53e56084b": [1.0, 1.0, 1.0, 1.0],
+      "prompt-95cab11f780a82b96be13c234030ad73": [1.0, 1.0, 1.0, 1.0],
+      "prompt-aa1649d6557dfefabc6395de965f799f": [1.0, 1.0, 1.0, 1.0],
+      "prompt-b23b35dc0311573aedca3b827a8c0986": [1.0, 1.0, 1.0, 1.0],
+      "prompt-df4579075fda882da90d9b1e851a4780": [1.0, 1.0, 1.0, 1.0],
+      "prompt-f0e695292f16b85c2e5674a0faaa93ed": [1.0, 1.0, 1.0, 1.0]
+    },
+    "group_bins": {"0/4": 0, "1/4": 0, "2/4": 0, "3/4": 0, "4/4": 8},
+    "mixed_groups": 0,
+    "mixed_ratio": 0.0,
+    "deterministic_reward_count": 32,
+    "deepseek_fallback_count": 0,
+    "judge_cache_hit_count": 0,
+    "ark_api_requests": 160,
+    "ark_api_errors": 0,
+    "parse_errors": 0,
+    "strict_structured_validation_failures": 0,
+    "trainable_transition_filter": {"kept": 32, "excluded_fixed": 0, "excluded_unattributed": 0, "excluded_invalid": 160},
+    "model_route_counts": {"qwen-actor": 32, "doubao-seed-2-0-mini-260428": 160},
+    "role_route": {
+      "planner_main": "qwen-actor + LoRA",
+      "planner_fixed": "doubao-seed-2-0-mini-260428",
+      "verifier": "doubao-seed-2-0-mini-260428",
+      "executor": "doubao-seed-2-0-mini-260428",
+      "fixed_roles_frozen": true,
+      "kl_enabled": false,
+      "separate_ref_model": false
+    },
+    "protocol": {
+      "actor_model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+      "temperature": 0.7,
+      "max_prompt_length": 3072,
+      "max_response_length": 1024,
+      "max_model_len": 8192,
+      "dynamic_response_padding": true,
+      "rollout_only": true,
+      "val_only": true,
+      "optimizer_steps": 0,
+      "checkpoint_disabled": true,
+      "vllm_gpu_memory_utilization": 0.5,
+      "seed": 20260829,
+      "code_commit": "71d7633a7cc5af063e952f20b88f9ca8197346e6"
+    },
+    "runtime_seconds_approx": 1422,
+    "gpu_peak_memory_mib": 16998,
+    "gpu_final_memory_mib": 4,
+    "cleanup": {
+      "trigger_count": 2,
+      "drain_complete_count": 2,
+      "reset_prefix_cache_complete_count": 2,
+      "sleep_complete_count": 2,
+      "complete_drained_count": 2,
+      "wake_up_count": 1,
+      "final_drained": true,
+      "final_outstanding_before": 0,
+      "final_abort_count": 0,
+      "final_abort_errors": 0,
+      "final_cleanup_duration_seconds": 0.680
+    },
+    "evidence": {
+      "run_meta_sha256": "16f5289cb3706313aa86383464b3d0039b7e0232e326070f1045d015890e2272",
+      "route_state_sha256": "552100fee344098800a5238b836a5f40e8cd22a3f427a6b0a00c4d55ce268d2b",
+      "gpu_log_sha256": "485c45006769d9703536b38f299d811269e7128a5f9b578754c8497ddaf4c55e",
+      "trajectory_dir": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/doubao-mini-fixed-role-matched-smoke-20260828_20260828_213050_trajectories",
+      "rollout_log": "log/doubao-mini-fixed-role-matched-smoke-20260828_20260828_213050_rollout.log",
+      "train_log": "log/doubao-mini-fixed-role-matched-smoke-20260828_20260828_213050_train.log"
+    }
+  },
+  "superseded_interrupted_run": {
+    "experiment": "doubao-fixed-role-matched-smoke-20260828_20260828_212034",
+    "model": "doubao-seed-2-0-lite-260428",
+    "status": "interrupted_before_completion",
+    "partial_trajectory_count": 3,
+    "partial_reward_vector": [1.0, 0.0, 1.0],
+    "included_in_new_metrics": false
+  },
+  "comparison": {
+    "qwen_reference_reward_mean": 0.0,
+    "qwen_reference_reward_count": 32,
+    "qwen_reference_group_bins": {"0/4": 8, "1/4": 0, "2/4": 0, "3/4": 0, "4/4": 0},
+    "qwen_reference_mixed_ratio": 0.0,
+    "note": "The Qwen reference is historical context; the new run used the same local Qwen actor but Doubao mini fixed roles. The new run is rollout-only and not a training result."
+  }
+}

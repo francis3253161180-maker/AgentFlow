@@ -26,10 +26,11 @@ class ChatArk(EngineLM, CachedEngine):
 
     DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
     DEFAULT_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
+    DEFAULT_MODEL = "doubao-seed-2-0-lite-260428"
 
     def __init__(
         self,
-        model_string: str = "doubao-1-5-lite-32k-250115",
+        model_string: str | None = None,
         use_cache: bool = False,
         system_prompt: str = DEFAULT_SYSTEM_PROMPT,
         is_multimodal: bool = False,
@@ -38,8 +39,8 @@ class ChatArk(EngineLM, CachedEngine):
         timeout: float | None = None,
         **kwargs: object,
     ):
-        self.model_string = model_string
-        self.api_model = model_string
+        self.model_string = model_string or os.getenv("ARK_MODEL") or self.DEFAULT_MODEL
+        self.api_model = self.model_string
         self.use_cache = use_cache
         self.system_prompt = system_prompt
         self.is_multimodal = is_multimodal
