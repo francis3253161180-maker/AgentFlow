@@ -23,6 +23,7 @@ def create_llm_engine(model_string: str, use_cache: bool = False, is_multimodal:
     if os.getenv("AGENTFLOW_DISABLE_EXTERNAL_LLM", "0").lower() in {"1", "true", "yes", "on"}:
         external_markers = (
             "azure", "gpt", "o1", "o3", "o4", "dashscope", "claude", "deepseek",
+            "doubao", "seed-2",
             "gemini", "grok", "together", "litellm", "anthropic", "openai",
         )
         if any(marker in model_string.lower() for marker in external_markers):
@@ -94,6 +95,23 @@ def create_llm_engine(model_string: str, use_cache: bool = False, is_multimodal:
             "top_k": kwargs.get("top_k", 50),  # optional
         }
         return ChatAnthropic(**config)
+
+    # === Volcengine Ark / Doubao (OpenAI-compatible) ===
+    elif model_string.startswith("doubao-"):
+        from .ark import ChatArk
+
+        config = {
+            "model_string": model_string,
+            "use_cache": use_cache,
+            "is_multimodal": is_multimodal,
+            "temperature": kwargs.get("temperature", 0.0),
+            "top_p": kwargs.get("top_p", 1.0),
+            "max_tokens": kwargs.get("max_tokens", 2048),
+            "api_key": kwargs.get("api_key"),
+            "base_url": kwargs.get("ark_base_url"),
+            "timeout": kwargs.get("timeout"),
+        }
+        return ChatArk(**config)
 
     # === DeepSeek ===
     elif any(x in model_string for x in ["deepseek-chat", "deepseek-reasoner", "deepseek-v4-flash"]):

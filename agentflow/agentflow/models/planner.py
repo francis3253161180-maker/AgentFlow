@@ -22,7 +22,8 @@ class Planner:
                  toolbox_metadata: dict = None, available_tools: List = None,
                  verbose: bool = False, base_url: str = None, is_multimodal: bool = False,
                  check_model: bool = True, temperature : float = .0,
-                 max_tokens: int = 2048, fixed_base_url: str = None):
+                 max_tokens: int = 2048, fixed_base_url: str = None,
+                 fixed_temperature: float = None):
         self.llm_engine_name = llm_engine_name
         self.llm_engine_fixed_name = llm_engine_fixed_name
         self.is_multimodal = is_multimodal
@@ -32,7 +33,7 @@ class Planner:
             is_multimodal=False,
             base_url=fixed_base_url,
             max_tokens=max_tokens,
-            temperature=temperature,
+            temperature=temperature if fixed_temperature is None else fixed_temperature,
         )
         self.llm_engine = create_llm_engine(
             model_string=llm_engine_name,

@@ -225,14 +225,15 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
     unified_local_roles = os.getenv("AGENTFLOW_UNIFIED_LOCAL_ROLES", "0").lower() in {
         "1", "true", "yes", "on"
     }
+    unified_fixed_role_engine = os.getenv("AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE", "").strip()
     if unified_local_roles:
         # These are logical OpenAI-compatible model ids.  PatchedvLLMServer
         # maps qwen-base to no adapter and qwen-actor to the latest synced
         # TensorLoRARequest.  They must remain distinct at request time.
         planner_main_engine = "vllm-qwen-actor"
-        planner_fixed_engine = "vllm-qwen-base"
-        verifier_engine = "vllm-qwen-base"
-        executor_engine = "vllm-qwen-base"
+        planner_fixed_engine = unified_fixed_role_engine or "vllm-qwen-base"
+        verifier_engine = unified_fixed_role_engine or "vllm-qwen-base"
+        executor_engine = unified_fixed_role_engine or "vllm-qwen-base"
     else:
         def resolve_role_engine(spec: str) -> str:
             return llm_engine_name if spec in {"trainable", "frozen"} else spec
@@ -251,21 +252,34 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
             raise ValueError("Unified local role mode requires every TOOL_ENGINE entry to be local frozen base")
         if not base_url or not llm_engine_name.startswith("vllm-"):
             raise ValueError("Unified local role mode requires a local vLLM model and base_url")
+        if unified_fixed_role_engine and not unified_fixed_role_engine.startswith("doubao-"):
+            raise ValueError("AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE must be a doubao-* model")
         print(
             "UNIFIED_LOCAL_ROLES enabled "
             f"model={llm_engine_name.removeprefix('vllm-')} "
-            "planner_main=trainable_actor_lora planner_fixed=frozen_base_no_lora "
-            "verifier=local_base_no_lora executor=local_base_no_lora tools=local_base_no_lora"
+            "planner_main=trainable_actor_lora "
+            f"planner_fixed={planner_fixed_engine} verifier={verifier_engine} "
+            f"executor={executor_engine} fixed_roles_frozen=1"
         )
+
+    fixed_role_external = planner_fixed_engine.startswith("doubao-")
+    fixed_role_temperature = float(
+        os.getenv("AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE", "0.0" if fixed_role_external else str(temperature))
+    )
+    fixed_base_url = None if fixed_role_external else base_url
+    initializer_model = planner_fixed_engine if fixed_role_external else (
+        "vllm-qwen-base" if unified_local_roles else llm_engine_name
+    )
+    initializer_base_url = None if fixed_role_external else base_url
 
     # Instantiate Initializer
     initializer = Initializer(
         enabled_tools=enabled_tools,
         tool_engine=tool_engine,
-        model_string="vllm-qwen-base" if unified_local_roles else llm_engine_name,
+        model_string=initializer_model,
         verbose=verbose,
         vllm_config_path=vllm_config_path,
-        base_url=base_url,
+        base_url=initializer_base_url,
         max_tokens=max_tokens,
     )
 
@@ -277,7 +291,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         available_tools=initializer.available_tools,
         verbose=verbose,
         base_url=base_url,
-        fixed_base_url=base_url,
+        fixed_base_url=fixed_base_url,
+        fixed_temperature=fixed_role_temperature,
         temperature=temperature,
         max_tokens=max_tokens,
     )
@@ -289,10 +304,10 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         toolbox_metadata=initializer.toolbox_metadata,
         available_tools=initializer.available_tools,
         verbose=verbose,
-        base_url=base_url if (unified_local_roles or verifier_engine == llm_engine_name) else None,
-        fixed_base_url=base_url if (unified_local_roles or planner_fixed_engine == llm_engine_name) else None,
+        base_url=None if fixed_role_external else (base_url if (unified_local_roles or verifier_engine == llm_engine_name) else None),
+        fixed_base_url=fixed_base_url if (unified_local_roles or planner_fixed_engine == llm_engine_name) else None,
         max_tokens=max_tokens,
-        temperature=temperature
+        temperature=fixed_role_temperature if fixed_role_external else temperature
     )
 
     # Instantiate Memory
@@ -303,8 +318,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         llm_engine_name=executor_engine,
         root_cache_dir=root_cache_dir,
         verbose=verbose,
-        base_url=base_url if (unified_local_roles or executor_engine == llm_engine_name) else None,
-        temperature=temperature,
+        base_url=None if fixed_role_external else (base_url if (unified_local_roles or executor_engine == llm_engine_name) else None),
+        temperature=fixed_role_temperature if fixed_role_external else temperature,
         tool_instances_cache=initializer.tool_instances_cache,  # Pass the cached tool instances
         max_tokens=max_tokens,
     )

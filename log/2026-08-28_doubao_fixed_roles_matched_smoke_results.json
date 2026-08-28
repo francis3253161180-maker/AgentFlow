@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "status": "blocked_after_sanity",
+  "repository": {
+    "starting_head": "6d66cdd1f7ca27f42a94ef321def20852db10fb6",
+    "branch": "experiment/flow-grpo-3b-lora"
+  },
+  "policy": {
+    "formal_training": false,
+    "optimizer_steps": 0,
+    "checkpoint": false,
+    "deepseek_calls": 0,
+    "extra_judge_calls": 0
+  },
+  "qwen_reference": {
+    "experiment": "final-qwen-fixed-role-smoke-20260828_20260828_203939",
+    "groups": 8,
+    "rollouts": 32,
+    "valid_rollouts": 32,
+    "retry_count": 0,
+    "reward_successes": 0,
+    "reward_mean": 0.0,
+    "group_bins": {"0/4": 8, "1/4": 0, "2/4": 0, "3/4": 0, "4/4": 0},
+    "mixed_groups": 0,
+    "structured_final_failures": 32,
+    "evidence_dir": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/final-qwen-fixed-role-smoke-20260828_20260828_203939_trajectories",
+    "aggregate": "/root/autodl-tmp/tmp/reward_audit_len2048_probe_20260828/final-qwen-fixed-role-smoke-20260828_20260828_203939_aggregate.json"
+  },
+  "ark_sanity": {
+    "calls": 1,
+    "status": "error",
+    "error_type": "NotFoundError",
+    "http_error": "404 InvalidEndpointOrModel.NotFound",
+    "model": "doubao-1-5-lite-32k-250115",
+    "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+    "latency_ms": 472.73,
+    "response_content_recorded": false,
+    "api_key_logged": false,
+    "next_endpoint_or_model_tried": false
+  },
+  "matched_smoke": {
+    "status": "not_run",
+    "reason": "Ark sanity request failed; task requires stopping without model/endpoint fallback"
+  },
+  "implementation": {
+    "provider": "agentflow/agentflow/engine/ark.py",
+    "factory": "agentflow/agentflow/engine/factory.py",
+    "role_wiring": "agentflow/agentflow/solver.py",
+    "fixed_role_selector": "AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE",
+    "fixed_role_temperature_selector": "AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE",
+    "actor_route": "unchanged qwen-actor with LoRA",
+    "fixed_role_route": "explicit doubao-* only; no separate reference model"
+  },
+  "tests": {
+    "pytest": "31 passed, 39 subtests passed",
+    "test_command": "python -m pytest -q test/test_ark_provider.py test/test_unified_local_roles.py test/test_reward_scorer.py test/test_structured_outputs.py test/test_vllm_timeout_cleanup.py",
+    "py_compile": "passed"
+  },
+  "resource_state_after_attempt": {
+    "gpu_memory_used": "2 MiB",
+    "training_ray_vllm_processes": "none observed",
+    "qwen_cleanup": "drained=1 complete=1",
+    "qwen_runtime_errors": 0
+  }
+}
