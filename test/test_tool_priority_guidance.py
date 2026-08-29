@@ -53,14 +53,42 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
         self.assertEqual(factory.call_args.kwargs["base_url"], "http://127.0.0.1:1/v1")
         self.assertEqual(factory.call_args.kwargs["max_tokens"], 321)
 
-    def test_current_wikipedia_rag_cannot_run_without_openai_key(self):
+    def test_wikipedia_retrieval_is_raw_and_does_not_require_openai_or_an_llm(self):
         from agentflow.tools.wikipedia_search.tool import Wikipedia_Search_Tool
 
-        with patch("agentflow.tools.wikipedia_search.tool.create_llm_engine", side_effect=_FakeEngine):
-            tool = Wikipedia_Search_Tool("vllm-qwen-base")
+        class _Response:
+            def __init__(self, payload):
+                self.payload = payload
+
+            def raise_for_status(self):
+                return None
+
+            def json(self):
+                return self.payload
+
+        tool = Wikipedia_Search_Tool("vllm-qwen-base", base_url="http://127.0.0.1:1/v1")
+        self.assertFalse(tool.require_llm_engine)
+        self.assertEqual(tool.model_string, "raw-wikipedia")
         with patch.dict("os.environ", {}, clear=True):
-            with self.assertRaises(SystemExit):
-                tool.execute("Ernst Mach")
+            with patch(
+                "agentflow.tools.wikipedia_search.tool.requests.get",
+                side_effect=[
+                    _Response({"query": {"search": [{"title": "Example"}]}}),
+                    _Response({"query": {"pages": {"1": {
+                        "title": "Example",
+                        "fullurl": "https://en.wikipedia.org/wiki/Example",
+                        "extract": "Evidence text from the public encyclopedia.",
+                    }}}}),
+                ],
+            ):
+                    result = tool.execute("Ernst Mach")
+
+        pages = result["relevant_pages (public search order; raw evidence only)"]
+        self.assertEqual(pages[0]["title"], "Example")
+        self.assertEqual(pages[0]["url"], "https://en.wikipedia.org/wiki/Example")
+        self.assertEqual(result["search_telemetry"]["search_internal_llm_calls"], 0)
+        self.assertEqual(result["search_telemetry"]["openai_calls"], 0)
+        self.assertEqual(result["search_telemetry"]["doubao_calls"], 0)
 
 
 if __name__ == "__main__":

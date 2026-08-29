@@ -1,123 +1,48 @@
-import os
-import sys
-import wikipedia
-from pydantic import BaseModel
+import requests
+from urllib.parse import quote
 
 from agentflow.tools.base import BaseTool
-from agentflow.engine.factory import create_llm_engine
-from agentflow.tools.web_search.tool import Web_Search_Tool
-
-# from web_rag import Web_Search_Tool
-# from agentflow.tools.web_search.tool import Web_Search_Tool # NOTE: Shall be used in the future
-
-# from utilis import select_relevant_queries
-
-from agentflow.tools.base import BaseTool
-from agentflow.engine.factory import create_llm_engine
 
 # Tool name mapping - this defines the external name for this tool
 TOOL_NAME = "Wikipedia_RAG_Search_Tool"
+MEDIAWIKI_API_URL = "https://en.wikipedia.org/w/api.php"
+MEDIAWIKI_HEADERS = {
+    "User-Agent": "AgentFlowResearchSmoke/1.0 (public evidence retrieval)"
+}
 
 LIMITATION = f"""
 {TOOL_NAME} has the following limitations:
 1. It is designed specifically for retrieving grounded information from Wikipedia pages only.
-2. Filtering of relevant pages depends on LLM model performance and may not always select optimal pages.
-3. The returned information accuracy depends on Wikipedia content quality.
+2. It returns a bounded, deterministic prefix of MediaWiki/Wikipedia search results;
+   it does not claim semantic reranking.
+3. The returned information accuracy depends on Wikipedia content quality and the
+   public endpoint's availability.
 """
 
 BEST_PRACTICE = f"""
 For optimal results with {TOOL_NAME}:
 1. Use specific, targeted queries rather than broad or ambiguous questions.
-2. The tool automatically filters for relevant pages using LLM-based selection - trust the "relevant_pages" results.
-3. If initial results are insufficient, examine the "other_pages" section for additional potentially relevant content.
+2. The tool preserves the public search-result order and returns raw retrieved
+   excerpts; treat them as evidence rather than an answer generated from model knowledge.
+3. If initial results are insufficient, issue a more specific follow-up query.
 4. Use this tool as part of a multi-step research process rather than a single source of truth.
-5. You can use the {TOOL_NAME} to get more information from the URLs.
 """
-
-class Select_Relevant_Queries(BaseModel):
-    matched_queries: list[str]
-    matched_query_ids: list[int]
-
-def select_relevant_queries(original_query: str, query_candidates: list[str], llm_engine):
-
-    query_candidates = "\n".join([f"{i}. {query}" for i, query in enumerate(query_candidates)])
-
-    prompt = f"""
-You are an expert AI assistant. Your task is to identify and select the most relevant queries from a list of Wikipedia search results that are most likely to address the user’s original question.
-
-## Input
-
-Original Query: `{original_query}`
-Query Candidates from Wikipedia Search: `{query_candidates}`
-
-## Instructions
-
-1. Carefully read the original query and the list of query candidates.
-2. Select the query candidates that are most relevant to the original query — i.e., those most likely to contain the information needed to answer the question.
-3. Return the most relevant queries. If you think multiple queries are helpful, you can return up to 3 queries.
-4. Return your output in the following format:
-
-```
-- Matched Queries: <list of matched queries>
-- Matched Query IDs: <list of matched query ids>. Please make sure the ids are integers. And do not return empty list.
-```
-
-## Examples
-
-Original Query: What is the capital of France?
-Query Candidates from Wikipedia Search:
-0. Closed-ended question
-1. France
-2. What Is a Nation?
-3. Capital city
-4. London
-5. WhatsApp
-6. French Revolution
-7. Communes of France
-8. Capital punishment
-9. Louis XIV
-
-Output:
-- Matched Queries: France  
-- Matched Query IDs: [1]
-
-
-Original Query: What is the mass of the moon?
-Query Candidates from Wikipedia Search:
-0. Moon
-1. Planetary-mass moon
-2. What If the Moon Didn't Exist
-3. Earth mass
-4. Moon landing
-5. Mass
-6. Colonization of the Moon
-7. Planetary mass
-8. Hollow Moon
-9. Gravitation of the Moon
-
-Output:
-- Matched Queries: Moon, Planetary-mass moon  
-- Matched Query IDs: [0, 1]
-"""
-
-    try:
-        prompt = prompt.format(original_query=original_query, query_candidates=query_candidates)     
-
-        response = llm_engine.generate(prompt, response_format=Select_Relevant_Queries)
-        # print(response)
-
-        matched_queries = response.matched_queries
-        matched_query_ids = [int(i) for i in response.matched_query_ids]
-        return matched_queries, matched_query_ids
-    except Exception as e:
-        print(f"Error selecting relevant queries: {e}")
-        return [], []
 
 class Wikipedia_Search_Tool(BaseTool):
-    def __init__(self, model_string="gpt-4o-mini"):
+    """Public Wikipedia retrieval with no LLM, embeddings, or private API key.
+
+    The executor supplies a planner-selected search query.  This tool returns raw
+    evidence only: it neither answers the benchmark question nor semantically
+    reranks/summarizes pages.  Public ``wikipedia`` search order is the explicit,
+    deterministic ranking policy.
+    """
+
+    require_llm_engine = False
+
+    def __init__(self, model_string=None, base_url=None, max_tokens=2048):
         super().__init__(
             tool_name=TOOL_NAME,
-            tool_description="A tool that searches Wikipedia and returns relevant pages with their page titles, URLs, abstract, and retrieved information based on a given query.",
+            tool_description="A factual retrieval tool that searches public Wikipedia/MediaWiki and returns raw pages in public search order with titles, URLs, and excerpts. It does not generate an answer or semantic reranking.",
             tool_version="1.0.0",
             input_types={
                 "query": "str - The search query for Wikipedia."
@@ -142,16 +67,20 @@ class Wikipedia_Search_Tool(BaseTool):
                 "best_practice": BEST_PRACTICE
             }
         )
-        self.llm_engine = create_llm_engine(model_string=model_string, temperature=0.0, top_p=1.0, frequency_penalty=0.0, presence_penalty=0.0)
+        # Accept the standard tool constructor arguments so unified-local mode
+        # can instantiate every enabled tool uniformly.  They are deliberately
+        # unused: factual retrieval is raw public Wikipedia/MediaWiki evidence.
+        self.model_string = "raw-wikipedia"
+        self.base_url = base_url
+        self.max_tokens = max_tokens
 
     def _get_wikipedia_url(self, query):
         """
         Get the Wikipedia URL for a given query.
         """
-        query = query.replace(" ", "_") # replace spaces with underscores
-        return f"https://en.wikipedia.org/wiki/{query}"
+        return f"https://en.wikipedia.org/wiki/{quote(query.replace(' ', '_'))}"
 
-    def search_wikipedia(self, query, max_length=100, max_pages=10):
+    def search_wikipedia(self, query, max_length=600, max_pages=2):
         """
         Searches Wikipedia based on the given query and returns multiple pages with their text and URLs.
 
@@ -164,39 +93,53 @@ class Wikipedia_Search_Tool(BaseTool):
                 - pages_data: List of dictionaries containing page info (title, text, url, error)
         """
         try:
-            search_results = wikipedia.search(query)
-            if not search_results:
+            search_response = requests.get(
+                MEDIAWIKI_API_URL,
+                params={
+                    "action": "query", "list": "search", "srsearch": query,
+                    "srlimit": max_pages, "format": "json",
+                },
+                headers=MEDIAWIKI_HEADERS,
+                timeout=15,
+            )
+            search_response.raise_for_status()
+            matches = search_response.json().get("query", {}).get("search", [])
+            titles = [match.get("title") for match in matches if match.get("title")]
+            if not titles:
                 return [{"title": None, "url": None, "abstract": None, "error": f"No results found for query: {query}"}]
 
             pages_data = []
-            pages_to_process = search_results[:max_pages] if max_pages else search_results
-
-            # get the pages datafsave
-            
-            for title in pages_to_process:
+            for title in titles:
                 try:
-                    page = wikipedia.page(title)
-                    text = page.content
-                    url = page.url
-
-                    if max_length != -1:
-                        text = text[:max_length] + f"... [truncated]" if len(text) > max_length else text
-
+                    page_response = requests.get(
+                        MEDIAWIKI_API_URL,
+                        params={
+                            "action": "query", "prop": "extracts|info", "inprop": "url",
+                            "exintro": 1, "explaintext": 1, "exchars": max_length,
+                            "titles": title, "format": "json",
+                        },
+                        headers=MEDIAWIKI_HEADERS,
+                        timeout=15,
+                    )
+                    page_response.raise_for_status()
+                    pages = page_response.json().get("query", {}).get("pages", {})
+                    page = next(iter(pages.values()), {})
+                    text = page.get("extract") or ""
                     pages_data.append({
-                        "title": title,
-                        "url": url,
-                        "abstract": text
+                        "title": page.get("title", title),
+                        "url": page.get("fullurl", self._get_wikipedia_url(title)),
+                        "abstract": text,
                     })
-                except Exception as e:
+                except requests.RequestException as exc:
                     pages_data.append({
                         "title": title,
                         "url": self._get_wikipedia_url(title),
-                        "abstract": "Please use the URL to get the full text further if needed.",
+                        "abstract": None,
+                        "error": f"Error retrieving Wikipedia page: {exc}",
                     })
-
             return pages_data
-        except Exception as e:
-            return [{"title": None, "url": None, "abstract": None, "error": f"Error searching Wikipedia: {str(e)}"}]
+        except (requests.RequestException, ValueError) as exc:
+            return [{"title": None, "url": None, "abstract": None, "error": f"Error searching Wikipedia: {exc}"}]
 
     def execute(self, query):
         """
@@ -208,47 +151,17 @@ class Wikipedia_Search_Tool(BaseTool):
         Returns:
             dict: A dictionary containing the search results and all matching pages with their content.
         """
-        # Check if OpenAI API key is set
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            sys.exit("[Wikipedia RAG Search] Error: OPENAI_API_KEY environment variable is not set.")
-            
-        # First get relevant queries from the search results
         search_results = self.search_wikipedia(query)
-
-        # Get the titles of the pages   
-        titles = [page["title"] for page in search_results if page["title"] is not None]
-        if not titles:
-            return {"query": query, "relevant_pages": [], "other_pages (may be irrelevant to the query)": search_results}
-
-        # Select the most relevant pages
-        matched_queries, matched_query_ids = select_relevant_queries(query, titles, self.llm_engine)
-        
-        # Only process the most relevant pages
-        pages_data = [search_results[i] for i in matched_query_ids]
-        other_pages = [search_results[i] for i in range(len(search_results)) if i not in matched_query_ids]
-
-        # For each relevant page, get detailed information using Web RAG
-        try:
-            web_rag_tool = Web_Search_Tool(model_string=self.model_string)
-        except Exception as e:
-            print(f"Error creating Web RAG tool: {e}")
-            return {"query": query, "relevant_pages": [], "other_pages (may be irrelevant to the query)": search_results}
-
-        for page in pages_data:
-            url = page["url"]
-            if url is None:
-                continue
-            try:
-                execution = web_rag_tool.execute(query=query, url=url)
-                page["retrieved_information"] = execution
-            except Exception as e:
-                page["retrieved_information"] = None
-
         return {
             "query": query,
-            "relevant_pages (to the query)": pages_data,
-            "other_pages (may be irrelevant to the query)": other_pages
+            "relevant_pages (public search order; raw evidence only)": search_results,
+            "search_telemetry": {
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "search_internal_llm_calls": 0,
+                "openai_calls": 0,
+                "doubao_calls": 0,
+            },
         }
 
     def get_metadata(self):
@@ -272,9 +185,7 @@ if __name__ == "__main__":
     """
 
     # Example usage of the Wikipedia_Search_Tool
-    tool = Wikipedia_Search_Tool(model_string="gpt-4o-mini")
-    # tool = Wikipedia_Search_Tool(model_string="gemini-1.5-flash")
-    # tool = Wikipedia_Search_Tool(model_string="dashscope") # 
+    tool = Wikipedia_Search_Tool()
 
     # Get tool metadata
     metadata = tool.get_metadata()
