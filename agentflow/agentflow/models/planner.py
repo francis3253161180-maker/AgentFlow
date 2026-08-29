@@ -6,13 +6,14 @@ from typing import Any, Dict, List, Tuple
 from PIL import Image
 
 from agentflow.engine.factory import create_llm_engine
-from agentflow.models.formatters import NextStep, QueryAnalysis
+from agentflow.models.formatters import HighLevelPlan, NextStep, QueryAnalysis
 from agentflow.models.memory import Memory
 from agentflow.models.structured_outputs import (
     Game24Answer,
     extract_game24_numbers,
     game24_prompt,
     parse_game24_answer,
+    parse_strict_json,
     select_valid_candidate,
 )
 
@@ -62,11 +63,12 @@ def routing_state_snapshot(memory: Memory, previous_verifier_assessment: Any = N
     action signature, and the verifier's prior assessment visible without
     prescribing a tool or forbidding legitimate repeated retrieval.
     """
-    actions = list(memory.get_actions().values())
+    raw_actions = memory.get_actions()
+    actions = list(raw_actions.values()) if isinstance(raw_actions, dict) else []
     last_action = actions[-1] if actions else {}
     last_tool = last_action.get("tool_name", "none") if isinstance(last_action, dict) else "none"
     last_subgoal = last_action.get("sub_goal", "none") if isinstance(last_action, dict) else "none"
-    urls = sorted(set(re.findall(r"https?://[^\s'\"<>)}\]]+", str(memory.get_actions()))))
+    urls = sorted(set(re.findall(r"https?://[^\s'\"<>)}\]]+", str(raw_actions))))
     compact_verifier = str(previous_verifier_assessment) if previous_verifier_assessment is not None else "none (first step)"
     compact_verifier = compact_verifier[:700]
     urls_text = ", ".join(urls[:8]) if urls else "none"
@@ -337,7 +339,7 @@ Be biref and precise with insight.
 
         return context, sub_goal, tool_name
 
-    def generate_next_step(self, question: str, image: str, query_analysis: str, memory: Memory, step_count: int, max_step_count: int, json_data: Any = None, previous_verifier_assessment: Any = None) -> Any:
+    def generate_next_step(self, question: str, image: str, query_analysis: str, memory: Memory, step_count: int, max_step_count: int, json_data: Any = None, previous_verifier_assessment: Any = None, hierarchical_plan: Any = None, current_step: Any = None) -> Any:
         def compact(value: Any, limit: int) -> str:
             text = str(value)
             if len(text) <= limit:
@@ -353,6 +355,20 @@ Be biref and precise with insight.
         compact_metadata = compact(self.toolbox_metadata, 1400)
         compact_memory = compact(memory.get_actions(), 600)
         compact_routing_state = routing_state_snapshot(memory, previous_verifier_assessment)
+        hierarchical_context = ""
+        if hierarchical_plan is not None and current_step is not None:
+            hierarchical_context = f"""
+Hierarchical Plan State:
+- Full plan: {compact(hierarchical_plan, 1600)}
+- Current unresolved step: {compact(current_step, 800)}
+- Unresolved evidence gaps for this step are the current step's
+  `missing_evidence`; use the recorded verified evidence and known URLs before
+  choosing a new action.
+- Select one action for this current step only. Formulate one atomic sub-goal
+  matched to that tool capability; do not redo a completed step or combine
+  dependent goals into one action. An action executing successfully is not
+  evidence that the step is complete; the verifier decides completion.
+"""
 
         if self.is_multimodal:
             prompt_generate_next_step = f"""
@@ -373,6 +389,8 @@ Previous Steps and Their Results:
 {compact_memory}
 
 {compact_routing_state}
+
+{hierarchical_context}
 
 {TOOL_SELECTION_GUIDANCE}
 
@@ -415,6 +433,7 @@ Context:
 - **Toolbox Metadata:** {compact_metadata}
 - **Previous Steps:** {compact_memory}
 - **Routing State:** {compact_routing_state}
+{hierarchical_context}
 
 {TOOL_SELECTION_GUIDANCE}
 
@@ -447,6 +466,34 @@ Rules:
             json_data[f"action_predictor_{step_count}_prompt"] = prompt_generate_next_step
             json_data[f"action_predictor_{step_count}_response"] = str(next_step)
         return next_step
+
+    def generate_high_level_plan(
+        self, question: str, image: str, query_analysis: str, max_step_count: int, json_data: Any = None,
+    ) -> Any:
+        """Ask the fixed planner role for small, dependency-aware evidence goals."""
+        prompt = f"""
+Task: Create a concise high-level evidence plan for answering the query. This plan does not answer the query and does not select executable commands.
+
+Query: {question}
+Initial analysis: {query_analysis}
+Available tools: {self.available_tools}
+
+Create at most {max_step_count} ordered, atomic evidence goals. Each step must have one objective and a concrete success criterion. Use dependencies only when a later step needs a prior verified fact. Do not create composite steps, tool scripts, or a fixed tool sequence.
+
+Response Format (JSON object only; match the HighLevelPlan schema exactly):
+{{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}
+"""
+        # The OpenAI-compatible vLLM engine returns text even when guided_json
+        # is requested. Parse that text before handing it to the state machine.
+        raw_plan = self.llm_engine_fixed(prompt, response_format=HighLevelPlan, max_tokens=self.max_tokens)
+        plan = parse_strict_json(raw_plan, HighLevelPlan)
+        if json_data is not None:
+            json_data["high_level_plan_prompt"] = prompt
+            json_data["high_level_plan_response"] = str(raw_plan)
+            json_data["high_level_plan_validated"] = (
+                plan.model_dump() if hasattr(plan, "model_dump") else plan.dict()
+            )
+        return plan
 
 
     def generate_final_output(self, question: str, image: str, memory: Memory) -> str:

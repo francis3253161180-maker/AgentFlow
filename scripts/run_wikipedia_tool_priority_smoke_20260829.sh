@@ -30,6 +30,7 @@ export PIP_CACHE_DIR=/root/autodl-tmp/pip-cache TMPDIR=/root/autodl-tmp/tmp RAY_
 export AGENTFLOW_TRAIN_CONFIG="$CONFIG" AGENTFLOW_DISABLE_EXTERNAL_LLM=1 AGENTFLOW_UNIFIED_LOCAL_ROLES=1 AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE=
 export AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE=0.0 AGENTFLOW_REWARD_JUDGE_ENABLED=0 AGENTFLOW_REWARD_SCORER_LOG=1 AGENTFLOW_UNIFIED_MEMORY_LOG=1
 export AGENTFLOW_ROLLOUT_ONLY_GROUP_MODE=1 AGENTFLOW_ROLE_ROUTING_STATE="$ROUTE" AGENTFLOW_UNIFIED_BASE_MODEL_NAME=qwen-base
+export AGENTFLOW_HIERARCHICAL_PLANNING="${AGENTFLOW_HIERARCHICAL_PLANNING:-0}"
 export AGENTFLOW_UNIFIED_MODEL_PATH=/root/autodl-tmp/models/Qwen2.5-7B-Instruct AGENTFLOW_UNIFIED_SMOKE_RUN_ID="${EXP}_$(date +%Y%m%d_%H%M%S)"
 export AGENTFLOW_UNIFIED_TEMPERATURE=0.7 AGENTFLOW_UNIFIED_ROLLOUT_N=4 AGENTFLOW_UNIFIED_SEED=20260829
 export AGENTFLOW_UNIFIED_SCORER="current deterministic scorer; external judge disabled" AGENTFLOW_UNIFIED_MAX_PROMPT_LENGTH=1536
@@ -127,7 +128,7 @@ check_abort() {
 }
 : > "$TRAIN_LOG"; : > "$ROLLOUT_LOG"; : > "$GPU_LOG"
 if [[ -n "${GOOGLE_API_KEY:-}" ]]; then GOOGLE_AVAILABILITY=present; else GOOGLE_AVAILABILITY=missing; fi
-echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled"
+echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN hierarchical_planning=$AGENTFLOW_HIERARCHICAL_PLANNING external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled"
 PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=1536 data.max_response_length=512 +actor_rollout_ref.ref.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct critic.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 &
 TRAIN_PID=$!
 (

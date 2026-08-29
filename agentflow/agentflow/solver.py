@@ -1,4 +1,5 @@
 import argparse
+import copy
 import time
 import json
 import os
@@ -8,6 +9,14 @@ from agentflow.models.initializer import Initializer
 from agentflow.models.planner import Planner
 from agentflow.models.verifier import Verifier
 from agentflow.models.memory import Memory
+from agentflow.models.plan_state import (
+    activate_next_step,
+    all_steps_completed,
+    apply_step_verification,
+    normalize_plan,
+    snapshot as plan_snapshot,
+    unresolved_steps,
+)
 from agentflow.models.executor import Executor
 from agentflow.models.utils import make_json_serializable_truncated
 
@@ -88,11 +97,42 @@ class Solver:
                 print(f"{query_analysis}")
                 print(f"[Time]: {round(time.time() - query_start_time, 2)}s")
 
+            hierarchical_planning = os.getenv("AGENTFLOW_HIERARCHICAL_PLANNING", "0").lower() in {
+                "1", "true", "yes", "on"
+            }
+            plan_state = None
+            plan_transitions = []
+            termination_reason = None
+            if hierarchical_planning:
+                high_level_plan = self.planner.generate_high_level_plan(
+                    question, image_path, query_analysis, self.max_steps, json_data,
+                )
+                plan_state = normalize_plan(high_level_plan, self.max_steps)
+                activate_next_step(plan_state, plan_transitions)
+                json_data["hierarchical_planning"] = True
+                json_data["high_level_plan"] = plan_snapshot(plan_state)
+                json_data["plan_transitions"] = copy.deepcopy(plan_transitions)
+                if self.verbose:
+                    print(f"\n==> 🧭 High-Level Plan\n{plan_state}")
+
             # Main execution loop
             step_count = 0
             action_times = []
+            # Preserve a defined serializable value even if no plan step can
+            # become active; normal execution overwrites it after each action.
+            memory_actions = self.memory.get_actions()
             previous_verifier_assessment = None
             while step_count < self.max_steps and (time.time() - query_start_time) < self.max_time:
+                current_plan_step = None
+                if hierarchical_planning:
+                    current_plan_step = activate_next_step(plan_state, plan_transitions)
+                    if current_plan_step is None:
+                        termination_reason = (
+                            "all_plan_steps_completed" if all_steps_completed(plan_state)
+                            else "no_dependency_satisfied_plan_step"
+                        )
+                        break
+                    json_data[f"plan_before_step_{step_count + 1}"] = plan_snapshot(plan_state)
                 step_count += 1
                 step_start_time = time.time()
 
@@ -107,6 +147,8 @@ class Solver:
                     self.max_steps,
                     json_data,
                     previous_verifier_assessment=previous_verifier_assessment,
+                    hierarchical_plan=plan_state,
+                    current_step=current_plan_step,
                 )
                 context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
                 if self.verbose:
@@ -157,43 +199,97 @@ class Solver:
                 self.memory.add_action(step_count, tool_name, sub_goal, command, result)
                 memory_actions = self.memory.get_actions()
 
-                # [5] Verify memory (context verification)
+                # [5] Verify either the active evidence step or legacy global memory.
                 local_start_time = time.time()
-                stop_verification = self.verifier.verificate_context(
-                    question,
-                    image_path,
-                    query_analysis,
-                    self.memory,
-                    step_count,
-                    json_data
-                )
-                context_verification, conclusion = self.verifier.extract_conclusion(stop_verification)
-                previous_verifier_assessment = stop_verification
-                if self.verbose:
-                    conclusion_emoji = "✅" if conclusion == 'STOP' else "🛑"
-                    print(f"\n==> 🤖 Step {step_count}: Context Verification\n")
-                    print(f"[Analysis]: {context_verification}\n[Conclusion]: {conclusion} {conclusion_emoji}")
-                    print(f"[Time]: {round(time.time() - local_start_time, 2)}s")
-                
-                # Break the loop if the context is verified
-                if conclusion == 'STOP':
-                    break
+                if hierarchical_planning:
+                    raw_step_verification = self.verifier.verificate_step(
+                        question, image_path, query_analysis, self.memory,
+                        current_plan_step, plan_state, step_count, json_data,
+                    )
+                    step_verification = self.verifier.extract_step_verification(raw_step_verification)
+                    verification_payload = (
+                        step_verification.model_dump()
+                        if hasattr(step_verification, "model_dump") else step_verification.dict()
+                    )
+                    apply_step_verification(
+                        plan_state, current_plan_step["step_id"], verification_payload, plan_transitions,
+                    )
+                    previous_verifier_assessment = verification_payload
+                    json_data[f"step_verification_{step_count}"] = verification_payload
+                    json_data[f"plan_after_step_{step_count}"] = plan_snapshot(plan_state)
+                    json_data["plan_transitions"] = copy.deepcopy(plan_transitions)
+                    if self.verbose:
+                        print(f"\n==> 🤖 Step {step_count}: Plan-Step Verification\n")
+                        print(
+                            f"[Current Step]: {current_plan_step['step_id']} "
+                            f"[Completed]: {step_verification.completed} "
+                            f"[Missing]: {step_verification.missing_evidence}"
+                        )
+                        print(f"[Time]: {round(time.time() - local_start_time, 2)}s")
+                    if all_steps_completed(plan_state):
+                        termination_reason = "all_plan_steps_completed"
+                        break
+                else:
+                    stop_verification = self.verifier.verificate_context(
+                        question,
+                        image_path,
+                        query_analysis,
+                        self.memory,
+                        step_count,
+                        json_data
+                    )
+                    context_verification, conclusion = self.verifier.extract_conclusion(stop_verification)
+                    previous_verifier_assessment = stop_verification
+                    if self.verbose:
+                        conclusion_emoji = "✅" if conclusion == 'STOP' else "🛑"
+                        print(f"\n==> 🤖 Step {step_count}: Context Verification\n")
+                        print(f"[Analysis]: {context_verification}\n[Conclusion]: {conclusion} {conclusion_emoji}")
+                        print(f"[Time]: {round(time.time() - local_start_time, 2)}s")
+                    if conclusion == 'STOP':
+                        termination_reason = "verifier_stop"
+                        break
+
+            if termination_reason is None:
+                if step_count >= self.max_steps:
+                    termination_reason = "max_steps_with_unresolved_plan" if hierarchical_planning else "max_steps"
+                elif (time.time() - query_start_time) >= self.max_time:
+                    termination_reason = "max_time"
+                else:
+                    termination_reason = "loop_exit_unknown"
 
             # Add memory and statistics to json_data
             json_data.update({
                 "memory": memory_actions,
                 "step_count": step_count,
                 "execution_time": round(time.time() - query_start_time, 2),
+                "termination_reason": termination_reason,
             })
+            if hierarchical_planning:
+                json_data["high_level_plan"] = plan_snapshot(plan_state)
+                json_data["plan_transitions"] = copy.deepcopy(plan_transitions)
 
-            # Generate final output if requested
-            if 'final' in self.output_types:
+            plan_complete = not hierarchical_planning or all_steps_completed(plan_state)
+            if hierarchical_planning and not plan_complete:
+                unresolved = unresolved_steps(plan_state)
+                unresolved_text = "; ".join(
+                    f"{step['step_id']}: {', '.join(step.get('missing_evidence') or [step['success_criteria']])}"
+                    for step in unresolved
+                )
+                grounded_failure = f"Insufficient verified evidence; unresolved plan steps: {unresolved_text}"
+                if 'final' in self.output_types:
+                    json_data["final_output"] = grounded_failure
+                if 'direct' in self.output_types:
+                    json_data["direct_output"] = grounded_failure
+                if self.verbose:
+                    print(f"\n==> ⚠️ Final generation withheld: {grounded_failure}")
+
+            # Generate final output only after all required plan steps complete.
+            if plan_complete and 'final' in self.output_types:
                 final_output = self.planner.generate_final_output(question, image_path, self.memory)
                 json_data["final_output"] = final_output
                 print(f"\n==> 🐙 Detailed Solution:\n\n{final_output}")
 
-            # Generate direct output if requested
-            if 'direct' in self.output_types:
+            if plan_complete and 'direct' in self.output_types:
                 direct_output = self.planner.generate_direct_output(question, image_path, self.memory)
                 json_data["direct_output"] = direct_output
                 print(f"\n==> 🐙 Final Answer:\n\n{direct_output}")

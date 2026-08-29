@@ -6,7 +6,7 @@ from typing import Any, Tuple
 from PIL import Image
 
 from agentflow.engine.factory import create_llm_engine
-from agentflow.models.formatters import MemoryVerification
+from agentflow.models.formatters import MemoryVerification, StepVerification
 from agentflow.models.memory import Memory
 
 
@@ -157,6 +157,56 @@ Set `stop_signal` to true only when the memory is complete and verified; otherwi
             json_data[f"verifier_{step_count}_prompt"] = input_data
             json_data[f"verifier_{step_count}_response"] = str(stop_verification)
         return stop_verification
+
+    def verificate_step(
+        self,
+        question: str,
+        image: str,
+        query_analysis: str,
+        memory: Memory,
+        current_step: dict[str, Any],
+        plan: dict[str, Any],
+        step_count: int = 0,
+        json_data: Any = None,
+    ) -> Any:
+        """Judge only whether the active plan step has evidence in Memory."""
+        prompt = f"""
+Task: Verify the current plan step from recorded Memory evidence only. Do not
+search, infer missing facts from parametric knowledge, or answer the full query.
+
+Query: {question}
+Initial analysis: {query_analysis}
+Current step: {current_step}
+Full plan: {plan}
+Memory (tools used and results): {memory.get_actions()}
+
+{VERIFIER_ROLE_BOUNDARY}
+
+Mark `completed` true only if the current step's stated success_criteria are
+supported by Memory. Otherwise keep it false and list the concrete missing
+evidence. Set `contradiction` true only for an explicit conflict in Memory;
+only then list previously completed step ids that the conflict invalidates.
+
+Response Format (JSON object only; match the StepVerification schema exactly):
+{{"completed":false,"missing_evidence":["<needed evidence>"],"verified_evidence":["<memory-supported evidence>"],"contradiction":false,"invalidated_step_ids":[],"rationale":"<evidence-only reason>"}}
+"""
+        response = self.llm_engine_fixed(prompt, response_format=StepVerification)
+        if json_data is not None:
+            json_data[f"step_verifier_{step_count}_prompt"] = [prompt]
+            json_data[f"step_verifier_{step_count}_response"] = str(response)
+        return response
+
+    def extract_step_verification(self, response: Any) -> StepVerification:
+        if isinstance(response, StepVerification):
+            return response
+        if isinstance(response, str):
+            try:
+                return StepVerification(**json.loads(response))
+            except Exception as exc:
+                raise ValueError("step verifier response is not valid structured output") from exc
+        if isinstance(response, dict):
+            return StepVerification(**response)
+        raise ValueError("step verifier returned unsupported response type")
 
     def extract_conclusion(self, response: Any) -> Tuple[str, str]:
         if isinstance(response, str):

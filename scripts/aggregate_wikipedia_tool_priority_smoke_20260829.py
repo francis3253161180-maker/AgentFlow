@@ -99,6 +99,9 @@ def classify_termination(
     mirrors its loop: verifier STOP, then loop bounds on a subsequent test.
     Time classification uses the persisted whole-query execution time.
     """
+    persisted = total.get("termination_reason")
+    if isinstance(persisted, str) and persisted:
+        return persisted, "persisted by solver"
     if steps and verifier_stop_signal(total.get(f"verifier_{len(steps)}_response")) is True:
         return "verifier_stop", "last verifier stop_signal=true"
     execution_time = total.get("execution_time")
@@ -113,6 +116,16 @@ def extract_urls(value: Any) -> list[str]:
     return sorted(set(re.findall(r"https?://[^\s'\"<>)}\]]+", str(value))))
 
 
+def active_plan_step(plan: Any) -> dict[str, Any] | None:
+    parsed = parse_json(plan)
+    if not isinstance(parsed, dict):
+        return None
+    steps = parsed.get("steps")
+    if not isinstance(steps, list):
+        return None
+    return next((step for step in steps if isinstance(step, dict) and step.get("status") == "in_progress"), None)
+
+
 def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     total = raw.get("total_result", {})
@@ -122,6 +135,9 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         action = action if isinstance(action, dict) else {}
         planner = parse_json(total.get(f"action_predictor_{ordinal}_response"))
         verifier = parse_json(total.get(f"verifier_{ordinal}_response"))
+        step_verifier = parse_json(total.get(f"step_verifier_{ordinal}_response"))
+        plan_before = total.get(f"plan_before_step_{ordinal}")
+        current_plan_step = active_plan_step(plan_before)
         result = action.get("result")
         steps.append({
             "step": ordinal,
@@ -129,11 +145,16 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
             "planner_context": compact(planner.get("context")) if isinstance(planner, dict) else None,
             "planner_subgoal": compact(planner.get("sub_goal")) if isinstance(planner, dict) else None,
             "routing_state": compact(total.get(f"action_predictor_{ordinal}_routing_state")),
+            "current_plan_step": compact(current_plan_step),
+            "unresolved_evidence_gaps_before_action": (
+                compact(current_plan_step.get("missing_evidence", [])) if current_plan_step else []
+            ),
             "executor_command": compact(action.get("command")),
             "tool_result": compact(result),
             "retrieved_evidence": extract_evidence(result),
             "search_internal_telemetry": search_telemetry(result),
             "verifier": compact(verifier),
+            "step_verifier": compact(step_verifier),
         })
     known_urls: list[str] = []
     for step in steps:
@@ -142,6 +163,14 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         known_urls = sorted(set(known_urls))
     tool_sequence = [step["planner_tool_choice"] for step in steps if step["planner_tool_choice"]]
     termination_cause, termination_evidence = classify_termination(total, steps, max_steps, max_time)
+    unresolved = [
+        step for step in (total.get("high_level_plan", {}) or {}).get("steps", [])
+        if isinstance(step, dict) and step.get("status") != "completed"
+    ]
+    final_answer = raw.get("answer_extracted")
+    unsupported_final_claim = bool(
+        unresolved and final_answer and not str(final_answer).startswith("Insufficient verified evidence;")
+    )
     continue_followed_by_action = sum(
         1
         for ordinal, step in enumerate(steps, start=1)
@@ -151,13 +180,18 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         "rollout_file": str(path),
         "reward": raw.get("reward"),
         "ground_truth": raw.get("groundtruth"),
-        "final_answer": raw.get("answer_extracted"),
+        "final_answer": final_answer,
         "final_output": compact(total.get("direct_output") if isinstance(total, dict) else None),
+        "termination_reason": total.get("termination_reason"),
+        "high_level_plan": compact(total.get("high_level_plan"), 1800),
+        "plan_transitions": compact(total.get("plan_transitions"), 1800),
         "execution_time_seconds": total.get("execution_time"),
         "configured_max_steps": max_steps,
         "configured_max_time_seconds": max_time,
         "termination_cause": termination_cause,
         "termination_cause_evidence": termination_evidence,
+        "unresolved_plan_steps": compact(unresolved),
+        "unsupported_final_claim": unsupported_final_claim,
         "verifier_continue_followed_by_next_planner_action_count": continue_followed_by_action,
         "steps": steps,
         "tool_sequence": tool_sequence,
@@ -217,7 +251,7 @@ def main() -> None:
     ]
     result = {
         "schema_version": 1,
-        "purpose": "one-question x4 rollout-only structural tool-priority smoke; not a training result",
+        "purpose": "one-question x4 rollout-only structural routing smoke; not a training result",
         "input_manifest": json.loads(args.input_manifest.read_text(encoding="utf-8")),
         "rollout_dir": str(args.rollout_dir),
         "rollout_count": len(entries),
@@ -226,13 +260,17 @@ def main() -> None:
         "mixed_group": len(set(rewards)) > 1,
         "termination_cause_counts": {
             cause: sum(entry["termination_cause"] == cause for entry in entries)
-            for cause in ("verifier_stop", "max_steps", "max_time", "unknown_or_other")
+            for cause in (
+                "all_plan_steps_completed", "max_steps_with_unresolved_plan", "verifier_stop",
+                "max_steps", "max_time", "unknown_or_other",
+            )
         },
         "verifier_continue_followed_by_next_planner_action_count": sum(
             entry["verifier_continue_followed_by_next_planner_action_count"] for entry in entries
         ),
         "factual_retrieval_rollout_count": sum(entry["used_factual_retrieval"] for entry in entries),
         "two_or_more_distinct_tools_rollout_count": sum(len(entry["distinct_tools"]) >= 2 for entry in entries),
+        "unsupported_final_claim_rollout_count": sum(entry["unsupported_final_claim"] for entry in entries),
         "search_internal_telemetry": telemetry,
         "search_telemetry_totals": {
             key: sum(int(item.get(key, 0)) for item in telemetry)

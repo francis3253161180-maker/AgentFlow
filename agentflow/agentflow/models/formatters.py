@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 # Planner: QueryAnalysis
 class QueryAnalysis(BaseModel):
@@ -27,6 +29,35 @@ class NextStep(BaseModel):
     context: str
     sub_goal: str
     tool_name: str
+
+
+class PlanStep(BaseModel):
+    """One evidence-oriented dependency in a generic high-level plan."""
+
+    step_id: str
+    objective: str
+    success_criteria: str
+    depends_on: list[str] = Field(default_factory=list)
+    status: Literal["pending", "in_progress", "completed", "failed"] = "pending"
+    verified_evidence: list[str] = Field(default_factory=list)
+    missing_evidence: list[str] = Field(default_factory=list)
+
+
+class HighLevelPlan(BaseModel):
+    # This is vLLM guided JSON.  Reject an otherwise valid but unusable empty
+    # plan before it can reach the execution loop.
+    steps: list[PlanStep] = Field(min_length=1)
+
+
+class StepVerification(BaseModel):
+    """Evidence-only verifier result for the current plan step."""
+
+    completed: bool
+    missing_evidence: list[str] = Field(default_factory=list)
+    verified_evidence: list[str] = Field(default_factory=list)
+    contradiction: bool = False
+    invalidated_step_ids: list[str] = Field(default_factory=list)
+    rationale: str = ""
 
 # Executor: MemoryVerification
 class MemoryVerification(BaseModel):
