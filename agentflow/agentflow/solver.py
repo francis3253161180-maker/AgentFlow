@@ -28,6 +28,7 @@ from agentflow.models.plan_state import (
 )
 from agentflow.models.executor import Executor
 from agentflow.models.utils import make_json_serializable_truncated
+from agentflow.models.role_boundaries import sanitize_verifier_assessment
 
 class Solver:
     def __init__(
@@ -76,6 +77,10 @@ class Solver:
             "query": question,
             "image": image_path
         }
+        if hasattr(self, "role_routing"):
+            json_data["role_routing"] = copy.deepcopy(self.role_routing)
+        supervisor_calls_before = int(getattr(self.planner, "supervisor_call_count", 0))
+        verifier_calls_before = int(getattr(self.verifier, "step_verifier_call_count", 0))
         if self.verbose:
             print(f"\n==> 🔍 Received Query: {question}")
             if image_path:
@@ -324,7 +329,9 @@ class Solver:
                         "verifier_rationale": verification_payload.get("rationale", ""),
                     }
                     prior_attempts.append(attempt)
-                    previous_verifier_assessment = verification_payload
+                    # Planner-main receives only state/provenance already in
+                    # Memory, never the fixed verifier's free-form rationale.
+                    previous_verifier_assessment = sanitize_verifier_assessment(verification_payload)
                     json_data[f"step_verification_{step_count}"] = verification_payload
                     json_data[f"current_step_progress_{step_count}"] = {
                         "active_step_id": current_plan_step["step_id"],
@@ -383,6 +390,14 @@ class Solver:
             if hierarchical_planning:
                 json_data["high_level_plan"] = plan_snapshot(plan_state)
                 json_data["plan_transitions"] = copy.deepcopy(plan_transitions)
+            json_data["fixed_role_runtime_telemetry"] = {
+                "supervisor_calls": int(getattr(self.planner, "supervisor_call_count", 0)) - supervisor_calls_before,
+                "step_verifier_calls": int(getattr(self.verifier, "step_verifier_call_count", 0)) - verifier_calls_before,
+                "ark_reasoning_effort": os.getenv("ARK_REASONING_EFFORT", "") or None,
+            }
+            supervisor_request = getattr(getattr(self.planner, "llm_engine_supervisor", None), "last_request_metadata", None)
+            if isinstance(supervisor_request, dict):
+                json_data["supervisor_last_request_metadata"] = dict(supervisor_request)
 
             plan_complete = not hierarchical_planning or all_steps_completed(plan_state)
             if hierarchical_planning and not plan_complete:
@@ -441,13 +456,15 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         "1", "true", "yes", "on"
     }
     unified_fixed_role_engine = os.getenv("AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE", "").strip()
+    unified_supervisor_engine = os.getenv("AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE", "").strip()
     if unified_local_roles:
         # These are logical OpenAI-compatible model ids.  PatchedvLLMServer
         # maps qwen-base to no adapter and qwen-actor to the latest synced
         # TensorLoRARequest.  They must remain distinct at request time.
         planner_main_engine = "vllm-qwen-actor"
         planner_fixed_engine = unified_fixed_role_engine or "vllm-qwen-base"
-        verifier_engine = unified_fixed_role_engine or "vllm-qwen-base"
+        verifier_engine = unified_supervisor_engine or unified_fixed_role_engine or "vllm-qwen-base"
+        supervisor_engine = unified_supervisor_engine or unified_fixed_role_engine or "vllm-qwen-base"
         executor_engine = unified_fixed_role_engine or "vllm-qwen-base"
     else:
         def resolve_role_engine(spec: str) -> str:
@@ -456,6 +473,7 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         planner_main_engine = resolve_role_engine(model_engine[0])
         planner_fixed_engine = resolve_role_engine(model_engine[1])
         verifier_engine = resolve_role_engine(model_engine[2])
+        supervisor_engine = planner_fixed_engine
         executor_engine = resolve_role_engine(model_engine[3])
 
     if unified_local_roles:
@@ -469,19 +487,29 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
             raise ValueError("Unified local role mode requires a local vLLM model and base_url")
         if unified_fixed_role_engine and not unified_fixed_role_engine.startswith("doubao-"):
             raise ValueError("AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE must be a doubao-* model")
+        if unified_supervisor_engine and not unified_supervisor_engine.startswith("doubao-"):
+            raise ValueError("AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE must be a doubao-* model")
         print(
             "UNIFIED_LOCAL_ROLES enabled "
             f"model={llm_engine_name.removeprefix('vllm-')} "
             "planner_main=trainable_actor_lora "
-            f"planner_fixed={planner_fixed_engine} verifier={verifier_engine} "
+            f"planner_fixed={planner_fixed_engine} supervisor={supervisor_engine} verifier={verifier_engine} "
             f"executor={executor_engine} fixed_roles_frozen=1"
         )
 
     fixed_role_external = planner_fixed_engine.startswith("doubao-")
+    supervisor_external = supervisor_engine.startswith("doubao-")
+    verifier_external = verifier_engine.startswith("doubao-")
+    executor_external = executor_engine.startswith("doubao-")
     fixed_role_temperature = float(
         os.getenv("AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE", "0.0" if fixed_role_external else str(temperature))
     )
     fixed_base_url = None if fixed_role_external else base_url
+    supervisor_base_url = None if supervisor_external else base_url
+    verifier_base_url = None if verifier_external else base_url
+    executor_base_url = None if executor_external else base_url
+    supervisor_temperature = float(os.getenv("AGENTFLOW_UNIFIED_SUPERVISOR_TEMPERATURE", "0.0" if supervisor_external else str(temperature)))
+    verifier_temperature = float(os.getenv("AGENTFLOW_UNIFIED_VERIFIER_TEMPERATURE", "0.0" if verifier_external else str(temperature)))
     initializer_model = planner_fixed_engine if fixed_role_external else (
         "vllm-qwen-base" if unified_local_roles else llm_engine_name
     )
@@ -508,6 +536,9 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         base_url=base_url,
         fixed_base_url=fixed_base_url,
         fixed_temperature=fixed_role_temperature,
+        llm_engine_supervisor_name=supervisor_engine,
+        supervisor_base_url=supervisor_base_url,
+        supervisor_temperature=supervisor_temperature,
         temperature=temperature,
         max_tokens=max_tokens,
     )
@@ -515,14 +546,14 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
     # Instantiate Verifier
     verifier = Verifier(
         llm_engine_name=verifier_engine,
-        llm_engine_fixed_name=planner_fixed_engine,
+        llm_engine_fixed_name=verifier_engine,
         toolbox_metadata=initializer.toolbox_metadata,
         available_tools=initializer.available_tools,
         verbose=verbose,
-        base_url=None if fixed_role_external else (base_url if (unified_local_roles or verifier_engine == llm_engine_name) else None),
-        fixed_base_url=fixed_base_url if (unified_local_roles or planner_fixed_engine == llm_engine_name) else None,
+        base_url=verifier_base_url,
+        fixed_base_url=verifier_base_url,
         max_tokens=max_tokens,
-        temperature=fixed_role_temperature if fixed_role_external else temperature
+        temperature=verifier_temperature,
     )
 
     # Instantiate Memory
@@ -533,8 +564,8 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         llm_engine_name=executor_engine,
         root_cache_dir=root_cache_dir,
         verbose=verbose,
-        base_url=None if fixed_role_external else (base_url if (unified_local_roles or executor_engine == llm_engine_name) else None),
-        temperature=fixed_role_temperature if fixed_role_external else temperature,
+        base_url=executor_base_url,
+        temperature=fixed_role_temperature if executor_engine == planner_fixed_engine else temperature,
         tool_instances_cache=initializer.tool_instances_cache,  # Pass the cached tool instances
         max_tokens=max_tokens,
     )
@@ -553,6 +584,19 @@ def construct_solver(llm_engine_name : str = "gpt-4o",
         verbose=verbose,
         temperature=temperature
     )
+    solver.role_routing = {
+        "planner_main": planner_main_engine,
+        "query_analysis": planner_fixed_engine,
+        "high_level_evidence_planner": supervisor_engine,
+        "coverage_auditor": supervisor_engine,
+        "step_verifier": verifier_engine,
+        "executor": executor_engine,
+        "final_generator": planner_fixed_engine,
+        "fixed_role_temperature": fixed_role_temperature,
+        "supervisor_temperature": supervisor_temperature,
+        "verifier_temperature": verifier_temperature,
+        "ark_reasoning_effort": os.getenv("ARK_REASONING_EFFORT", "") or None,
+    }
     return solver
 
 def parse_arguments():

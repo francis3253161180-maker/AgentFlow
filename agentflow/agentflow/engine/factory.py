@@ -31,6 +31,13 @@ def create_llm_engine(model_string: str, use_cache: bool = False, is_multimodal:
                 "External LLM disabled by AGENTFLOW_DISABLE_EXTERNAL_LLM; "
                 f"refusing model engine {model_string!r}"
             )
+    allowed_external = {
+        value.strip() for value in os.getenv("AGENTFLOW_ALLOWED_EXTERNAL_MODELS", "").split(",") if value.strip()
+    }
+    if allowed_external:
+        external_markers = ("azure", "gpt", "o1", "o3", "o4", "dashscope", "claude", "deepseek", "doubao", "seed-2", "gemini", "grok", "together", "litellm", "anthropic", "openai")
+        if any(marker in model_string.lower() for marker in external_markers) and model_string not in allowed_external:
+            raise RuntimeError(f"External model {model_string!r} is not in AGENTFLOW_ALLOWED_EXTERNAL_MODELS")
 
     print(f"creating llm engine {model_string} with: is_multimodal: {is_multimodal}, kwargs: {kwargs}")
 
@@ -110,6 +117,7 @@ def create_llm_engine(model_string: str, use_cache: bool = False, is_multimodal:
             "api_key": kwargs.get("api_key"),
             "base_url": kwargs.get("ark_base_url"),
             "timeout": kwargs.get("timeout"),
+            "reasoning_effort": kwargs.get("reasoning_effort"),
         }
         return ChatArk(**config)
 

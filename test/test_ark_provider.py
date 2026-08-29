@@ -45,6 +45,18 @@ class ArkProviderTest(unittest.TestCase):
             self.assertEqual(calls[0]["temperature"], 0.0)
             self.assertEqual(calls[0]["reasoning_effort"], "minimal")
             self.assertEqual(calls[0]["response_format"], {"type": "json_object"})
+            self.assertEqual(engine.last_request_metadata["reasoning_effort"], "minimal")
+            self.assertEqual(engine.request_count, 1)
+
+    def test_external_allowlist_rejects_unapproved_provider(self):
+        from agentflow.engine import factory
+
+        with patch.dict(os.environ, {
+            "AGENTFLOW_DISABLE_EXTERNAL_LLM": "0",
+            "AGENTFLOW_ALLOWED_EXTERNAL_MODELS": "doubao-seed-2-0-lite-260428",
+        }):
+            with self.assertRaises(RuntimeError):
+                factory.create_llm_engine("deepseek-chat")
 
 
 if __name__ == "__main__":

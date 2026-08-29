@@ -31,7 +31,8 @@ source /root/.env
 export PATH=/root/autodl-tmp/conda/envs/agentflow/bin:$PATH
 export HF_HOME=/root/autodl-tmp/hf-cache TRANSFORMERS_CACHE=/root/autodl-tmp/hf-cache/transformers
 export PIP_CACHE_DIR=/root/autodl-tmp/pip-cache TMPDIR=/root/autodl-tmp/tmp RAY_TMPDIR=/root/autodl-tmp/tmp/ray WANDB_MODE=disabled
-export AGENTFLOW_TRAIN_CONFIG="$CONFIG" AGENTFLOW_DISABLE_EXTERNAL_LLM=1 AGENTFLOW_UNIFIED_LOCAL_ROLES=1 AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE=
+export AGENTFLOW_TRAIN_CONFIG="$CONFIG" AGENTFLOW_DISABLE_EXTERNAL_LLM="${AGENTFLOW_DISABLE_EXTERNAL_LLM:-1}" AGENTFLOW_UNIFIED_LOCAL_ROLES=1 AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE="${AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE:-}"
+export AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE="${AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE:-}" AGENTFLOW_ALLOWED_EXTERNAL_MODELS="${AGENTFLOW_ALLOWED_EXTERNAL_MODELS:-}"
 export AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE=0.0 AGENTFLOW_REWARD_JUDGE_ENABLED=0 AGENTFLOW_REWARD_SCORER_LOG=1 AGENTFLOW_UNIFIED_MEMORY_LOG=1
 export AGENTFLOW_ROLLOUT_ONLY_GROUP_MODE=1 AGENTFLOW_ROLE_ROUTING_STATE="$ROUTE" AGENTFLOW_UNIFIED_BASE_MODEL_NAME=qwen-base
 export AGENTFLOW_HIERARCHICAL_PLANNING="${AGENTFLOW_HIERARCHICAL_PLANNING:-0}"
@@ -50,6 +51,13 @@ rm -f -- "$MEDIAWIKI_THROTTLE_LOCK"
 export AGENTFLOW_MEDIAWIKI_SHARED_CACHE_DIR="$MEDIAWIKI_CACHE_DIR"
 export AGENTFLOW_MEDIAWIKI_THROTTLE_LOCK="$MEDIAWIKI_THROTTLE_LOCK"
 export AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS="${AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS:-0.75}"
+if [[ -n "$AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE" ]]; then
+  [[ "$AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE" == doubao-* ]] || { echo "ABORT_CONDITION invalid_supervisor_engine" >&2; exit 2; }
+  [[ -n "${ARK_API_KEY:-}" ]] || { echo "ABORT_CONDITION ARK_API_KEY=missing" >&2; exit 2; }
+  [[ "${ARK_REASONING_EFFORT:-}" == "minimal" ]] || { echo "ABORT_CONDITION requires_ARK_REASONING_EFFORT=minimal" >&2; exit 2; }
+  [[ "$AGENTFLOW_DISABLE_EXTERNAL_LLM" == "0" ]] || { echo "ABORT_CONDITION external_guard_must_allow_configured_supervisor" >&2; exit 2; }
+  [[ ",$AGENTFLOW_ALLOWED_EXTERNAL_MODELS," == *",$AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE,"* ]] || { echo "ABORT_CONDITION supervisor_not_allowlisted" >&2; exit 2; }
+fi
 
 "$PY" - "$SOURCE" "$DATA" "$TMP/input_manifest.json" <<'PY'
 import hashlib, json, sys
@@ -142,7 +150,7 @@ check_abort() {
 }
 : > "$TRAIN_LOG"; : > "$ROLLOUT_LOG"; : > "$GPU_LOG"
 if [[ -n "${GOOGLE_API_KEY:-}" ]]; then GOOGLE_AVAILABILITY=present; else GOOGLE_AVAILABILITY=missing; fi
-echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN max_num_seqs=$MAX_NUM_SEQS n_workers=$N_WORKERS hierarchical_planning=$AGENTFLOW_HIERARCHICAL_PLANNING external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled mediawiki_cache_scope=fresh_run mediawiki_min_interval=$AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS"
+echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner_main=qwen-actor-lora query_analysis=qwen-base high_level_supervisor=${AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE:-qwen-base} coverage_auditor=${AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE:-qwen-base} step_verifier=${AGENTFLOW_UNIFIED_SUPERVISOR_ENGINE:-qwen-base} executor=qwen-base final_generator=qwen-base enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN max_num_seqs=$MAX_NUM_SEQS n_workers=$N_WORKERS hierarchical_planning=$AGENTFLOW_HIERARCHICAL_PLANNING external_llm_allowlist=${AGENTFLOW_ALLOWED_EXTERNAL_MODELS:-none} ark_reasoning_effort=${ARK_REASONING_EFFORT:-none} google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled mediawiki_cache_scope=fresh_run mediawiki_min_interval=$AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS"
 PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=1536 data.max_response_length=512 +actor_rollout_ref.ref.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct critic.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 &
 TRAIN_PID=$!
 (

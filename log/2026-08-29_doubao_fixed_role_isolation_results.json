@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "purpose": "one authorized frozen MuSiQue Barcelona n=4 rollout-only fixed-role isolation calibration; no training",
+  "status": "blocked_before_valid_trajectory",
+  "base_commit": "8fac51a",
+  "input": {
+    "selection": "fixed existing MuSiQue probe group 4; no resampling",
+    "benchmark_id": "2hop__13592_49388",
+    "source_idx": 259,
+    "rollout_n": 4,
+    "n_workers": 4,
+    "max_num_seqs": 4,
+    "tool_steps": 3,
+    "agent_max_timeout_seconds": 600,
+    "temperature": 0.7,
+    "manifest_sha256": "d133569e10a9da5dadcd46f63bad103aa45561a199c4e61cc7c6046defbde2b6",
+    "runtime_config_sha256": "be3c486b3b7a64fbb00dcc18c5f61562998baa295212f3a883415dd33dd472b7"
+  },
+  "role_routing": {
+    "planner_main": "vllm-qwen-actor (Qwen2.5-7B + synced LoRA)",
+    "query_analysis": "vllm-qwen-base",
+    "high_level_evidence_planner": "doubao-seed-2-0-lite-260428",
+    "coverage_auditor": "doubao-seed-2-0-lite-260428",
+    "step_verifier": "doubao-seed-2-0-lite-260428",
+    "executor": "vllm-qwen-base",
+    "final_generator": "vllm-qwen-base",
+    "ark_temperature": 0.0,
+    "ark_reasoning_effort": "minimal",
+    "external_allowlist": ["doubao-seed-2-0-lite-260428"],
+    "actor_route_runtime_sha256": "845ef5867a73fdd5ec7f1f7283ea68050209356addf57f5694ed953b24f139be"
+  },
+  "outcome": {
+    "logical_rollout_slots": 4,
+    "valid_rollouts": 0,
+    "invalid_rollouts": 4,
+    "reward_vector": null,
+    "reward_mean": null,
+    "plan_coverage_internal_consistency": null,
+    "plan_revisions": null,
+    "atomic_requirement_mapping_validity": null,
+    "step_verifier_calls": 0,
+    "provenance_gate_accepts": 0,
+    "provenance_gate_rejects": 0,
+    "step_1_completed": 0,
+    "step_2_activated": 0,
+    "tool_action_sequences": [],
+    "http_requests": 0,
+    "shared_cache_hits": 0,
+    "singleflight_waits": 0,
+    "http_429": 0,
+    "unsupported_final_claims": 0,
+    "failure": "Each logical slot reached the post-response high-level-supervisor boundary and was rejected as a capability-boundary violation before planning state, tool execution, verification, final generation, or scoring could be persisted.",
+    "failure_marker_occurrences_in_combined_local_logs": 8
+  },
+  "external_call_evidence": {
+    "doubao_engine_construction_markers_in_combined_local_logs": 8,
+    "doubao_role_calls_observed_as_completed": {
+      "high_level_evidence_planner": "at least one per failed logical slot is inferred because the rejection occurs after the supervisor call returns",
+      "coverage_auditor": 0,
+      "step_verifier": 0
+    },
+    "nonthinking_request_record": "The run launcher required ARK_REASONING_EFFORT=minimal; ChatArk sends that value in every Ark request. Per-call request metadata was not persisted because the supervisor rejection occurred before a trajectory JSON could be written.",
+    "other_external_models": "blocked by AGENTFLOW_ALLOWED_EXTERNAL_MODELS"
+  },
+  "resources_and_cleanup": {
+    "gpu_peak_memory_mib": 20095.0,
+    "cleanup_drained": true,
+    "cleanup_outstanding_before": 0,
+    "cleanup_sleep_started": true,
+    "cleanup_duration_seconds": 0.8107724189758301,
+    "final_gpu_memory_mib": 0,
+    "orphan_current_run_worker": {
+      "pid": 343455,
+      "action": "SIGTERM then SIGKILL after five seconds",
+      "final_gpu_memory_mib": 0
+    },
+    "cuda_oom": false,
+    "cuda_illegal_memory_access": false,
+    "prefix_cache_reset_failure": false
+  },
+  "comparison_all_qwen_8fac51a": {
+    "all_qwen_reward_vector": [0.0, 0.0, 0.0, 0.0],
+    "all_qwen_valid_rollouts": 4,
+    "all_qwen_plan_revision": "4/4 reached valid two-step dependency plans after one revision",
+    "all_qwen_step_1_completed": 0,
+    "all_qwen_step_2_activated": 0,
+    "all_qwen_web_rag_step_3": "2/4",
+    "all_qwen_http_429": 0,
+    "comparison_interpretation": "No outcome-quality comparison is valid because the Doubao-isolation run produced zero valid trajectories."
+  },
+  "raw_artifacts_local_only": {
+    "train_log": "log/20260829_doubao_fixed_role_isolation_20260829_train.log",
+    "rollout_log": "log/20260829_doubao_fixed_role_isolation_20260829_rollout.log",
+    "runtime_dir": "/root/autodl-tmp/tmp/doubao_fixed_role_isolation_20260829",
+    "rollout_root": "rollout_data/46.38.243.197/doubao-fixed-role-isolation-musique-group4-20260829_20260829-225540"
+  }
+}

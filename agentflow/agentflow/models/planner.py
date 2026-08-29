@@ -9,6 +9,7 @@ from agentflow.engine.factory import create_llm_engine
 from agentflow.models.formatters import HighLevelPlan, NextStep, PlanCoverage, QueryAnalysis
 from agentflow.models.memory import Memory
 from agentflow.models.current_step_state import build_current_step_contract
+from agentflow.models.role_boundaries import audit_fixed_role_output, structurally_safe_supervisor_output
 from agentflow.models.structured_outputs import (
     Game24Answer,
     extract_game24_numbers,
@@ -105,7 +106,10 @@ class Planner:
                  verbose: bool = False, base_url: str = None, is_multimodal: bool = False,
                  check_model: bool = True, temperature : float = .0,
                  max_tokens: int = 2048, fixed_base_url: str = None,
-                 fixed_temperature: float = None):
+                 fixed_temperature: float = None,
+                 llm_engine_supervisor_name: str | None = None,
+                 supervisor_base_url: str = None,
+                 supervisor_temperature: float | None = None):
         self.llm_engine_name = llm_engine_name
         self.llm_engine_fixed_name = llm_engine_fixed_name
         self.is_multimodal = is_multimodal
@@ -117,6 +121,21 @@ class Planner:
             max_tokens=max_tokens,
             temperature=temperature if fixed_temperature is None else fixed_temperature,
         )
+        self.llm_engine_supervisor_name = llm_engine_supervisor_name or llm_engine_fixed_name
+        # Preserve the old single fixed-role engine by default.  A distinct
+        # supervisor is opt-in so query analysis/final synthesis never move
+        # providers merely because high-level evidence planning does.
+        self.llm_engine_supervisor = self.llm_engine_fixed
+        if self.llm_engine_supervisor_name != llm_engine_fixed_name:
+            self.llm_engine_supervisor = create_llm_engine(
+                model_string=self.llm_engine_supervisor_name,
+                is_multimodal=False,
+                base_url=supervisor_base_url,
+                max_tokens=max_tokens,
+                temperature=temperature if supervisor_temperature is None else supervisor_temperature,
+            )
+        self.supervisor_call_count = 0
+        self.supervisor_boundary_audits: list[dict[str, Any]] = []
         self.llm_engine = create_llm_engine(
             model_string=llm_engine_name,
             is_multimodal=False,
@@ -129,6 +148,15 @@ class Planner:
         self.max_tokens = max_tokens
 
         self.verbose = verbose
+
+    def _call_supervisor(self, prompt: str, response_format: Any) -> Any:
+        self.supervisor_call_count = int(getattr(self, "supervisor_call_count", 0)) + 1
+        engine = getattr(self, "llm_engine_supervisor", self.llm_engine_fixed)
+        return engine(prompt, response_format=response_format, max_tokens=self.max_tokens)
+
+    @staticmethod
+    def _supervisor_audit(raw: Any, *, recorded_evidence: Any = None) -> dict[str, Any]:
+        return audit_fixed_role_output(raw, recorded_evidence=recorded_evidence)
 
     def _structured_game24_output(self, question: str, memory: Memory) -> str:
         """Return one strictly validated Game24 JSON object, or a failure object.
@@ -506,6 +534,7 @@ Rules:
         self, question: str, image: str, query_analysis: str, max_step_count: int, json_data: Any = None,
     ) -> Any:
         """Ask the fixed planner role for small, dependency-aware evidence goals."""
+        self.supervisor_boundary_audits = []
         prompt = f"""
 Task: Create a concise high-level evidence plan for answering the query. This plan does not answer the query and does not select executable commands.
 
@@ -513,14 +542,18 @@ Query: {question}
 Initial analysis: {query_analysis}
 Available tools: {self.available_tools}
 
-Create at most {max_step_count} ordered, atomic evidence goals. Each step must establish exactly one fact, relation, entity, or derivation input with a concrete success criterion. Split dependent facts into separate steps and use dependencies only when a later step needs a prior verified fact. Do not create composite steps, tool scripts, or a fixed tool sequence.
+Create at most {max_step_count} ordered, atomic evidence goals. Each step must establish exactly one fact, relation, entity, or derivation input with a concrete success criterion. Split dependent facts into separate steps and use dependencies only when a later step needs a prior verified fact. Do not create composite steps, tool scripts, or a fixed tool sequence. Do not name tools, URLs, queries, commands, search strategies, factual answers, or calculations.
 
 Response Format (JSON object only; match the HighLevelPlan schema exactly):
 {{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}
 """
         # The OpenAI-compatible vLLM engine returns text even when guided_json
         # is requested. Parse that text before handing it to the state machine.
-        raw_plan = self.llm_engine_fixed(prompt, response_format=HighLevelPlan, max_tokens=self.max_tokens)
+        raw_plan = self._call_supervisor(prompt, HighLevelPlan)
+        plan_audit = self._supervisor_audit(raw_plan)
+        self.supervisor_boundary_audits.append({"role": "high_level_evidence_planner", "audit": plan_audit})
+        if not structurally_safe_supervisor_output(plan_audit):
+            raise ValueError("supervisor high-level plan violated capability boundary")
         plan = parse_strict_json(raw_plan, HighLevelPlan)
         initial_plan = self._model_payload(plan)
         initial_coverage = self._audit_high_level_plan_coverage(question, initial_plan)
@@ -539,14 +572,16 @@ Produce one corrected plan with at most {max_step_count} ordered atomic evidence
 Every independently necessary fact, relation, entity, or derivation input must
 have its own step and concrete success criterion. Make dependencies explicit
 when a later input needs an earlier verified input. Do not combine dependent
-requirements inside a step. A final synthesis is not an evidence step.
+requirements inside a step. A final synthesis is not an evidence step. Do not name tools, URLs, queries, commands, search strategies, factual answers, or calculations.
 
 Response Format (JSON object only; match the HighLevelPlan schema exactly):
 {{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}
 """
-            raw_revised_plan = self.llm_engine_fixed(
-                revision_prompt, response_format=HighLevelPlan, max_tokens=self.max_tokens,
-            )
+            raw_revised_plan = self._call_supervisor(revision_prompt, HighLevelPlan)
+            revised_plan_audit = self._supervisor_audit(raw_revised_plan)
+            self.supervisor_boundary_audits.append({"role": "high_level_evidence_planner_revision", "audit": revised_plan_audit})
+            if not structurally_safe_supervisor_output(revised_plan_audit):
+                raise ValueError("supervisor revised plan violated capability boundary")
             final_plan = parse_strict_json(raw_revised_plan, HighLevelPlan)
             revised_plan_payload = self._model_payload(final_plan)
             final_coverage = self._audit_high_level_plan_coverage(question, revised_plan_payload)
@@ -560,12 +595,16 @@ Response Format (JSON object only; match the HighLevelPlan schema exactly):
         if json_data is not None:
             json_data["high_level_plan_prompt"] = prompt
             json_data["high_level_plan_response"] = str(raw_plan)
+            json_data["high_level_plan_role_boundary_audit"] = plan_audit
             json_data["high_level_plan_original"] = initial_plan
             json_data["high_level_plan_coverage_initial"] = self._model_payload(initial_coverage)
             json_data["high_level_plan_revised"] = revised_plan_payload
+            if revised_plan_payload is not None:
+                json_data["high_level_plan_revision_role_boundary_audit"] = revised_plan_audit
             json_data["high_level_plan_coverage_final"] = coverage_payload
             json_data["high_level_plan_coverage_valid"] = coverage_valid
             json_data["high_level_plan_validated"] = self._model_payload(final_plan)
+            json_data["supervisor_role_boundary_audits"] = list(self.supervisor_boundary_audits)
         return final_plan
 
     @staticmethod
@@ -589,12 +628,20 @@ Identify the independently necessary evidence requirements needed to answer
 the query. Check whether every requirement is covered by an atomic plan step,
 whether dependencies are explicit, and whether any step combines independent
 requirements. Treat final answer synthesis as not being an evidence
-requirement. Report only this plan audit.
+requirement. Report only this plan audit. Do not name tools, URLs, queries, commands, search strategies, factual answers, or calculations.
 
 Response Format (JSON object only; match the PlanCoverage schema exactly):
 {{"sufficient":true,"independently_necessary_requirements":["<requirement>"],"requirement_coverage":[{{"requirement":"<same requirement>","covered_step_ids":["<one atomic step id>"]}}],"covered_step_ids":["<all covered step ids>"],"missing_requirements":[],"composite_step_ids":[],"rationale":"<brief evidence-plan rationale>"}}
 """
-        raw_coverage = self.llm_engine_fixed(prompt, response_format=PlanCoverage, max_tokens=self.max_tokens)
+        raw_coverage = self._call_supervisor(prompt, PlanCoverage)
+        coverage_audit = self._supervisor_audit(raw_coverage)
+        self.supervisor_boundary_audits.append({"role": "coverage_auditor", "audit": coverage_audit})
+        if not structurally_safe_supervisor_output(coverage_audit):
+            return PlanCoverage(
+                sufficient=False,
+                missing_requirements=["coverage auditor violated capability boundary"],
+                rationale="coverage_boundary_violation",
+            )
         try:
             return parse_strict_json(raw_coverage, PlanCoverage)
         except ValueError as exc:

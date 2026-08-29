@@ -8,6 +8,7 @@ from PIL import Image
 from agentflow.engine.factory import create_llm_engine
 from agentflow.models.formatters import MemoryVerification, StepVerification
 from agentflow.models.memory import Memory
+from agentflow.models.role_boundaries import audit_fixed_role_output
 
 
 VERIFIER_ROLE_BOUNDARY = """
@@ -35,13 +36,14 @@ class Verifier:
             max_tokens=max_tokens,
             temperature=temperature,
         )
-        self.llm_engine = create_llm_engine(
-            model_string=llm_engine_name,
-            is_multimodal=False,
-            base_url=base_url,
-            max_tokens=max_tokens,
-            temperature=temperature,
+        # `verificate_*` only uses the fixed verifier engine.  Reuse it when
+        # the logical names coincide instead of constructing an unused second
+        # external client.
+        self.llm_engine = self.llm_engine_fixed if llm_engine_name == llm_engine_fixed_name else create_llm_engine(
+            model_string=llm_engine_name, is_multimodal=False, base_url=base_url,
+            max_tokens=max_tokens, temperature=temperature,
         )
+        self.step_verifier_call_count = 0
         self.toolbox_metadata = toolbox_metadata if toolbox_metadata is not None else {}
         self.available_tools = available_tools if available_tools is not None else []
         self.verbose = verbose
@@ -178,6 +180,7 @@ Set `stop_signal` to true only when the memory is complete and verified; otherwi
         prompt = f"""
 Task: Verify the current plan step from recorded Memory evidence only. Do not
 search, infer missing facts from parametric knowledge, or answer the full query.
+Do not name a next tool, URL, query, command, search strategy, or final answer.
 
 Query: {question}
 Initial analysis: {query_analysis}
@@ -201,10 +204,17 @@ previously completed step ids that the conflict invalidates.
 Response Format (JSON object only; match the StepVerification schema exactly):
 {{"completed":false,"missing_evidence":["<needed evidence>"],"verified_evidence":["<memory-supported evidence>"],"contradiction":false,"invalidated_step_ids":[],"rationale":"<evidence-only reason>","requirement_evidence":[{{"requirement":"<mapped requirement>","action_step_refs":["Action Step 1"],"evidence_quotes":["<exact quote from that action result>"]}}]}}
 """
+        self.step_verifier_call_count += 1
         response = self.llm_engine_fixed(prompt, response_format=StepVerification)
         if json_data is not None:
             json_data[f"step_verifier_{step_count}_prompt"] = [prompt]
             json_data[f"step_verifier_{step_count}_response"] = str(response)
+            json_data[f"step_verifier_{step_count}_role_boundary_audit"] = audit_fixed_role_output(
+                response, recorded_evidence=memory.get_actions(),
+            )
+            request_metadata = getattr(self.llm_engine_fixed, "last_request_metadata", None)
+            if isinstance(request_metadata, dict):
+                json_data[f"step_verifier_{step_count}_request_metadata"] = dict(request_metadata)
         return response
 
     def extract_step_verification(self, response: Any) -> StepVerification:

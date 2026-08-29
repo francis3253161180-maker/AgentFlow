@@ -55,6 +55,8 @@ class ChatArk(EngineLM, CachedEngine):
             if configured_reasoning_effort is not None
             else os.getenv("ARK_REASONING_EFFORT", "").strip()
         ) or None
+        self.request_count = 0
+        self.last_request_metadata: dict[str, object] | None = None
 
         if self.use_cache:
             root = platformdirs.user_cache_dir("agentflow")
@@ -121,6 +123,15 @@ class ChatArk(EngineLM, CachedEngine):
             # reasoning.  Ark accepts this OpenAI-compatible request field for
             # the verified Seed 2.0 lite deployment.
             request["reasoning_effort"] = self.reasoning_effort
+        self.request_count += 1
+        self.last_request_metadata = {
+            "model": self.api_model,
+            "temperature": temperature,
+            "top_p": top_p,
+            "max_tokens": max_tokens,
+            "reasoning_effort": self.reasoning_effort,
+            "response_format": "json_object" if response_format is not None else None,
+        }
         # Ark deployments may not expose OpenAI beta.parse.  json_object is
         # the least provider-specific structured hint; downstream AgentFlow
         # code still performs strict Pydantic/schema and Game24 validation.

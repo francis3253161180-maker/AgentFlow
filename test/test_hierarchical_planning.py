@@ -261,6 +261,46 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         self.assertTrue(data["high_level_plan_coverage_valid"])
         self.assertEqual(planner.llm_engine_fixed.call_count, 4)
 
+    def test_supervisor_isolated_from_query_and_final_fixed_engine(self):
+        from unittest.mock import MagicMock, patch
+        from agentflow.models.planner import Planner
+
+        with patch("agentflow.models.planner.create_llm_engine") as factory:
+            fixed, supervisor, actor = MagicMock(), MagicMock(), MagicMock()
+            factory.side_effect = [fixed, supervisor, actor]
+            planner = Planner(
+                "vllm-qwen-actor", "vllm-qwen-base", max_tokens=32,
+                llm_engine_supervisor_name="doubao-seed-2-0-lite-260428",
+                supervisor_temperature=0.0,
+            )
+        self.assertIs(planner.llm_engine_fixed, fixed)
+        self.assertIs(planner.llm_engine_supervisor, supervisor)
+        self.assertIs(planner.llm_engine, actor)
+        self.assertEqual(factory.call_args_list[1].kwargs["temperature"], 0.0)
+
+    def test_boundary_audit_and_sanitized_verifier_state_have_no_rationale_channel(self):
+        from agentflow.models.role_boundaries import (
+            audit_fixed_role_output,
+            sanitize_verifier_assessment,
+            structurally_safe_supervisor_output,
+        )
+
+        audit = audit_fixed_role_output(
+            "Use Wikipedia_RAG_Search_Tool with query='hidden strategy'; final answer is 42."
+        )
+        self.assertFalse(structurally_safe_supervisor_output(audit))
+        state = sanitize_verifier_assessment({
+            "completed": False,
+            "missing_evidence": ["missing source"],
+            "verified_evidence": [],
+            "contradiction": False,
+            "invalidated_step_ids": [],
+            "rationale": "Use this next query: hidden strategy",
+            "requirement_evidence": [],
+        })
+        self.assertNotIn("rationale", state)
+        self.assertEqual(state["missing_evidence"], ["missing source"])
+
     def test_coverage_verdict_cannot_contradict_requirement_mapping(self):
         from agentflow.models.formatters import PlanCoverage, RequirementCoverage
         from agentflow.models.planner import Planner
