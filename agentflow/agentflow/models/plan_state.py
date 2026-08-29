@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import re
 from typing import Any
 
 
@@ -56,6 +57,109 @@ def normalize_plan(plan: Any, max_steps: int) -> dict[str, Any]:
 
 def snapshot(plan: dict[str, Any]) -> dict[str, Any]:
     return copy.deepcopy(plan)
+
+
+def attach_requirement_coverage(plan: dict[str, Any], coverage: dict[str, Any]) -> dict[str, list[str]]:
+    """Persist the fixed coverage audit's requirement-to-step mapping in plan state."""
+    mapping: dict[str, list[str]] = {}
+    for item in coverage.get("requirement_coverage", []) if isinstance(coverage, dict) else []:
+        if not isinstance(item, dict):
+            continue
+        requirement = str(item.get("requirement", "")).strip()
+        refs = item.get("covered_step_ids", [])
+        if requirement and isinstance(refs, list):
+            mapping[requirement] = [str(step_id) for step_id in refs]
+    plan["requirement_to_step"] = mapping
+    return mapping
+
+
+def requirements_for_step(plan: dict[str, Any], step_id: str) -> list[str]:
+    """Return only requirements explicitly mapped to this active atomic step."""
+    mapping = plan.get("requirement_to_step", {})
+    if not isinstance(mapping, dict):
+        return []
+    return sorted(
+        str(requirement) for requirement, step_ids in mapping.items()
+        if isinstance(step_ids, list) and str(step_id) in {str(value) for value in step_ids}
+    )
+
+
+def validate_grounded_step_completion(
+    verification: dict[str, Any], active_step_id: str, plan: dict[str, Any], memory_actions: dict[str, Any],
+) -> dict[str, Any]:
+    """Check only provenance structure for a verifier-requested completion.
+
+    This deliberately does not decide whether an evidence quote semantically
+    proves a requirement.  The fixed verifier makes that judgement; this gate
+    only requires its claimed evidence to name existing Memory actions and
+    quote text traceable to their raw tool outputs.
+    """
+    if not bool(verification.get("completed")):
+        return {"accepted": True, "reason": "completion_not_requested", "active_requirements": requirements_for_step(plan, active_step_id)}
+    requirements = requirements_for_step(plan, active_step_id)
+    if not requirements:
+        return {
+            "accepted": False,
+            "reason": "active_step_has_no_requirement_mapping",
+            "active_requirements": [],
+            "rejections": ["no requirement-to-step mapping was available for completed step"],
+        }
+    entries = verification.get("requirement_evidence", [])
+    if not isinstance(entries, list):
+        entries = []
+    by_requirement: dict[str, list[dict[str, Any]]] = {}
+    for entry in entries:
+        if isinstance(entry, dict):
+            by_requirement.setdefault(_normalized(entry.get("requirement")), []).append(entry)
+    rejections: list[str] = []
+    accepted_evidence: dict[str, list[dict[str, Any]]] = {}
+    for requirement in requirements:
+        matching = by_requirement.get(_normalized(requirement), [])
+        if not matching:
+            rejections.append(f"missing provenance entry for mapped requirement: {requirement}")
+            continue
+        requirement_evidence: list[dict[str, Any]] = []
+        for entry in matching:
+            refs = entry.get("action_step_refs", [])
+            quotes = entry.get("evidence_quotes", [])
+            if not isinstance(refs, list) or not refs or not isinstance(quotes, list) or not quotes:
+                rejections.append(f"requirement lacks action refs or evidence quotes: {requirement}")
+                continue
+            missing_refs = [str(ref) for ref in refs if str(ref) not in memory_actions]
+            if missing_refs:
+                rejections.append(f"unknown Memory action refs for {requirement}: {missing_refs}")
+                continue
+            source_text = "\n".join(
+                str((memory_actions[str(ref)] or {}).get("result", ""))
+                for ref in refs if isinstance(memory_actions.get(str(ref)), dict)
+            )
+            traceable_quotes = []
+            for quote in quotes:
+                normalized_quote = _normalized(quote)
+                if len(normalized_quote) < 8 or normalized_quote not in _normalized(source_text):
+                    rejections.append(f"untraceable evidence quote for {requirement}: {str(quote)[:160]}")
+                    continue
+                traceable_quotes.append(str(quote))
+            if traceable_quotes:
+                requirement_evidence.append({
+                    "action_step_refs": [str(ref) for ref in refs],
+                    "evidence_quotes": traceable_quotes,
+                })
+        if not requirement_evidence:
+            rejections.append(f"no traceable evidence remained for mapped requirement: {requirement}")
+        else:
+            accepted_evidence[requirement] = requirement_evidence
+    return {
+        "accepted": not rejections,
+        "reason": "all active-step requirement evidence is traceable" if not rejections else "grounded_completion_provenance_failed",
+        "active_requirements": requirements,
+        "accepted_evidence": accepted_evidence,
+        "rejections": rejections,
+    }
+
+
+def _normalized(value: Any) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", " ", str(value).casefold())).strip()
 
 
 def all_steps_completed(plan: dict[str, Any]) -> bool:

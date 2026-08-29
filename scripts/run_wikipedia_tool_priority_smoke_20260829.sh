@@ -15,6 +15,8 @@ TRAIN_LOG="$REPO/log/20260829_${RUN_TAG}_train.log"
 ROLLOUT_LOG="$REPO/log/20260829_${RUN_TAG}_rollout.log"
 GPU_LOG="$TMP/gpu.tsv"
 ROUTE="$TMP/role_route.json"
+MEDIAWIKI_CACHE_DIR="$TMP/mediawiki_raw_cache"
+MEDIAWIKI_THROTTLE_LOCK="$TMP/mediawiki_throttle.lock"
 VLLM_UTIL="${AGENTFLOW_WIKIPEDIA_SMOKE_VLLM_UTIL:-0.60}"
 ENABLE_TOOLS="${AGENTFLOW_TOOL_SMOKE_ENABLE_TOOLS:-['Base_Generator_Tool', 'Python_Coder_Tool', 'Wikipedia_Search_Tool']}"
 TOOL_ENGINES="${AGENTFLOW_TOOL_SMOKE_TOOL_ENGINES:-['frozen', 'frozen', 'frozen']}"
@@ -39,6 +41,15 @@ export AGENTFLOW_UNIFIED_SCORER="current deterministic scorer; external judge di
 export AGENTFLOW_UNIFIED_MAX_RESPONSE_LENGTH=512 AGENTFLOW_UNIFIED_MAX_MODEL_LEN="$MAX_MODEL_LEN" AGENTFLOW_DYNAMIC_RESPONSE_PADDING=1
 export AGENTFLOW_VLLM_CLEANUP_DRAIN_TIMEOUT_SECONDS=30 AGENTFLOW_VLLM_CLEANUP_DRAIN_POLL_SECONDS=0.05 AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS=3600
 mkdir -p "$TMP" "$REPO/log"
+# This bounded run may share deterministic raw MediaWiki responses only.  Its
+# cache and admission lock are fresh and tag-scoped, never reused from another
+# experiment; all agent state remains inside each rollout worker.
+rm -rf -- "$MEDIAWIKI_CACHE_DIR"
+mkdir -p "$MEDIAWIKI_CACHE_DIR"
+rm -f -- "$MEDIAWIKI_THROTTLE_LOCK"
+export AGENTFLOW_MEDIAWIKI_SHARED_CACHE_DIR="$MEDIAWIKI_CACHE_DIR"
+export AGENTFLOW_MEDIAWIKI_THROTTLE_LOCK="$MEDIAWIKI_THROTTLE_LOCK"
+export AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS="${AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS:-0.75}"
 
 "$PY" - "$SOURCE" "$DATA" "$TMP/input_manifest.json" <<'PY'
 import hashlib, json, sys
@@ -131,7 +142,7 @@ check_abort() {
 }
 : > "$TRAIN_LOG"; : > "$ROLLOUT_LOG"; : > "$GPU_LOG"
 if [[ -n "${GOOGLE_API_KEY:-}" ]]; then GOOGLE_AVAILABILITY=present; else GOOGLE_AVAILABILITY=missing; fi
-echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN max_num_seqs=$MAX_NUM_SEQS n_workers=$N_WORKERS hierarchical_planning=$AGENTFLOW_HIERARCHICAL_PLANNING external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled"
+echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN max_num_seqs=$MAX_NUM_SEQS n_workers=$N_WORKERS hierarchical_planning=$AGENTFLOW_HIERARCHICAL_PLANNING external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled mediawiki_cache_scope=fresh_run mediawiki_min_interval=$AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS"
 PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=1536 data.max_response_length=512 +actor_rollout_ref.ref.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct critic.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 &
 TRAIN_PID=$!
 (

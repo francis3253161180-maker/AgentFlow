@@ -192,6 +192,13 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
             "revised_tool_command": compact(total.get(f"tool_commander_{ordinal}_revision_response")),
             "retrieved_evidence": extract_evidence(total.get(f"tool_result_{ordinal}")),
             "step_verification": compact(total.get(f"step_verification_{ordinal}")),
+            # This is the deterministic provenance gate applied by the solver
+            # after the fixed-role verifier response.  Keeping it beside the
+            # verifier payload makes rejected "completed" decisions auditable
+            # without retaining the large raw rollout pack in git.
+            "completion_grounding": compact(
+                total.get(f"step_completion_grounding_{ordinal}")
+            ),
             "progress": compact(total.get(f"current_step_progress_{ordinal}")),
         })
         # The solver records the executed command and normalized signature in
@@ -235,6 +242,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         "high_level_plan_revised": compact(total.get("high_level_plan_revised"), 1800),
         "high_level_plan_coverage_final": compact(total.get("high_level_plan_coverage_final"), 1800),
         "high_level_plan_coverage_valid": total.get("high_level_plan_coverage_valid"),
+        "requirement_to_step_mapping": compact(total.get("requirement_to_step_mapping")),
         "high_level_plan": compact(total.get("high_level_plan"), 1800),
         "plan_transitions": compact(total.get("plan_transitions"), 1800),
         "execution_time_seconds": total.get("execution_time"),
@@ -329,6 +337,7 @@ def main() -> None:
                 "throttle_wait_seconds", "retry_after_seconds",
                 "shared_cache_hits", "shared_cache_writes",
                 "singleflight_wait_count", "singleflight_wait_seconds",
+                "http_requests",
                 "search_internal_llm_calls", "openai_calls", "doubao_calls",
             )
         },

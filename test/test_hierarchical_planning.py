@@ -173,6 +173,47 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         self.assertTrue(progress["missing_evidence_changed"])
         self.assertFalse(progress["made_progress"])
 
+    def test_completion_requires_traceable_requirement_provenance(self):
+        from agentflow.models.plan_state import validate_grounded_step_completion
+
+        plan = {
+            "steps": [{"step_id": "discover", "status": "in_progress"}],
+            "requirement_to_step": {"Identify one relation": ["discover"]},
+        }
+        memory = {
+            "Action Step 1": {"result": {"raw": "The cited relation is established by this sentence."}},
+        }
+        valid = validate_grounded_step_completion({
+            "completed": True,
+            "requirement_evidence": [{
+                "requirement": "Identify one relation",
+                "action_step_refs": ["Action Step 1"],
+                "evidence_quotes": ["The cited relation is established by this sentence."],
+            }],
+        }, "discover", plan, memory)
+        self.assertTrue(valid["accepted"])
+        untraceable = validate_grounded_step_completion({
+            "completed": True,
+            "requirement_evidence": [{
+                "requirement": "Identify one relation",
+                "action_step_refs": ["Action Step 1"],
+                "evidence_quotes": ["A model-only conclusion not in Memory"],
+            }],
+        }, "discover", plan, memory)
+        self.assertFalse(untraceable["accepted"])
+        self.assertIn("untraceable evidence quote", " ".join(untraceable["rejections"]))
+
+    def test_current_step_contract_exposes_optional_deep_read_affordance(self):
+        from agentflow.models.current_step_state import build_current_step_contract
+
+        plan = {"requirement_to_step": {"Retrieve relation": ["discover"]}}
+        contract = build_current_step_contract(
+            {"step_id": "discover", "objective": "Retrieve relation", "success_criteria": "quoted evidence"},
+            {"Action Step 1": {"result": "https://example.test/source"}}, [], None, plan,
+        )
+        self.assertEqual(contract["active_step_requirements"], ["Retrieve relation"])
+        self.assertEqual(contract["web_rag_deep_read_candidates"][0]["url"], "https://example.test/source")
+
     def test_high_level_plan_text_is_parsed_before_state_machine(self):
         from unittest.mock import MagicMock
         from agentflow.models.planner import Planner

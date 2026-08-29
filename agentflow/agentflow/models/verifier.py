@@ -170,6 +170,11 @@ Set `stop_signal` to true only when the memory is complete and verified; otherwi
         json_data: Any = None,
     ) -> Any:
         """Judge only whether the active plan step has evidence in Memory."""
+        mapping = plan.get("requirement_to_step", {}) if isinstance(plan, dict) else {}
+        active_requirements = [
+            str(requirement) for requirement, step_ids in mapping.items()
+            if isinstance(step_ids, list) and str(current_step.get("step_id")) in {str(item) for item in step_ids}
+        ]
         prompt = f"""
 Task: Verify the current plan step from recorded Memory evidence only. Do not
 search, infer missing facts from parametric knowledge, or answer the full query.
@@ -177,18 +182,24 @@ search, infer missing facts from parametric knowledge, or answer the full query.
 Query: {question}
 Initial analysis: {query_analysis}
 Current step: {current_step}
+Mapped independent requirements for this active step: {active_requirements}
 Full plan: {plan}
 Memory (tools used and results): {memory.get_actions()}
 
 {VERIFIER_ROLE_BOUNDARY}
 
 Mark `completed` true only if the current step's stated success_criteria are
-supported by Memory. Otherwise keep it false and list the concrete missing
-evidence. Set `contradiction` true only for an explicit conflict in Memory;
-only then list previously completed step ids that the conflict invalidates.
+supported by Memory **and** every mapped independent requirement above has an
+explicit provenance entry. For each entry, provide the exact requirement, one
+or more existing `Action Step N` references, and one or more short evidence
+quotes copied/traceable from those referenced raw tool results. Do not invent
+quotes or cite an action that does not exist. If any mapped requirement lacks
+that provenance, keep `completed=false` and list it as missing evidence. Set
+`contradiction` true only for an explicit conflict in Memory; only then list
+previously completed step ids that the conflict invalidates.
 
 Response Format (JSON object only; match the StepVerification schema exactly):
-{{"completed":false,"missing_evidence":["<needed evidence>"],"verified_evidence":["<memory-supported evidence>"],"contradiction":false,"invalidated_step_ids":[],"rationale":"<evidence-only reason>"}}
+{{"completed":false,"missing_evidence":["<needed evidence>"],"verified_evidence":["<memory-supported evidence>"],"contradiction":false,"invalidated_step_ids":[],"rationale":"<evidence-only reason>","requirement_evidence":[{{"requirement":"<mapped requirement>","action_step_refs":["Action Step 1"],"evidence_quotes":["<exact quote from that action result>"]}}]}}
 """
         response = self.llm_engine_fixed(prompt, response_format=StepVerification)
         if json_data is not None:

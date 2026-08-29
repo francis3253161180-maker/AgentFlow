@@ -199,6 +199,8 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
                 second_result = second.execute("same semantic request")
 
         self.assertEqual(get.call_count, 2)
+        self.assertEqual(first_result["search_telemetry"]["http_requests"], 2)
+        self.assertEqual(second_result["search_telemetry"]["http_requests"], 0)
         self.assertEqual(second_result["search_telemetry"]["shared_cache_hits"], 2)
         self.assertEqual(first_result["relevant_pages (public search order; raw evidence only)"][0]["search_snippet"], "Matched")
 

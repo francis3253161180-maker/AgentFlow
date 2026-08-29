@@ -20,9 +20,11 @@ from agentflow.models.plan_state import (
     activate_next_step,
     all_steps_completed,
     apply_step_verification,
+    attach_requirement_coverage,
     normalize_plan,
     snapshot as plan_snapshot,
     unresolved_steps,
+    validate_grounded_step_completion,
 )
 from agentflow.models.executor import Executor
 from agentflow.models.utils import make_json_serializable_truncated
@@ -117,9 +119,14 @@ class Solver:
                 plan_state = normalize_plan(high_level_plan, self.max_steps)
                 activate_next_step(plan_state, plan_transitions)
                 json_data["hierarchical_planning"] = True
+                coverage_state = getattr(self.planner, "last_high_level_plan_coverage", None)
+                if isinstance(coverage_state, dict):
+                    requirement_mapping = attach_requirement_coverage(
+                        plan_state, coverage_state.get("coverage", {}),
+                    )
+                    json_data["requirement_to_step_mapping"] = copy.deepcopy(requirement_mapping)
                 json_data["high_level_plan"] = plan_snapshot(plan_state)
                 json_data["plan_transitions"] = copy.deepcopy(plan_transitions)
-                coverage_state = getattr(self.planner, "last_high_level_plan_coverage", None)
                 if isinstance(coverage_state, dict) and not bool(coverage_state.get("valid", False)):
                     # Do not execute a known incomplete/composite evidence
                     # plan and then allow final synthesis to fill its gaps.
@@ -162,7 +169,7 @@ class Solver:
                     prior_attempts = attempts_by_step.setdefault(current_plan_step["step_id"], [])
                     current_step_contract = build_current_step_contract(
                         current_plan_step, self.memory.get_actions(), prior_attempts,
-                        previous_verifier_assessment,
+                        previous_verifier_assessment, plan_state,
                     )
                     json_data[f"current_step_state_{step_count}"] = copy.deepcopy(current_step_contract)
                 next_step = self.planner.generate_next_step(
@@ -285,6 +292,16 @@ class Solver:
                         step_verification.model_dump()
                         if hasattr(step_verification, "model_dump") else step_verification.dict()
                     )
+                    completion_gate = validate_grounded_step_completion(
+                        verification_payload, current_plan_step["step_id"], plan_state, memory_actions,
+                    )
+                    if bool(verification_payload.get("completed")) and not completion_gate["accepted"]:
+                        verification_payload["completed"] = False
+                        verification_payload["completion_rejected"] = completion_gate
+                        missing = list(verification_payload.get("missing_evidence", []))
+                        missing.append("traceable provenance is required for every mapped active-step requirement")
+                        verification_payload["missing_evidence"] = list(dict.fromkeys(missing))
+                    json_data[f"step_completion_grounding_{step_count}"] = completion_gate
                     apply_step_verification(
                         plan_state, current_plan_step["step_id"], verification_payload, plan_transitions,
                     )

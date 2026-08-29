@@ -371,6 +371,11 @@ Hierarchical Plan State:
   dependent goals into one action.
 - Prior attempts record whether the verifier observed evidence progress. A
   repeat is valid only when it has a genuinely changed objective or target.
+- `web_rag_deep_read_candidates` are URLs already obtained by discovery. Use
+  Web_RAG only when one plausibly bears on an unresolved active requirement and
+  its bounded discovery excerpt is insufficient; otherwise a materially new
+  Wikipedia query remains valid. This is an evidence affordance, not a forced
+  Wikipedia-to-Web sequence.
 - An action executing successfully is not evidence that the step is complete;
   the verifier decides completion.
 """

@@ -78,6 +78,14 @@ class PlanCoverage(BaseModel):
     rationale: str = ""
 
 
+class RequirementEvidence(BaseModel):
+    """Verifier-provided provenance for one mapped evidence requirement."""
+
+    requirement: str
+    action_step_refs: list[str] = Field(default_factory=list)
+    evidence_quotes: list[str] = Field(default_factory=list)
+
+
 class StepVerification(BaseModel):
     """Evidence-only verifier result for the current plan step."""
 
@@ -87,6 +95,7 @@ class StepVerification(BaseModel):
     contradiction: bool = False
     invalidated_step_ids: list[str] = Field(default_factory=list)
     rationale: str = ""
+    requirement_evidence: list[RequirementEvidence] = Field(default_factory=list)
 
 # Executor: MemoryVerification
 class MemoryVerification(BaseModel):

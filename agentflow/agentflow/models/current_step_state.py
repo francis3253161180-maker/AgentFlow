@@ -28,21 +28,36 @@ def stable_step_id(current_step: dict[str, Any]) -> str:
 def build_current_step_contract(
     current_step: dict[str, Any], memory_actions: Any,
     prior_attempts: list[dict[str, Any]], last_verifier_assessment: Any,
+    plan: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Serialize exactly the evidence state the next Planner action may use."""
+    urls = known_urls(memory_actions)
+    step_id = stable_step_id(current_step)
+    requirement_mapping = plan.get("requirement_to_step", {}) if isinstance(plan, dict) else {}
+    active_requirements = sorted(
+        str(requirement) for requirement, step_ids in requirement_mapping.items()
+        if isinstance(step_ids, list) and step_id in {str(value) for value in step_ids}
+    )
     return {
         "active_step": {
             "step_id": stable_step_id(current_step),
             "objective": current_step.get("objective"),
             "success_criteria": current_step.get("success_criteria"),
         },
-        "stable_step_id": stable_step_id(current_step),
+        "stable_step_id": step_id,
         "active_goal": current_step.get("objective") or current_step.get("success_criteria"),
+        "active_step_requirements": active_requirements,
         # Free-text verifier gaps are useful diagnostics, not identities.  A
         # paraphrase must not create a new target or imply resolution.
         "missing_evidence_diagnostics": list(current_step.get("missing_evidence", [])),
         "verified_evidence": list(current_step.get("verified_evidence", [])),
-        "known_urls": known_urls(memory_actions),
+        "known_urls": urls,
+        # These are affordances, not a tool-order command.  Planner may
+        # deep-read a known URL when it bears on an unresolved requirement, or
+        # continue discovery for a genuinely new evidence target.
+        "web_rag_deep_read_candidates": [
+            {"url": url, "tool_name": "Web_RAG_Search_Tool"} for url in urls
+        ],
         "prior_attempts_for_active_step": prior_attempts,
         "last_verifier_assessment": last_verifier_assessment if last_verifier_assessment is not None else "none (first action)",
     }

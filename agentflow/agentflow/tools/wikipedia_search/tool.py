@@ -152,6 +152,7 @@ class Wikipedia_Search_Tool(BaseTool):
     def _request_json_uncached(self, params: dict[str, Any], telemetry: dict[str, Any]) -> dict[str, Any]:
         for attempt in range(self.max_http_retries + 1):
             self._wait_for_request_slot(telemetry)
+            telemetry["http_requests"] += 1
             response = requests.get(MEDIAWIKI_API_URL, params=params, headers=MEDIAWIKI_HEADERS, timeout=15)
             if response.status_code == 429:
                 telemetry["http_429"] += 1
@@ -332,6 +333,7 @@ class Wikipedia_Search_Tool(BaseTool):
         telemetry = {
             "provider": "public_wikipedia", "ranking": "public_search_order",
             "cache_hits": 0, "retries": 0, "http_429": 0,
+            "http_requests": 0,
             "throttle_wait_count": 0, "throttle_wait_seconds": 0.0,
             "retry_after_seconds": 0.0,
             "shared_cache_hits": 0, "shared_cache_writes": 0,
