@@ -1,0 +1,313 @@
+{
+  "baseline_comparison": {
+    "baseline": "N_WORKERS=1, max_num_seqs=2, same frozen sample n=4",
+    "baseline_group_wall_seconds": 140.66,
+    "baseline_rollouts_per_minute": 1.7062420019906157,
+    "concurrent_group_wall_seconds": 78.38740968704224,
+    "concurrent_rollouts_per_minute": 3.061716173020487,
+    "wall_clock_speedup": 1.7944208204044236
+  },
+  "bounded_smoke_summary": {
+    "cleanup_markers": [
+      "\u001b[36m(TaskRunner pid=289088)\u001b[0m bind role actor_rollout method sleep to class <class 'verl.single_controller.ray.base.create_colocated_worker_cls.<locals>.WorkerDict'>",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:02,446 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP trigger=manager_sleep outstanding=0 active_http=0 abort_start=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:02,446 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:02,446 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:02,448 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:02,448 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:15,258 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:15,258 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=12.812s",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:00:15,984 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP wake_up complete; request acceptance resumed",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:01:47,013 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP trigger=normal_complete outstanding=0 active_http=0 abort_start=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:01:47,013 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:01:47,013 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:01:47,018 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:01:47,019 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+      "\u001b[36m(TaskRunner pid=289088)\u001b[0m VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.00034987181425094604, 'sleep_started': True, 'cleanup_duration_seconds': 0.6944979019463062}]",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:01:47,707 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=290195)\u001b[0m 2026-08-29 21:01:47,707 [INFO] (Process-290195 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=0.694s"
+    ],
+    "fatal_lifecycle_markers": [],
+    "gpu_peak_memory_mib": 20195.0,
+    "reward_vector": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "search_telemetry_totals": {
+      "cache_hits": 20,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    }
+  },
+  "purpose": "systems-only N_WORKERS=2 / max_num_seqs=2 rollout overlap smoke",
+  "reward_vector": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "rollout_concurrency": {
+    "active_segments": [
+      {
+        "active": 2,
+        "end_unix": 1788008463.5613859,
+        "start_unix": 1788008423.9439797
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008465.9755335,
+        "start_unix": 1788008463.6685843
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008500.9811492,
+        "start_unix": 1788008466.0835512
+      }
+    ],
+    "group_wall_seconds": 78.38740968704224,
+    "maximum_simultaneously_active": 2,
+    "sum_rollout_seconds": 155.2093629837036
+  },
+  "rollout_intervals": [
+    {
+      "duration_seconds": 39.627553939819336,
+      "end_unix": 1788008463.5613859,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/two-rollout-concurrency-musique-group4-20260829_20260829-210021/Qwen2.5-7B-Instruct_20260829-210021/train/step_1/idx_259/rollout_381bb7fc-0547-499f-967f-eef7efa054b5.json",
+      "rollout_id": "rollout-722e0623-8f40-40ff-aa68-534d132b67c0",
+      "start_unix": 1788008423.933832,
+      "worker_id": 0
+    },
+    {
+      "duration_seconds": 42.031553745269775,
+      "end_unix": 1788008465.9755335,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/two-rollout-concurrency-musique-group4-20260829_20260829-210021/Qwen2.5-7B-Instruct_20260829-210021/train/step_1/idx_259/rollout_a43e4217-8ee9-485f-afd3-1079b72c07e5.json",
+      "rollout_id": "rollout-27bd6813-dd88-445c-b22c-bd93ddd1c172",
+      "start_unix": 1788008423.9439797,
+      "worker_id": 1
+    },
+    {
+      "duration_seconds": 34.89759802818298,
+      "end_unix": 1788008500.9811492,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/two-rollout-concurrency-musique-group4-20260829_20260829-210021/Qwen2.5-7B-Instruct_20260829-210021/train/step_2/idx_259/rollout_96f1627b-23a7-496e-89f4-52baf4d4a6eb.json",
+      "rollout_id": "rollout-bcf2722c-e15d-4f05-ad6b-6c166199b07f",
+      "start_unix": 1788008466.0835512,
+      "worker_id": 1
+    },
+    {
+      "duration_seconds": 38.65265727043152,
+      "end_unix": 1788008502.3212416,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/two-rollout-concurrency-musique-group4-20260829_20260829-210021/Qwen2.5-7B-Instruct_20260829-210021/train/step_2/idx_259/rollout_a9d7f769-6662-4c74-9d6a-0c22158e1b5a.json",
+      "rollout_id": "rollout-74738d44-95f6-4131-aa3e-7d0b6777436a",
+      "start_unix": 1788008463.6685843,
+      "worker_id": 0
+    }
+  ],
+  "rollout_ownership": {
+    "all_valid_json": true,
+    "expected_count": 4,
+    "persisted_file_count": 4,
+    "unique_rollout_ids": 4,
+    "worker_counts": {
+      "0": 2,
+      "1": 2
+    }
+  },
+  "schema_version": 1,
+  "vllm_request_log_proxy": {
+    "active_segments": [
+      {
+        "active": 2,
+        "end_unix": 1788008430.79,
+        "start_unix": 1788008424.239
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008433.332,
+        "start_unix": 1788008430.821
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008437.457,
+        "start_unix": 1788008433.717
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008437.552,
+        "start_unix": 1788008437.472
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008438.986,
+        "start_unix": 1788008437.568
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008444.789,
+        "start_unix": 1788008442.975
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008445.165,
+        "start_unix": 1788008444.808
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008448.577,
+        "start_unix": 1788008445.185
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008449.815,
+        "start_unix": 1788008448.596
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008451.365,
+        "start_unix": 1788008449.835
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008454.704,
+        "start_unix": 1788008453.658
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008457.132,
+        "start_unix": 1788008454.722
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008458.424,
+        "start_unix": 1788008457.156
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008461.021,
+        "start_unix": 1788008458.452
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008461.696,
+        "start_unix": 1788008461.039
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008462.545,
+        "start_unix": 1788008461.715
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008465.962,
+        "start_unix": 1788008463.742
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008466.392,
+        "start_unix": 1788008466.096
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008468.129,
+        "start_unix": 1788008466.417
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008469.012,
+        "start_unix": 1788008468.152
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008472.358,
+        "start_unix": 1788008469.027
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008472.783,
+        "start_unix": 1788008472.373
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008476.476,
+        "start_unix": 1788008472.799
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008477.984,
+        "start_unix": 1788008477.979
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008480.314,
+        "start_unix": 1788008479.163
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008482.269,
+        "start_unix": 1788008480.334
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008484.409,
+        "start_unix": 1788008482.288
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008486.743,
+        "start_unix": 1788008484.428
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008487.638,
+        "start_unix": 1788008486.762
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008488.754,
+        "start_unix": 1788008488.551
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008490.837,
+        "start_unix": 1788008488.774
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008490.875,
+        "start_unix": 1788008490.87
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008494.643,
+        "start_unix": 1788008490.893
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008495.569,
+        "start_unix": 1788008494.662
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008496.673,
+        "start_unix": 1788008495.588
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008500.97,
+        "start_unix": 1788008499.77
+      }
+    ],
+    "completed_request_count": 44,
+    "definition": "UNIFIED_ROLE_ROUTE request until next TaskRunner HTTP 200, FIFO; no request correlation ids are logged",
+    "maximum_in_flight": 2,
+    "well_formed": true
+  }
+}

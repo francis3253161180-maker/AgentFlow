@@ -1,0 +1,500 @@
+{
+  "baseline_comparison": {
+    "baseline": "N_WORKERS=1, max_num_seqs=2, same frozen sample n=4",
+    "baseline_group_wall_seconds": 140.66,
+    "baseline_rollouts_per_minute": 1.7062420019906157,
+    "concurrent_group_wall_seconds": 59.26742959022522,
+    "concurrent_rollouts_per_minute": 4.049441685920228,
+    "wall_clock_speedup": 2.37331028142308
+  },
+  "bounded_smoke_summary": {
+    "cleanup_markers": [
+      "\u001b[36m(TaskRunner pid=295919)\u001b[0m bind role actor_rollout method sleep to class <class 'verl.single_controller.ray.base.create_colocated_worker_cls.<locals>.WorkerDict'>",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:14,205 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP trigger=manager_sleep outstanding=0 active_http=0 abort_start=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:14,205 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:14,205 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:14,207 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:14,207 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:26,652 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:26,653 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=12.448s",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:09:27,415 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP wake_up complete; request acceptance resumed",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:10:36,441 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP trigger=normal_complete outstanding=0 active_http=0 abort_start=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:10:36,441 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:10:36,441 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:10:36,446 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:10:36,447 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+      "\u001b[36m(TaskRunner pid=295919)\u001b[0m VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.00034762173891067505, 'sleep_started': True, 'cleanup_duration_seconds': 0.7554884776473045}]",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:10:37,196 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+      "\u001b[36m(PatchedvLLMServer pid=296984)\u001b[0m 2026-08-29 21:10:37,196 [INFO] (Process-296984 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=0.755s"
+    ],
+    "fatal_lifecycle_markers": [],
+    "gpu_peak_memory_mib": 20195.0,
+    "reward_vector": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "search_telemetry_totals": {
+      "cache_hits": 19,
+      "doubao_calls": 0,
+      "http_429": 4,
+      "openai_calls": 0,
+      "retries": 4,
+      "search_internal_llm_calls": 0
+    }
+  },
+  "purpose": "systems-only N_WORKERS=2 / max_num_seqs=2 rollout overlap smoke",
+  "reward_vector": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "rollout_concurrency": {
+    "active_segments": [
+      {
+        "active": 2,
+        "end_unix": 1788008974.3920357,
+        "start_unix": 1788008974.378107
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008974.4127138,
+        "start_unix": 1788008974.3920357
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009028.375742,
+        "start_unix": 1788008974.4127138
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009028.7053316,
+        "start_unix": 1788009028.375742
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009032.8358254,
+        "start_unix": 1788009028.7053316
+      }
+    ],
+    "group_wall_seconds": 59.26742959022522,
+    "maximum_simultaneously_active": 4,
+    "sum_rollout_seconds": 226.00147199630737
+  },
+  "rollout_intervals": [
+    {
+      "duration_seconds": 54.00216341018677,
+      "end_unix": 1788009028.375742,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/four-rollout-concurrency-musique-group4-20260829_20260829-210931/Qwen2.5-7B-Instruct_20260829-210932/train/step_1/idx_259/rollout_051955b8-3f74-4a24-862c-7ee458bccf97.json",
+      "rollout_id": "rollout-599b5294-4b54-46e2-bd91-9f7960f1d85d",
+      "start_unix": 1788008974.3735785,
+      "worker_id": 0
+    },
+    {
+      "duration_seconds": 58.4231116771698,
+      "end_unix": 1788009032.8358254,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/four-rollout-concurrency-musique-group4-20260829_20260829-210931/Qwen2.5-7B-Instruct_20260829-210932/train/step_1/idx_259/rollout_32c1f284-b01f-45a1-9f86-ca3752ac78cb.json",
+      "rollout_id": "rollout-5be8b647-1c3c-4441-9aa0-f1f9c39147c0",
+      "start_unix": 1788008974.4127138,
+      "worker_id": 2
+    },
+    {
+      "duration_seconds": 59.262901067733765,
+      "end_unix": 1788009033.6410081,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/four-rollout-concurrency-musique-group4-20260829_20260829-210931/Qwen2.5-7B-Instruct_20260829-210932/train/step_1/idx_259/rollout_c8f23a72-2fcd-4518-bd13-40dad48bdb40.json",
+      "rollout_id": "rollout-419ee4cc-7e03-4405-b9d6-3c4b1848153b",
+      "start_unix": 1788008974.378107,
+      "worker_id": 3
+    },
+    {
+      "duration_seconds": 54.31329584121704,
+      "end_unix": 1788009028.7053316,
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/four-rollout-concurrency-musique-group4-20260829_20260829-210931/Qwen2.5-7B-Instruct_20260829-210932/train/step_1/idx_259/rollout_ccdb7c3d-55de-4064-a83c-93d56f0f50bd.json",
+      "rollout_id": "rollout-6ae39d7f-cd39-422c-b442-9f54e7891b02",
+      "start_unix": 1788008974.3920357,
+      "worker_id": 1
+    }
+  ],
+  "rollout_ownership": {
+    "all_valid_json": true,
+    "expected_count": 4,
+    "persisted_file_count": 4,
+    "unique_rollout_ids": 4,
+    "worker_counts": {
+      "0": 1,
+      "1": 1,
+      "2": 1,
+      "3": 1
+    }
+  },
+  "schema_version": 1,
+  "vllm_request_log_proxy": {
+    "active_segments": [
+      {
+        "active": 2,
+        "end_unix": 1788008974.71,
+        "start_unix": 1788008974.709
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008974.711,
+        "start_unix": 1788008974.71
+      },
+      {
+        "active": 4,
+        "end_unix": 1788008981.364,
+        "start_unix": 1788008974.711
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008981.366,
+        "start_unix": 1788008981.364
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008981.367,
+        "start_unix": 1788008981.366
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008981.399,
+        "start_unix": 1788008981.397
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008981.401,
+        "start_unix": 1788008981.399
+      },
+      {
+        "active": 4,
+        "end_unix": 1788008983.966,
+        "start_unix": 1788008981.401
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008983.967,
+        "start_unix": 1788008983.966
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008983.968,
+        "start_unix": 1788008983.967
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008984.357,
+        "start_unix": 1788008984.356
+      },
+      {
+        "active": 4,
+        "end_unix": 1788008988.194,
+        "start_unix": 1788008984.357
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008988.196,
+        "start_unix": 1788008988.194
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008988.214,
+        "start_unix": 1788008988.196
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008988.216,
+        "start_unix": 1788008988.214
+      },
+      {
+        "active": 4,
+        "end_unix": 1788008988.362,
+        "start_unix": 1788008988.216
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008988.379,
+        "start_unix": 1788008988.362
+      },
+      {
+        "active": 4,
+        "end_unix": 1788008989.891,
+        "start_unix": 1788008988.379
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008989.903,
+        "start_unix": 1788008989.891
+      },
+      {
+        "active": 4,
+        "end_unix": 1788008993.135,
+        "start_unix": 1788008989.903
+      },
+      {
+        "active": 3,
+        "end_unix": 1788008993.444,
+        "start_unix": 1788008993.135
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008994.509,
+        "start_unix": 1788008993.444
+      },
+      {
+        "active": 2,
+        "end_unix": 1788008998.811,
+        "start_unix": 1788008995.711
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009000.052,
+        "start_unix": 1788008998.831
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009000.782,
+        "start_unix": 1788009000.076
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009001.442,
+        "start_unix": 1788009000.782
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009003.154,
+        "start_unix": 1788009001.442
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009003.174,
+        "start_unix": 1788009003.154
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009004.441,
+        "start_unix": 1788009003.174
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009004.462,
+        "start_unix": 1788009004.441
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009005.661,
+        "start_unix": 1788009004.462
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009005.671,
+        "start_unix": 1788009005.661
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009006.664,
+        "start_unix": 1788009005.671
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009007.88,
+        "start_unix": 1788009006.664
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009007.899,
+        "start_unix": 1788009007.88
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009007.987,
+        "start_unix": 1788009007.899
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009008.007,
+        "start_unix": 1788009007.987
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009009.416,
+        "start_unix": 1788009008.007
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009009.874,
+        "start_unix": 1788009009.416
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009009.886,
+        "start_unix": 1788009009.874
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009012.136,
+        "start_unix": 1788009009.886
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009012.155,
+        "start_unix": 1788009012.136
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009013.013,
+        "start_unix": 1788009012.155
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009013.034,
+        "start_unix": 1788009013.013
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009013.816,
+        "start_unix": 1788009013.034
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009013.837,
+        "start_unix": 1788009013.816
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009013.97,
+        "start_unix": 1788009013.837
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009013.991,
+        "start_unix": 1788009013.97
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009014.43,
+        "start_unix": 1788009013.991
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009017.423,
+        "start_unix": 1788009014.43
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009018.087,
+        "start_unix": 1788009017.423
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009018.106,
+        "start_unix": 1788009018.087
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009018.71,
+        "start_unix": 1788009018.106
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009018.729,
+        "start_unix": 1788009018.71
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009018.928,
+        "start_unix": 1788009018.729
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009018.948,
+        "start_unix": 1788009018.928
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009021.929,
+        "start_unix": 1788009018.948
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009021.954,
+        "start_unix": 1788009021.929
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009023.179,
+        "start_unix": 1788009021.954
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009023.201,
+        "start_unix": 1788009023.179
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009023.431,
+        "start_unix": 1788009023.201
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009023.433,
+        "start_unix": 1788009023.431
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009023.456,
+        "start_unix": 1788009023.433
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009023.458,
+        "start_unix": 1788009023.456
+      },
+      {
+        "active": 4,
+        "end_unix": 1788009027.518,
+        "start_unix": 1788009023.458
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009027.812,
+        "start_unix": 1788009027.518
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009027.829,
+        "start_unix": 1788009027.812
+      },
+      {
+        "active": 3,
+        "end_unix": 1788009028.362,
+        "start_unix": 1788009027.829
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009028.693,
+        "start_unix": 1788009028.362
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009029.993,
+        "start_unix": 1788009029.247
+      },
+      {
+        "active": 2,
+        "end_unix": 1788009032.824,
+        "start_unix": 1788009030.017
+      }
+    ],
+    "completed_request_count": 44,
+    "definition": "UNIFIED_ROLE_ROUTE request until next TaskRunner HTTP 200, FIFO; no request correlation ids are logged",
+    "maximum_in_flight": 4,
+    "well_formed": true
+  }
+}

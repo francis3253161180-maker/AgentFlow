@@ -1,4 +1,5 @@
 import math
+import time
 import os
 import string
 import re
@@ -198,10 +199,19 @@ class Rollout(LitAgent):
         self.max_steps = max_steps
         self.max_tokens = max_tokens
 
-    async def _solve_and_evaluate(self, rollout: AgentFlowRollout, task: Any, step_n: int, val: bool = False):
+    async def _solve_and_evaluate(
+        self, rollout: AgentFlowRollout, task: Any, step_n: int, val: bool = False, rollout_id: str | None = None,
+    ):
         """A helper function to run the agent, parse the result, and evaluate it."""
         output_format = "When ready, output the final answer enclosed in <answer> and </answer> tags. Do not generate any content after the </answer> tag."
         prompt = task["question"] + " " + output_format
+        started_unix = time.time()
+        started_at = datetime.now().isoformat()
+        worker_id = getattr(self, "worker_id", None)
+        print(
+            f"ROLLOUT_TIMING event=start rollout_id={rollout_id} worker_id={worker_id} unix={started_unix:.6f}",
+            flush=True,
+        )
         try:
             # Infrastructure and agent execution failures must reach
             # AgentRunner, which reports an invalid rollout for bounded retry
@@ -211,6 +221,13 @@ class Rollout(LitAgent):
         except Exception as exc:
             print(f"Agent execution failed; propagating infrastructure error: {type(exc).__name__}", flush=True)
             raise
+
+        finished_unix = time.time()
+        finished_at = datetime.now().isoformat()
+        print(
+            f"ROLLOUT_TIMING event=solve_complete rollout_id={rollout_id} worker_id={worker_id} unix={finished_unix:.6f}",
+            flush=True,
+        )
 
         # A missing/invalid model answer is an ordinary semantic/schema
         # failure and may conservatively receive reward zero.  It is distinct
@@ -266,6 +283,15 @@ class Rollout(LitAgent):
             "reward": reward_value,
             "total_result":result,
             "timestamp": datetime.now().isoformat(),
+            "systems_timing": {
+                "rollout_id": rollout_id,
+                "worker_id": worker_id,
+                "solve_started_at": started_at,
+                "solve_finished_at": finished_at,
+                "solve_started_unix": started_unix,
+                "solve_finished_unix": finished_unix,
+                "solve_duration_seconds": finished_unix - started_unix,
+            },
         }
 
         data_id = str(uuid.uuid4())
@@ -369,7 +395,7 @@ class Rollout(LitAgent):
             
             step_n = current_step_n
 
-        await self._solve_and_evaluate(self.training_agent, task, step_n, val)
+        await self._solve_and_evaluate(self.training_agent, task, step_n, val, rollout_id)
 
 
 
@@ -406,7 +432,7 @@ class Rollout(LitAgent):
             self.val_step_n = current_train_step
             print(f"Validation run started. Synchronizing with training progress. Saving results to validation step folder: {self.val_step_n}")
 
-        await self._solve_and_evaluate(self.validation_agent, task, self.val_step_n, val)
+        await self._solve_and_evaluate(self.validation_agent, task, self.val_step_n, val, rollout_id)
 
 if __name__ == "__main__":
     from util.parse_config import get_values_from_yaml
