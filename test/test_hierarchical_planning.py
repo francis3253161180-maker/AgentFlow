@@ -137,6 +137,10 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         self.assertEqual(legacy.target_gap, "")
         with self.assertRaises(Exception):
             HierarchicalNextStep(justification="j", context="c", sub_goal="s", tool_name="tool")
+        with self.assertRaises(Exception):
+            HierarchicalNextStep(
+                justification="j", context="c", sub_goal="s", tool_name="tool", target_gap="",
+            )
 
     def test_high_level_plan_text_is_parsed_before_state_machine(self):
         from unittest.mock import MagicMock

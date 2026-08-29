@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StrictStr
 
 # Planner: QueryAnalysis
 class QueryAnalysis(BaseModel):
@@ -38,7 +38,7 @@ class NextStep(BaseModel):
 class HierarchicalNextStep(NextStep):
     """Guided-JSON action used only for new hierarchical rollouts."""
 
-    target_gap: str
+    target_gap: StrictStr = Field(min_length=1)
 
 
 class PlanStep(BaseModel):

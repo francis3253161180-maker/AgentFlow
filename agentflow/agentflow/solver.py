@@ -214,6 +214,19 @@ class Solver:
                             "sub_goal": sub_goal,
                             "target_gap_valid": target_gap_is_current(target_gap, current_step_contract),
                         }
+                    if not target_gap_is_current(target_gap, current_step_contract):
+                        json_data[f"planner_action_invalid_{step_count}"] = {
+                            "reason": "target_gap remained empty or non-current after one revision",
+                            "target_gap": target_gap,
+                            "current_gap_ids": [
+                                gap["id"] for gap in current_step_contract["unresolved_evidence_gaps"]
+                            ],
+                            "tool_name": tool_name,
+                            "sub_goal": sub_goal,
+                            "context": context,
+                        }
+                        termination_reason = "planner_action_invalid"
+                        break
                 if self.verbose:
                     print(f"\n==> 🎯 Step {step_count}: Action Prediction ({tool_name})\n")
                     print(f"[Context]: {context}\n[Target Gap]: {target_gap}\n[Sub Goal]: {sub_goal}\n[Tool]: {tool_name}")

@@ -1,0 +1,535 @@
+{
+  "cleanup_markers": [
+    "\u001b[36m(TaskRunner pid=310746)\u001b[0m bind role actor_rollout method sleep to class <class 'verl.single_controller.ray.base.create_colocated_worker_cls.<locals>.WorkerDict'>",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:06,458 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP trigger=manager_sleep outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:06,459 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:06,459 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:06,461 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:06,461 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:18,773 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:18,773 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=12.315s",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:35:19,570 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP wake_up complete; request acceptance resumed",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:36:01,591 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP trigger=normal_complete outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:36:01,591 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:36:01,591 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:36:01,595 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:36:01,595 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(TaskRunner pid=310746)\u001b[0m VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.0003373660147190094, 'sleep_started': True, 'cleanup_duration_seconds': 0.6784490719437599}]",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:36:02,269 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=311937)\u001b[0m 2026-08-29 21:36:02,269 [INFO] (Process-311937 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=0.678s"
+  ],
+  "factual_retrieval_rollout_count": 0,
+  "fatal_lifecycle_markers": [],
+  "gpu_peak_memory_mib": 20097.0,
+  "input_manifest": {
+    "benchmark_id": "2hop__13592_49388",
+    "ground_truth_sha256": "aea92132c4cbeb263e6ac2bf6c183b5d81737f179f21efdc5863739672f0f470",
+    "id": 4,
+    "output_parquet": "/root/autodl-tmp/tmp/strict_gap_phaseA_20260829/musique_group4.parquet",
+    "output_parquet_sha256": "289c8afbb9fa202262696924e12dba20016bae2b845e3411ab37a87c912346fd",
+    "purpose": "bounded structural smoke only; no optimizer/checkpoint/training",
+    "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+    "rollout_n": 4,
+    "schema_version": 1,
+    "seed": 20260829,
+    "selection": "fixed existing MuSiQue probe group 4; no resampling",
+    "source_idx": 259,
+    "source_parquet": "/root/autodl-tmp/tmp/multihop_allqwen_probe_20260829/musique.parquet",
+    "source_parquet_sha256": "0dba79b972473a34b27586f24d7e1a0f2b179d5b8a92bb545417d7bc8fc8e450"
+  },
+  "mixed_group": false,
+  "purpose": "one-question x4 rollout-only structural routing smoke; not a training result",
+  "reward_mean": 0.0,
+  "reward_vector": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "rollout_count": 4,
+  "rollout_dir": "rollout_data/46.38.243.197/strict-gap-phaseA-musique-group4-20260829_20260829-213525/Qwen2.5-7B-Instruct_20260829-213526/train",
+  "schema_version": 1,
+  "search_internal_doubao_calls": 0,
+  "search_internal_openai_calls": 0,
+  "search_internal_telemetry": [],
+  "search_telemetry_totals": {
+    "cache_hits": 0,
+    "doubao_calls": 0,
+    "http_429": 0,
+    "openai_calls": 0,
+    "retries": 0,
+    "search_internal_llm_calls": 0
+  },
+  "termination_cause_counts": {
+    "planner_action_invalid": 4
+  },
+  "trajectories": [
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [],
+      "execution_time_seconds": 28.57,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        }
+      ],
+      "planner_actions": [
+        {
+          "current_step_state": {
+            "active_step": {
+              "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+              "step_id": "step_1",
+              "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+            },
+            "known_urls": [],
+            "last_verifier_assessment": "none (first action)",
+            "prior_attempts_for_active_step": [],
+            "unresolved_evidence_gaps": [
+              {
+                "id": "step_1::initial_objective::1",
+                "value": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+              }
+            ],
+            "verified_evidence": []
+          },
+          "initial_action": {
+            "context": "{\"query\": \"Barcelona league titles 1948 and 1949\"}",
+            "justification": "Wikipedia_RAG_Search_Tool is appropriate because it can provide historical information about the league in which Barcelona won titles in 1948 and 1949.",
+            "sub_goal": "step_1::initial_objective::1",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "planner_action_invalid": {
+            "context": "Barcelona, 1948, 1949",
+            "current_gap_ids": [
+              "step_1::initial_objective::1"
+            ],
+            "reason": "target_gap remained empty or non-current after one revision",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "progress": null,
+          "revised_action": {
+            "context": "Barcelona, 1948, 1949",
+            "justification": "Wikipedia_RAG_Search_Tool is appropriate because it can provide historical information about the leagues in which Barcelona won titles in 1948 and 1949, allowing us to identify the specific league and subsequently find the number of games per season.",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "revision": {
+            "original": {
+              "sub_goal": "step_1::initial_objective::1",
+              "target_gap": "",
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            },
+            "reason": "The target_gap is not an exact ID in the current unresolved_evidence_gaps. Choose one listed target-gap ID and one atomic sub-goal.",
+            "rejected": true,
+            "revised": {
+              "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+              "target_gap": "",
+              "target_gap_valid": false,
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            }
+          },
+          "step": 1,
+          "step_verification": null,
+          "tool_command": null,
+          "tool_result": null
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/strict-gap-phaseA-musique-group4-20260829_20260829-213525/Qwen2.5-7B-Instruct_20260829-213526/train/step_1/idx_259/rollout_25b00a93-fb2b-4d7d-8a74-5424a7493bee.json",
+      "steps": [],
+      "termination_cause": "planner_action_invalid",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_invalid",
+      "tool_sequence": [],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+          "verified_evidence": []
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": false,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [],
+      "execution_time_seconds": 29.4,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        }
+      ],
+      "planner_actions": [
+        {
+          "current_step_state": {
+            "active_step": {
+              "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+              "step_id": "step_1",
+              "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+            },
+            "known_urls": [],
+            "last_verifier_assessment": "none (first action)",
+            "prior_attempts_for_active_step": [],
+            "unresolved_evidence_gaps": [
+              {
+                "id": "step_1::initial_objective::1",
+                "value": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+              }
+            ],
+            "verified_evidence": []
+          },
+          "initial_action": {
+            "context": "{\"query\": \"Barcelona league titles in 1948 and 1949\", \"tool\": \"Wikipedia_RAG_Search_Tool\"}",
+            "justification": "The Wikipedia_RAG_Search_Tool is appropriate because it can provide historical information about the league in which Barcelona won titles in 1948 and 1949, as well as details about the structure of that league including the number of games per season.",
+            "sub_goal": "step_1::initial_objective::1",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "planner_action_invalid": {
+            "context": "Barcelona, 1948, 1949",
+            "current_gap_ids": [
+              "step_1::initial_objective::1"
+            ],
+            "reason": "target_gap remained empty or non-current after one revision",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "progress": null,
+          "revised_action": {
+            "context": "Barcelona, 1948, 1949",
+            "justification": "The Wikipedia_RAG_Search_Tool is appropriate because it can provide historical information about the league in which Barcelona won titles in 1948 and 1949, including the structure and number of games per season.",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "revision": {
+            "original": {
+              "sub_goal": "step_1::initial_objective::1",
+              "target_gap": "",
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            },
+            "reason": "The target_gap is not an exact ID in the current unresolved_evidence_gaps. Choose one listed target-gap ID and one atomic sub-goal.",
+            "rejected": true,
+            "revised": {
+              "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+              "target_gap": "",
+              "target_gap_valid": false,
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            }
+          },
+          "step": 1,
+          "step_verification": null,
+          "tool_command": null,
+          "tool_result": null
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/strict-gap-phaseA-musique-group4-20260829_20260829-213525/Qwen2.5-7B-Instruct_20260829-213526/train/step_1/idx_259/rollout_4c87c4dc-9154-4bf0-ac35-918aac557710.json",
+      "steps": [],
+      "termination_cause": "planner_action_invalid",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_invalid",
+      "tool_sequence": [],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+          "verified_evidence": []
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": false,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [],
+      "execution_time_seconds": 29.69,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        }
+      ],
+      "planner_actions": [
+        {
+          "current_step_state": {
+            "active_step": {
+              "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+              "step_id": "step_1",
+              "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+            },
+            "known_urls": [],
+            "last_verifier_assessment": "none (first action)",
+            "prior_attempts_for_active_step": [],
+            "unresolved_evidence_gaps": [
+              {
+                "id": "step_1::initial_objective::1",
+                "value": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+              }
+            ],
+            "verified_evidence": []
+          },
+          "initial_action": {
+            "context": "{\"query\": \"Barcelona won titles in 1948 and 1949\"}",
+            "justification": "The Wikipedia_RAG_Search_Tool is appropriate because it can provide historical information about football leagues and the achievements of Barcelona, which is necessary to identify the specific league where they won titles in 1948 and 1949.",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "planner_action_invalid": {
+            "context": "{\"query\": \"Identify the specific league in which Barcelona won titles in 1948 and 1949.\"}",
+            "current_gap_ids": [
+              "step_1::initial_objective::1"
+            ],
+            "reason": "target_gap remained empty or non-current after one revision",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "progress": null,
+          "revised_action": {
+            "context": "{\"query\": \"Identify the specific league in which Barcelona won titles in 1948 and 1949.\"}",
+            "justification": "The Wikipedia_RAG_Search_Tool is appropriate because it can provide historical information about the league in which Barcelona won titles in 1948 and 1949.",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "revision": {
+            "original": {
+              "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+              "target_gap": "",
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            },
+            "reason": "The target_gap is not an exact ID in the current unresolved_evidence_gaps. Choose one listed target-gap ID and one atomic sub-goal.",
+            "rejected": true,
+            "revised": {
+              "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+              "target_gap": "",
+              "target_gap_valid": false,
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            }
+          },
+          "step": 1,
+          "step_verification": null,
+          "tool_command": null,
+          "tool_result": null
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/strict-gap-phaseA-musique-group4-20260829_20260829-213525/Qwen2.5-7B-Instruct_20260829-213526/train/step_1/idx_259/rollout_860e15a3-a297-4bc2-a6fe-19bae098100c.json",
+      "steps": [],
+      "termination_cause": "planner_action_invalid",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_invalid",
+      "tool_sequence": [],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+          "verified_evidence": []
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": false,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [],
+      "execution_time_seconds": 29.58,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: Verification of the league name where Barcelona won titles in 1948 and 1949.",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        }
+      ],
+      "planner_actions": [
+        {
+          "current_step_state": {
+            "active_step": {
+              "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+              "step_id": "step_1",
+              "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+            },
+            "known_urls": [],
+            "last_verifier_assessment": "none (first action)",
+            "prior_attempts_for_active_step": [],
+            "unresolved_evidence_gaps": [
+              {
+                "id": "step_1::initial_objective::1",
+                "value": "Verification of the league name where Barcelona won titles in 1948 and 1949."
+              }
+            ],
+            "verified_evidence": []
+          },
+          "initial_action": {
+            "context": "{\"query\": \"Identify the specific league in which Barcelona won titles in 1948 and 1949.\"}",
+            "justification": "Wikipedia_RAG_Search_Tool is the most appropriate tool for this step as it can provide historical information about football leagues and Barcelona's achievements.",
+            "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "target_gap": "\"step_1::initial_objective::1\"",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "planner_action_invalid": {
+            "context": "Barcelona, 1948, 1949",
+            "current_gap_ids": [
+              "step_1::initial_objective::1"
+            ],
+            "reason": "target_gap remained empty or non-current after one revision",
+            "sub_goal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "progress": null,
+          "revised_action": {
+            "context": "Barcelona, 1948, 1949",
+            "justification": "The Wikipedia_RAG_Search_Tool is appropriate because it can provide historical information about the football leagues in which Barcelona won titles in 1948 and 1949, helping to identify the specific league and its structure.",
+            "sub_goal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "target_gap": "",
+            "tool_name": "Wikipedia_RAG_Search_Tool"
+          },
+          "revision": {
+            "original": {
+              "sub_goal": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+              "target_gap": "\"step_1::initial_objective::1\"",
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            },
+            "reason": "The target_gap is not an exact ID in the current unresolved_evidence_gaps. Choose one listed target-gap ID and one atomic sub-goal.",
+            "rejected": true,
+            "revised": {
+              "sub_goal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+              "target_gap": "",
+              "target_gap_valid": false,
+              "tool_name": "Wikipedia_RAG_Search_Tool"
+            }
+          },
+          "step": 1,
+          "step_verification": null,
+          "tool_command": null,
+          "tool_result": null
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/strict-gap-phaseA-musique-group4-20260829_20260829-213525/Qwen2.5-7B-Instruct_20260829-213526/train/step_1/idx_259/rollout_f2a2cf94-c10e-4c0a-8138-ecaf3c97984b.json",
+      "steps": [],
+      "termination_cause": "planner_action_invalid",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_invalid",
+      "tool_sequence": [],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+          "verified_evidence": []
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": false,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    }
+  ],
+  "two_or_more_distinct_tools_rollout_count": 0,
+  "unsupported_final_claim_rollout_count": 0,
+  "verifier_continue_followed_by_next_planner_action_count": 0
+}

@@ -168,6 +168,27 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         known_urls.extend(extract_urls(step["tool_result"]))
         known_urls = sorted(set(known_urls))
     tool_sequence = [step["planner_tool_choice"] for step in steps if step["planner_tool_choice"]]
+    planner_ordinals = sorted({
+        int(match.group(1))
+        for key in total
+        if (match := re.fullmatch(r"action_predictor_(\d+)_response", str(key)))
+    })
+    planner_actions = []
+    for ordinal in planner_ordinals:
+        initial = parse_json(total.get(f"action_predictor_{ordinal}_response"))
+        revision = parse_json(total.get(f"action_predictor_{ordinal}_revision_response"))
+        planner_actions.append({
+            "step": ordinal,
+            "current_step_state": compact(total.get(f"current_step_state_{ordinal}"), 1800),
+            "initial_action": compact(initial),
+            "revision": compact(total.get(f"action_revision_{ordinal}")),
+            "revised_action": compact(revision),
+            "planner_action_invalid": compact(total.get(f"planner_action_invalid_{ordinal}")),
+            "tool_command": compact(total.get(f"tool_commander_{ordinal}_response")),
+            "tool_result": compact(total.get(f"tool_result_{ordinal}")),
+            "step_verification": compact(total.get(f"step_verification_{ordinal}")),
+            "progress": compact(total.get(f"current_step_progress_{ordinal}")),
+        })
     termination_cause, termination_evidence = classify_termination(total, steps, max_steps, max_time)
     unresolved = [
         step for step in (total.get("high_level_plan", {}) or {}).get("steps", [])
@@ -200,6 +221,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         "unsupported_final_claim": unsupported_final_claim,
         "verifier_continue_followed_by_next_planner_action_count": continue_followed_by_action,
         "steps": steps,
+        "planner_actions": planner_actions,
         "tool_sequence": tool_sequence,
         "distinct_tools": sorted(set(tool_sequence)),
         "used_factual_retrieval": "Wikipedia_RAG_Search_Tool" in tool_sequence or "Web_RAG_Search_Tool" in tool_sequence,
@@ -266,10 +288,7 @@ def main() -> None:
         "mixed_group": len(set(rewards)) > 1,
         "termination_cause_counts": {
             cause: sum(entry["termination_cause"] == cause for entry in entries)
-            for cause in (
-                "all_plan_steps_completed", "max_steps_with_unresolved_plan", "verifier_stop",
-                "max_steps", "max_time", "unknown_or_other",
-            )
+            for cause in sorted({entry["termination_cause"] for entry in entries})
         },
         "verifier_continue_followed_by_next_planner_action_count": sum(
             entry["verifier_continue_followed_by_next_planner_action_count"] for entry in entries
