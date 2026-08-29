@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "purpose": "bounded MuSiQue one-question x4 Phase A/Phase B routing diagnostic; rollout-only, not a training result",
+  "frozen_input": {
+    "source_id": 4,
+    "source_idx": 259,
+    "benchmark_id": "2hop__13592_49388",
+    "seed": 20260829,
+    "rollout_n": 4,
+    "tool_steps": 3,
+    "agent_max_timeout_seconds": 600,
+    "max_model_len": 8192,
+    "planner": "Qwen2.5-7B-Instruct qwen-actor LoRA",
+    "fixed_roles": "Qwen2.5-7B-Instruct qwen-base adapter-off",
+    "enabled_tools": [
+      "Generalist_Solution_Generator_Tool",
+      "Python_Code_Generator_Tool",
+      "Wikipedia_RAG_Search_Tool",
+      "Web_RAG_Search_Tool"
+    ],
+    "external_llm_calls": 0,
+    "optimizer_steps": 0,
+    "checkpoint": "disabled"
+  },
+  "discarded_preflight": {
+    "tag": "timeout_stateful_phaseA_20260829",
+    "reason": "The 4096-token runner context rejected third-step verifier prompts (HTTP 400, requested 4314-4489 tokens), causing invalid-rollout retry. It is not used as a routing result.",
+    "raw_logs_untracked": [
+      "log/20260829_timeout_stateful_phaseA_20260829_train.log",
+      "log/20260829_timeout_stateful_phaseA_20260829_rollout.log"
+    ]
+  },
+  "phase_a": {
+    "production_routing_change": false,
+    "raw_rollout_dir_untracked": "rollout_data/46.38.243.197/timeout-stateful-routing-phaseA-context8192-musique-group4-20260829_20260829-200926/Qwen2.5-7B-Instruct_20260829-200927/train",
+    "raw_logs_untracked": [
+      "log/20260829_timeout_stateful_phaseA_context8192_20260829_train.log",
+      "log/20260829_timeout_stateful_phaseA_context8192_20260829_rollout.log"
+    ],
+    "valid_rollouts": 4,
+    "retries": 0,
+    "reward_vector": [0.0, 0.0, 0.0, 0.0],
+    "termination_cause_counts": {"verifier_stop": 0, "max_steps": 4, "max_time": 0, "unknown_or_other": 0},
+    "verifier_continue_followed_by_next_planner_action_count": 8,
+    "tool_sequences": [
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"],
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"],
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"],
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"]
+    ],
+    "execution_time_seconds": [33.09, 27.71, 31.03, 30.81],
+    "all_verifier_stop_signals": [false, false, false],
+    "search_telemetry": {"cache_hits": 21, "retries": 0, "http_429": 0, "openai_calls": 0, "doubao_calls": 0},
+    "gpu_peak_memory_mib": 20099,
+    "cleanup": {"drained": true, "fatal_lifecycle_markers": []}
+  },
+  "phase_b": {
+    "change": "Planner next-action prompt adds an advisory evidence-derived snapshot: previous verifier assessment, previous tool/sub-goal signature, and known Memory URLs. It neither forces Web_RAG nor bans repeated Wikipedia.",
+    "raw_rollout_dir_untracked": "rollout_data/46.38.243.197/timeout-stateful-routing-phaseB-musique-group4-20260829_20260829-201549/Qwen2.5-7B-Instruct_20260829-201550/train",
+    "raw_logs_untracked": [
+      "log/20260829_timeout_stateful_phaseB_20260829_train.log",
+      "log/20260829_timeout_stateful_phaseB_20260829_rollout.log"
+    ],
+    "valid_rollouts": 4,
+    "retries": 0,
+    "reward_vector": [0.0, 0.0, 0.0, 0.0],
+    "termination_cause_counts": {"verifier_stop": 0, "max_steps": 4, "max_time": 0, "unknown_or_other": 0},
+    "verifier_continue_followed_by_next_planner_action_count": 8,
+    "routing_state_present_for_all_actions": true,
+    "tool_sequences": [
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"],
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"],
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"],
+      ["Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool", "Wikipedia_RAG_Search_Tool"]
+    ],
+    "execution_time_seconds": [35.68, 31.66, 27.72, 33.16],
+    "all_verifier_stop_signals": [false, false, false],
+    "search_telemetry": {"cache_hits": 18, "retries": 0, "http_429": 0, "openai_calls": 0, "doubao_calls": 0},
+    "gpu_peak_memory_mib": 20609,
+    "cleanup": {"drained": true, "fatal_lifecycle_markers": []}
+  },
+  "comparison": {
+    "wikipedia_to_web_rag_transitions": {"phase_a": 0, "phase_b": 0},
+    "two_or_more_distinct_tools_rollouts": {"phase_a": 0, "phase_b": 0},
+    "duplicate_wikipedia_only_rollouts": {"phase_a": 4, "phase_b": 4},
+    "interpretation": "The timeout confound is removed. The one allowed state-visibility change was present but did not alter the all-Wikipedia, max-step pattern on this frozen question. No further routing iteration was authorized."
+  }
+}

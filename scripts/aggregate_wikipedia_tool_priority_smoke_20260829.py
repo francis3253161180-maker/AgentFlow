@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from statistics import mean
 from typing import Any
@@ -82,7 +83,37 @@ def search_telemetry(value: Any) -> list[dict[str, Any]]:
     return found
 
 
-def trajectory(path: Path) -> dict[str, Any]:
+def verifier_stop_signal(value: Any) -> bool | None:
+    parsed = parse_json(value)
+    if isinstance(parsed, dict) and isinstance(parsed.get("stop_signal"), bool):
+        return parsed["stop_signal"]
+    return None
+
+
+def classify_termination(
+    total: dict[str, Any], steps: list[dict[str, Any]], max_steps: int, max_time: float,
+) -> tuple[str, str]:
+    """Classify from persisted solver state without changing production flow.
+
+    Solver 0.5 does not serialize an explicit termination enum.  The ordering
+    mirrors its loop: verifier STOP, then loop bounds on a subsequent test.
+    Time classification uses the persisted whole-query execution time.
+    """
+    if steps and verifier_stop_signal(total.get(f"verifier_{len(steps)}_response")) is True:
+        return "verifier_stop", "last verifier stop_signal=true"
+    execution_time = total.get("execution_time")
+    if isinstance(execution_time, (int, float)) and execution_time >= max_time:
+        return "max_time", f"execution_time={execution_time} >= configured max_time={max_time}"
+    if len(steps) >= max_steps:
+        return "max_steps", f"step_count={len(steps)} >= configured max_steps={max_steps}"
+    return "unknown_or_other", "no persisted verifier-stop or exhausted configured loop bound"
+
+
+def extract_urls(value: Any) -> list[str]:
+    return sorted(set(re.findall(r"https?://[^\s'\"<>)}\]]+", str(value))))
+
+
+def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     total = raw.get("total_result", {})
     memory = total.get("memory", {}) if isinstance(total, dict) else {}
@@ -97,19 +128,37 @@ def trajectory(path: Path) -> dict[str, Any]:
             "planner_tool_choice": planner.get("tool_name") if isinstance(planner, dict) else None,
             "planner_context": compact(planner.get("context")) if isinstance(planner, dict) else None,
             "planner_subgoal": compact(planner.get("sub_goal")) if isinstance(planner, dict) else None,
+            "routing_state": compact(total.get(f"action_predictor_{ordinal}_routing_state")),
             "executor_command": compact(action.get("command")),
             "tool_result": compact(result),
             "retrieved_evidence": extract_evidence(result),
             "search_internal_telemetry": search_telemetry(result),
             "verifier": compact(verifier),
         })
+    known_urls: list[str] = []
+    for step in steps:
+        step["known_urls_before_step"] = list(known_urls)
+        known_urls.extend(extract_urls(step["tool_result"]))
+        known_urls = sorted(set(known_urls))
     tool_sequence = [step["planner_tool_choice"] for step in steps if step["planner_tool_choice"]]
+    termination_cause, termination_evidence = classify_termination(total, steps, max_steps, max_time)
+    continue_followed_by_action = sum(
+        1
+        for ordinal, step in enumerate(steps, start=1)
+        if verifier_stop_signal(total.get(f"verifier_{ordinal}_response")) is False and ordinal < len(steps)
+    )
     return {
         "rollout_file": str(path),
         "reward": raw.get("reward"),
         "ground_truth": raw.get("groundtruth"),
         "final_answer": raw.get("answer_extracted"),
         "final_output": compact(total.get("direct_output") if isinstance(total, dict) else None),
+        "execution_time_seconds": total.get("execution_time"),
+        "configured_max_steps": max_steps,
+        "configured_max_time_seconds": max_time,
+        "termination_cause": termination_cause,
+        "termination_cause_evidence": termination_evidence,
+        "verifier_continue_followed_by_next_planner_action_count": continue_followed_by_action,
         "steps": steps,
         "tool_sequence": tool_sequence,
         "distinct_tools": sorted(set(tool_sequence)),
@@ -130,9 +179,11 @@ def main() -> None:
     parser.add_argument("--gpu-log", type=Path)
     parser.add_argument("--train-log", type=Path)
     parser.add_argument("--rollout-log", type=Path)
+    parser.add_argument("--max-steps", type=int, required=True)
+    parser.add_argument("--max-time", type=float, required=True)
     args = parser.parse_args()
     files = sorted(args.rollout_dir.rglob("*.json"))
-    entries = [trajectory(path) for path in files]
+    entries = [trajectory(path, args.max_steps, args.max_time) for path in files]
     if len(entries) != 4:
         raise SystemExit(f"expected exactly four rollout files, found {len(entries)}")
     rewards = [float(entry["reward"]) for entry in entries]
@@ -173,6 +224,13 @@ def main() -> None:
         "reward_vector": rewards,
         "reward_mean": mean(rewards),
         "mixed_group": len(set(rewards)) > 1,
+        "termination_cause_counts": {
+            cause: sum(entry["termination_cause"] == cause for entry in entries)
+            for cause in ("verifier_stop", "max_steps", "max_time", "unknown_or_other")
+        },
+        "verifier_continue_followed_by_next_planner_action_count": sum(
+            entry["verifier_continue_followed_by_next_planner_action_count"] for entry in entries
+        ),
         "factual_retrieval_rollout_count": sum(entry["used_factual_retrieval"] for entry in entries),
         "two_or_more_distinct_tools_rollout_count": sum(len(entry["distinct_tools"]) >= 2 for entry in entries),
         "search_internal_telemetry": telemetry,

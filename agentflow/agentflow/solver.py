@@ -91,6 +91,7 @@ class Solver:
             # Main execution loop
             step_count = 0
             action_times = []
+            previous_verifier_assessment = None
             while step_count < self.max_steps and (time.time() - query_start_time) < self.max_time:
                 step_count += 1
                 step_start_time = time.time()
@@ -102,9 +103,10 @@ class Solver:
                     image_path, 
                     query_analysis, 
                     self.memory, 
-                    step_count, 
+                    step_count,
                     self.max_steps,
                     json_data,
+                    previous_verifier_assessment=previous_verifier_assessment,
                 )
                 context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
                 if self.verbose:
@@ -166,6 +168,7 @@ class Solver:
                     json_data
                 )
                 context_verification, conclusion = self.verifier.extract_conclusion(stop_verification)
+                previous_verifier_assessment = stop_verification
                 if self.verbose:
                     conclusion_emoji = "✅" if conclusion == 'STOP' else "🛑"
                     print(f"\n==> 🤖 Step {step_count}: Context Verification\n")

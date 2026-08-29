@@ -33,6 +33,29 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
         self.assertIn("translate only the planner-selected tool", EXECUTOR_ROLE_BOUNDARY)
         self.assertIn("judge only the evidence already present in memory", VERIFIER_ROLE_BOUNDARY)
 
+    def test_routing_state_snapshot_exposes_only_generic_prior_state(self):
+        from agentflow.models.memory import Memory
+        from agentflow.models.planner import routing_state_snapshot
+
+        memory = Memory()
+        memory.add_action(
+            1,
+            "Wikipedia_RAG_Search_Tool",
+            "Find a league format",
+            "execution = tool.execute(...) ",
+            {"url": "https://example.org/league"},
+        )
+        snapshot = routing_state_snapshot(
+            memory,
+            {"analysis": "The exact format is still missing.", "stop_signal": False},
+        )
+
+        self.assertIn("Previous verifier assessment", snapshot)
+        self.assertIn("Wikipedia_RAG_Search_Tool", snapshot)
+        self.assertIn("https://example.org/league", snapshot)
+        self.assertIn("not a forced tool order", snapshot)
+        self.assertIn("genuinely new entity or sub-goal", snapshot)
+
     def test_generalist_metadata_marks_it_as_fallback_not_lookup_or_calculator(self):
         from agentflow.tools.base_generator.tool import Base_Generator_Tool
 

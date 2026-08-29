@@ -54,6 +54,33 @@ only when the evidence and sub-goal justify it.  Do not switch tools merely to
 create diversity.
 """.strip()
 
+
+def routing_state_snapshot(memory: Memory, previous_verifier_assessment: Any = None) -> str:
+    """Expose compact, evidence-derived routing state to the next planner call.
+
+    This is deliberately advisory: it makes existing Memory URLs, the last
+    action signature, and the verifier's prior assessment visible without
+    prescribing a tool or forbidding legitimate repeated retrieval.
+    """
+    actions = list(memory.get_actions().values())
+    last_action = actions[-1] if actions else {}
+    last_tool = last_action.get("tool_name", "none") if isinstance(last_action, dict) else "none"
+    last_subgoal = last_action.get("sub_goal", "none") if isinstance(last_action, dict) else "none"
+    urls = sorted(set(re.findall(r"https?://[^\s'\"<>)}\]]+", str(memory.get_actions()))))
+    compact_verifier = str(previous_verifier_assessment) if previous_verifier_assessment is not None else "none (first step)"
+    compact_verifier = compact_verifier[:700]
+    urls_text = ", ".join(urls[:8]) if urls else "none"
+    return (
+        "Routing State Snapshot (advisory; not a forced tool order):\n"
+        f"- Previous verifier assessment: {compact_verifier}\n"
+        f"- Previous action signature: tool={last_tool}; sub_goal={str(last_subgoal)[:500]}\n"
+        f"- Known URLs already present in Memory: {urls_text}\n"
+        "Repeated use of the same tool remains valid for a genuinely new entity or sub-goal. "
+        "If the verifier identifies the same unresolved evidence gap and Memory already contains "
+        "a relevant URL, consider deep-reading that URL as an available candidate rather than "
+        "repeating unchanged discovery."
+    )
+
 QUERY_ANALYSIS_BOUNDARY = """
 Role boundary: this fixed query-analysis role may decompose the request and
 identify needed tools, but must not answer factual/entity questions from
@@ -310,7 +337,7 @@ Be biref and precise with insight.
 
         return context, sub_goal, tool_name
 
-    def generate_next_step(self, question: str, image: str, query_analysis: str, memory: Memory, step_count: int, max_step_count: int, json_data: Any = None) -> Any:
+    def generate_next_step(self, question: str, image: str, query_analysis: str, memory: Memory, step_count: int, max_step_count: int, json_data: Any = None, previous_verifier_assessment: Any = None) -> Any:
         def compact(value: Any, limit: int) -> str:
             text = str(value)
             if len(text) <= limit:
@@ -325,6 +352,7 @@ Be biref and precise with insight.
         compact_tools = compact(self.available_tools, 500)
         compact_metadata = compact(self.toolbox_metadata, 1400)
         compact_memory = compact(memory.get_actions(), 600)
+        compact_routing_state = routing_state_snapshot(memory, previous_verifier_assessment)
 
         if self.is_multimodal:
             prompt_generate_next_step = f"""
@@ -343,6 +371,8 @@ Tool Metadata:
 
 Previous Steps and Their Results:
 {compact_memory}
+
+{compact_routing_state}
 
 {TOOL_SELECTION_GUIDANCE}
 
@@ -384,6 +414,7 @@ Context:
 - **Available Tools:** {compact_tools}
 - **Toolbox Metadata:** {compact_metadata}
 - **Previous Steps:** {compact_memory}
+- **Routing State:** {compact_routing_state}
 
 {TOOL_SELECTION_GUIDANCE}
 
@@ -412,6 +443,7 @@ Rules:
             max_tokens=self.max_tokens,
         )
         if json_data is not None:
+            json_data[f"action_predictor_{step_count}_routing_state"] = compact_routing_state
             json_data[f"action_predictor_{step_count}_prompt"] = prompt_generate_next_step
             json_data[f"action_predictor_{step_count}_response"] = str(next_step)
         return next_step
