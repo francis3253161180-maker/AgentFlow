@@ -21,6 +21,7 @@ TOOL_ENGINES="${AGENTFLOW_TOOL_SMOKE_TOOL_ENGINES:-['frozen', 'frozen', 'frozen'
 TOOL_STEPS="${AGENTFLOW_TOOL_SMOKE_TOOL_STEPS:-3}"
 AGENT_MAX_TIMEOUT="${AGENTFLOW_TOOL_SMOKE_AGENT_MAX_TIMEOUT:-180}"
 MAX_MODEL_LEN="${AGENTFLOW_TOOL_SMOKE_MAX_MODEL_LEN:-4096}"
+MAX_NUM_SEQS="${AGENTFLOW_TOOL_SMOKE_MAX_NUM_SEQS:-1}"
 
 cd "$REPO"
 source /root/.env
@@ -67,10 +68,10 @@ manifest.write_text(json.dumps({
 }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 PY
 
-"$PY" - "$BASE" "$CONFIG" "$DATA" "$EXP" "$VLLM_UTIL" "$ENABLE_TOOLS" "$TOOL_ENGINES" "$TOOL_STEPS" "$AGENT_MAX_TIMEOUT" "$MAX_MODEL_LEN" <<'PY'
+"$PY" - "$BASE" "$CONFIG" "$DATA" "$EXP" "$VLLM_UTIL" "$ENABLE_TOOLS" "$TOOL_ENGINES" "$TOOL_STEPS" "$AGENT_MAX_TIMEOUT" "$MAX_MODEL_LEN" "$MAX_NUM_SEQS" <<'PY'
 from pathlib import Path
 import sys
-base, out, data, exp, util, enable_tools, tool_engines, tool_steps, agent_max_timeout, max_model_len = sys.argv[1:]
+base, out, data, exp, util, enable_tools, tool_engines, tool_steps, agent_max_timeout, max_model_len, max_num_seqs = sys.argv[1:]
 text = Path(base).read_text(encoding="utf-8")
 replacements = {
     "BASE_MODEL: '/root/autodl-tmp/models/Qwen2.5-3B-Instruct'": "BASE_MODEL: '/root/autodl-tmp/models/Qwen2.5-7B-Instruct'",
@@ -89,7 +90,7 @@ replacements = {
     "actor_rollout_ref.rollout.gpu_memory_utilization: 0.24": f"actor_rollout_ref.rollout.gpu_memory_utilization: {util}",
     "actor_rollout_ref.rollout.max_model_len: 2048": f"actor_rollout_ref.rollout.max_model_len: {max_model_len}",
     "actor_rollout_ref.rollout.max_num_batched_tokens: 2048": "actor_rollout_ref.rollout.max_num_batched_tokens: 1024",
-    "actor_rollout_ref.rollout.max_num_seqs: 2": "actor_rollout_ref.rollout.max_num_seqs: 1",
+    "actor_rollout_ref.rollout.max_num_seqs: 2": f"actor_rollout_ref.rollout.max_num_seqs: {max_num_seqs}",
     "agentflow.port: 9999": "agentflow.port: 9994",
     "TOOL_STEPS: 2": f"TOOL_STEPS: {tool_steps}",
     "AGENT_MAX_TIMEOUT: 180": f"AGENT_MAX_TIMEOUT: {agent_max_timeout}",
@@ -128,7 +129,7 @@ check_abort() {
 }
 : > "$TRAIN_LOG"; : > "$ROLLOUT_LOG"; : > "$GPU_LOG"
 if [[ -n "${GOOGLE_API_KEY:-}" ]]; then GOOGLE_AVAILABILITY=present; else GOOGLE_AVAILABILITY=missing; fi
-echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN hierarchical_planning=$AGENTFLOW_HIERARCHICAL_PLANNING external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled"
+echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES tool_steps=$TOOL_STEPS agent_max_timeout=$AGENT_MAX_TIMEOUT max_model_len=$MAX_MODEL_LEN max_num_seqs=$MAX_NUM_SEQS hierarchical_planning=$AGENTFLOW_HIERARCHICAL_PLANNING external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled"
 PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=1536 data.max_response_length=512 +actor_rollout_ref.ref.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct critic.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 &
 TRAIN_PID=$!
 (

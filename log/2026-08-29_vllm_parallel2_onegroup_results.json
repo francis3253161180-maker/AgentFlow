@@ -1,0 +1,1618 @@
+{
+  "cleanup_markers": [
+    "\u001b[36m(TaskRunner pid=281670)\u001b[0m bind role actor_rollout method sleep to class <class 'verl.single_controller.ray.base.create_colocated_worker_cls.<locals>.WorkerDict'>",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:48:52,621 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP trigger=manager_sleep outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:48:52,621 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:48:52,621 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:48:52,623 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:48:52,624 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:49:05,219 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:49:05,219 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=12.598s",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:49:05,975 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP wake_up complete; request acceptance resumed",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:51:39,003 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP trigger=normal_complete outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:51:39,003 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:51:39,004 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:51:39,016 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:51:39,017 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(TaskRunner pid=281670)\u001b[0m VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.0004502609372138977, 'sleep_started': True, 'cleanup_duration_seconds': 0.7171548381447792}]",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:51:39,720 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=282763)\u001b[0m 2026-08-29 20:51:39,720 [INFO] (Process-282763 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=0.717s"
+  ],
+  "factual_retrieval_rollout_count": 4,
+  "fatal_lifecycle_markers": [],
+  "gpu_peak_memory_mib": 20097.0,
+  "input_manifest": {
+    "benchmark_id": "2hop__13592_49388",
+    "ground_truth_sha256": "aea92132c4cbeb263e6ac2bf6c183b5d81737f179f21efdc5863739672f0f470",
+    "id": 4,
+    "output_parquet": "/root/autodl-tmp/tmp/vllm_parallel2_onegroup_20260829/musique_group4.parquet",
+    "output_parquet_sha256": "289c8afbb9fa202262696924e12dba20016bae2b845e3411ab37a87c912346fd",
+    "purpose": "bounded structural smoke only; no optimizer/checkpoint/training",
+    "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+    "rollout_n": 4,
+    "schema_version": 1,
+    "seed": 20260829,
+    "selection": "fixed existing MuSiQue probe group 4; no resampling",
+    "source_idx": 259,
+    "source_parquet": "/root/autodl-tmp/tmp/multihop_allqwen_probe_20260829/musique.parquet",
+    "source_parquet_sha256": "0dba79b972473a34b27586f24d7e1a0f2b179d5b8a92bb545417d7bc8fc8e450"
+  },
+  "mixed_group": false,
+  "purpose": "one-question x4 rollout-only structural routing smoke; not a training result",
+  "reward_mean": 0.0,
+  "reward_vector": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "rollout_count": 4,
+  "rollout_dir": "rollout_data/46.38.243.197/vllm-parallel2-onegroup-musique-group4-20260829_20260829-204911/Qwen2.5-7B-Instruct_20260829-204912/train",
+  "schema_version": 1,
+  "search_internal_doubao_calls": 0,
+  "search_internal_openai_calls": 0,
+  "search_internal_telemetry": [
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 1,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 3,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 1,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 3,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 3,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 3,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    }
+  ],
+  "search_telemetry_totals": {
+    "cache_hits": 24,
+    "doubao_calls": 0,
+    "http_429": 0,
+    "openai_calls": 0,
+    "retries": 0,
+    "search_internal_llm_calls": 0
+  },
+  "termination_cause_counts": {
+    "all_plan_steps_completed": 0,
+    "max_steps": 0,
+    "max_steps_with_unresolved_plan": 4,
+    "max_time": 0,
+    "unknown_or_other": 0,
+    "verifier_stop": 0
+  },
+  "trajectories": [
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 40.25,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league in which Barcelona won titles in 1948 and 1949; step_2: Obtaining information on the number of games played in a typical season for that league.; step_3: Verifying if there were any variations in game numbers during those seasons and updating with accurate figures if necessary.",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league in which Barcelona won titles in 1948 and 1949; step_2: Obtaining information on the number of games played in a typical season for that league.; step_3: Verifying if there were any variations in game numbers during those seasons and updating with accurate figures if necessary.",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Finding the name of the league and confirming that Barcelona won titles in those years.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          {
+            "depends_on": [
+              "step_1"
+            ],
+            "missing_evidence": [],
+            "objective": "Determine the number of games per season for the identified league.",
+            "status": "pending",
+            "step_id": "step_2",
+            "success_criteria": "Obtaining information on the number of games played in a typical season for that league.",
+            "verified_evidence": []
+          },
+          {
+            "depends_on": [
+              "step_2"
+            ],
+            "missing_evidence": [],
+            "objective": "Confirm if there were any changes to the number of games played in those specific seasons (1948-49). If so, adjust accordingly based on available data.",
+            "status": "pending",
+            "step_id": "step_3",
+            "success_criteria": "Verifying if there were any variations in game numbers during those seasons and updating with accurate figures if necessary.",
+            "verified_evidence": []
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "Memory contains information about FC Barcelona and their records but does not specify the league they won titles in during the years of interest (1948-1949).",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "Memory provides information about FC Barcelona's achievements but does not specify the league names for the titles won in specific years.",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "The memory contains information about FC Barcelona's participation in La Liga but does not specify if they won titles there in the years mentioned.",
+          "step_id": "step_1"
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/vllm-parallel2-onegroup-musique-group4-20260829_20260829-204911/Qwen2.5-7B-Instruct_20260829-204912/train/step_1/idx_259/rollout_c2af757b-26f7-4fe1-a7fe-7f940dda7c34.json",
+      "steps": [
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Finding the name of the league and confirming that Barcelona won titles in those years.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona football titles 1948 and 1949')",
+          "known_urls_before_step": [],
+          "planner_context": "Barcelona, 1948, 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: none (first step)\n- Previous action signature: tool=none; sub_goal=none\n- Known URLs already present in Memory: none\nRepeated use of the same tool remains valid for a genuinely new entity or sub-goal. If the verifier identifies the same unresolved evidence gap and Memory already contains a relevant URL, consider deep-reading that URL as an available candidate rather than repeating unchanged discovery.",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "Memory contains information about FC Barcelona and their records but does not specify the league they won titles in during the years of interest (1948-1949).",
+            "verified_evidence": []
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona football titles 1948 and 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 0,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Finding the name of the league and confirming that Barcelona won titles in those years.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='FC Barcelona titles 1948 and 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "FC Barcelona, 1948, 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. The club was founded in 1899 by a group of Swiss, English and Spanish men led by Joan Gamper. Barcelona is one of only three clubs to have never been relegated from La Liga and the most successful club in Spanish football, having won a total of 79 domestic titles: 27 La Liga titles, a record 32 …[truncated]",
+              "title": "List of FC Barcelona players",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league in which Barcelona won titles in 1948 and 1949'], 'verified_evidence': [], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': 'Memory contains information about FC Barcelona and their records but does not specify the league they won titles in during the years of interest (1948-1949).'}\n- Previous action signature: tool=Wikipedia_RAG_Search_Tool; sub_goal=Identify the specific league in which Barcelona won titles in 1948 and 194…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 1,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "Memory provides information about FC Barcelona's achievements but does not specify the league names for the titles won in specific years.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "tool_result": [
+            {
+              "query": "FC Barcelona titles 1948 and 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. The club was founded in 1899 by a group of Swiss, English and Spanish men led by Joan Gamper. Barcelona is one of only three clubs to have never been relegated from La Liga and the most successful club in Spanish football, having won a total of 79 domestic titles: 27 La Liga titles, a record 32 Spanish Cups, a record two League Cups, a record 15 Spanish Super Cups and a record three Copas Eva Duarte. Barcelona is the only European side to have played continental football in every season sinc…[truncated]",
+                  "title": "List of FC Barcelona players",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 1,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Finding the name of the league and confirming that Barcelona won titles in those years.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona football titles 1948 and 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "Barcelona football titles 1948 and 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league in which Barcelona won titles in 1948 and 1949'], 'verified_evidence': ['Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.'], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': \"Memory provides informat…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 3,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 3,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "The memory contains information about FC Barcelona's participation in La Liga but does not specify if they won titles there in the years mentioned.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona football titles 1948 and 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 3,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        }
+      ],
+      "termination_cause": "max_steps_with_unresolved_plan",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "max_steps_with_unresolved_plan",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Finding the name of the league and confirming that Barcelona won titles in those years.",
+          "verified_evidence": [
+            "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+          ]
+        },
+        {
+          "depends_on": [
+            "step_1"
+          ],
+          "missing_evidence": [],
+          "objective": "Determine the number of games per season for the identified league.",
+          "status": "pending",
+          "step_id": "step_2",
+          "success_criteria": "Obtaining information on the number of games played in a typical season for that league.",
+          "verified_evidence": []
+        },
+        {
+          "depends_on": [
+            "step_2"
+          ],
+          "missing_evidence": [],
+          "objective": "Confirm if there were any changes to the number of games played in those specific seasons (1948-49). If so, adjust accordingly based on available data.",
+          "status": "pending",
+          "step_id": "step_3",
+          "success_criteria": "Verifying if there were any variations in game numbers during those seasons and updating with accurate figures if necessary.",
+          "verified_evidence": []
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 35.81,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league where FC Barcelona won titles in 1948 and 1949",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league where FC Barcelona won titles in 1948 and 1949",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league where FC Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in those years.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "While the memory provides information about FC Barcelona and mentions that they compete in La Liga, it does not explicitly state that they won titles in La Liga specifically for the years mentioned. Additional evidence is needed to confirm this.",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "While the memory provides information about FC Barcelona's achievements and the league they compete in currently (La Liga), it does not specify which league they won titles in during the years of interest (1948 and 1949).",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "The memory contains evidence that FC Barcelona competes in La Liga but does not provide information on the specific league where they won titles in 1948 and 1949.",
+          "step_id": "step_1"
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/vllm-parallel2-onegroup-musique-group4-20260829_20260829-204911/Qwen2.5-7B-Instruct_20260829-204912/train/step_2/idx_259/rollout_da8b0cca-3705-43be-bc36-2a4580f3474e.json",
+      "steps": [
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in those years.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='league Barcelona won titles 1948 1949')",
+          "known_urls_before_step": [],
+          "planner_context": "{\"query\": \"How many games in a season of the league in which Barcelona won titles in 1948 and 1949?\"}",
+          "planner_subgoal": "Identify the specific league where Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: none (first step)\n- Previous action signature: tool=none; sub_goal=none\n- Known URLs already present in Memory: none\nRepeated use of the same tool remains valid for a genuinely new entity or sub-goal. If the verifier identifies the same unresolved evidence gap and Memory already contains a relevant URL, consider deep-reading that URL as an available candidate rather than repeating unchanged discovery.",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league where Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "While the memory provides information about FC Barcelona and mentions that they compete in La Liga, it does not explicitly state that they won titles in La Liga specifically for the years mentioned. Additional evidence is needed to confirm this.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "tool_result": [
+            {
+              "query": "league Barcelona won titles 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 2,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league where Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in those years.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "executor_command": "execution = tool.execute(query='FC Barcelona titles 1948 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "FC Barcelona, 1948, 1949",
+          "planner_subgoal": "Identify the specific league where FC Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. The club was founded in 1899 by a group of Swiss, English and Spanish men led by Joan Gamper. Barcelona is one of only three clubs to have never been relegated from La Liga and the most successful club in Spanish football, having won a total of 79 domestic titles: 27 La Liga titles, a record 32 …[truncated]",
+              "title": "List of FC Barcelona players",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league where Barcelona won titles in 1948 and 1949'], 'verified_evidence': ['Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.'], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': 'While the memory provides i…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league where FC Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "While the memory provides information about FC Barcelona's achievements and the league they compete in currently (La Liga), it does not specify which league they won titles in during the years of interest (1948 and 1949).",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "tool_result": [
+            {
+              "query": "FC Barcelona titles 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. The club was founded in 1899 by a group of Swiss, English and Spanish men led by Joan Gamper. Barcelona is one of only three clubs to have never been relegated from La Liga and the most successful club in Spanish football, having won a total of 79 domestic titles: 27 La Liga titles, a record 32 Spanish Cups, a record two League Cups, a record 15 Spanish Super Cups and a record three Copas Eva Duarte. Barcelona is the only European side to have played continental football in every season sinc…[truncated]",
+                  "title": "List of FC Barcelona players",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 2,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league where Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league where FC Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in those years.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "executor_command": "execution = tool.execute(query='FC Barcelona league 1948 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "FC Barcelona, league, 1948, 1949",
+          "planner_subgoal": "Identify the specific league where FC Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "FC Barcelona Bàsquet (English: FC Barcelona Basketball), commonly referred to as FC Barcelona (Catalan pronunciation: [fubˈbɔl ˈklub bəɾsəˈlonə] ) and colloquially known as Barça ([ˈbaɾsə]), is a professional basketball team based in Barcelona, Catalonia, Spain. It is a part of the FC Barcelona multi-sports club, and was founded on 24 August 1926, which makes it the oldest club in the Liga ACB. Th…[truncated]",
+              "title": "FC Barcelona Bàsquet",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona_B%C3%A0squet"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league where FC Barcelona won titles in 1948 and 1949'], 'verified_evidence': ['Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.'], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': \"While the memory provide…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 1,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 3,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league where FC Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "The memory contains evidence that FC Barcelona competes in La Liga but does not provide information on the specific league where they won titles in 1948 and 1949.",
+            "verified_evidence": [
+              "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+            ]
+          },
+          "tool_result": [
+            {
+              "query": "FC Barcelona league 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "FC Barcelona Bàsquet (English: FC Barcelona Basketball), commonly referred to as FC Barcelona (Catalan pronunciation: [fubˈbɔl ˈklub bəɾsəˈlonə] ) and colloquially known as Barça ([ˈbaɾsə]), is a professional basketball team based in Barcelona, Catalonia, Spain. It is a part of the FC Barcelona multi-sports club, and was founded on 24 August 1926, which makes it the oldest club in the Liga ACB. The team, which competes in the Liga ACB and the EuroLeague, is one of the most successful basketball teams domestically as well as internationally. Two times European champions, Barça completed a tripl…[truncated]",
+                  "title": "FC Barcelona Bàsquet",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona_B%C3%A0squet"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 1,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league where FC Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        }
+      ],
+      "termination_cause": "max_steps_with_unresolved_plan",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "max_steps_with_unresolved_plan",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [
+            "The specific league where FC Barcelona won titles in 1948 and 1949"
+          ],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Verification of the league name where Barcelona won titles in those years.",
+          "verified_evidence": [
+            "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football."
+          ]
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 33.24,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league in which Barcelona won titles in 1948 and 1949",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league in which Barcelona won titles in 1948 and 1949",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": [
+              "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 million..."
+            ]
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "The memory does not provide the specific league name where Barcelona won titles in the years mentioned.",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "The memory contains information about FC Barcelona but does not specify the league in which they won titles in 1948 and 1949. The relevant pages only mention that FC Barcelona competes in La Liga, but do not provide historical information about their league achievements for those specific years.",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "While there is information about FC Barcelona's history and achievements available on Wikipedia pages such as 'List of FC Barcelona records and statistics' and 'FC Barcelona', none of these pages explicitly mention which league they were playing in during or after winning titles in 1948 or providing details about their league structure.",
+          "step_id": "step_1"
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/vllm-parallel2-onegroup-musique-group4-20260829_20260829-204911/Qwen2.5-7B-Instruct_20260829-204912/train/step_3/idx_259/rollout_4fd4fa06-ed88-4bf0-bd53-0efe3a5a172e.json",
+      "steps": [
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona league titles 1948 1949')",
+          "known_urls_before_step": [],
+          "planner_context": "Barcelona, 1948, 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: none (first step)\n- Previous action signature: tool=none; sub_goal=none\n- Known URLs already present in Memory: none\nRepeated use of the same tool remains valid for a genuinely new entity or sub-goal. If the verifier identifies the same unresolved evidence gap and Memory already contains a relevant URL, consider deep-reading that URL as an available candidate rather than repeating unchanged discovery.",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "The memory does not provide the specific league name where Barcelona won titles in the years mentioned.",
+            "verified_evidence": []
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona league titles 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 2,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona league titles 1948 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "Barcelona league titles 1948 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league in which Barcelona won titles in 1948 and 1949'], 'verified_evidence': [], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': 'The memory does not provide the specific league name where Barcelona won titles in the years mentioned.'}\n- Previous action signature: tool=Wikipedia_RAG_Search_Tool; sub_goal=Identify the specific league in which Barcelona won titles in 1948 and 1949.\n- Known URLs already present in Memory: https://en.…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 3,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "The memory contains information about FC Barcelona but does not specify the league in which they won titles in 1948 and 1949. The relevant pages only mention that FC Barcelona competes in La Liga, but do not provide historical information about their league achievements for those specific years.",
+            "verified_evidence": []
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona league titles 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 3,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona champions 1948 and 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "Barcelona, 1948, 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league in which Barcelona won titles in 1948 and 1949'], 'verified_evidence': [], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': 'The memory contains information about FC Barcelona but does not specify the league in which they won titles in 1948 and 1949. The relevant pages only mention that FC Barcelona competes in La Liga, but do not provide historical information about their league achievements for those specific years.'}\n- Pre…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 3,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "While there is information about FC Barcelona's history and achievements available on Wikipedia pages such as 'List of FC Barcelona records and statistics' and 'FC Barcelona', none of these pages explicitly mention which league they were playing in during or after winning titles in 1948 or providing details about their league structure.",
+            "verified_evidence": [
+              "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]"
+            ]
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona champions 1948 and 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 2,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        }
+      ],
+      "termination_cause": "max_steps_with_unresolved_plan",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "max_steps_with_unresolved_plan",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+          "verified_evidence": [
+            "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]"
+          ]
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 3,
+      "configured_max_time_seconds": 600.0,
+      "distinct_tools": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 31.36,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league in which Barcelona won titles in 1948 and 1949",
+      "final_output": "Insufficient verified evidence; unresolved plan steps: step_1: The specific league in which Barcelona won titles in 1948 and 1949",
+      "ground_truth": "38",
+      "high_level_plan": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": [
+              "List of FC Barcelona records and statistics",
+              "FC Barcelona"
+            ]
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "The memory only contains information about FC Barcelona's general history and statistics but does not provide the specific name of the league where Barcelona won titles in 1948 and 1949.",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "Memory does not provide the specific league name where Barcelona won titles in 1948 and 1949.",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "The memory contains information about FC Barcelona's records and statistics but does not specify the league in which they won titles in 1948 and 1949. Therefore, the success criteria for identifying the specific league cannot be met with the current evidence.",
+          "step_id": "step_1"
+        }
+      ],
+      "reward": 0.0,
+      "rollout_file": "rollout_data/46.38.243.197/vllm-parallel2-onegroup-musique-group4-20260829_20260829-204911/Qwen2.5-7B-Instruct_20260829-204912/train/step_4/idx_259/rollout_a3650e49-d8d0-444b-a226-0e67af01c59c.json",
+      "steps": [
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona football league titles 1948 1949')",
+          "known_urls_before_step": [],
+          "planner_context": "Barcelona, 1948, 1949",
+          "planner_subgoal": "Find the name of the league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: none (first step)\n- Previous action signature: tool=none; sub_goal=none\n- Known URLs already present in Memory: none\nRepeated use of the same tool remains valid for a genuinely new entity or sub-goal. If the verifier identifies the same unresolved evidence gap and Memory already contains a relevant URL, consider deep-reading that URL as an available candidate rather than repeating unchanged discovery.",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "The memory only contains information about FC Barcelona's general history and statistics but does not provide the specific name of the league where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona football league titles 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 2,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona football league titles 1948 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "Barcelona football league titles 1948 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league in which Barcelona won titles in 1948 and 1949'], 'verified_evidence': [], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': \"The memory only contains information about FC Barcelona's general history and statistics but does not provide the specific name of the league where Barcelona won titles in 1948 and 1949.\"}\n- Previous action signature: tool=Wikipedia_RAG_Search_Tool; sub_goal=Find the name of the league in which Barcelon…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 3,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "Memory does not provide the specific league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona football league titles 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 3,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        },
+        {
+          "current_plan_step": {
+            "depends_on": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+            "status": "in_progress",
+            "step_id": "step_1",
+            "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+            "verified_evidence": []
+          },
+          "executor_command": "execution = tool.execute(query='Barcelona football league titles 1948 1949')",
+          "known_urls_before_step": [
+            "https://en.wikipedia.org/wiki/FC_Barcelona",
+            "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+          ],
+          "planner_context": "Barcelona, football league titles, 1948, 1949",
+          "planner_subgoal": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence": [
+            {
+              "excerpt": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other footbal…[truncated]",
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "excerpt": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a s…[truncated]",
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "routing_state": "Routing State Snapshot (advisory; not a forced tool order):\n- Previous verifier assessment: {'completed': False, 'missing_evidence': ['The specific league in which Barcelona won titles in 1948 and 1949'], 'verified_evidence': [], 'contradiction': False, 'invalidated_step_ids': [], 'rationale': 'Memory does not provide the specific league name where Barcelona won titles in 1948 and 1949.'}\n- Previous action signature: tool=Wikipedia_RAG_Search_Tool; sub_goal=Identify the specific league in which Barcelona won titles in 1948 and 1949.\n- Known URLs already present in Memory: https://en.wikipedia.…[truncated]",
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 3,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "step": 3,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "The specific league in which Barcelona won titles in 1948 and 1949"
+            ],
+            "rationale": "The memory contains information about FC Barcelona's records and statistics but does not specify the league in which they won titles in 1948 and 1949. Therefore, the success criteria for identifying the specific league cannot be met with the current evidence.",
+            "verified_evidence": [
+              "List of FC Barcelona records and statistics",
+              "FC Barcelona"
+            ]
+          },
+          "tool_result": [
+            {
+              "query": "Barcelona football league titles 1948 1949",
+              "relevant_pages (public search order; raw evidence only)": [
+                {
+                  "abstract": "Futbol Club Barcelona is a professional association football club based in Barcelona, Catalonia, Spain. Founded by a group of footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto \"Més que un club\" (More than a club). The official Barça anthem is the \"Cant del Barça\", written by Jaume Picas and Josep Maria Espinàs. Unlike many other football clubs, the socis, who are the members and supporters of the club, own and operate Barcelona. It is the world's second richest football club in terms of revenue, with an annual turnover of €974.8 mil…[truncated]",
+                  "title": "List of FC Barcelona records and statistics",
+                  "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+                },
+                {
+                  "abstract": "Futbol Club Barcelona (Catalan pronunciation: [fudˈbɔl ˈklub bəɾsəˈlonə] ), commonly known as FC Barcelona and colloquially as Barça ([ˈbaɾsə]), is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football.\nFounded in 1899 by a group of Swiss, Catalan, German, and English footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto Més que un club (\"More than a club\"). Unlike many other football clubs, the supporters own and operate Barcelona. It is the third-most valuable…[truncated]",
+                  "title": "FC Barcelona",
+                  "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+                }
+              ],
+              "search_telemetry": {
+                "cache_hits": 3,
+                "doubao_calls": 0,
+                "http_429": 0,
+                "openai_calls": 0,
+                "provider": "public_wikipedia",
+                "ranking": "public_search_order",
+                "retries": 0,
+                "search_internal_llm_calls": 0
+              }
+            }
+          ],
+          "unresolved_evidence_gaps_before_action": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "verifier": null
+        }
+      ],
+      "termination_cause": "max_steps_with_unresolved_plan",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "max_steps_with_unresolved_plan",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unresolved_plan_steps": [
+        {
+          "depends_on": [],
+          "missing_evidence": [
+            "The specific league in which Barcelona won titles in 1948 and 1949"
+          ],
+          "objective": "Identify the specific league in which Barcelona won titles in 1948 and 1949.",
+          "status": "in_progress",
+          "step_id": "step_1",
+          "success_criteria": "Verification of the league name where Barcelona won titles in 1948 and 1949.",
+          "verified_evidence": [
+            "List of FC Barcelona records and statistics",
+            "FC Barcelona"
+          ]
+        }
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_continue_followed_by_next_planner_action_count": 0,
+      "verifier_stop_signals": []
+    }
+  ],
+  "two_or_more_distinct_tools_rollout_count": 0,
+  "unsupported_final_claim_rollout_count": 0,
+  "verifier_continue_followed_by_next_planner_action_count": 0
+}
