@@ -49,6 +49,16 @@ def extract_evidence(value: Any) -> list[dict[str, Any]]:
                         "url": page.get("url"),
                         "excerpt": compact(page.get("abstract", ""), 400),
                     })
+        if key == "evidence_chunks" and isinstance(child, list):
+            for chunk in child:
+                if isinstance(chunk, dict):
+                    evidence.append({
+                        "title": None,
+                        "url": value.get("url"),
+                        "excerpt": compact(chunk.get("excerpt", ""), 400),
+                        "chunk_index": chunk.get("chunk_index"),
+                        "lexical_score": chunk.get("lexical_score"),
+                    })
         evidence.extend(extract_evidence(child))
     return evidence
 
@@ -63,7 +73,10 @@ def search_telemetry(value: Any) -> list[dict[str, Any]]:
         return [entry for child in value for entry in search_telemetry(child)]
     if not isinstance(value, dict):
         return []
-    found = [value["search_telemetry"]] if isinstance(value.get("search_telemetry"), dict) else []
+    found = [
+        value[key] for key in ("search_telemetry", "web_search_telemetry")
+        if isinstance(value.get(key), dict)
+    ]
     for child in value.values():
         found.extend(search_telemetry(child))
     return found
@@ -163,6 +176,10 @@ def main() -> None:
         "factual_retrieval_rollout_count": sum(entry["used_factual_retrieval"] for entry in entries),
         "two_or_more_distinct_tools_rollout_count": sum(len(entry["distinct_tools"]) >= 2 for entry in entries),
         "search_internal_telemetry": telemetry,
+        "search_telemetry_totals": {
+            key: sum(int(item.get(key, 0)) for item in telemetry)
+            for key in ("cache_hits", "retries", "http_429", "search_internal_llm_calls", "openai_calls", "doubao_calls")
+        },
         "search_internal_doubao_calls": sum(int(item.get("doubao_calls", 0)) for item in telemetry),
         "search_internal_openai_calls": sum(int(item.get("openai_calls", 0)) for item in telemetry),
         "gpu_peak_memory_mib": gpu_peak,

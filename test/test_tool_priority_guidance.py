@@ -14,15 +14,20 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
         from agentflow.models.planner import (
             FINAL_SYNTHESIS_BOUNDARY,
             QUERY_ANALYSIS_BOUNDARY,
+            STAGNATION_GUARD,
             TOOL_SELECTION_GUIDANCE,
         )
         from agentflow.models.verifier import VERIFIER_ROLE_BOUNDARY
 
-        self.assertIn("Wikipedia/knowledge-search", TOOL_SELECTION_GUIDANCE)
-        self.assertIn("web-search/retrieval", TOOL_SELECTION_GUIDANCE)
+        self.assertIn("Wikipedia_RAG_Search_Tool", TOOL_SELECTION_GUIDANCE)
+        self.assertIn("Web_RAG_Search_Tool", TOOL_SELECTION_GUIDANCE)
+        self.assertIn("already known", TOOL_SELECTION_GUIDANCE)
+        self.assertIn("Ground_Google_Search_Tool", TOOL_SELECTION_GUIDANCE)
         self.assertIn("Python_Code_Generator_Tool", TOOL_SELECTION_GUIDANCE)
         self.assertIn("Pubmed_Search_Tool", TOOL_SELECTION_GUIDANCE)
         self.assertIn("not a fixed tool order", TOOL_SELECTION_GUIDANCE)
+        self.assertIn("same or near-identical query", STAGNATION_GUARD)
+        self.assertIn("merely to\ncreate diversity", STAGNATION_GUARD)
         self.assertIn("must not answer factual/entity questions", QUERY_ANALYSIS_BOUNDARY)
         self.assertIn("synthesize only from the accumulated actions/results", FINAL_SYNTHESIS_BOUNDARY)
         self.assertIn("translate only the planner-selected tool", EXECUTOR_ROLE_BOUNDARY)
@@ -59,6 +64,8 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
         class _Response:
             def __init__(self, payload):
                 self.payload = payload
+                self.status_code = 200
+                self.headers = {}
 
             def raise_for_status(self):
                 return None
@@ -89,6 +96,70 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
         self.assertEqual(result["search_telemetry"]["search_internal_llm_calls"], 0)
         self.assertEqual(result["search_telemetry"]["openai_calls"], 0)
         self.assertEqual(result["search_telemetry"]["doubao_calls"], 0)
+
+    def test_wikipedia_caches_network_response_and_retries_429(self):
+        from agentflow.tools.wikipedia_search.tool import Wikipedia_Search_Tool
+
+        class _Response:
+            def __init__(self, payload, status_code=200, retry_after=None):
+                self.payload = payload
+                self.status_code = status_code
+                self.headers = {"Retry-After": retry_after} if retry_after is not None else {}
+
+            def raise_for_status(self):
+                if self.status_code == 429:
+                    import requests
+                    raise requests.HTTPError("429")
+
+            def json(self):
+                return self.payload
+
+        tool = Wikipedia_Search_Tool()
+        with patch("agentflow.tools.wikipedia_search.tool.time.sleep") as sleep, patch(
+            "agentflow.tools.wikipedia_search.tool.requests.get",
+            side_effect=[
+                _Response({}, status_code=429, retry_after="0"),
+                _Response({"query": {"search": [{"title": "Example"}]}}),
+                _Response({"query": {"pages": {"1": {
+                    "title": "Example", "fullurl": "https://en.wikipedia.org/wiki/Example",
+                    "extract": "Evidence text.",
+                }}}}),
+            ],
+        ) as get:
+            first = tool.execute("Example")
+            second = tool.execute("Example")
+
+        self.assertEqual(first["search_telemetry"]["http_429"], 1)
+        self.assertEqual(first["search_telemetry"]["retries"], 1)
+        self.assertEqual(second["search_telemetry"]["cache_hits"], 2)
+        self.assertEqual(get.call_count, 3)
+        sleep.assert_called_once_with(0.0)
+
+    def test_web_rag_is_known_url_raw_evidence_without_openai(self):
+        from agentflow.tools.web_search.tool import Web_Search_Tool
+
+        class _Response:
+            status_code = 200
+            headers = {}
+            content = b"<html><body>Barcelona won the Spanish league title. A season has 38 games.</body></html>"
+
+            def raise_for_status(self):
+                return None
+
+        with patch.dict("os.environ", {}, clear=True), patch(
+            "agentflow.tools.web_search.tool.requests.get", return_value=_Response()
+        ) as get:
+            tool = Web_Search_Tool("vllm-qwen-base", base_url="http://127.0.0.1:1/v1")
+            first = tool.execute("league games", "https://example.org/facts")
+            second = tool.execute("league games", "https://example.org/facts")
+
+        self.assertFalse(tool.require_llm_engine)
+        self.assertEqual(tool.model_string, "raw-web-lexical")
+        self.assertTrue(first["evidence_chunks"])
+        self.assertEqual(first["web_search_telemetry"]["openai_calls"], 0)
+        self.assertEqual(first["web_search_telemetry"]["doubao_calls"], 0)
+        self.assertEqual(second["web_search_telemetry"]["cache_hits"], 1)
+        self.assertEqual(get.call_count, 1)
 
 
 if __name__ == "__main__":

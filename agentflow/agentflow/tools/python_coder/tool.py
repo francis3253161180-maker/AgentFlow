@@ -56,7 +56,9 @@ The {TOOL_NAME} has several limitations:
 BEST_PRACTICE = f"""
 For optimal results with the {TOOL_NAME}:
 1. Provide clear and specific queries that describe the desired mathematical calculation.
-2. Include all necessary numerical inputs directly in the query string.
+2. Include all necessary numerical inputs directly in the query string, and use
+   it only after those operands are present in prior memory/evidence rather
+   than inventing factual inputs.
 3. Keep tasks focused on basic arithmetic, algebraic calculations, or simple mathematical algorithms.
 4. Ensure all required numerical data is included in the query.
 5. Verify that the query only involves mathematical operations and does not require any data processing or complex algorithms.

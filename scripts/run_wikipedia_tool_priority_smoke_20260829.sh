@@ -5,16 +5,19 @@ set -euo pipefail
 REPO=/root/autodl-tmp/AgentFlow
 PY=/root/autodl-tmp/conda/envs/agentflow/bin/python
 BASE="$REPO/train/config_5090_lora_smoke.yaml"
-TMP=/root/autodl-tmp/tmp/wikipedia_tool_priority_smoke_20260829
+RUN_TAG="${AGENTFLOW_TOOL_SMOKE_TAG:-wikipedia_tool_priority_smoke_20260829}"
+TMP="/root/autodl-tmp/tmp/${RUN_TAG}"
 SOURCE=/root/autodl-tmp/tmp/multihop_allqwen_probe_20260829/musique.parquet
 DATA="$TMP/musique_group4.parquet"
 CONFIG="$TMP/config.yaml"
-EXP=wikipedia-tool-priority-musique-group4-20260829
-TRAIN_LOG="$REPO/log/20260829_wikipedia_tool_priority_smoke_train.log"
-ROLLOUT_LOG="$REPO/log/20260829_wikipedia_tool_priority_smoke_rollout.log"
+EXP="${AGENTFLOW_TOOL_SMOKE_EXPERIMENT:-wikipedia-tool-priority-musique-group4-20260829}"
+TRAIN_LOG="$REPO/log/20260829_${RUN_TAG}_train.log"
+ROLLOUT_LOG="$REPO/log/20260829_${RUN_TAG}_rollout.log"
 GPU_LOG="$TMP/gpu.tsv"
 ROUTE="$TMP/role_route.json"
 VLLM_UTIL="${AGENTFLOW_WIKIPEDIA_SMOKE_VLLM_UTIL:-0.60}"
+ENABLE_TOOLS="${AGENTFLOW_TOOL_SMOKE_ENABLE_TOOLS:-['Base_Generator_Tool', 'Python_Coder_Tool', 'Wikipedia_Search_Tool']}"
+TOOL_ENGINES="${AGENTFLOW_TOOL_SMOKE_TOOL_ENGINES:-['frozen', 'frozen', 'frozen']}"
 
 cd "$REPO"
 source /root/.env
@@ -60,17 +63,17 @@ manifest.write_text(json.dumps({
 }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 PY
 
-"$PY" - "$BASE" "$CONFIG" "$DATA" "$EXP" "$VLLM_UTIL" <<'PY'
+"$PY" - "$BASE" "$CONFIG" "$DATA" "$EXP" "$VLLM_UTIL" "$ENABLE_TOOLS" "$TOOL_ENGINES" <<'PY'
 from pathlib import Path
 import sys
-base, out, data, exp, util = sys.argv[1:]
+base, out, data, exp, util, enable_tools, tool_engines = sys.argv[1:]
 text = Path(base).read_text(encoding="utf-8")
 replacements = {
     "BASE_MODEL: '/root/autodl-tmp/models/Qwen2.5-3B-Instruct'": "BASE_MODEL: '/root/autodl-tmp/models/Qwen2.5-7B-Instruct'",
     "EXPERIMENT_NAME: 'qwen25-3b-lora-flowgrpo-smoke'": f"EXPERIMENT_NAME: '{exp}'",
     "PROJECT_NAME: 'agentflow-smoke'": "PROJECT_NAME: 'wikipedia-tool-priority-smoke'",
-    "ENABLE_TOOLS: ['Base_Generator_Tool']": "ENABLE_TOOLS: ['Base_Generator_Tool', 'Python_Coder_Tool', 'Wikipedia_Search_Tool']",
-    "TOOL_ENGINE: ['deepseek-v4-flash']": "TOOL_ENGINE: ['frozen', 'frozen', 'frozen']",
+    "ENABLE_TOOLS: ['Base_Generator_Tool']": f"ENABLE_TOOLS: {enable_tools}",
+    "TOOL_ENGINE: ['deepseek-v4-flash']": f"TOOL_ENGINE: {tool_engines}",
     "MODEL_ENGINE: ['trainable', 'deepseek-v4-flash', 'deepseek-v4-flash', 'deepseek-v4-flash']": "MODEL_ENGINE: ['trainable', 'frozen', 'frozen', 'frozen']",
     "data.train_files: '${BASE_DATA_DIR}/train/flowgrpo_smoke_2.parquet'": f"data.train_files: '{data}'",
     "data.val_files: '${BASE_DATA_DIR}/val/aime24.parquet'": f"data.val_files: '{data}'",
@@ -119,7 +122,8 @@ check_abort() {
   return 0
 }
 : > "$TRAIN_LOG"; : > "$ROLLOUT_LOG"; : > "$GPU_LOG"
-echo "WIKIPEDIA_TOOL_PRIORITY_SMOKE model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off tool_llms=qwen-base-or-raw-wikipedia external_llm_calls=0 temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled"
+if [[ -n "${GOOGLE_API_KEY:-}" ]]; then GOOGLE_AVAILABILITY=present; else GOOGLE_AVAILABILITY=missing; fi
+echo "TOOL_BOUNDARY_SMOKE tag=$RUN_TAG model=Qwen2.5-7B-Instruct planner=qwen-actor-lora fixed_roles=qwen-base-adapter-off enabled_tools=$ENABLE_TOOLS tool_engines=$TOOL_ENGINES external_llm_calls=0 google_api_key=$GOOGLE_AVAILABILITY temp=0.7 n=4 prompts=1 rollout_only=1 optimizer_steps=0 checkpoint=disabled"
 PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=1536 data.max_response_length=512 +actor_rollout_ref.ref.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct critic.model.path=/root/autodl-tmp/models/Qwen2.5-7B-Instruct +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 &
 TRAIN_PID=$!
 (
@@ -147,7 +151,7 @@ if grep -Eqi 'Training data keys|optimizer\.step|backward\(|global_step: [1-9]|T
   echo "ABORT_CONDITION unexpected_training_marker" >&2
   exit 2
 fi
-for _ in $(seq 1 180); do [[ ! -e "/proc/$ROLLOUT_PID" ]] && break; sleep 1; done
+for _ in $(seq 1 "${AGENTFLOW_TOOL_SMOKE_POST_VALIDATION_WAIT_SECONDS:-10}"); do [[ ! -e "/proc/$ROLLOUT_PID" ]] && break; sleep 1; done
 if kill -0 "$ROLLOUT_PID" 2>/dev/null; then kill -TERM "$ROLLOUT_PID" 2>/dev/null || true; fi
 wait "$ROLLOUT_PID" 2>/dev/null || true
 ROLLOUT_PID=""
@@ -155,4 +159,4 @@ ROLLOUT_DIR=$(find "$REPO/rollout_data" -type d -path "*/${EXP}_*/Qwen2.5-7B-Ins
 [[ -n "$ROLLOUT_DIR" ]] || { echo "ABORT_CONDITION missing_rollout_data_directory" >&2; exit 2; }
 COUNT=$(find "$ROLLOUT_DIR" -name '*.json' -type f | wc -l | tr -d ' ')
 [[ "$COUNT" -eq 4 ]] || { echo "ABORT_CONDITION expected_four_rollouts_got=$COUNT" >&2; exit 2; }
-echo "WIKIPEDIA_TOOL_PRIORITY_COMPLETED rollout_dir=$ROLLOUT_DIR count=$COUNT input_manifest=$TMP/input_manifest.json gpu_log=$GPU_LOG"
+echo "TOOL_BOUNDARY_SMOKE_COMPLETED rollout_dir=$ROLLOUT_DIR count=$COUNT input_manifest=$TMP/input_manifest.json gpu_log=$GPU_LOG"

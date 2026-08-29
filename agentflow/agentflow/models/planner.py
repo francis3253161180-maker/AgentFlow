@@ -20,18 +20,38 @@ from agentflow.models.structured_outputs import (
 # This is deliberately a capability policy, not a task or dataset policy.  It
 # is shown wherever a planner is asked to reason about tools or select one.
 TOOL_SELECTION_GUIDANCE = """
-Tool responsibility priority (apply only when the named tool is available):
-- For factual, entity, or relation lookup, prefer a Wikipedia/knowledge-search
-  or web-search/retrieval tool over a language-model answer generator.
-- For arithmetic or calculation with supplied inputs, prefer
-  Python_Code_Generator_Tool.
-- For biomedical literature/knowledge lookup, prefer Pubmed_Search_Tool.
-- Generalist_Solution_Generator_Tool is for reasoning, synthesis, or fallback
-  only when no available specialized tool fits.  Do not use it as a factual
-  search/retrieval or calculator substitute when an applicable specialized
-  tool is available.
-This is a relevance priority, not a fixed tool order: select one tool that is
-both available and appropriate to the current sub-goal.
+Capability boundaries (apply only when the named tool is available):
+- Wikipedia_RAG_Search_Tool is for stable encyclopedic discovery: entities,
+  relations, and historical/background facts.  It returns raw public
+  Wikipedia/MediaWiki evidence and URLs; it does not answer the task.
+- Web_RAG_Search_Tool is for deterministic deep reading of an already known
+  URL returned by a discovery tool when its short excerpt lacks a needed
+  relation or detail.  It is not an open-ended search engine.
+- Ground_Google_Search_Tool is for current/open-web, official/non-Wikipedia
+  discovery, or a clearly insufficient Wikipedia result, and only when it is
+  configured.  Never assume it is available.
+- Python_Code_Generator_Tool is for arithmetic/derivation only after the
+  necessary numeric operands are present in memory/evidence; it must not
+  invent factual inputs.
+- Pubmed_Search_Tool is for biomedical literature/knowledge lookup.
+- Generalist_Solution_Generator_Tool is reasoning/synthesis/fallback only
+  over already available evidence when a specialist tool is inapplicable.  It
+  must not perform factual retrieval, web search, or arithmetic.
+
+Observation-based policy, not a fixed tool order: stable factual sub-goals
+usually warrant Wikipedia discovery; use Web_RAG only to deepen a returned URL;
+use configured Google only for an open-web/insufficient-Wikipedia case; and use
+Python only after evidence supplies operands.  Select one available tool that
+fits the current sub-goal and evidence state.
+""".strip()
+
+STAGNATION_GUARD = """
+Stagnation guard: if the verifier says current evidence is insufficient, do
+not repeat the same retrieval tool with the same or near-identical query when
+memory has not gained relevant evidence.  Reformulate a genuinely narrower
+sub-goal, deep-read a URL already returned by discovery, or switch source/tool
+only when the evidence and sub-goal justify it.  Do not switch tools merely to
+create diversity.
 """.strip()
 
 QUERY_ANALYSIS_BOUNDARY = """
@@ -326,6 +346,8 @@ Previous Steps and Their Results:
 
 {TOOL_SELECTION_GUIDANCE}
 
+{STAGNATION_GUARD}
+
 Current Step: {step_count} in {max_step_count} steps
 Remaining Steps: {max_step_count - step_count}
 
@@ -364,6 +386,8 @@ Context:
 - **Previous Steps:** {compact_memory}
 
 {TOOL_SELECTION_GUIDANCE}
+
+{STAGNATION_GUARD}
 
 Instructions:
 1. Analyze the query, previous steps, and available tools.

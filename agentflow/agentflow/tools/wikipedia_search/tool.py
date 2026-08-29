@@ -1,3 +1,7 @@
+import copy
+import time
+from typing import Any
+
 import requests
 from urllib.parse import quote
 
@@ -12,7 +16,8 @@ MEDIAWIKI_HEADERS = {
 
 LIMITATION = f"""
 {TOOL_NAME} has the following limitations:
-1. It is designed specifically for retrieving grounded information from Wikipedia pages only.
+1. It is designed specifically for stable encyclopedic discovery from public
+   Wikipedia/MediaWiki, not current/open-web discovery.
 2. It returns a bounded, deterministic prefix of MediaWiki/Wikipedia search results;
    it does not claim semantic reranking.
 3. The returned information accuracy depends on Wikipedia content quality and the
@@ -24,7 +29,9 @@ For optimal results with {TOOL_NAME}:
 1. Use specific, targeted queries rather than broad or ambiguous questions.
 2. The tool preserves the public search-result order and returns raw retrieved
    excerpts; treat them as evidence rather than an answer generated from model knowledge.
-3. If initial results are insufficient, issue a more specific follow-up query.
+3. If a returned URL is promising but its bounded excerpt is insufficient,
+   pass that known URL to Web_RAG_Search_Tool rather than repeating the same
+   query. Use a genuinely more specific query only when the sub-goal changed.
 4. Use this tool as part of a multi-step research process rather than a single source of truth.
 """
 
@@ -42,7 +49,7 @@ class Wikipedia_Search_Tool(BaseTool):
     def __init__(self, model_string=None, base_url=None, max_tokens=2048):
         super().__init__(
             tool_name=TOOL_NAME,
-            tool_description="A factual retrieval tool that searches public Wikipedia/MediaWiki and returns raw pages in public search order with titles, URLs, and excerpts. It does not generate an answer or semantic reranking.",
+            tool_description="Stable encyclopedic discovery over public Wikipedia/MediaWiki. Returns raw evidence and URLs in public search order; it does not answer the original task, semantically rerank, or perform open-web discovery.",
             tool_version="1.0.0",
             input_types={
                 "query": "str - The search query for Wikipedia."
@@ -73,6 +80,11 @@ class Wikipedia_Search_Tool(BaseTool):
         self.model_string = "raw-wikipedia"
         self.base_url = base_url
         self.max_tokens = max_tokens
+        # Successful public HTTP JSON only; process/tool-instance local so no
+        # planner, verifier, final-answer, or reward state crosses rollouts.
+        self._response_cache: dict[tuple[tuple[str, str], ...], dict[str, Any]] = {}
+        self.max_http_retries = 2
+        self.max_backoff_seconds = 2.0
 
     def _get_wikipedia_url(self, query):
         """
@@ -80,7 +92,37 @@ class Wikipedia_Search_Tool(BaseTool):
         """
         return f"https://en.wikipedia.org/wiki/{quote(query.replace(' ', '_'))}"
 
-    def search_wikipedia(self, query, max_length=600, max_pages=2):
+    @staticmethod
+    def _cache_key(params: dict[str, Any]) -> tuple[tuple[str, str], ...]:
+        return tuple(sorted((str(key), str(value)) for key, value in params.items()))
+
+    def _request_json(self, params: dict[str, Any], telemetry: dict[str, Any]) -> dict[str, Any]:
+        key = self._cache_key(params)
+        cached = self._response_cache.get(key)
+        if cached is not None:
+            telemetry["cache_hits"] += 1
+            return copy.deepcopy(cached)
+        for attempt in range(self.max_http_retries + 1):
+            response = requests.get(MEDIAWIKI_API_URL, params=params, headers=MEDIAWIKI_HEADERS, timeout=15)
+            if response.status_code == 429:
+                telemetry["http_429"] += 1
+                if attempt >= self.max_http_retries:
+                    response.raise_for_status()
+                retry_after = response.headers.get("Retry-After")
+                try:
+                    delay = float(retry_after) if retry_after is not None else 0.25 * (2 ** attempt)
+                except (TypeError, ValueError):
+                    delay = 0.25 * (2 ** attempt)
+                telemetry["retries"] += 1
+                time.sleep(min(self.max_backoff_seconds, max(0.0, delay)))
+                continue
+            response.raise_for_status()
+            payload = response.json()
+            self._response_cache[key] = copy.deepcopy(payload)
+            return payload
+        raise RuntimeError("bounded MediaWiki retry loop exited unexpectedly")
+
+    def search_wikipedia(self, query, max_length=600, max_pages=2, telemetry=None):
         """
         Searches Wikipedia based on the given query and returns multiple pages with their text and URLs.
 
@@ -92,18 +134,12 @@ class Wikipedia_Search_Tool(BaseTool):
                 - search_results: List of search result titles
                 - pages_data: List of dictionaries containing page info (title, text, url, error)
         """
+        telemetry = telemetry if telemetry is not None else {"cache_hits": 0, "retries": 0, "http_429": 0}
         try:
-            search_response = requests.get(
-                MEDIAWIKI_API_URL,
-                params={
-                    "action": "query", "list": "search", "srsearch": query,
-                    "srlimit": max_pages, "format": "json",
-                },
-                headers=MEDIAWIKI_HEADERS,
-                timeout=15,
-            )
-            search_response.raise_for_status()
-            matches = search_response.json().get("query", {}).get("search", [])
+            matches = self._request_json({
+                "action": "query", "list": "search", "srsearch": query,
+                "srlimit": max_pages, "format": "json",
+            }, telemetry).get("query", {}).get("search", [])
             titles = [match.get("title") for match in matches if match.get("title")]
             if not titles:
                 return [{"title": None, "url": None, "abstract": None, "error": f"No results found for query: {query}"}]
@@ -111,18 +147,11 @@ class Wikipedia_Search_Tool(BaseTool):
             pages_data = []
             for title in titles:
                 try:
-                    page_response = requests.get(
-                        MEDIAWIKI_API_URL,
-                        params={
-                            "action": "query", "prop": "extracts|info", "inprop": "url",
-                            "exintro": 1, "explaintext": 1, "exchars": max_length,
-                            "titles": title, "format": "json",
-                        },
-                        headers=MEDIAWIKI_HEADERS,
-                        timeout=15,
-                    )
-                    page_response.raise_for_status()
-                    pages = page_response.json().get("query", {}).get("pages", {})
+                    pages = self._request_json({
+                        "action": "query", "prop": "extracts|info", "inprop": "url",
+                        "exintro": 1, "explaintext": 1, "exchars": max_length,
+                        "titles": title, "format": "json",
+                    }, telemetry).get("query", {}).get("pages", {})
                     page = next(iter(pages.values()), {})
                     text = page.get("extract") or ""
                     pages_data.append({
@@ -151,17 +180,16 @@ class Wikipedia_Search_Tool(BaseTool):
         Returns:
             dict: A dictionary containing the search results and all matching pages with their content.
         """
-        search_results = self.search_wikipedia(query)
+        telemetry = {
+            "provider": "public_wikipedia", "ranking": "public_search_order",
+            "cache_hits": 0, "retries": 0, "http_429": 0,
+            "search_internal_llm_calls": 0, "openai_calls": 0, "doubao_calls": 0,
+        }
+        search_results = self.search_wikipedia(query, telemetry=telemetry)
         return {
             "query": query,
             "relevant_pages (public search order; raw evidence only)": search_results,
-            "search_telemetry": {
-                "provider": "public_wikipedia",
-                "ranking": "public_search_order",
-                "search_internal_llm_calls": 0,
-                "openai_calls": 0,
-                "doubao_calls": 0,
-            },
+            "search_telemetry": telemetry,
         }
 
     def get_metadata(self):
