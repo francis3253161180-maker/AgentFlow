@@ -26,6 +26,7 @@ os.environ.setdefault("AGENTFLOW_REWARD_JUDGE_ENABLED", "0")
 from agentflow.models.structured_outputs import (
     candidate_expressions,
     extract_game24_numbers,
+    extract_final_answer,
     game24_reward_decision,
     validate_game24_expression,
 )
@@ -68,9 +69,9 @@ def compact(value: Any, limit: int = 240) -> str:
 
 def stage_name(field: str) -> str:
     if field == "query_analysis":
-        return "planner_main_analysis"
+        return "planner_fixed_analysis"
     if field.startswith("action_predictor_") and field.endswith("_response"):
-        return "planner_fixed"
+        return "planner_main_action"
     if field.startswith("tool_commander_") and field.endswith("_response"):
         return "executor_tool_command"
     if field.startswith("tool_result_"):
@@ -158,14 +159,19 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     for path in paths:
         data = json.loads(path.read_text(encoding="utf-8"))
         question = str(data.get("prompt", ""))
-        answer = str(data.get("answer_extracted", ""))
+        previous_answer = str(data.get("answer_extracted", ""))
+        total_result = data.get("total_result") or {}
+        direct_output = total_result.get("direct_output")
+        answer = extract_final_answer(direct_output) if direct_output else "None"
         groundtruth = str(data.get("groundtruth", ""))
         numbers = extract_game24_numbers(question)
+        previous_decision, previous_details = game24_reward_decision(question, previous_answer)
+        previous_rescore_reward = bool(compute_score(question, groundtruth, previous_answer))
         decision, decision_details = game24_reward_decision(question, answer)
         production_reward = bool(compute_score(question, groundtruth, answer))
         if decision is not None and production_reward != bool(decision):
             raise AssertionError(f"compute_score disagrees with Game24 decision for {path}")
-        stage_audit = audit_intermediate_stages(data.get("total_result") or {}, numbers or ())
+        stage_audit = audit_intermediate_stages(total_result, numbers or ())
         row = {
             "file": path.name,
             "file_sha256": sha256_file(path),
@@ -173,12 +179,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "rollout_id": str(data.get("id", "")),
             "question_sha256": sha256_text(question),
             "groundtruth": groundtruth,
+            "previous_answer_sha256": sha256_text(previous_answer),
+            "previous_answer_excerpt": compact(previous_answer),
             "answer_sha256": sha256_text(answer),
             "answer_excerpt": compact(answer),
             "stored_reward": float(data.get("reward", 0.0) or 0.0),
+            "previous_rescore_reward": 1.0 if previous_rescore_reward else 0.0,
             "production_reward": 1.0 if production_reward else 0.0,
             "route": "game24_strict_deterministic" if decision is not None else "generic_scorer",
             "decision_reason": decision_details.get("reason"),
+            "previous_decision_reason": previous_details.get("reason"),
             "stage_observation": stage_audit,
         }
         rows.append(row)
@@ -201,8 +211,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         groups[row["group_id"]].append(row)
 
     stored_success = sum(int(row["stored_reward"] == 1.0) for row in rows)
+    previous_rescore_success = sum(int(row["previous_rescore_reward"] == 1.0) for row in rows)
     production_success = sum(int(row["production_reward"] == 1.0) for row in rows)
-    discrepancies = [
+    stored_discrepancies = [
         {
             "file": row["file"],
             "group_id": row["group_id"],
@@ -213,6 +224,20 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         }
         for row in rows
         if row["stored_reward"] != row["production_reward"]
+    ]
+    previous_rescore_discrepancies = [
+        {
+            "file": row["file"],
+            "group_id": row["group_id"],
+            "previous_rescore_reward": row["previous_rescore_reward"],
+            "production_reward": row["production_reward"],
+            "previous_answer_excerpt": row["previous_answer_excerpt"],
+            "replayed_answer_excerpt": row["answer_excerpt"],
+            "previous_decision_reason": row["previous_decision_reason"],
+            "decision_reason": row["decision_reason"],
+        }
+        for row in rows
+        if row["previous_rescore_reward"] != row["production_reward"]
     ]
     route_counts = collections.Counter(row["route"] for row in rows)
     reason_counts = collections.Counter(row["decision_reason"] for row in rows)
@@ -243,14 +268,23 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "mean": stored_success / len(rows),
             "group_bins": ordered_bins(rows, "stored_reward"),
         },
+        "previous_59_rescore": {
+            "success_count": previous_rescore_success,
+            "zero_count": len(rows) - previous_rescore_success,
+            "mean": previous_rescore_success / len(rows),
+            "group_bins": ordered_bins(rows, "previous_rescore_reward"),
+            "source": "previous script input field answer_extracted before the final-answer section fix",
+        },
         "production_rescore": {
             "success_count": production_success,
             "zero_count": len(rows) - production_success,
             "mean": production_success / len(rows),
             "group_bins": ordered_bins(rows, "production_reward"),
         },
-        "discrepancies": discrepancies,
-        "discrepancy_count": len(discrepancies),
+        "stored_to_production_discrepancies": stored_discrepancies,
+        "stored_to_production_discrepancy_count": len(stored_discrepancies),
+        "previous_rescore_to_production_discrepancies": previous_rescore_discrepancies,
+        "previous_rescore_to_production_discrepancy_count": len(previous_rescore_discrepancies),
         "routing": dict(sorted(route_counts.items())),
         "decision_reasons": dict(sorted(reason_counts.items())),
         "intermediate_valid_then_final_wrong": {
@@ -278,7 +312,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "stored_success": stored_success,
         "production_success": production_success,
         "production_group_bins": result["production_rescore"]["group_bins"],
-        "discrepancy_count": len(discrepancies),
+        "previous_rescore_to_production_discrepancy_count": len(previous_rescore_discrepancies),
         "intermediate_valid_then_final_wrong": len(stage_wrong_rows),
         "output": str(args.output),
     }, ensure_ascii=False))

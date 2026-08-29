@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import train.utils as reward_utils
-from agentflow.models.structured_outputs import game24_reward_decision
+from agentflow.models.structured_outputs import extract_final_answer, game24_reward_decision
 
 
 class Game24RewardBridgeTest(unittest.TestCase):
@@ -51,6 +51,47 @@ class Game24RewardBridgeTest(unittest.TestCase):
         )
         self.assertFalse(decision)
         self.assertNotEqual(details["reason"], "proved_fraction_24")
+
+    def test_extraction_prefers_last_answer_tag(self):
+        output = (
+            "Reasoning <answer>3 + 8 + 12 + 13</answer>\n"
+            "Final <answer>3 * 8 * (13 - 12) = 24</answer>"
+        )
+        self.assertEqual(extract_final_answer(output), "3 * 8 * (13 - 12) = 24")
+
+    def test_extraction_accepts_explicit_answer_section_only(self):
+        output = """### Process Summary
+The incidental expression 3 * 8 * (13 - 12) = 24 is discussed above.
+
+### Answer
+3 * 8 * (13 - 12) = 24
+"""
+        extracted = extract_final_answer(output)
+        self.assertEqual(extracted, "3 * 8 * (13 - 12) = 24")
+        self.assertTrue(game24_reward_decision(self.question, extracted)[0])
+
+    def test_incidental_prose_is_not_mined_for_an_expression(self):
+        output = "The incidental expression 3 * 8 * (13 - 12) = 24 is not my answer."
+        extracted = extract_final_answer(output)
+        self.assertEqual(extracted, output)
+        self.assertFalse(game24_reward_decision(self.question, extracted)[0])
+
+    def test_explicit_answer_section_keeps_wrong_expression_strict(self):
+        output = "**Answer:** 3 + 8 + 12 + 13"
+        extracted = extract_final_answer(output)
+        self.assertEqual(extracted, "3 + 8 + 12 + 13")
+        self.assertFalse(game24_reward_decision(self.question, extracted)[0])
+
+    def test_explicit_answer_section_keeps_wrong_multiset_strict(self):
+        output = "### Answer\n6 * 4"
+        extracted = extract_final_answer(output)
+        self.assertEqual(extracted, "6 * 4")
+        self.assertFalse(game24_reward_decision(self.question, extracted)[0])
+
+    def test_numbered_explicit_answer_section_is_delimited(self):
+        output = "1. **Process Summary:** details\n2. **Answer:** 3 * 8 * (13 - 12) = 24"
+        extracted = extract_final_answer(output)
+        self.assertEqual(extracted, "3 * 8 * (13 - 12) = 24")
 
     def test_non_game24_compute_score_still_uses_generic_scorer(self):
         stub = SimpleNamespace(

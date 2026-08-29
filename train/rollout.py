@@ -17,6 +17,7 @@ import asyncio
 from utils import compute_score
 from agentflow.models.structured_outputs import (
     extract_game24_numbers,
+    extract_final_answer,
     game24_reward_decision,
     parse_game24_answer,
 )
@@ -230,8 +231,7 @@ class Rollout(LitAgent):
                     answer = parsed.expression
                     print("STRUCTURED_HARNESS_ROLLOUT validated=1", flush=True)
             else:
-                all_matches = re.findall(r"<answer>(.*?)</answer>", str(final_output), re.DOTALL)
-                answer = all_matches[-1].strip() if all_matches else str(final_output)
+                answer = extract_final_answer(final_output)
         else:
             print("Warning: Result has no direct_output or direct_output is empty.")
 

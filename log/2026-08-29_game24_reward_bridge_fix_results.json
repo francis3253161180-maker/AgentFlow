@@ -22,7 +22,7 @@
       "4/4": 0
     }
   },
-  "production_rescore": {
+  "previous_59_rescore": {
     "success_count": 59,
     "zero_count": 61,
     "mean": 0.49166666666666664,
@@ -32,9 +32,22 @@
       "2/4": 6,
       "3/4": 11,
       "4/4": 2
+    },
+    "source": "previous script input field answer_extracted before the final-answer section fix"
+  },
+  "production_rescore": {
+    "success_count": 62,
+    "zero_count": 58,
+    "mean": 0.5166666666666667,
+    "group_bins": {
+      "0/4": 5,
+      "1/4": 5,
+      "2/4": 6,
+      "3/4": 11,
+      "4/4": 3
     }
   },
-  "discrepancies": [
+  "stored_to_production_discrepancies": [
     {
       "file": "rollout_38006993-2f2f-4c13-a211-81f1b570e960.json",
       "group_id": "43",
@@ -122,6 +135,14 @@
       "production_reward": 1.0,
       "decision_reason": "proved_fraction_24",
       "answer_excerpt": "(11 - 10 + 2) × 8 = 24"
+    },
+    {
+      "file": "rollout_8398ff09-776a-4a89-aaf1-70ea6154c79d.json",
+      "group_id": "568",
+      "stored_reward": 0.0,
+      "production_reward": 1.0,
+      "decision_reason": "proved_fraction_24",
+      "answer_excerpt": "(2 + (11 - 10)) × 8 = 24"
     },
     {
       "file": "rollout_0ddf0962-d806-416e-80a2-a3c0983caf99.json",
@@ -218,6 +239,14 @@
       "production_reward": 1.0,
       "decision_reason": "proved_fraction_24",
       "answer_excerpt": "2 × (7 - 6) × 12 = 24"
+    },
+    {
+      "file": "rollout_8170cb7d-cc5e-479f-aec3-e05e23e6c45f.json",
+      "group_id": "782",
+      "stored_reward": 0.0,
+      "production_reward": 1.0,
+      "decision_reason": "proved_fraction_24",
+      "answer_excerpt": "3 × (12 - 12 ÷ 3) = 24"
     },
     {
       "file": "rollout_aeae4199-1704-409e-b1f7-7d6bc662a02a.json",
@@ -346,6 +375,14 @@
       "production_reward": 1.0,
       "decision_reason": "proved_fraction_24",
       "answer_excerpt": "11 + 11 + 6 - 4 = 24"
+    },
+    {
+      "file": "rollout_58ab1958-fcf7-48af-9e8e-cd3c32b4b9d6.json",
+      "group_id": "1115",
+      "stored_reward": 0.0,
+      "production_reward": 1.0,
+      "decision_reason": "proved_fraction_24",
+      "answer_excerpt": "(11 + 11) + (6 - 4) = 24"
     },
     {
       "file": "rollout_55bb674f-6a82-4cab-9d3e-5b0fa1970f6a.json",
@@ -508,27 +545,59 @@
       "answer_excerpt": "(12 - 8) × (7 - 1) = 24"
     }
   ],
-  "discrepancy_count": 59,
+  "stored_to_production_discrepancy_count": 62,
+  "previous_rescore_to_production_discrepancies": [
+    {
+      "file": "rollout_8398ff09-776a-4a89-aaf1-70ea6154c79d.json",
+      "group_id": "568",
+      "previous_rescore_reward": 0.0,
+      "production_reward": 1.0,
+      "previous_answer_excerpt": "1. **Process Summary:** First, the task was defined as constructing a valid arithmetic expression that uses each of the numbers [2, 8, 10, 11] exactly once, only permitted basic operations (+, -, ×, /) and parentheses, and evaluates to 24. ",
+      "replayed_answer_excerpt": "(2 + (11 - 10)) × 8 = 24",
+      "previous_decision_reason": "unsupported_syntax",
+      "decision_reason": "proved_fraction_24"
+    },
+    {
+      "file": "rollout_8170cb7d-cc5e-479f-aec3-e05e23e6c45f.json",
+      "group_id": "782",
+      "previous_rescore_reward": 0.0,
+      "production_reward": 1.0,
+      "previous_answer_excerpt": "### Process Summary 1. **Action Step 1**: The Generalist_Solution_Generator_Tool was first tasked with producing a valid 24-point expression for the number set [3, 3, 12, 12] adhering to all given constraints. It returned the candidate expr",
+      "replayed_answer_excerpt": "3 × (12 - 12 ÷ 3) = 24",
+      "previous_decision_reason": "unsupported_syntax",
+      "decision_reason": "proved_fraction_24"
+    },
+    {
+      "file": "rollout_58ab1958-fcf7-48af-9e8e-cd3c32b4b9d6.json",
+      "group_id": "1115",
+      "previous_rescore_reward": 0.0,
+      "production_reward": 1.0,
+      "previous_answer_excerpt": "1. **Process Summary:** First, we identified the core task of constructing a valid 24-game expression using the numbers [4, 6, 11, 11] exactly once each, with only basic arithmetic operations (+, -, ×, /) and parentheses. We then used the G",
+      "replayed_answer_excerpt": "(11 + 11) + (6 - 4) = 24",
+      "previous_decision_reason": "unsupported_syntax",
+      "decision_reason": "proved_fraction_24"
+    }
+  ],
+  "previous_rescore_to_production_discrepancy_count": 3,
   "routing": {
     "game24_strict_deterministic": 120
   },
   "decision_reasons": {
-    "not_24": 57,
-    "proved_fraction_24": 59,
-    "unsupported_syntax": 4
+    "not_24": 58,
+    "proved_fraction_24": 62
   },
   "intermediate_valid_then_final_wrong": {
-    "trajectory_count": 17,
+    "trajectory_count": 15,
     "all_trajectory_stage_observation_counts": {
       "executor_tool_result": 47,
       "memory_state": 45,
-      "planner_main_analysis": 26,
+      "planner_fixed_analysis": 26,
       "verifier_feedback": 49
     },
     "wrong_trajectory_stage_observation_counts": {
-      "executor_tool_result": 7,
-      "memory_state": 6,
-      "planner_main_analysis": 8,
+      "executor_tool_result": 5,
+      "memory_state": 4,
+      "planner_fixed_analysis": 8,
       "verifier_feedback": 10
     },
     "examples": [
@@ -540,7 +609,7 @@
         "stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "12 × (8 - 7 + 1)",
@@ -558,7 +627,7 @@
         "stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(11 - 10 + 2) × 8 = 24"
@@ -568,31 +637,6 @@
         "final_decision_reason": "not_24"
       },
       {
-        "group_id": "568",
-        "rollout_id": "12",
-        "file": "rollout_8398ff09-776a-4a89-aaf1-70ea6154c79d.json",
-        "answer_excerpt": "1. **Process Summary:** First, the task was defined as constructing a valid arithmetic expression that uses each of the numbers [2, 8, 10, 11] exactly once, only permitted basic operations (+, -, ×, /) and parentheses, and evaluates to 24. ",
-        "stages": [
-          {
-            "field": "tool_result_1",
-            "stage": "executor_tool_result",
-            "valid_expression_count": 1,
-            "expression_excerpts": [
-              "(2 + (11 - 10)) × 8 = 24"
-            ]
-          },
-          {
-            "field": "memory",
-            "stage": "memory_state",
-            "valid_expression_count": 1,
-            "expression_excerpts": [
-              "(2 + (11 - 10)) × 8 = 24"
-            ]
-          }
-        ],
-        "final_decision_reason": "unsupported_syntax"
-      },
-      {
         "group_id": "767",
         "rollout_id": "16",
         "file": "rollout_a24ab886-48f3-46aa-afec-09279d2fd40c.json",
@@ -600,7 +644,7 @@
         "stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "3 × (7 + 4 - 3) = 24",
@@ -618,7 +662,7 @@
         "stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(7 - 6) × 2 × 12 = 24"
@@ -628,33 +672,6 @@
         "final_decision_reason": "not_24"
       },
       {
-        "group_id": "782",
-        "rollout_id": "18",
-        "file": "rollout_8170cb7d-cc5e-479f-aec3-e05e23e6c45f.json",
-        "answer_excerpt": "### Process Summary 1. **Action Step 1**: The Generalist_Solution_Generator_Tool was first tasked with producing a valid 24-point expression for the number set [3, 3, 12, 12] adhering to all given constraints. It returned the candidate expr",
-        "stages": [
-          {
-            "field": "tool_result_2",
-            "stage": "executor_tool_result",
-            "valid_expression_count": 2,
-            "expression_excerpts": [
-              "3 × (12 - 12 / 3) = 24",
-              "3 × (12 - 12 / 3)"
-            ]
-          },
-          {
-            "field": "memory",
-            "stage": "memory_state",
-            "valid_expression_count": 2,
-            "expression_excerpts": [
-              "3 × (12 - 12 / 3) = 24",
-              "3 × (12 - 12 / 3)"
-            ]
-          }
-        ],
-        "final_decision_reason": "unsupported_syntax"
-      },
-      {
         "group_id": "808",
         "rollout_id": "19",
         "file": "rollout_1c269c11-4720-4122-9b52-9ecfca99ee12.json",
@@ -662,7 +679,7 @@
         "stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "4 × (4 / 4 + 5)"
@@ -687,7 +704,7 @@
         "stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 3,
             "expression_excerpts": [
               "3*(4* (4 - 2))",
@@ -706,7 +723,7 @@
         "stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "12 × (13 - (13 - 2)) = 24",
@@ -824,6 +841,60 @@
           }
         ],
         "final_decision_reason": "not_24"
+      },
+      {
+        "group_id": "1186",
+        "rollout_id": "26",
+        "file": "rollout_11570451-15df-449d-b28e-3be835bc9f6f.json",
+        "answer_excerpt": "2 × 12 × (4 - 1) = 24",
+        "stages": [
+          {
+            "field": "tool_result_1",
+            "stage": "executor_tool_result",
+            "valid_expression_count": 3,
+            "expression_excerpts": [
+              "12 × (4 - 2) × 1",
+              "12 × 1 × (4 - 2)",
+              "12 * (4 - 2 * 1)"
+            ]
+          },
+          {
+            "field": "verifier_1_response",
+            "stage": "verifier_feedback",
+            "valid_expression_count": 1,
+            "expression_excerpts": [
+              "12 × (4 - 2) × 1"
+            ]
+          },
+          {
+            "field": "memory",
+            "stage": "memory_state",
+            "valid_expression_count": 3,
+            "expression_excerpts": [
+              "12 × (4 - 2) × 1",
+              "12 × 1 × (4 - 2)",
+              "12 * (4 - 2 * 1)"
+            ]
+          }
+        ],
+        "final_decision_reason": "not_24"
+      },
+      {
+        "group_id": "1213",
+        "rollout_id": "28",
+        "file": "rollout_b2a2f5ce-507d-4a2d-971c-e8e9d590ec0e.json",
+        "answer_excerpt": "4 × (11 - 6 + 5)",
+        "stages": [
+          {
+            "field": "query_analysis",
+            "stage": "planner_fixed_analysis",
+            "valid_expression_count": 1,
+            "expression_excerpts": [
+              "(11 + 5) × (6 / 4)"
+            ]
+          }
+        ],
+        "final_decision_reason": "not_24"
       }
     ],
     "method": "strict validator over persisted non-prompt total_result fields; direct_output excluded; observational, not causal"
@@ -849,17 +920,21 @@
       "rollout_id": "0",
       "question_sha256": "82809d57ab13f74dafcce25ffb28dd784adbb9e06c3f18f753876024ea91988d",
       "groundtruth": "24",
+      "previous_answer_sha256": "817167abdda4828116f5e421998a0ce7de21dca28d8ddff98ec366ed8ab07f59",
+      "previous_answer_excerpt": "12 × (13 - 8 - 3)",
       "answer_sha256": "817167abdda4828116f5e421998a0ce7de21dca28d8ddff98ec366ed8ab07f59",
       "answer_excerpt": "12 × (13 - 8 - 3)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "12 × (13 - 8 - 3)"
@@ -918,12 +993,16 @@
       "rollout_id": "0",
       "question_sha256": "82809d57ab13f74dafcce25ffb28dd784adbb9e06c3f18f753876024ea91988d",
       "groundtruth": "24",
+      "previous_answer_sha256": "f81d7b03afcd279564c534789f1e921b87ff332b4ba1fc60f87a01dd43f1af3e",
+      "previous_answer_excerpt": "8 × (3 - (13 - 12)) = 24",
       "answer_sha256": "f81d7b03afcd279564c534789f1e921b87ff332b4ba1fc60f87a01dd43f1af3e",
       "answer_excerpt": "8 × (3 - (13 - 12)) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -936,17 +1015,21 @@
       "rollout_id": "0",
       "question_sha256": "82809d57ab13f74dafcce25ffb28dd784adbb9e06c3f18f753876024ea91988d",
       "groundtruth": "24",
+      "previous_answer_sha256": "d219043634801bed93a62298b6f6a6a5deeb6edfd33a3fc864412358b22dda66",
+      "previous_answer_excerpt": "12 × (13 - 8 - 3) = 24",
       "answer_sha256": "d219043634801bed93a62298b6f6a6a5deeb6edfd33a3fc864412358b22dda66",
       "answer_excerpt": "12 × (13 - 8 - 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "12 × (13 - 8 - 3)"
@@ -987,17 +1070,21 @@
       "rollout_id": "0",
       "question_sha256": "82809d57ab13f74dafcce25ffb28dd784adbb9e06c3f18f753876024ea91988d",
       "groundtruth": "24",
+      "previous_answer_sha256": "d219043634801bed93a62298b6f6a6a5deeb6edfd33a3fc864412358b22dda66",
+      "previous_answer_excerpt": "12 × (13 - 8 - 3) = 24",
       "answer_sha256": "d219043634801bed93a62298b6f6a6a5deeb6edfd33a3fc864412358b22dda66",
       "answer_excerpt": "12 × (13 - 8 - 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "12 × (13 - 8 - 3)"
@@ -1040,12 +1127,16 @@
       "rollout_id": "1",
       "question_sha256": "0bc41c740e45d845a829cd50ed01ac9bbaf98bebed644bd4e174e17cd68f00c1",
       "groundtruth": "24",
+      "previous_answer_sha256": "f55814fc29818b302fe6ede390994eb59cc41f220255dae153ce7cbb4b865dc4",
+      "previous_answer_excerpt": "(3 + 2) × 4 + 4",
       "answer_sha256": "f55814fc29818b302fe6ede390994eb59cc41f220255dae153ce7cbb4b865dc4",
       "answer_excerpt": "(3 + 2) × 4 + 4",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1058,12 +1149,16 @@
       "rollout_id": "9",
       "question_sha256": "5f71a601ef72b0864e72fa4daa04d913ed9bca5030787413fbae3b816f5cab3f",
       "groundtruth": "24",
+      "previous_answer_sha256": "1d04e0d27c9caf76f7c045493dfdecf9e8e0612c8d08eee631dbb1a970576478",
+      "previous_answer_excerpt": "8 × (12 - 7 - 1) = 24",
       "answer_sha256": "1d04e0d27c9caf76f7c045493dfdecf9e8e0612c8d08eee631dbb1a970576478",
       "answer_excerpt": "8 × (12 - 7 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1076,12 +1171,16 @@
       "rollout_id": "9",
       "question_sha256": "5f71a601ef72b0864e72fa4daa04d913ed9bca5030787413fbae3b816f5cab3f",
       "groundtruth": "24",
+      "previous_answer_sha256": "ec9d4823f3398935d84466d159f8f802a6bc9c7b2ddb0f6d9c30e9cd036883cd",
+      "previous_answer_excerpt": "(12 - 8) × (7 - 1) = 24",
       "answer_sha256": "ec9d4823f3398935d84466d159f8f802a6bc9c7b2ddb0f6d9c30e9cd036883cd",
       "answer_excerpt": "(12 - 8) × (7 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1094,17 +1193,21 @@
       "rollout_id": "9",
       "question_sha256": "5f71a601ef72b0864e72fa4daa04d913ed9bca5030787413fbae3b816f5cab3f",
       "groundtruth": "24",
+      "previous_answer_sha256": "b1f2ddc89eb35092035e6c17cd2ed867ab97dd363ece93c54c14465052ac997e",
+      "previous_answer_excerpt": "(12 - 7 - 1) × 8",
       "answer_sha256": "b1f2ddc89eb35092035e6c17cd2ed867ab97dd363ece93c54c14465052ac997e",
       "answer_excerpt": "(12 - 7 - 1) × 8",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "12 × (8 - 7 + 1)",
@@ -1122,12 +1225,16 @@
       "rollout_id": "10",
       "question_sha256": "5456aa115e57f73c0c5f8196d49437839f7a1dbcc1c999a8dea4bffd77d6e5a8",
       "groundtruth": "24",
+      "previous_answer_sha256": "07000b1251809e6c16d53ee4ca5824a72b45c4646f2cd6acc4c867c920af625b",
+      "previous_answer_excerpt": "6 × (8 - 12 ÷ 3)",
       "answer_sha256": "07000b1251809e6c16d53ee4ca5824a72b45c4646f2cd6acc4c867c920af625b",
       "answer_excerpt": "6 × (8 - 12 ÷ 3)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1167,12 +1274,16 @@
       "rollout_id": "10",
       "question_sha256": "5456aa115e57f73c0c5f8196d49437839f7a1dbcc1c999a8dea4bffd77d6e5a8",
       "groundtruth": "24",
+      "previous_answer_sha256": "d2252d299b4a156ab82551563549d5783005429447e59ce92ef363a4b1816ec1",
+      "previous_answer_excerpt": "6 × (8 - 12 ÷ 3) = 24",
       "answer_sha256": "d2252d299b4a156ab82551563549d5783005429447e59ce92ef363a4b1816ec1",
       "answer_excerpt": "6 × (8 - 12 ÷ 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1212,12 +1323,16 @@
       "rollout_id": "10",
       "question_sha256": "5456aa115e57f73c0c5f8196d49437839f7a1dbcc1c999a8dea4bffd77d6e5a8",
       "groundtruth": "24",
+      "previous_answer_sha256": "d2252d299b4a156ab82551563549d5783005429447e59ce92ef363a4b1816ec1",
+      "previous_answer_excerpt": "6 × (8 - 12 ÷ 3) = 24",
       "answer_sha256": "d2252d299b4a156ab82551563549d5783005429447e59ce92ef363a4b1816ec1",
       "answer_excerpt": "6 × (8 - 12 ÷ 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1255,12 +1370,16 @@
       "rollout_id": "10",
       "question_sha256": "5456aa115e57f73c0c5f8196d49437839f7a1dbcc1c999a8dea4bffd77d6e5a8",
       "groundtruth": "24",
+      "previous_answer_sha256": "37aa2f4683791542bce55d6c26f4a30f64a3c2b2dcf2af777dc243015e2db432",
+      "previous_answer_excerpt": "12 × 8 ÷ (6 - 3)",
       "answer_sha256": "37aa2f4683791542bce55d6c26f4a30f64a3c2b2dcf2af777dc243015e2db432",
       "answer_excerpt": "12 × 8 ÷ (6 - 3)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1273,12 +1392,16 @@
       "rollout_id": "11",
       "question_sha256": "d3136182a410ae2a55d2ab806afcf6de69387b1f0a7c9cd1026afe44aa1f4a81",
       "groundtruth": "24",
+      "previous_answer_sha256": "bba8bbd6f78b8b63796e07e2bf51aeb7d29525f20ac1d70b8e5718b26b52736e",
+      "previous_answer_excerpt": "(13 - 8 - 2) × 4 = 24",
       "answer_sha256": "bba8bbd6f78b8b63796e07e2bf51aeb7d29525f20ac1d70b8e5718b26b52736e",
       "answer_excerpt": "(13 - 8 - 2) × 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1291,12 +1414,16 @@
       "rollout_id": "11",
       "question_sha256": "d3136182a410ae2a55d2ab806afcf6de69387b1f0a7c9cd1026afe44aa1f4a81",
       "groundtruth": "24",
+      "previous_answer_sha256": "cd6753bb4d57aaf5c6fba01375ddf28e34f4ff832043d54cef25b8abe9ee8b0f",
+      "previous_answer_excerpt": "2 × 13 - 8 ÷ 4 = 24",
       "answer_sha256": "cd6753bb4d57aaf5c6fba01375ddf28e34f4ff832043d54cef25b8abe9ee8b0f",
       "answer_excerpt": "2 × 13 - 8 ÷ 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1318,12 +1445,16 @@
       "rollout_id": "11",
       "question_sha256": "d3136182a410ae2a55d2ab806afcf6de69387b1f0a7c9cd1026afe44aa1f4a81",
       "groundtruth": "24",
+      "previous_answer_sha256": "bba8bbd6f78b8b63796e07e2bf51aeb7d29525f20ac1d70b8e5718b26b52736e",
+      "previous_answer_excerpt": "(13 - 8 - 2) × 4 = 24",
       "answer_sha256": "bba8bbd6f78b8b63796e07e2bf51aeb7d29525f20ac1d70b8e5718b26b52736e",
       "answer_excerpt": "(13 - 8 - 2) × 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1336,12 +1467,16 @@
       "rollout_id": "11",
       "question_sha256": "d3136182a410ae2a55d2ab806afcf6de69387b1f0a7c9cd1026afe44aa1f4a81",
       "groundtruth": "24",
+      "previous_answer_sha256": "bba8bbd6f78b8b63796e07e2bf51aeb7d29525f20ac1d70b8e5718b26b52736e",
+      "previous_answer_excerpt": "(13 - 8 - 2) × 4 = 24",
       "answer_sha256": "bba8bbd6f78b8b63796e07e2bf51aeb7d29525f20ac1d70b8e5718b26b52736e",
       "answer_excerpt": "(13 - 8 - 2) × 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1354,12 +1489,16 @@
       "rollout_id": "12",
       "question_sha256": "a84aa94f41650f9808ec5421791504bc1e16a66ef174543e238a0445be55e6b6",
       "groundtruth": "24",
+      "previous_answer_sha256": "13da7c69679c70091d4804e1cda0285b11fbe2dd449a89b62f1855948862a8b4",
+      "previous_answer_excerpt": "(11 - 10 + 2) × 8",
       "answer_sha256": "13da7c69679c70091d4804e1cda0285b11fbe2dd449a89b62f1855948862a8b4",
       "answer_excerpt": "(11 - 10 + 2) × 8",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1383,17 +1522,21 @@
       "rollout_id": "12",
       "question_sha256": "a84aa94f41650f9808ec5421791504bc1e16a66ef174543e238a0445be55e6b6",
       "groundtruth": "24",
+      "previous_answer_sha256": "2b5c5008b53fe7dab026e9b56ae51d22a29736e858a20eecb17ce92e7c29a4ea",
+      "previous_answer_excerpt": "(11 - 10) × 2 × 8 = 24",
       "answer_sha256": "2b5c5008b53fe7dab026e9b56ae51d22a29736e858a20eecb17ce92e7c29a4ea",
       "answer_excerpt": "(11 - 10) × 2 × 8 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(11 - 10 + 2) × 8 = 24"
@@ -1410,12 +1553,16 @@
       "rollout_id": "12",
       "question_sha256": "a84aa94f41650f9808ec5421791504bc1e16a66ef174543e238a0445be55e6b6",
       "groundtruth": "24",
+      "previous_answer_sha256": "ed2aa50ff6ff89e09fde0e8491e8d6f35ececcb789b0446a4e3730ef38b73ebb",
+      "previous_answer_excerpt": "(11 - 10 + 2) × 8 = 24",
       "answer_sha256": "ed2aa50ff6ff89e09fde0e8491e8d6f35ececcb789b0446a4e3730ef38b73ebb",
       "answer_excerpt": "(11 - 10 + 2) × 8 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1445,12 +1592,16 @@
       "rollout_id": "12",
       "question_sha256": "a84aa94f41650f9808ec5421791504bc1e16a66ef174543e238a0445be55e6b6",
       "groundtruth": "24",
-      "answer_sha256": "73e65edf84909bcc5fe68c036e242edef23d22a73c84841f89640e4b250a1068",
-      "answer_excerpt": "1. **Process Summary:** First, the task was defined as constructing a valid arithmetic expression that uses each of the numbers [2, 8, 10, 11] exactly once, only permitted basic operations (+, -, ×, /) and parentheses, and evaluates to 24. ",
+      "previous_answer_sha256": "73e65edf84909bcc5fe68c036e242edef23d22a73c84841f89640e4b250a1068",
+      "previous_answer_excerpt": "1. **Process Summary:** First, the task was defined as constructing a valid arithmetic expression that uses each of the numbers [2, 8, 10, 11] exactly once, only permitted basic operations (+, -, ×, /) and parentheses, and evaluates to 24. ",
+      "answer_sha256": "130723bf0d8f90eb4f00cff5a28792cacc6a6e0d830b8332da30da7dc5c7346f",
+      "answer_excerpt": "(2 + (11 - 10)) × 8 = 24",
       "stored_reward": 0.0,
-      "production_reward": 0.0,
+      "previous_rescore_reward": 0.0,
+      "production_reward": 1.0,
       "route": "game24_strict_deterministic",
-      "decision_reason": "unsupported_syntax",
+      "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "unsupported_syntax",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1480,12 +1631,16 @@
       "rollout_id": "13",
       "question_sha256": "425890cb29f65791dd9bb1d703e91d1c1236e9c947257167d3aaa80c7ad5c8e3",
       "groundtruth": "24",
+      "previous_answer_sha256": "85e70e5dca82a2bd7b3ba303fcec6d09ecf8d2928de3f2c5a2ae2f0c8c3ee533",
+      "previous_answer_excerpt": "12 / (3 - 2 / 2) = 24",
       "answer_sha256": "85e70e5dca82a2bd7b3ba303fcec6d09ecf8d2928de3f2c5a2ae2f0c8c3ee533",
       "answer_excerpt": "12 / (3 - 2 / 2) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1498,17 +1653,21 @@
       "rollout_id": "13",
       "question_sha256": "425890cb29f65791dd9bb1d703e91d1c1236e9c947257167d3aaa80c7ad5c8e3",
       "groundtruth": "24",
+      "previous_answer_sha256": "73f089e5d022832aea2260eabcee962af491b4e2ce36ba349251a362dc4da058",
+      "previous_answer_excerpt": "12 × (3 - 2 ÷ 2) = 24",
       "answer_sha256": "73f089e5d022832aea2260eabcee962af491b4e2ce36ba349251a362dc4da058",
       "answer_excerpt": "12 × (3 - 2 ÷ 2) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "2 × 12 × (3 - 2)"
@@ -1552,12 +1711,16 @@
       "rollout_id": "13",
       "question_sha256": "425890cb29f65791dd9bb1d703e91d1c1236e9c947257167d3aaa80c7ad5c8e3",
       "groundtruth": "24",
+      "previous_answer_sha256": "73f089e5d022832aea2260eabcee962af491b4e2ce36ba349251a362dc4da058",
+      "previous_answer_excerpt": "12 × (3 - 2 ÷ 2) = 24",
       "answer_sha256": "73f089e5d022832aea2260eabcee962af491b4e2ce36ba349251a362dc4da058",
       "answer_excerpt": "12 × (3 - 2 ÷ 2) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1597,17 +1760,21 @@
       "rollout_id": "13",
       "question_sha256": "425890cb29f65791dd9bb1d703e91d1c1236e9c947257167d3aaa80c7ad5c8e3",
       "groundtruth": "24",
+      "previous_answer_sha256": "73f089e5d022832aea2260eabcee962af491b4e2ce36ba349251a362dc4da058",
+      "previous_answer_excerpt": "12 × (3 - 2 ÷ 2) = 24",
       "answer_sha256": "73f089e5d022832aea2260eabcee962af491b4e2ce36ba349251a362dc4da058",
       "answer_excerpt": "12 × (3 - 2 ÷ 2) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "12 × (3 - 2 ÷ 2) = 24",
@@ -1649,12 +1816,16 @@
       "rollout_id": "14",
       "question_sha256": "9fdc22b5cac9eb9a2a2f91467c900f1e7630713b9640849dea9083822038cee8",
       "groundtruth": "24",
+      "previous_answer_sha256": "9e95addbb37f0c6ba6c824b16fb8964363eb42b0b73e6f70ed1f0e647b7dec61",
+      "previous_answer_excerpt": "6 / (1 - 4 / 6)",
       "answer_sha256": "9e95addbb37f0c6ba6c824b16fb8964363eb42b0b73e6f70ed1f0e647b7dec61",
       "answer_excerpt": "6 / (1 - 4 / 6)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1667,12 +1838,16 @@
       "rollout_id": "14",
       "question_sha256": "9fdc22b5cac9eb9a2a2f91467c900f1e7630713b9640849dea9083822038cee8",
       "groundtruth": "24",
+      "previous_answer_sha256": "6bfd6b7f7079b238be9585c4c5c796c1f734186a3059c16adf32b12faec2d224",
+      "previous_answer_excerpt": "6 ÷ (1 - 4 ÷ 6)",
       "answer_sha256": "6bfd6b7f7079b238be9585c4c5c796c1f734186a3059c16adf32b12faec2d224",
       "answer_excerpt": "6 ÷ (1 - 4 ÷ 6)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1685,12 +1860,16 @@
       "rollout_id": "14",
       "question_sha256": "9fdc22b5cac9eb9a2a2f91467c900f1e7630713b9640849dea9083822038cee8",
       "groundtruth": "24",
+      "previous_answer_sha256": "9e95addbb37f0c6ba6c824b16fb8964363eb42b0b73e6f70ed1f0e647b7dec61",
+      "previous_answer_excerpt": "6 / (1 - 4 / 6)",
       "answer_sha256": "9e95addbb37f0c6ba6c824b16fb8964363eb42b0b73e6f70ed1f0e647b7dec61",
       "answer_excerpt": "6 / (1 - 4 / 6)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1703,12 +1882,16 @@
       "rollout_id": "14",
       "question_sha256": "9fdc22b5cac9eb9a2a2f91467c900f1e7630713b9640849dea9083822038cee8",
       "groundtruth": "24",
+      "previous_answer_sha256": "b1d1ba1796dfaa8f6dec96a9fb2458846a8c034dd965d45c930d373d4023a15b",
+      "previous_answer_excerpt": "6 ÷ (1 - 4 ÷ 6) = 24",
       "answer_sha256": "b1d1ba1796dfaa8f6dec96a9fb2458846a8c034dd965d45c930d373d4023a15b",
       "answer_excerpt": "6 ÷ (1 - 4 ÷ 6) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1721,12 +1904,16 @@
       "rollout_id": "15",
       "question_sha256": "ecec1c1fe1f4707dcf9c36b41b4a03d7fecd29f575497077bff44336414d41da",
       "groundtruth": "24",
+      "previous_answer_sha256": "f218c2c8cfc60f03530a55926d92ca130a086b80f930aa348dcaaca1fb8489cf",
+      "previous_answer_excerpt": "6 × (10 - 2) ÷ 1 = 24",
       "answer_sha256": "f218c2c8cfc60f03530a55926d92ca130a086b80f930aa348dcaaca1fb8489cf",
       "answer_excerpt": "6 × (10 - 2) ÷ 1 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -1739,12 +1926,16 @@
       "rollout_id": "15",
       "question_sha256": "ecec1c1fe1f4707dcf9c36b41b4a03d7fecd29f575497077bff44336414d41da",
       "groundtruth": "24",
+      "previous_answer_sha256": "8ed6226615b83c33550fba0284236a6ebcab13b3b1cbd9a8ff1b4da52f5e5934",
+      "previous_answer_excerpt": "(1 + 2) × 10 - 6",
       "answer_sha256": "8ed6226615b83c33550fba0284236a6ebcab13b3b1cbd9a8ff1b4da52f5e5934",
       "answer_excerpt": "(1 + 2) × 10 - 6",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1786,17 +1977,21 @@
       "rollout_id": "15",
       "question_sha256": "ecec1c1fe1f4707dcf9c36b41b4a03d7fecd29f575497077bff44336414d41da",
       "groundtruth": "24",
+      "previous_answer_sha256": "30bed5d127f5b413d59d3facfff2445fd535f43b9a09ada10f72216043888456",
+      "previous_answer_excerpt": "(10 - 1) × 2 + 6 = 24",
       "answer_sha256": "30bed5d127f5b413d59d3facfff2445fd535f43b9a09ada10f72216043888456",
       "answer_excerpt": "(10 - 1) × 2 + 6 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "6*(10/2 -1)",
@@ -1830,12 +2025,16 @@
       "rollout_id": "15",
       "question_sha256": "ecec1c1fe1f4707dcf9c36b41b4a03d7fecd29f575497077bff44336414d41da",
       "groundtruth": "24",
+      "previous_answer_sha256": "d9e5ff989215f4f3b3adab801b19cc8ea344df49deaa6fc3546dd8933473a1fc",
+      "previous_answer_excerpt": "6 × (10 / 2 - 1) = 24",
       "answer_sha256": "d9e5ff989215f4f3b3adab801b19cc8ea344df49deaa6fc3546dd8933473a1fc",
       "answer_excerpt": "6 × (10 / 2 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -1875,17 +2074,21 @@
       "rollout_id": "16",
       "question_sha256": "c73fc6ee9d613d09a70333342c1edc7e310c647c7a76a3368b4cb5ba4304f848",
       "groundtruth": "24",
+      "previous_answer_sha256": "0079041e77c3c409f854fa7c31419fb4e8f88582c60754cf3c70a2ea6b5441c9",
+      "previous_answer_excerpt": "3 × (7 + 4 - 3)",
       "answer_sha256": "0079041e77c3c409f854fa7c31419fb4e8f88582c60754cf3c70a2ea6b5441c9",
       "answer_excerpt": "3 × (7 + 4 - 3)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "3 × (7 + 4 - 3)"
@@ -1918,17 +2121,21 @@
       "rollout_id": "16",
       "question_sha256": "c73fc6ee9d613d09a70333342c1edc7e310c647c7a76a3368b4cb5ba4304f848",
       "groundtruth": "24",
+      "previous_answer_sha256": "8627c92b7a30c7ce7070c9d727f66de344d683329b64413360f86f9c7dd7ff29",
+      "previous_answer_excerpt": "3 × (7 + 4 - 3) = 24",
       "answer_sha256": "8627c92b7a30c7ce7070c9d727f66de344d683329b64413360f86f9c7dd7ff29",
       "answer_excerpt": "3 × (7 + 4 - 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 4,
             "expression_excerpts": [
               "3 × (7 + (4 - 3))",
@@ -1973,17 +2180,21 @@
       "rollout_id": "16",
       "question_sha256": "c73fc6ee9d613d09a70333342c1edc7e310c647c7a76a3368b4cb5ba4304f848",
       "groundtruth": "24",
+      "previous_answer_sha256": "cf742ff166ea182305948e668fbf1b0adc6957ee967b9629ec17ee84e9daffa0",
+      "previous_answer_excerpt": "3 × (7 - 3) × 4 = 24",
       "answer_sha256": "cf742ff166ea182305948e668fbf1b0adc6957ee967b9629ec17ee84e9daffa0",
       "answer_excerpt": "3 × (7 - 3) × 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "3 × (7 + 4 - 3) = 24",
@@ -2001,17 +2212,21 @@
       "rollout_id": "16",
       "question_sha256": "c73fc6ee9d613d09a70333342c1edc7e310c647c7a76a3368b4cb5ba4304f848",
       "groundtruth": "24",
+      "previous_answer_sha256": "8627c92b7a30c7ce7070c9d727f66de344d683329b64413360f86f9c7dd7ff29",
+      "previous_answer_excerpt": "3 × (7 + 4 - 3) = 24",
       "answer_sha256": "8627c92b7a30c7ce7070c9d727f66de344d683329b64413360f86f9c7dd7ff29",
       "answer_excerpt": "3 × (7 + 4 - 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "3 × (7 + 4 - 3) = 24",
@@ -2037,12 +2252,16 @@
       "rollout_id": "17",
       "question_sha256": "b06ed27bdaa3bc8e68993e71dee98b3ad3f8d64ff7fb0a72fdac1bb7a0551668",
       "groundtruth": "24",
+      "previous_answer_sha256": "f911526665b66a487a6d716ee14dfab73aee0db892269e0e58294a84d679e0bb",
+      "previous_answer_excerpt": "(7 - 6) × 2 × 12",
       "answer_sha256": "f911526665b66a487a6d716ee14dfab73aee0db892269e0e58294a84d679e0bb",
       "answer_excerpt": "(7 - 6) × 2 × 12",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -2072,17 +2291,21 @@
       "rollout_id": "17",
       "question_sha256": "b06ed27bdaa3bc8e68993e71dee98b3ad3f8d64ff7fb0a72fdac1bb7a0551668",
       "groundtruth": "24",
+      "previous_answer_sha256": "2040a95a92dd749b14785b298bde1a27edf3867b9e92781b2a6d2e206db924e3",
+      "previous_answer_excerpt": "2 × 12 × (7 - 6) = 24",
       "answer_sha256": "2040a95a92dd749b14785b298bde1a27edf3867b9e92781b2a6d2e206db924e3",
       "answer_excerpt": "2 × 12 × (7 - 6) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(7 - 6) × 2 × 12 = 24"
@@ -2125,17 +2348,21 @@
       "rollout_id": "17",
       "question_sha256": "b06ed27bdaa3bc8e68993e71dee98b3ad3f8d64ff7fb0a72fdac1bb7a0551668",
       "groundtruth": "24",
+      "previous_answer_sha256": "aa74886c8008680de0a46b53564f33775f487516b1f21667e93a092023372d51",
+      "previous_answer_excerpt": "12 × (7 - 6 ÷ 2) = 24",
       "answer_sha256": "aa74886c8008680de0a46b53564f33775f487516b1f21667e93a092023372d51",
       "answer_excerpt": "12 × (7 - 6 ÷ 2) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(7 - 6) × 2 × 12 = 24"
@@ -2152,17 +2379,21 @@
       "rollout_id": "17",
       "question_sha256": "b06ed27bdaa3bc8e68993e71dee98b3ad3f8d64ff7fb0a72fdac1bb7a0551668",
       "groundtruth": "24",
+      "previous_answer_sha256": "61d51e2b093e5644a09b8a8538520a7001955c6dbbcb818c03f3219356f94987",
+      "previous_answer_excerpt": "2 × (7 - 6) × 12 = 24",
       "answer_sha256": "61d51e2b093e5644a09b8a8538520a7001955c6dbbcb818c03f3219356f94987",
       "answer_excerpt": "2 × (7 - 6) × 12 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(7 - 6) * 2 * 12 = 24"
@@ -2195,12 +2426,16 @@
       "rollout_id": "18",
       "question_sha256": "9a7381110402bf5fe9f1f9fe3d9d44d1a014c2c54e34842760748e72a428fe42",
       "groundtruth": "24",
-      "answer_sha256": "2c3aa5885f3a35ec3a99234f9e4d727cf6557e84796c63b21807edfc9c3d9dca",
-      "answer_excerpt": "### Process Summary 1. **Action Step 1**: The Generalist_Solution_Generator_Tool was first tasked with producing a valid 24-point expression for the number set [3, 3, 12, 12] adhering to all given constraints. It returned the candidate expr",
+      "previous_answer_sha256": "2c3aa5885f3a35ec3a99234f9e4d727cf6557e84796c63b21807edfc9c3d9dca",
+      "previous_answer_excerpt": "### Process Summary 1. **Action Step 1**: The Generalist_Solution_Generator_Tool was first tasked with producing a valid 24-point expression for the number set [3, 3, 12, 12] adhering to all given constraints. It returned the candidate expr",
+      "answer_sha256": "d572b147d2f192375206136e828ce5fb5d26c2dc6a5d4f39e483383d65f82e67",
+      "answer_excerpt": "3 × (12 - 12 ÷ 3) = 24",
       "stored_reward": 0.0,
-      "production_reward": 0.0,
+      "previous_rescore_reward": 0.0,
+      "production_reward": 1.0,
       "route": "game24_strict_deterministic",
-      "decision_reason": "unsupported_syntax",
+      "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "unsupported_syntax",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -2232,17 +2467,21 @@
       "rollout_id": "18",
       "question_sha256": "9a7381110402bf5fe9f1f9fe3d9d44d1a014c2c54e34842760748e72a428fe42",
       "groundtruth": "24",
+      "previous_answer_sha256": "b865b20af1e8ddfc5683ffd93bd16cae6bc19fc2d46f584bada6f4b82083fa02",
+      "previous_answer_excerpt": "12 × 12 ÷ (3 + 3) = 24",
       "answer_sha256": "b865b20af1e8ddfc5683ffd93bd16cae6bc19fc2d46f584bada6f4b82083fa02",
       "answer_excerpt": "12 × 12 ÷ (3 + 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "12 + 12 + 3 - 3"
@@ -2267,12 +2506,16 @@
       "rollout_id": "18",
       "question_sha256": "9a7381110402bf5fe9f1f9fe3d9d44d1a014c2c54e34842760748e72a428fe42",
       "groundtruth": "24",
+      "previous_answer_sha256": "6cde3eab381a49e98201da82ea30f434374a83d6a5bb8b1b8c646662abd52630",
+      "previous_answer_excerpt": "(12 + 12) × (3 / 3) = 24",
       "answer_sha256": "6cde3eab381a49e98201da82ea30f434374a83d6a5bb8b1b8c646662abd52630",
       "answer_excerpt": "(12 + 12) × (3 / 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2285,12 +2528,16 @@
       "rollout_id": "18",
       "question_sha256": "9a7381110402bf5fe9f1f9fe3d9d44d1a014c2c54e34842760748e72a428fe42",
       "groundtruth": "24",
+      "previous_answer_sha256": "b865b20af1e8ddfc5683ffd93bd16cae6bc19fc2d46f584bada6f4b82083fa02",
+      "previous_answer_excerpt": "12 × 12 ÷ (3 + 3) = 24",
       "answer_sha256": "b865b20af1e8ddfc5683ffd93bd16cae6bc19fc2d46f584bada6f4b82083fa02",
       "answer_excerpt": "12 × 12 ÷ (3 + 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -2312,17 +2559,21 @@
       "rollout_id": "19",
       "question_sha256": "5ccbb824079ac02f493a29272e373b73c40a9778ab46f4a2e40e935b39c1a5af",
       "groundtruth": "24",
+      "previous_answer_sha256": "1d55eef21fef0ad6db229120e930cc381078daa2eba53cf41a3cfb0d14fa510f",
+      "previous_answer_excerpt": "4 × (5 - 4 + 4)",
       "answer_sha256": "1d55eef21fef0ad6db229120e930cc381078daa2eba53cf41a3cfb0d14fa510f",
       "answer_excerpt": "4 × (5 - 4 + 4)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "4 × (4 / 4 + 5)"
@@ -2347,12 +2598,16 @@
       "rollout_id": "2",
       "question_sha256": "62cf06c816b2e4f36649cd50b1a4d3a769a30cd0c0bd350b560adc05e1ea1a9a",
       "groundtruth": "24",
+      "previous_answer_sha256": "e1017b07ddbaac6239c1c2c1f76355c712a3ae20e47e4042c522eb2613ed766d",
+      "previous_answer_excerpt": "9 × (11 - 6) - 9 = 24",
       "answer_sha256": "e1017b07ddbaac6239c1c2c1f76355c712a3ae20e47e4042c522eb2613ed766d",
       "answer_excerpt": "9 × (11 - 6) - 9 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2365,12 +2620,16 @@
       "rollout_id": "1",
       "question_sha256": "0bc41c740e45d845a829cd50ed01ac9bbaf98bebed644bd4e174e17cd68f00c1",
       "groundtruth": "24",
+      "previous_answer_sha256": "0e4e5049fdda837bda82aa1db0d5eadbae2ac4c5b0b5968bea73eec9ef991a9a",
+      "previous_answer_excerpt": "(2 + 3) × 4 + 4 = 24",
       "answer_sha256": "0e4e5049fdda837bda82aa1db0d5eadbae2ac4c5b0b5968bea73eec9ef991a9a",
       "answer_excerpt": "(2 + 3) × 4 + 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2383,17 +2642,21 @@
       "rollout_id": "1",
       "question_sha256": "0bc41c740e45d845a829cd50ed01ac9bbaf98bebed644bd4e174e17cd68f00c1",
       "groundtruth": "24",
+      "previous_answer_sha256": "eb6741cd4d89b3cbb27ae77a68e62464f0683ad2dc5e7b27273277b2f5ce8a5c",
+      "previous_answer_excerpt": "(3 + 4) × 4 - 2 = 24",
       "answer_sha256": "eb6741cd4d89b3cbb27ae77a68e62464f0683ad2dc5e7b27273277b2f5ce8a5c",
       "answer_excerpt": "(3 + 4) × 4 - 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 3,
             "expression_excerpts": [
               "3*(4* (4 - 2))",
@@ -2412,12 +2675,16 @@
       "rollout_id": "1",
       "question_sha256": "0bc41c740e45d845a829cd50ed01ac9bbaf98bebed644bd4e174e17cd68f00c1",
       "groundtruth": "24",
+      "previous_answer_sha256": "f19930d0d1a5b02033f97b8849207b4481fbb01b8e0a9a8ea9a03c5eb8fa14ef",
+      "previous_answer_excerpt": "(3 + 2) × 4 + 4 = 24",
       "answer_sha256": "f19930d0d1a5b02033f97b8849207b4481fbb01b8e0a9a8ea9a03c5eb8fa14ef",
       "answer_excerpt": "(3 + 2) × 4 + 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2430,12 +2697,16 @@
       "rollout_id": "19",
       "question_sha256": "5ccbb824079ac02f493a29272e373b73c40a9778ab46f4a2e40e935b39c1a5af",
       "groundtruth": "24",
+      "previous_answer_sha256": "6dbd4b97df7400b23b89e250f4f1bc4d8237047cadd85f6b641a23686fa2ed10",
+      "previous_answer_excerpt": "4 × (4 / 4 + 5)",
       "answer_sha256": "6dbd4b97df7400b23b89e250f4f1bc4d8237047cadd85f6b641a23686fa2ed10",
       "answer_excerpt": "4 × (4 / 4 + 5)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -2473,12 +2744,16 @@
       "rollout_id": "19",
       "question_sha256": "5ccbb824079ac02f493a29272e373b73c40a9778ab46f4a2e40e935b39c1a5af",
       "groundtruth": "24",
+      "previous_answer_sha256": "7e225ee14420a0d143d553a6d6d23072aa2489683af2f107b34830129923922d",
+      "previous_answer_excerpt": "4 × (4 + 5) - 4 = 24",
       "answer_sha256": "7e225ee14420a0d143d553a6d6d23072aa2489683af2f107b34830129923922d",
       "answer_excerpt": "4 × (4 + 5) - 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2491,12 +2766,16 @@
       "rollout_id": "19",
       "question_sha256": "5ccbb824079ac02f493a29272e373b73c40a9778ab46f4a2e40e935b39c1a5af",
       "groundtruth": "24",
+      "previous_answer_sha256": "7e225ee14420a0d143d553a6d6d23072aa2489683af2f107b34830129923922d",
+      "previous_answer_excerpt": "4 × (4 + 5) - 4 = 24",
       "answer_sha256": "7e225ee14420a0d143d553a6d6d23072aa2489683af2f107b34830129923922d",
       "answer_excerpt": "4 × (4 + 5) - 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2509,17 +2788,21 @@
       "rollout_id": "20",
       "question_sha256": "2d7454f547fe5d27c79bc2a6a0768361f1bb3a2cbb229e2f5baaed1bd2f69879",
       "groundtruth": "24",
+      "previous_answer_sha256": "6638cc309674114959f6fe7a6e009a95c032e8eddda7f8aa392632e5c91aaab6",
+      "previous_answer_excerpt": "2 × 3 × (8 - 4) = 24",
       "answer_sha256": "6638cc309674114959f6fe7a6e009a95c032e8eddda7f8aa392632e5c91aaab6",
       "answer_excerpt": "2 × 3 × (8 - 4) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "2 * 3 * (8 - 4)",
@@ -2561,12 +2844,16 @@
       "rollout_id": "20",
       "question_sha256": "2d7454f547fe5d27c79bc2a6a0768361f1bb3a2cbb229e2f5baaed1bd2f69879",
       "groundtruth": "24",
+      "previous_answer_sha256": "6638cc309674114959f6fe7a6e009a95c032e8eddda7f8aa392632e5c91aaab6",
+      "previous_answer_excerpt": "2 × 3 × (8 - 4) = 24",
       "answer_sha256": "6638cc309674114959f6fe7a6e009a95c032e8eddda7f8aa392632e5c91aaab6",
       "answer_excerpt": "2 × 3 × (8 - 4) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -2600,12 +2887,16 @@
       "rollout_id": "20",
       "question_sha256": "2d7454f547fe5d27c79bc2a6a0768361f1bb3a2cbb229e2f5baaed1bd2f69879",
       "groundtruth": "24",
+      "previous_answer_sha256": "54dfae5d791a9045f59d6b174945f9ba009ab3dbf61f4a31ebc27c64b9a076c0",
+      "previous_answer_excerpt": "(8 - 4) × 3 × 2 = 24",
       "answer_sha256": "54dfae5d791a9045f59d6b174945f9ba009ab3dbf61f4a31ebc27c64b9a076c0",
       "answer_excerpt": "(8 - 4) × 3 × 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2618,17 +2909,21 @@
       "rollout_id": "20",
       "question_sha256": "2d7454f547fe5d27c79bc2a6a0768361f1bb3a2cbb229e2f5baaed1bd2f69879",
       "groundtruth": "24",
+      "previous_answer_sha256": "3ccebaec3332087c8bda952e01366ee9d8cf9a7359f76a07ca1fd42ab5ac0ac4",
+      "previous_answer_excerpt": "(8 - 4) × (3 × 2) = 24",
       "answer_sha256": "3ccebaec3332087c8bda952e01366ee9d8cf9a7359f76a07ca1fd42ab5ac0ac4",
       "answer_excerpt": "(8 - 4) × (3 × 2) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "((8 - 4) × 3) × 2 = 24"
@@ -2669,17 +2964,21 @@
       "rollout_id": "21",
       "question_sha256": "ad45560d5d46b691bc7aef1d06d164616cef441415d9e811e823864a14e95fd7",
       "groundtruth": "24",
+      "previous_answer_sha256": "070081a0a4c07d6f1f3c4157cb03e6b98c7c0b6bceb4ae63739007b837cc78d4",
+      "previous_answer_excerpt": "12 × (2 - 13 ÷ 13) = 24",
       "answer_sha256": "070081a0a4c07d6f1f3c4157cb03e6b98c7c0b6bceb4ae63739007b837cc78d4",
       "answer_excerpt": "12 × (2 - 13 ÷ 13) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 2,
             "expression_excerpts": [
               "12 × (13 - (13 - 2)) = 24",
@@ -2713,12 +3012,16 @@
       "rollout_id": "22",
       "question_sha256": "b0689021cce0077f31747aceb7d40b3993935f73737c1bf236e4a6e36d466499",
       "groundtruth": "24",
+      "previous_answer_sha256": "4b4482fafc8a292caebf1cd17861dd9411fd8d388efa56ade05aa55175dc0e60",
+      "previous_answer_excerpt": "(11 + 13) × (2 - 1)",
       "answer_sha256": "4b4482fafc8a292caebf1cd17861dd9411fd8d388efa56ade05aa55175dc0e60",
       "answer_excerpt": "(11 + 13) × (2 - 1)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2731,12 +3034,16 @@
       "rollout_id": "21",
       "question_sha256": "ad45560d5d46b691bc7aef1d06d164616cef441415d9e811e823864a14e95fd7",
       "groundtruth": "24",
+      "previous_answer_sha256": "e3269f61b0eaed500e0ca42c2f8159cdff342245aeda78d376e4df1e3f79a124",
+      "previous_answer_excerpt": "((13 - 13) + 2) × 12",
       "answer_sha256": "e3269f61b0eaed500e0ca42c2f8159cdff342245aeda78d376e4df1e3f79a124",
       "answer_excerpt": "((13 - 13) + 2) × 12",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -2766,17 +3073,21 @@
       "rollout_id": "21",
       "question_sha256": "ad45560d5d46b691bc7aef1d06d164616cef441415d9e811e823864a14e95fd7",
       "groundtruth": "24",
+      "previous_answer_sha256": "9951951bc73136830aaec93d845c0b9fae471329119d62991c0658b1c3125dbe",
+      "previous_answer_excerpt": "2 × 12 × (13 ÷ 13) = 24",
       "answer_sha256": "9951951bc73136830aaec93d845c0b9fae471329119d62991c0658b1c3125dbe",
       "answer_excerpt": "2 × 12 × (13 ÷ 13) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 4,
             "expression_excerpts": [
               "12 * (13 - 13 + 2)",
@@ -2811,12 +3122,16 @@
       "rollout_id": "21",
       "question_sha256": "ad45560d5d46b691bc7aef1d06d164616cef441415d9e811e823864a14e95fd7",
       "groundtruth": "24",
+      "previous_answer_sha256": "070081a0a4c07d6f1f3c4157cb03e6b98c7c0b6bceb4ae63739007b837cc78d4",
+      "previous_answer_excerpt": "12 × (2 - 13 ÷ 13) = 24",
       "answer_sha256": "070081a0a4c07d6f1f3c4157cb03e6b98c7c0b6bceb4ae63739007b837cc78d4",
       "answer_excerpt": "12 × (2 - 13 ÷ 13) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2829,12 +3144,16 @@
       "rollout_id": "22",
       "question_sha256": "b0689021cce0077f31747aceb7d40b3993935f73737c1bf236e4a6e36d466499",
       "groundtruth": "24",
+      "previous_answer_sha256": "ebfff6485f218ce15f5b4572237f5095bb0c1232971372a0852cb2975e525492",
+      "previous_answer_excerpt": "(13 + 11) × (2 - 1) = 24",
       "answer_sha256": "ebfff6485f218ce15f5b4572237f5095bb0c1232971372a0852cb2975e525492",
       "answer_excerpt": "(13 + 11) × (2 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2847,12 +3166,16 @@
       "rollout_id": "22",
       "question_sha256": "b0689021cce0077f31747aceb7d40b3993935f73737c1bf236e4a6e36d466499",
       "groundtruth": "24",
+      "previous_answer_sha256": "ffb4de020f437e18e00fd999aee110dbccce99ee024a8e1882bf4d8e66b59c0b",
+      "previous_answer_excerpt": "2 × 13 - 11 + 1 = 24",
       "answer_sha256": "ffb4de020f437e18e00fd999aee110dbccce99ee024a8e1882bf4d8e66b59c0b",
       "answer_excerpt": "2 × 13 - 11 + 1 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2865,12 +3188,16 @@
       "rollout_id": "22",
       "question_sha256": "b0689021cce0077f31747aceb7d40b3993935f73737c1bf236e4a6e36d466499",
       "groundtruth": "24",
+      "previous_answer_sha256": "b1328ab39ce5f6362cd14bca270c8cfbcc9784648cc42a70e8523c51a8930982",
+      "previous_answer_excerpt": "13 × (1 + 11) / 2 = 24",
       "answer_sha256": "b1328ab39ce5f6362cd14bca270c8cfbcc9784648cc42a70e8523c51a8930982",
       "answer_excerpt": "13 × (1 + 11) / 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2883,12 +3210,16 @@
       "rollout_id": "23",
       "question_sha256": "52ac34b675b36975bd893c92b96c430de290a1fb8302b7eee9fadb00860e006c",
       "groundtruth": "24",
+      "previous_answer_sha256": "af9178f8723bb547870464d308542e123ca7035bc786cb65116500fdd0ada638",
+      "previous_answer_excerpt": "(5 - 13) × (9 - 12)",
       "answer_sha256": "af9178f8723bb547870464d308542e123ca7035bc786cb65116500fdd0ada638",
       "answer_excerpt": "(5 - 13) × (9 - 12)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2901,12 +3232,16 @@
       "rollout_id": "23",
       "question_sha256": "52ac34b675b36975bd893c92b96c430de290a1fb8302b7eee9fadb00860e006c",
       "groundtruth": "24",
+      "previous_answer_sha256": "c7709d0e924a50a30fd7d3cd18ba7c5143206ada4786faf70f59d8bf3147b985",
+      "previous_answer_excerpt": "13 × (9 - 5) - 12 = 24",
       "answer_sha256": "c7709d0e924a50a30fd7d3cd18ba7c5143206ada4786faf70f59d8bf3147b985",
       "answer_excerpt": "13 × (9 - 5) - 12 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2919,12 +3254,16 @@
       "rollout_id": "23",
       "question_sha256": "52ac34b675b36975bd893c92b96c430de290a1fb8302b7eee9fadb00860e006c",
       "groundtruth": "24",
+      "previous_answer_sha256": "3efb98c118914ce10f6cbfaabbe40726a19b0952d78f1cd17c4c55559554fa5a",
+      "previous_answer_excerpt": "(13 - 9) × (12 - 5) = 24",
       "answer_sha256": "3efb98c118914ce10f6cbfaabbe40726a19b0952d78f1cd17c4c55559554fa5a",
       "answer_excerpt": "(13 - 9) × (12 - 5) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2937,12 +3276,16 @@
       "rollout_id": "23",
       "question_sha256": "52ac34b675b36975bd893c92b96c430de290a1fb8302b7eee9fadb00860e006c",
       "groundtruth": "24",
+      "previous_answer_sha256": "c47162ba13dc6626f07e1646bfcabe7dd3887ff556a7c3e3a205472068f7fed6",
+      "previous_answer_excerpt": "12 × (5 + 9 - 13) = 24",
       "answer_sha256": "c47162ba13dc6626f07e1646bfcabe7dd3887ff556a7c3e3a205472068f7fed6",
       "answer_excerpt": "12 × (5 + 9 - 13) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -2955,12 +3298,16 @@
       "rollout_id": "24",
       "question_sha256": "fad02b2418e34b3ea160de503836502fdbf34a1a85031b6e8165b006d96da3da",
       "groundtruth": "24",
+      "previous_answer_sha256": "d4c766ff6b05c38385f4df1cc736a76f038a250397f45a3b046c44756f852068",
+      "previous_answer_excerpt": "11 + 11 + 6 - 4 = 24",
       "answer_sha256": "d4c766ff6b05c38385f4df1cc736a76f038a250397f45a3b046c44756f852068",
       "answer_excerpt": "11 + 11 + 6 - 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3000,12 +3347,16 @@
       "rollout_id": "24",
       "question_sha256": "fad02b2418e34b3ea160de503836502fdbf34a1a85031b6e8165b006d96da3da",
       "groundtruth": "24",
+      "previous_answer_sha256": "cd636e60a6f43f11849284a79907ed1aede176fee2defef05f93c3f3f6651b03",
+      "previous_answer_excerpt": "(11 + 11) * 6 / 4 = 24",
       "answer_sha256": "cd636e60a6f43f11849284a79907ed1aede176fee2defef05f93c3f3f6651b03",
       "answer_excerpt": "(11 + 11) * 6 / 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3028,12 +3379,16 @@
       "rollout_id": "24",
       "question_sha256": "fad02b2418e34b3ea160de503836502fdbf34a1a85031b6e8165b006d96da3da",
       "groundtruth": "24",
-      "answer_sha256": "af560102c2993e89a35ac724637c91b29b02f8f068308c896e6266b5e18771a4",
-      "answer_excerpt": "1. **Process Summary:** First, we identified the core task of constructing a valid 24-game expression using the numbers [4, 6, 11, 11] exactly once each, with only basic arithmetic operations (+, -, ×, /) and parentheses. We then used the G",
+      "previous_answer_sha256": "af560102c2993e89a35ac724637c91b29b02f8f068308c896e6266b5e18771a4",
+      "previous_answer_excerpt": "1. **Process Summary:** First, we identified the core task of constructing a valid 24-game expression using the numbers [4, 6, 11, 11] exactly once each, with only basic arithmetic operations (+, -, ×, /) and parentheses. We then used the G",
+      "answer_sha256": "85abf2514640480d24e4d51dbebbc0485e39c56ae37f081c4a8a6018866f09f9",
+      "answer_excerpt": "(11 + 11) + (6 - 4) = 24",
       "stored_reward": 0.0,
-      "production_reward": 0.0,
+      "previous_rescore_reward": 0.0,
+      "production_reward": 1.0,
       "route": "game24_strict_deterministic",
-      "decision_reason": "unsupported_syntax",
+      "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "unsupported_syntax",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3046,12 +3401,16 @@
       "rollout_id": "24",
       "question_sha256": "fad02b2418e34b3ea160de503836502fdbf34a1a85031b6e8165b006d96da3da",
       "groundtruth": "24",
+      "previous_answer_sha256": "4340b036166b5f5e00d45d4f4b6b7cfc61f0b01be0c3dd1405e23502374acb25",
+      "previous_answer_excerpt": "6 × (4 + 11 ÷ 11) = 24",
       "answer_sha256": "4340b036166b5f5e00d45d4f4b6b7cfc61f0b01be0c3dd1405e23502374acb25",
       "answer_excerpt": "6 × (4 + 11 ÷ 11) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3064,12 +3423,16 @@
       "rollout_id": "25",
       "question_sha256": "7d06abab9238822383e02ff921bd8c140abc867da936dcd7fe726d475543205d",
       "groundtruth": "24",
+      "previous_answer_sha256": "84948a2168c8e0efcb9b4c12c1bd2b3124a13c3249f50700365c65661439d252",
+      "previous_answer_excerpt": "(5 × 10 - 2) ÷ 4 = 24",
       "answer_sha256": "84948a2168c8e0efcb9b4c12c1bd2b3124a13c3249f50700365c65661439d252",
       "answer_excerpt": "(5 × 10 - 2) ÷ 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3082,12 +3445,16 @@
       "rollout_id": "25",
       "question_sha256": "7d06abab9238822383e02ff921bd8c140abc867da936dcd7fe726d475543205d",
       "groundtruth": "24",
+      "previous_answer_sha256": "0a09714fb02d19c818f01e32bc9c69747f6aa800c5485c60dccae66aa674ce3a",
+      "previous_answer_excerpt": "10 × (4 - 2 ÷ 5)",
       "answer_sha256": "0a09714fb02d19c818f01e32bc9c69747f6aa800c5485c60dccae66aa674ce3a",
       "answer_excerpt": "10 × (4 - 2 ÷ 5)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3142,12 +3509,16 @@
       "rollout_id": "25",
       "question_sha256": "7d06abab9238822383e02ff921bd8c140abc867da936dcd7fe726d475543205d",
       "groundtruth": "24",
+      "previous_answer_sha256": "ca0354df41d2f588b007d3861921aa9f4f28262467b2aae18b9a18c54fe11357",
+      "previous_answer_excerpt": "10 / 5 × 4 × 2 = 24",
       "answer_sha256": "ca0354df41d2f588b007d3861921aa9f4f28262467b2aae18b9a18c54fe11357",
       "answer_excerpt": "10 / 5 × 4 × 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3160,12 +3531,16 @@
       "rollout_id": "25",
       "question_sha256": "7d06abab9238822383e02ff921bd8c140abc867da936dcd7fe726d475543205d",
       "groundtruth": "24",
+      "previous_answer_sha256": "abcc94106a19d8e233748b485cb280a2e62e6188dcaa5e3dbb135c3807bac395",
+      "previous_answer_excerpt": "(5 × 4) + 10 - 2 = 24",
       "answer_sha256": "abcc94106a19d8e233748b485cb280a2e62e6188dcaa5e3dbb135c3807bac395",
       "answer_excerpt": "(5 × 4) + 10 - 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3195,12 +3570,16 @@
       "rollout_id": "26",
       "question_sha256": "88ef4dd17438c4748dbdc3fff6da5c3015a70fd2169f30e3c6775fa33cdd7f80",
       "groundtruth": "24",
+      "previous_answer_sha256": "6058c0f245cbef15bf6481d6c70431c45689a7a7a25c52e3c51cf2f3e77bef2e",
+      "previous_answer_excerpt": "2 × 12 × (4 - 1) = 24",
       "answer_sha256": "6058c0f245cbef15bf6481d6c70431c45689a7a7a25c52e3c51cf2f3e77bef2e",
       "answer_excerpt": "2 × 12 × (4 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3242,12 +3621,16 @@
       "rollout_id": "26",
       "question_sha256": "88ef4dd17438c4748dbdc3fff6da5c3015a70fd2169f30e3c6775fa33cdd7f80",
       "groundtruth": "24",
+      "previous_answer_sha256": "9152249616f39628de7f13cf22fbe8a5c2e43531e34507f7563a4f2c2a5ea2a8",
+      "previous_answer_excerpt": "12 × 4 ÷ (2 - 1) = 24",
       "answer_sha256": "9152249616f39628de7f13cf22fbe8a5c2e43531e34507f7563a4f2c2a5ea2a8",
       "answer_excerpt": "12 × 4 ÷ (2 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3260,12 +3643,16 @@
       "rollout_id": "26",
       "question_sha256": "88ef4dd17438c4748dbdc3fff6da5c3015a70fd2169f30e3c6775fa33cdd7f80",
       "groundtruth": "24",
+      "previous_answer_sha256": "b3e5a05813804e53ecf3cfef39d10abf47e63ac3dcab6e82873a1c28b497e074",
+      "previous_answer_excerpt": "12 × (4 - 2 × 1)",
       "answer_sha256": "b3e5a05813804e53ecf3cfef39d10abf47e63ac3dcab6e82873a1c28b497e074",
       "answer_excerpt": "12 × (4 - 2 × 1)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3303,12 +3690,16 @@
       "rollout_id": "26",
       "question_sha256": "88ef4dd17438c4748dbdc3fff6da5c3015a70fd2169f30e3c6775fa33cdd7f80",
       "groundtruth": "24",
+      "previous_answer_sha256": "0a8d36711321d593c0ee1ba53daf838f1ca89a666868bdad1f93e2f45d8f7e68",
+      "previous_answer_excerpt": "12 × (4 - 2 + 1) = 24",
       "answer_sha256": "0a8d36711321d593c0ee1ba53daf838f1ca89a666868bdad1f93e2f45d8f7e68",
       "answer_excerpt": "12 × (4 - 2 + 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3321,12 +3712,16 @@
       "rollout_id": "27",
       "question_sha256": "f91e1049666eab363d6ec158e7e74312ed0ab57b008c91b185981d90d86ef73a",
       "groundtruth": "24",
+      "previous_answer_sha256": "6dae170a6a90530d21d23d14c3d5624936a99efaa609dd73fe000185346cb0ed",
+      "previous_answer_excerpt": "12 × (6 + 10 - 13) = 24",
       "answer_sha256": "6dae170a6a90530d21d23d14c3d5624936a99efaa609dd73fe000185346cb0ed",
       "answer_excerpt": "12 × (6 + 10 - 13) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3339,12 +3734,16 @@
       "rollout_id": "27",
       "question_sha256": "f91e1049666eab363d6ec158e7e74312ed0ab57b008c91b185981d90d86ef73a",
       "groundtruth": "24",
+      "previous_answer_sha256": "6dae170a6a90530d21d23d14c3d5624936a99efaa609dd73fe000185346cb0ed",
+      "previous_answer_excerpt": "12 × (6 + 10 - 13) = 24",
       "answer_sha256": "6dae170a6a90530d21d23d14c3d5624936a99efaa609dd73fe000185346cb0ed",
       "answer_excerpt": "12 × (6 + 10 - 13) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3357,12 +3756,16 @@
       "rollout_id": "27",
       "question_sha256": "f91e1049666eab363d6ec158e7e74312ed0ab57b008c91b185981d90d86ef73a",
       "groundtruth": "24",
+      "previous_answer_sha256": "f527b9c91bf9eab845ac1953919d381631e6ae502a98bb73511def859ed1760a",
+      "previous_answer_excerpt": "6 × (12 ÷ (13 - 10)) = 24",
       "answer_sha256": "f527b9c91bf9eab845ac1953919d381631e6ae502a98bb73511def859ed1760a",
       "answer_excerpt": "6 × (12 ÷ (13 - 10)) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3384,12 +3787,16 @@
       "rollout_id": "27",
       "question_sha256": "f91e1049666eab363d6ec158e7e74312ed0ab57b008c91b185981d90d86ef73a",
       "groundtruth": "24",
+      "previous_answer_sha256": "e4c673fbaf95045e04718937767f39742907b811ea2cc2077054d9e77876ded0",
+      "previous_answer_excerpt": "(13 - 10) × 6 + 12 = 24",
       "answer_sha256": "e4c673fbaf95045e04718937767f39742907b811ea2cc2077054d9e77876ded0",
       "answer_excerpt": "(13 - 10) × 6 + 12 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3402,17 +3809,21 @@
       "rollout_id": "28",
       "question_sha256": "ec9e34cefa6e2588d804c508f0ef36742fda34056bb0013fc00861da6371ec3d",
       "groundtruth": "24",
+      "previous_answer_sha256": "6649ed8aa4f2a02dced5c242a2f731a8afbb4f061e30e86bf3a3726da9300460",
+      "previous_answer_excerpt": "4 × (11 - 6 + 5)",
       "answer_sha256": "6649ed8aa4f2a02dced5c242a2f731a8afbb4f061e30e86bf3a3726da9300460",
       "answer_excerpt": "4 × (11 - 6 + 5)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(11 + 5) × (6 / 4)"
@@ -3429,12 +3840,16 @@
       "rollout_id": "28",
       "question_sha256": "ec9e34cefa6e2588d804c508f0ef36742fda34056bb0013fc00861da6371ec3d",
       "groundtruth": "24",
+      "previous_answer_sha256": "2fd51ff5477f380ed16dc41bb4ee78ecc36bb5b4aea55416c27ed10519283331",
+      "previous_answer_excerpt": "(11 + 5) × (6 - 4)",
       "answer_sha256": "2fd51ff5477f380ed16dc41bb4ee78ecc36bb5b4aea55416c27ed10519283331",
       "answer_excerpt": "(11 + 5) × (6 - 4)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3447,12 +3862,16 @@
       "rollout_id": "28",
       "question_sha256": "ec9e34cefa6e2588d804c508f0ef36742fda34056bb0013fc00861da6371ec3d",
       "groundtruth": "24",
+      "previous_answer_sha256": "064d0eefdc56f3c6bddd8eab66f956aa8194471cdebde91dd4e0406036f610aa",
+      "previous_answer_excerpt": "(11 + 5 - 6) × 4 = 24",
       "answer_sha256": "064d0eefdc56f3c6bddd8eab66f956aa8194471cdebde91dd4e0406036f610aa",
       "answer_excerpt": "(11 + 5 - 6) × 4 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3490,12 +3909,16 @@
       "rollout_id": "28",
       "question_sha256": "ec9e34cefa6e2588d804c508f0ef36742fda34056bb0013fc00861da6371ec3d",
       "groundtruth": "24",
+      "previous_answer_sha256": "fc856a8fe24103bd19376a452aade5c1e55348aa92560d8f924e63fd10942126",
+      "previous_answer_excerpt": "(11 + 5) × (6 - 4) = 24",
       "answer_sha256": "fc856a8fe24103bd19376a452aade5c1e55348aa92560d8f924e63fd10942126",
       "answer_excerpt": "(11 + 5) × (6 - 4) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3508,12 +3931,16 @@
       "rollout_id": "29",
       "question_sha256": "721755a48b59e42f2b91a533e1f11922c990ba0c2e8885f730ba3cbe7f226a09",
       "groundtruth": "24",
-      "answer_sha256": "a64f400566ab02336680eed7e744dd641e45f70aa83eced541b830682d280db3",
-      "answer_excerpt": "### Process Summary 1. **Initial Goal Clarification**: The task required creating a valid 24-point arithmetic expression that uses each of the numbers [2, 5, 8, 10] exactly once, with only the four basic arithmetic operations (+, -, ×, /) a",
+      "previous_answer_sha256": "a64f400566ab02336680eed7e744dd641e45f70aa83eced541b830682d280db3",
+      "previous_answer_excerpt": "### Process Summary 1. **Initial Goal Clarification**: The task required creating a valid 24-point arithmetic expression that uses each of the numbers [2, 5, 8, 10] exactly once, with only the four basic arithmetic operations (+, -, ×, /) a",
+      "answer_sha256": "919ebbe98e0e999adeba282bd8f38189060a7205bf00e9cce08ecf13d96740ff",
+      "answer_excerpt": "(8 - 10 ÷ 5) × 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
-      "decision_reason": "unsupported_syntax",
+      "decision_reason": "not_24",
+      "previous_decision_reason": "unsupported_syntax",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3526,12 +3953,16 @@
       "rollout_id": "2",
       "question_sha256": "62cf06c816b2e4f36649cd50b1a4d3a769a30cd0c0bd350b560adc05e1ea1a9a",
       "groundtruth": "24",
+      "previous_answer_sha256": "8e5a2910f4b41589a1fbb5befea0d65cc564db387711abcb30b88467fca93706",
+      "previous_answer_excerpt": "(11 - 9) × 9 + 6 = 24",
       "answer_sha256": "8e5a2910f4b41589a1fbb5befea0d65cc564db387711abcb30b88467fca93706",
       "answer_excerpt": "(11 - 9) × 9 + 6 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3544,12 +3975,16 @@
       "rollout_id": "2",
       "question_sha256": "62cf06c816b2e4f36649cd50b1a4d3a769a30cd0c0bd350b560adc05e1ea1a9a",
       "groundtruth": "24",
+      "previous_answer_sha256": "e1017b07ddbaac6239c1c2c1f76355c712a3ae20e47e4042c522eb2613ed766d",
+      "previous_answer_excerpt": "9 × (11 - 6) - 9 = 24",
       "answer_sha256": "e1017b07ddbaac6239c1c2c1f76355c712a3ae20e47e4042c522eb2613ed766d",
       "answer_excerpt": "9 × (11 - 6) - 9 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3562,12 +3997,16 @@
       "rollout_id": "2",
       "question_sha256": "62cf06c816b2e4f36649cd50b1a4d3a769a30cd0c0bd350b560adc05e1ea1a9a",
       "groundtruth": "24",
+      "previous_answer_sha256": "8e7ce7b02c1f930bfa5f53d508349200f212db7ce8feb3891c39f5286de71e87",
+      "previous_answer_excerpt": "6 + 9 × (11 - 9) = 24",
       "answer_sha256": "8e7ce7b02c1f930bfa5f53d508349200f212db7ce8feb3891c39f5286de71e87",
       "answer_excerpt": "6 + 9 × (11 - 9) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3607,12 +4046,16 @@
       "rollout_id": "3",
       "question_sha256": "2ef9329c7db6dee3aca723d998a066e52a8495672ff0c4477558ef5baa04938b",
       "groundtruth": "24",
+      "previous_answer_sha256": "407c283c6061254a64fce61d6350c2255c3372d8ce31781e544063093d460823",
+      "previous_answer_excerpt": "(12 - 6) × 3 + 3 = 24",
       "answer_sha256": "407c283c6061254a64fce61d6350c2255c3372d8ce31781e544063093d460823",
       "answer_excerpt": "(12 - 6) × 3 + 3 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3625,12 +4068,16 @@
       "rollout_id": "29",
       "question_sha256": "721755a48b59e42f2b91a533e1f11922c990ba0c2e8885f730ba3cbe7f226a09",
       "groundtruth": "24",
+      "previous_answer_sha256": "0d9441724bdc6074698070c488c2659ddf46596c3fc1d0409d41e6d97be0bf68",
+      "previous_answer_excerpt": "5 × 8 - 10 - 2 = 24",
       "answer_sha256": "0d9441724bdc6074698070c488c2659ddf46596c3fc1d0409d41e6d97be0bf68",
       "answer_excerpt": "5 × 8 - 10 - 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3643,12 +4090,16 @@
       "rollout_id": "29",
       "question_sha256": "721755a48b59e42f2b91a533e1f11922c990ba0c2e8885f730ba3cbe7f226a09",
       "groundtruth": "24",
+      "previous_answer_sha256": "f64940ca546e975b61fc5e6d71db7f8e4d253394f3a596245d00b067a50b28b9",
+      "previous_answer_excerpt": "(10 - 5) × 2 + 8 = 24",
       "answer_sha256": "f64940ca546e975b61fc5e6d71db7f8e4d253394f3a596245d00b067a50b28b9",
       "answer_excerpt": "(10 - 5) × 2 + 8 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3661,12 +4112,16 @@
       "rollout_id": "29",
       "question_sha256": "721755a48b59e42f2b91a533e1f11922c990ba0c2e8885f730ba3cbe7f226a09",
       "groundtruth": "24",
+      "previous_answer_sha256": "f64940ca546e975b61fc5e6d71db7f8e4d253394f3a596245d00b067a50b28b9",
+      "previous_answer_excerpt": "(10 - 5) × 2 + 8 = 24",
       "answer_sha256": "f64940ca546e975b61fc5e6d71db7f8e4d253394f3a596245d00b067a50b28b9",
       "answer_excerpt": "(10 - 5) × 2 + 8 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3679,12 +4134,16 @@
       "rollout_id": "3",
       "question_sha256": "2ef9329c7db6dee3aca723d998a066e52a8495672ff0c4477558ef5baa04938b",
       "groundtruth": "24",
+      "previous_answer_sha256": "2ed5ec183af0a502b7dfa8978234552a1dc57492e661269cd56c7fea812e4c8d",
+      "previous_answer_excerpt": "(3 + 3) × (12 - 6)",
       "answer_sha256": "2ed5ec183af0a502b7dfa8978234552a1dc57492e661269cd56c7fea812e4c8d",
       "answer_excerpt": "(3 + 3) × (12 - 6)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3697,12 +4156,16 @@
       "rollout_id": "3",
       "question_sha256": "2ef9329c7db6dee3aca723d998a066e52a8495672ff0c4477558ef5baa04938b",
       "groundtruth": "24",
+      "previous_answer_sha256": "bb8e76399e21d8ed151e469bf3fd73d316d682a4643d99a30487337fefb5a25f",
+      "previous_answer_excerpt": "(12 - 6) × (3 + 3) = 24",
       "answer_sha256": "bb8e76399e21d8ed151e469bf3fd73d316d682a4643d99a30487337fefb5a25f",
       "answer_excerpt": "(12 - 6) × (3 + 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3715,12 +4178,16 @@
       "rollout_id": "3",
       "question_sha256": "2ef9329c7db6dee3aca723d998a066e52a8495672ff0c4477558ef5baa04938b",
       "groundtruth": "24",
+      "previous_answer_sha256": "bb8e76399e21d8ed151e469bf3fd73d316d682a4643d99a30487337fefb5a25f",
+      "previous_answer_excerpt": "(12 - 6) × (3 + 3) = 24",
       "answer_sha256": "bb8e76399e21d8ed151e469bf3fd73d316d682a4643d99a30487337fefb5a25f",
       "answer_excerpt": "(12 - 6) × (3 + 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3733,12 +4200,16 @@
       "rollout_id": "4",
       "question_sha256": "5563a16308a1432ceb2bcfd36b0bc066234c4cce263cc0876f508571fe33d68c",
       "groundtruth": "24",
+      "previous_answer_sha256": "e7eae0bddc08ae1e75f666c4e3bd4372f6a11919f4e618653a3280dfd4488ec3",
+      "previous_answer_excerpt": "(11 - 5) × (12 - 6) = 24",
       "answer_sha256": "e7eae0bddc08ae1e75f666c4e3bd4372f6a11919f4e618653a3280dfd4488ec3",
       "answer_excerpt": "(11 - 5) × (12 - 6) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3760,17 +4231,21 @@
       "rollout_id": "4",
       "question_sha256": "5563a16308a1432ceb2bcfd36b0bc066234c4cce263cc0876f508571fe33d68c",
       "groundtruth": "24",
+      "previous_answer_sha256": "86590680f2d097cb096ee3068340abad1f3c8638c6cf005633a067330c612226",
+      "previous_answer_excerpt": "(11 + 5 - 12) × 6 = 24",
       "answer_sha256": "86590680f2d097cb096ee3068340abad1f3c8638c6cf005633a067330c612226",
       "answer_excerpt": "(11 + 5 - 12) × 6 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "(11 + 5 - 12) × 6 = 24"
@@ -3787,12 +4262,16 @@
       "rollout_id": "4",
       "question_sha256": "5563a16308a1432ceb2bcfd36b0bc066234c4cce263cc0876f508571fe33d68c",
       "groundtruth": "24",
+      "previous_answer_sha256": "45533cb5f479f9140183201c474fa8555bfb510fe1dc38b80ca71abbe8edb702",
+      "previous_answer_excerpt": "11 + 12 + 6 - 5 = 24",
       "answer_sha256": "45533cb5f479f9140183201c474fa8555bfb510fe1dc38b80ca71abbe8edb702",
       "answer_excerpt": "11 + 12 + 6 - 5 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3834,12 +4313,16 @@
       "rollout_id": "4",
       "question_sha256": "5563a16308a1432ceb2bcfd36b0bc066234c4cce263cc0876f508571fe33d68c",
       "groundtruth": "24",
+      "previous_answer_sha256": "4cc62f12472da18a80f74886ae910e6a76c66605f571aca98e7707e52053e714",
+      "previous_answer_excerpt": "6 + 11 + 12 - 5 = 24",
       "answer_sha256": "4cc62f12472da18a80f74886ae910e6a76c66605f571aca98e7707e52053e714",
       "answer_excerpt": "6 + 11 + 12 - 5 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3880,17 +4363,21 @@
       "rollout_id": "5",
       "question_sha256": "976f356bde84da4f7c14216183c005fbe9e91a3fcf79656320f98570faf7033f",
       "groundtruth": "24",
+      "previous_answer_sha256": "cab71189dab1f8f565214162322b0de0cb9b7ecf76ebda0fe10f76abe8b4122e",
+      "previous_answer_excerpt": "11 × (5 - 2) - 9",
       "answer_sha256": "cab71189dab1f8f565214162322b0de0cb9b7ecf76ebda0fe10f76abe8b4122e",
       "answer_excerpt": "11 × (5 - 2) - 9",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 3,
             "expression_excerpts": [
               "9*2 + 11 -5",
@@ -3934,12 +4421,16 @@
       "rollout_id": "5",
       "question_sha256": "976f356bde84da4f7c14216183c005fbe9e91a3fcf79656320f98570faf7033f",
       "groundtruth": "24",
+      "previous_answer_sha256": "234b22e61f0a5c8a164fbf6f10fb537f9e39b9cdaa264fd6acda72d8e6714435",
+      "previous_answer_excerpt": "9 × 2 + 11 - 5 = 24",
       "answer_sha256": "234b22e61f0a5c8a164fbf6f10fb537f9e39b9cdaa264fd6acda72d8e6714435",
       "answer_excerpt": "9 × 2 + 11 - 5 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -3961,12 +4452,16 @@
       "rollout_id": "5",
       "question_sha256": "976f356bde84da4f7c14216183c005fbe9e91a3fcf79656320f98570faf7033f",
       "groundtruth": "24",
+      "previous_answer_sha256": "68c23484c9d8557299356eae0790a3827914cc0332e2697f9224c66e60452289",
+      "previous_answer_excerpt": "2 × (9 - 5) + 11 = 24",
       "answer_sha256": "68c23484c9d8557299356eae0790a3827914cc0332e2697f9224c66e60452289",
       "answer_excerpt": "2 × (9 - 5) + 11 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3979,12 +4474,16 @@
       "rollout_id": "5",
       "question_sha256": "976f356bde84da4f7c14216183c005fbe9e91a3fcf79656320f98570faf7033f",
       "groundtruth": "24",
+      "previous_answer_sha256": "dc71c2f7088c9dd7c7d78d23f1e0ea6b0b95d519a56d599e05b196bdebf481a2",
+      "previous_answer_excerpt": "(11 - 9 + 5) × 2 = 24",
       "answer_sha256": "dc71c2f7088c9dd7c7d78d23f1e0ea6b0b95d519a56d599e05b196bdebf481a2",
       "answer_excerpt": "(11 - 9 + 5) × 2 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -3997,12 +4496,16 @@
       "rollout_id": "6",
       "question_sha256": "7bb93dddddc982368867cbfb6eaa0d38efa76656602ea605edf9e72c69b4bbb6",
       "groundtruth": "24",
+      "previous_answer_sha256": "498d1d438397471b3b348bd06ed6012471116b3bc5b952b28515400f99e03029",
+      "previous_answer_excerpt": "11 × 2 + 2 × 1 = 24",
       "answer_sha256": "498d1d438397471b3b348bd06ed6012471116b3bc5b952b28515400f99e03029",
       "answer_excerpt": "11 × 2 + 2 × 1 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4040,17 +4543,21 @@
       "rollout_id": "6",
       "question_sha256": "7bb93dddddc982368867cbfb6eaa0d38efa76656602ea605edf9e72c69b4bbb6",
       "groundtruth": "24",
+      "previous_answer_sha256": "9b0bae2d5ddac8fa0c5a5efec373edb61be9cb228468485edb883788c9b1c017",
+      "previous_answer_excerpt": "1 × (2 + 2 × 11) = 24",
       "answer_sha256": "9b0bae2d5ddac8fa0c5a5efec373edb61be9cb228468485edb883788c9b1c017",
       "answer_excerpt": "1 × (2 + 2 × 11) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
             "field": "query_analysis",
-            "stage": "planner_main_analysis",
+            "stage": "planner_fixed_analysis",
             "valid_expression_count": 1,
             "expression_excerpts": [
               "2 × (11 + 2 - 1)"
@@ -4094,12 +4601,16 @@
       "rollout_id": "6",
       "question_sha256": "7bb93dddddc982368867cbfb6eaa0d38efa76656602ea605edf9e72c69b4bbb6",
       "groundtruth": "24",
+      "previous_answer_sha256": "f5295b7dd06dc0e267bba4fbe0b5cd99f5ac1bed5e5f407e682f9773d6597cdc",
+      "previous_answer_excerpt": "2 × (11 + 2 - 1) = 24",
       "answer_sha256": "f5295b7dd06dc0e267bba4fbe0b5cd99f5ac1bed5e5f407e682f9773d6597cdc",
       "answer_excerpt": "2 × (11 + 2 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4139,12 +4650,16 @@
       "rollout_id": "6",
       "question_sha256": "7bb93dddddc982368867cbfb6eaa0d38efa76656602ea605edf9e72c69b4bbb6",
       "groundtruth": "24",
+      "previous_answer_sha256": "d9d506c87174bd75d6db4ad46255cc9a4284add5d0596c268a7b895fa5137fd8",
+      "previous_answer_excerpt": "2 × 11 + 2 × 1 = 24",
       "answer_sha256": "d9d506c87174bd75d6db4ad46255cc9a4284add5d0596c268a7b895fa5137fd8",
       "answer_excerpt": "2 × 11 + 2 × 1 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4184,12 +4699,16 @@
       "rollout_id": "7",
       "question_sha256": "a64f1853afae1766172e58ac40860a950e1d952ffe8ebdb18b7381a776fbe3d1",
       "groundtruth": "24",
+      "previous_answer_sha256": "a89bb4ef6106a79ea8f9343d153ba5c47db8c8443f3b2fd2408a5d508ebeb61f",
+      "previous_answer_excerpt": "2×9 + (13 - 7) = 24",
       "answer_sha256": "a89bb4ef6106a79ea8f9343d153ba5c47db8c8443f3b2fd2408a5d508ebeb61f",
       "answer_excerpt": "2×9 + (13 - 7) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4229,12 +4748,16 @@
       "rollout_id": "7",
       "question_sha256": "a64f1853afae1766172e58ac40860a950e1d952ffe8ebdb18b7381a776fbe3d1",
       "groundtruth": "24",
+      "previous_answer_sha256": "4fdd44931c7ed15fa1689eb7bef6d2240acc19fe40a58205270cf12cc8031043",
+      "previous_answer_excerpt": "2 × 13 - (9 - 7) = 24",
       "answer_sha256": "4fdd44931c7ed15fa1689eb7bef6d2240acc19fe40a58205270cf12cc8031043",
       "answer_excerpt": "2 × 13 - (9 - 7) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4276,12 +4799,16 @@
       "rollout_id": "7",
       "question_sha256": "a64f1853afae1766172e58ac40860a950e1d952ffe8ebdb18b7381a776fbe3d1",
       "groundtruth": "24",
+      "previous_answer_sha256": "69558c67d247949c5cb0603ac8e16c170aabed9cdb58ea181ca065973bafa0e0",
+      "previous_answer_excerpt": "9 × 2 + 13 - 7 = 24",
       "answer_sha256": "69558c67d247949c5cb0603ac8e16c170aabed9cdb58ea181ca065973bafa0e0",
       "answer_excerpt": "9 × 2 + 13 - 7 = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4319,12 +4846,16 @@
       "rollout_id": "7",
       "question_sha256": "a64f1853afae1766172e58ac40860a950e1d952ffe8ebdb18b7381a776fbe3d1",
       "groundtruth": "24",
+      "previous_answer_sha256": "775e19a27043b58696d73ea01b7e8bfb95701a6c2cafb64215f8e1fa7ced84be",
+      "previous_answer_excerpt": "(13 - 7) × (9 - 2) = 24",
       "answer_sha256": "775e19a27043b58696d73ea01b7e8bfb95701a6c2cafb64215f8e1fa7ced84be",
       "answer_excerpt": "(13 - 7) × (9 - 2) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4347,12 +4878,16 @@
       "rollout_id": "8",
       "question_sha256": "ae1d33af49de10de42ea73d1493044d73db41ec5a515377e02577974685d3ada",
       "groundtruth": "24",
+      "previous_answer_sha256": "fa41784a3235a72398ebb1393e7585f392b63e02a29c5031c7a70d1adfe6d49c",
+      "previous_answer_excerpt": "(1 + 11) × (6 ÷ 3)",
       "answer_sha256": "fa41784a3235a72398ebb1393e7585f392b63e02a29c5031c7a70d1adfe6d49c",
       "answer_excerpt": "(1 + 11) × (6 ÷ 3)",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -4365,12 +4900,16 @@
       "rollout_id": "8",
       "question_sha256": "ae1d33af49de10de42ea73d1493044d73db41ec5a515377e02577974685d3ada",
       "groundtruth": "24",
+      "previous_answer_sha256": "7ded870d6778d5fd51526fa081f666aa649241c7603a59263cccc85514400b5c",
+      "previous_answer_excerpt": "(11 + 1) × (6 ÷ 3) = 24",
       "answer_sha256": "7ded870d6778d5fd51526fa081f666aa649241c7603a59263cccc85514400b5c",
       "answer_excerpt": "(11 + 1) × (6 ÷ 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4400,12 +4939,16 @@
       "rollout_id": "8",
       "question_sha256": "ae1d33af49de10de42ea73d1493044d73db41ec5a515377e02577974685d3ada",
       "groundtruth": "24",
+      "previous_answer_sha256": "406441cc9a1cebb7f4ae935fba02e65ef37334d58c0dcaf5ec7397ba331a8f21",
+      "previous_answer_excerpt": "11 × 3 - (6 - 1) = 24",
       "answer_sha256": "406441cc9a1cebb7f4ae935fba02e65ef37334d58c0dcaf5ec7397ba331a8f21",
       "answer_excerpt": "11 × 3 - (6 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 0.0,
       "production_reward": 0.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "not_24",
+      "previous_decision_reason": "not_24",
       "stage_observation": {
         "valid_intermediate_stages": [],
         "any_valid_intermediate": false
@@ -4418,12 +4961,16 @@
       "rollout_id": "8",
       "question_sha256": "ae1d33af49de10de42ea73d1493044d73db41ec5a515377e02577974685d3ada",
       "groundtruth": "24",
+      "previous_answer_sha256": "7ded870d6778d5fd51526fa081f666aa649241c7603a59263cccc85514400b5c",
+      "previous_answer_excerpt": "(11 + 1) × (6 ÷ 3) = 24",
       "answer_sha256": "7ded870d6778d5fd51526fa081f666aa649241c7603a59263cccc85514400b5c",
       "answer_excerpt": "(11 + 1) × (6 ÷ 3) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {
@@ -4453,12 +5000,16 @@
       "rollout_id": "9",
       "question_sha256": "5f71a601ef72b0864e72fa4daa04d913ed9bca5030787413fbae3b816f5cab3f",
       "groundtruth": "24",
+      "previous_answer_sha256": "ec9d4823f3398935d84466d159f8f802a6bc9c7b2ddb0f6d9c30e9cd036883cd",
+      "previous_answer_excerpt": "(12 - 8) × (7 - 1) = 24",
       "answer_sha256": "ec9d4823f3398935d84466d159f8f802a6bc9c7b2ddb0f6d9c30e9cd036883cd",
       "answer_excerpt": "(12 - 8) × (7 - 1) = 24",
       "stored_reward": 0.0,
+      "previous_rescore_reward": 1.0,
       "production_reward": 1.0,
       "route": "game24_strict_deterministic",
       "decision_reason": "proved_fraction_24",
+      "previous_decision_reason": "proved_fraction_24",
       "stage_observation": {
         "valid_intermediate_stages": [
           {

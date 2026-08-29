@@ -81,6 +81,45 @@ def parse_strict_json(raw: Any, model: type[BaseModel]) -> BaseModel:
         raise ValueError("structured response failed schema validation") from exc
 
 
+def extract_final_answer(final_output: Any) -> str:
+    """Extract only an explicit final answer boundary from AgentFlow output.
+
+    Prefer the last answer tag, then a clearly delimited Answer heading or
+    section.  If neither exists, preserve the legacy full-output fallback;
+    the task scorer remains responsible for strict validation.
+    """
+    text = str(final_output)
+    tagged = re.findall(r"<answer>(.*?)</answer>", text, re.IGNORECASE | re.DOTALL)
+    if tagged:
+        return tagged[-1].strip()
+
+    inline_heading = re.compile(
+        r"(?im)^[ \t]*(?:\d+[.)][ \t]*)?(?:#{1,6}[ \t]*)?(?:\*{0,2}[ \t]*)?"
+        r"(?:final[ \t]+answer|answer)(?:\*{0,2})[ \t]*:[ \t]*"
+        r"(?:\*{0,2})[ \t]*(?P<body>.+?)\s*$"
+    )
+    inline_matches = list(inline_heading.finditer(text))
+    if inline_matches:
+        return inline_matches[-1].group("body").strip()
+
+    section_heading = re.compile(
+        r"(?im)^[ \t]*(?:\d+[.)][ \t]*)?(?:#{1,6}[ \t]*)?(?:\*{0,2}[ \t]*)?"
+        r"(?:final[ \t]+answer|answer)(?:\*{0,2})[ \t]*:?[ \t]*"
+        r"(?:\*{0,2})[ \t]*\r?\n"
+    )
+    sections: list[str] = []
+    for match in section_heading.finditer(text):
+        body = text[match.end():]
+        next_heading = re.search(r"(?im)^[ \t]*#{1,6}[ \t]+\S", body)
+        if next_heading:
+            body = body[:next_heading.start()]
+        if body.strip():
+            sections.append(body.strip())
+    if sections:
+        return sections[-1]
+    return text
+
+
 def _clean_expression(expression: str) -> str:
     text = expression.strip()
     text = text.replace("×", "*").replace("÷", "/")
