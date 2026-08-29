@@ -158,8 +158,9 @@ def parse_game24_answer(raw: Any, numbers: list[int] | tuple[int, ...]) -> tuple
 def game24_reward_decision(question: str, answer: Any) -> tuple[bool | None, dict[str, Any]]:
     """Return a strict Game24 reward decision when the task is identifiable.
 
-    JSON schema output is preferred.  For legacy callers, only explicitly
-    marked answer candidates are accepted; arbitrary prose is never promoted.
+    JSON schema output is preferred.  Legacy callers may pass a bare
+    expression after answer extraction when it passes the strict validator.
+    Arbitrary prose is never promoted.
     ``None`` means the question is not identifiable as a four-number Game24
     task and the general scorer may handle it.
     """
@@ -173,7 +174,10 @@ def game24_reward_decision(question: str, answer: Any) -> tuple[bool | None, dic
         checked = validate_game24_expression(candidate, numbers)
         if checked["valid"]:
             return True, checked
-    return False, validation
+    bare_validation = validate_game24_expression(str(answer), numbers)
+    if bare_validation["valid"]:
+        return True, bare_validation
+    return False, bare_validation
 
 
 def game24_prompt(question: str, memory: str, feedback: str | None = None) -> str:
