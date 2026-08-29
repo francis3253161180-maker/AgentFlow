@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple
 from PIL import Image
 
 from agentflow.engine.factory import create_llm_engine
-from agentflow.models.formatters import HighLevelPlan, HierarchicalNextStep, NextStep, QueryAnalysis
+from agentflow.models.formatters import HighLevelPlan, NextStep, QueryAnalysis
 from agentflow.models.memory import Memory
 from agentflow.models.current_step_state import build_current_step_contract
 from agentflow.models.structured_outputs import (
@@ -365,9 +365,10 @@ Be biref and precise with insight.
 Hierarchical Plan State:
 - Full plan: {compact(hierarchical_plan, 1600)}
 - Current-Step State Contract: {compact(json.dumps(contract, ensure_ascii=False), 2200)}
-- Select exactly one `target_gap` ID from `unresolved_evidence_gaps` in that
-  contract. Formulate one atomic sub-goal matched to that one gap only; do not
-  redo a completed step or combine dependent goals into one action.
+- The active plan step's `stable_step_id` is attached by the system; do not
+  copy, invent, or select a target identifier. Formulate one atomic sub-goal
+  for this one active goal only; do not redo a completed step or combine
+  dependent goals into one action.
 - Prior attempts record whether the verifier observed evidence progress. A
   repeat is valid only when it has a genuinely changed objective or target.
 - An action executing successfully is not evidence that the step is complete;
@@ -424,7 +425,7 @@ Instructions:
 4. Formulate a specific, achievable sub-goal for the selected tool that maximizes progress towards answering the query.
 
 Response Format (JSON object only; match the NextStep schema exactly):
-{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective for target_gap>", "tool_name": "<exact tool name>", "target_gap": "<exact target-gap ID from Current-Step State Contract, or empty when hierarchy is disabled>"}}
+{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective for the active step>", "tool_name": "<exact tool name>"}}
 
 Your response MUST be this JSON object and nothing else. Do not use the legacy section format below.
 Rules:
@@ -456,7 +457,7 @@ Instructions:
 4. Provide all necessary **context** (data, file names, variables) for the tool to function.
 
 Response Format (JSON object only; match the NextStep schema exactly):
-{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective for target_gap>", "tool_name": "<exact tool name>", "target_gap": "<exact target-gap ID from Current-Step State Contract, or empty when hierarchy is disabled>"}}
+{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective for the active step>", "tool_name": "<exact tool name>"}}
 
 Use the exact JSON field names above. Do not emit markdown, section headings, or any text outside the JSON object.
 
@@ -466,10 +467,9 @@ Rules:
 - Put all required tool context in the `context` field.
                     """
             
-        response_model = HierarchicalNextStep if hierarchical_plan is not None and current_step is not None else NextStep
         next_step = self.llm_engine(
             prompt_generate_next_step,
-            response_format=response_model,
+            response_format=NextStep,
             max_tokens=self.max_tokens,
         )
         if json_data is not None:
@@ -508,7 +508,7 @@ Query: {question}
 Initial analysis: {query_analysis}
 Available tools: {self.available_tools}
 
-Create at most {max_step_count} ordered, atomic evidence goals. Each step must have one objective and a concrete success criterion. Use dependencies only when a later step needs a prior verified fact. Do not create composite steps, tool scripts, or a fixed tool sequence.
+Create at most {max_step_count} ordered, atomic evidence goals. Each step must establish exactly one fact, relation, entity, or derivation input with a concrete success criterion. Split dependent facts into separate steps and use dependencies only when a later step needs a prior verified fact. Do not create composite steps, tool scripts, or a fixed tool sequence.
 
 Response Format (JSON object only; match the HighLevelPlan schema exactly):
 {{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}

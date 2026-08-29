@@ -77,7 +77,6 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         planner.max_tokens = 32
         planner.llm_engine = MagicMock(return_value=NextStep(
             justification="j", context="c", sub_goal="s", tool_name="Wikipedia_RAG_Search_Tool",
-            target_gap="identify::initial_objective::1",
         ))
         planner.generate_next_step(
             "question", "", "analysis", Memory(), 1, 3,
@@ -85,11 +84,12 @@ class HierarchicalPlanStateTest(unittest.TestCase):
             current_step={"step_id": "identify", "objective": "Identify one entity"},
         )
         prompt = planner.llm_engine.call_args.args[0]
-        self.assertEqual(planner.llm_engine.call_args.kwargs["response_format"].__name__, "HierarchicalNextStep")
+        self.assertEqual(planner.llm_engine.call_args.kwargs["response_format"].__name__, "NextStep")
         self.assertIn("Hierarchical Plan State", prompt)
         self.assertIn("Current-Step State Contract", prompt)
-        self.assertIn("unresolved_evidence_gaps", prompt)
-        self.assertIn("target_gap", prompt)
+        self.assertIn("stable_step_id", prompt)
+        self.assertNotIn("unresolved_evidence_gaps", prompt)
+        self.assertNotIn('"target_gap"', prompt)
         self.assertIn("one atomic sub-goal", prompt)
         self.assertIn("redo a completed step", prompt)
 
@@ -97,7 +97,8 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         from agentflow.models.current_step_state import (
             build_current_step_contract,
             should_revise_stagnant_action,
-            target_gap_is_current,
+            executable_signature,
+            stable_step_id,
         )
 
         step = {
@@ -108,39 +109,41 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         contract = build_current_step_contract(
             step, {"Action Step 1": {"result": "https://example.test/a"}}, [], {"completed": False},
         )
-        target = contract["unresolved_evidence_gaps"][0]["id"]
-        self.assertTrue(target_gap_is_current(target, contract))
-        self.assertFalse(target_gap_is_current("other::gap", contract))
+        stable_id = stable_step_id(step)
+        self.assertEqual(contract["stable_step_id"], stable_id)
+        self.assertEqual(contract["missing_evidence_diagnostics"], ["the entity relation"])
+        signature = executable_signature(
+            "Wikipedia_RAG_Search_Tool", 'execution = tool.execute(query="entity relation")', "", "",
+        )
         repeated, _ = should_revise_stagnant_action(
-            tool_name="Wikipedia_RAG_Search_Tool", target_gap=target,
-            sub_goal="Find the entity relation",
+            tool_name="Wikipedia_RAG_Search_Tool", stable_step_id=stable_id,
+            executable_signature=signature,
             prior_attempts=[{
-                "tool_name": "Wikipedia_RAG_Search_Tool", "target_gap": target,
-                "objective_signature": "find the entity relation", "made_progress": False,
+                "tool_name": "Wikipedia_RAG_Search_Tool", "stable_step_id": stable_id,
+                "executable_signature": signature, "made_progress": False,
             }],
         )
         self.assertTrue(repeated)
         changed, _ = should_revise_stagnant_action(
-            tool_name="Wikipedia_RAG_Search_Tool", target_gap=target,
-            sub_goal="Find the relation's founding source",
+            tool_name="Wikipedia_RAG_Search_Tool", stable_step_id=stable_id,
+            executable_signature=executable_signature(
+                "Wikipedia_RAG_Search_Tool", 'execution = tool.execute(query="relation founding source")', "", "",
+            ),
             prior_attempts=[{
-                "tool_name": "Wikipedia_RAG_Search_Tool", "target_gap": target,
-                "objective_signature": "find the entity relation", "made_progress": False,
+                "tool_name": "Wikipedia_RAG_Search_Tool", "stable_step_id": stable_id,
+                "executable_signature": signature, "made_progress": False,
             }],
         )
         self.assertFalse(changed)
 
-    def test_hierarchical_action_requires_a_target_gap_but_legacy_parse_is_compatible(self):
-        from agentflow.models.formatters import HierarchicalNextStep, NextStep
+    def test_missing_evidence_wording_churn_is_not_progress(self):
+        from agentflow.models.current_step_state import assess_step_progress
 
-        legacy = NextStep(justification="j", context="c", sub_goal="s", tool_name="tool")
-        self.assertEqual(legacy.target_gap, "")
-        with self.assertRaises(Exception):
-            HierarchicalNextStep(justification="j", context="c", sub_goal="s", tool_name="tool")
-        with self.assertRaises(Exception):
-            HierarchicalNextStep(
-                justification="j", context="c", sub_goal="s", tool_name="tool", target_gap="",
-            )
+        before = {"status": "in_progress", "verified_evidence": [], "missing_evidence": ["name the league"]}
+        after = {"status": "in_progress", "verified_evidence": [], "missing_evidence": ["specific competition name"]}
+        progress = assess_step_progress(before, after)
+        self.assertTrue(progress["missing_evidence_changed"])
+        self.assertFalse(progress["made_progress"])
 
     def test_high_level_plan_text_is_parsed_before_state_machine(self):
         from unittest.mock import MagicMock

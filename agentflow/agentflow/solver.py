@@ -12,9 +12,9 @@ from agentflow.models.memory import Memory
 from agentflow.models.current_step_state import (
     assess_step_progress,
     build_current_step_contract,
-    objective_signature,
+    executable_signature,
     should_revise_stagnant_action,
-    target_gap_is_current,
+    stable_step_id,
 )
 from agentflow.models.plan_state import (
     activate_next_step,
@@ -169,67 +169,13 @@ class Solver:
                     current_step_contract=current_step_contract,
                 )
                 context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
-                target_gap = self.planner.extract_target_gap(next_step)
-                rejection_reason = ""
+                active_step_id = stable_step_id(current_plan_step) if hierarchical_planning else ""
+                command = ""
                 if hierarchical_planning:
-                    if not target_gap_is_current(target_gap, current_step_contract):
-                        rejection_reason = (
-                            "The target_gap is not an exact ID in the current unresolved_evidence_gaps. "
-                            "Choose one listed target-gap ID and one atomic sub-goal."
-                        )
-                    else:
-                        rejected, rejection_reason = should_revise_stagnant_action(
-                            tool_name=tool_name,
-                            target_gap=target_gap,
-                            sub_goal=sub_goal,
-                            prior_attempts=prior_attempts,
-                        )
-                        if not rejected:
-                            rejection_reason = ""
-                    if rejection_reason:
-                        json_data[f"action_revision_{step_count}"] = {
-                            "rejected": True,
-                            "reason": rejection_reason,
-                            "original": {
-                                "tool_name": tool_name,
-                                "target_gap": target_gap,
-                                "sub_goal": sub_goal,
-                            },
-                        }
-                        next_step = self.planner.generate_next_step(
-                            question, image_path, query_analysis, self.memory, step_count,
-                            self.max_steps, json_data,
-                            previous_verifier_assessment=previous_verifier_assessment,
-                            hierarchical_plan=plan_state,
-                            current_step=current_plan_step,
-                            current_step_contract=current_step_contract,
-                            action_rejection=rejection_reason,
-                            attempt_label="revision",
-                        )
-                        context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
-                        target_gap = self.planner.extract_target_gap(next_step)
-                        json_data[f"action_revision_{step_count}"]["revised"] = {
-                            "tool_name": tool_name,
-                            "target_gap": target_gap,
-                            "sub_goal": sub_goal,
-                            "target_gap_valid": target_gap_is_current(target_gap, current_step_contract),
-                        }
-                    if not target_gap_is_current(target_gap, current_step_contract):
-                        json_data[f"planner_action_invalid_{step_count}"] = {
-                            "reason": "target_gap remained empty or non-current after one revision",
-                            "target_gap": target_gap,
-                            "current_gap_ids": [
-                                gap["id"] for gap in current_step_contract["unresolved_evidence_gaps"]
-                            ],
-                            "tool_name": tool_name,
-                            "sub_goal": sub_goal,
-                            "context": context,
-                        }
-                        termination_reason = "planner_action_invalid"
-                        break
+                    json_data[f"action_stable_step_id_{step_count}"] = active_step_id
                 if self.verbose:
                     print(f"\n==> 🎯 Step {step_count}: Action Prediction ({tool_name})\n")
-                    print(f"[Context]: {context}\n[Target Gap]: {target_gap}\n[Sub Goal]: {sub_goal}\n[Tool]: {tool_name}")
+                    print(f"[Context]: {context}\n[Stable Step ID]: {active_step_id}\n[Sub Goal]: {sub_goal}\n[Tool]: {tool_name}")
                     print(f"[Time]: {round(time.time() - local_start_time, 2)}s")
 
                 if tool_name is None or tool_name not in self.planner.available_tools:
@@ -239,18 +185,59 @@ class Solver:
 
                 else:
                     # [3] Generate the tool command
+                    def generate_command(record_label: str):
+                        tool_command = self.executor.generate_tool_command(
+                            question, image_path, context, sub_goal, tool_name,
+                            self.planner.toolbox_metadata[tool_name], step_count, json_data,
+                            record_label=record_label,
+                        )
+                        return self.executor.extract_explanation_and_command(tool_command)
+
                     local_start_time = time.time()
-                    tool_command = self.executor.generate_tool_command(
-                        question, 
-                        image_path, 
-                        context, 
-                        sub_goal, 
-                        tool_name, 
-                        self.planner.toolbox_metadata[tool_name],
-                        step_count,
-                        json_data
-                    )
-                    analysis, explanation, command = self.executor.extract_explanation_and_command(tool_command)
+                    analysis, explanation, command = generate_command("initial")
+                    command_signature = executable_signature(tool_name, command, context, sub_goal)
+                    if hierarchical_planning:
+                        rejected, rejection_reason = should_revise_stagnant_action(
+                            tool_name=tool_name, stable_step_id=active_step_id,
+                            executable_signature=command_signature, prior_attempts=prior_attempts,
+                        )
+                        if rejected:
+                            json_data[f"action_revision_{step_count}"] = {
+                                "rejected": True, "reason": rejection_reason,
+                                "stable_step_id": active_step_id,
+                                "original": {
+                                    "tool_name": tool_name, "sub_goal": sub_goal, "context": context,
+                                    "command": command, "executable_signature": command_signature,
+                                },
+                            }
+                            next_step = self.planner.generate_next_step(
+                                question, image_path, query_analysis, self.memory, step_count,
+                                self.max_steps, json_data,
+                                previous_verifier_assessment=previous_verifier_assessment,
+                                hierarchical_plan=plan_state, current_step=current_plan_step,
+                                current_step_contract=current_step_contract,
+                                action_rejection=rejection_reason, attempt_label="revision",
+                            )
+                            context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
+                            analysis, explanation, command = generate_command("revision")
+                            command_signature = executable_signature(tool_name, command, context, sub_goal)
+                            json_data[f"action_revision_{step_count}"]["revised"] = {
+                                "tool_name": tool_name, "sub_goal": sub_goal, "context": context,
+                                "command": command, "executable_signature": command_signature,
+                            }
+                            still_stagnant, _ = should_revise_stagnant_action(
+                                tool_name=tool_name, stable_step_id=active_step_id,
+                                executable_signature=command_signature, prior_attempts=prior_attempts,
+                            )
+                            if still_stagnant:
+                                json_data[f"planner_action_stagnant_{step_count}"] = {
+                                    "reason": "revised action retained the same executable intent after no progress",
+                                    "stable_step_id": active_step_id,
+                                    "tool_name": tool_name, "sub_goal": sub_goal, "context": context,
+                                    "command": command, "executable_signature": command_signature,
+                                }
+                                termination_reason = "planner_action_stagnant"
+                                break
                     if self.verbose:
                         print(f"\n==> 📝 Step {step_count}: Command Generation ({tool_name})\n")
                         print(f"[Analysis]: {analysis}\n[Explanation]: {explanation}\n[Command]: {command}")
@@ -297,19 +284,24 @@ class Solver:
                     progress = assess_step_progress(before_current_step, after_current_step)
                     attempt = {
                         "attempt_index": len(prior_attempts) + 1,
+                        "stable_step_id": active_step_id,
                         "tool_name": tool_name,
-                        "target_gap": target_gap,
                         "sub_goal": sub_goal,
-                        "objective_signature": objective_signature(sub_goal),
-                        "new_evidence_obtained": progress["made_progress"],
+                        "context": context,
+                        "command": command,
+                        "executable_signature": executable_signature(tool_name, command, context, sub_goal),
+                        "verified_evidence_before": progress["verified_evidence_before"],
+                        "verified_evidence_after": progress["verified_evidence_after"],
+                        "new_evidence_obtained": bool(progress["evidence_added"]),
                         "made_progress": progress["made_progress"],
+                        "verifier_rationale": verification_payload.get("rationale", ""),
                     }
                     prior_attempts.append(attempt)
                     previous_verifier_assessment = verification_payload
                     json_data[f"step_verification_{step_count}"] = verification_payload
                     json_data[f"current_step_progress_{step_count}"] = {
                         "active_step_id": current_plan_step["step_id"],
-                        "target_gap": target_gap,
+                        "stable_step_id": active_step_id,
                         "attempt": attempt,
                         "progress": progress,
                     }

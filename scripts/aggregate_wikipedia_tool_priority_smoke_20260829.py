@@ -146,6 +146,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
             "planner_context": compact(planner.get("context")) if isinstance(planner, dict) else None,
             "planner_subgoal": compact(planner.get("sub_goal")) if isinstance(planner, dict) else None,
             "planner_target_gap": compact(planner.get("target_gap")) if isinstance(planner, dict) else None,
+            "stable_step_id": compact(total.get(f"action_stable_step_id_{ordinal}")),
             "planner_revision": compact(revised_planner),
             "action_revision": compact(total.get(f"action_revision_{ordinal}")),
             "routing_state": compact(total.get(f"action_predictor_{ordinal}_routing_state")),
@@ -156,7 +157,8 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
                 compact(current_plan_step.get("missing_evidence", [])) if current_plan_step else []
             ),
             "executor_command": compact(action.get("command")),
-            "tool_result": compact(result),
+            # Keep the compact evidence provenance below; raw tool payloads
+            # remain only in untracked rollout_data.
             "retrieved_evidence": extract_evidence(result),
             "search_internal_telemetry": search_telemetry(result),
             "verifier": compact(verifier),
@@ -165,7 +167,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
     known_urls: list[str] = []
     for step in steps:
         step["known_urls_before_step"] = list(known_urls)
-        known_urls.extend(extract_urls(step["tool_result"]))
+        known_urls.extend(extract_urls(step["retrieved_evidence"]))
         known_urls = sorted(set(known_urls))
     tool_sequence = [step["planner_tool_choice"] for step in steps if step["planner_tool_choice"]]
     planner_ordinals = sorted({
@@ -184,11 +186,28 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
             "revision": compact(total.get(f"action_revision_{ordinal}")),
             "revised_action": compact(revision),
             "planner_action_invalid": compact(total.get(f"planner_action_invalid_{ordinal}")),
+            "planner_action_stagnant": compact(total.get(f"planner_action_stagnant_{ordinal}")),
             "tool_command": compact(total.get(f"tool_commander_{ordinal}_response")),
-            "tool_result": compact(total.get(f"tool_result_{ordinal}")),
+            "revised_tool_command": compact(total.get(f"tool_commander_{ordinal}_revision_response")),
+            "retrieved_evidence": extract_evidence(total.get(f"tool_result_{ordinal}")),
             "step_verification": compact(total.get(f"step_verification_{ordinal}")),
             "progress": compact(total.get(f"current_step_progress_{ordinal}")),
         })
+        # The solver records the executed command and normalized signature in
+        # current_step_progress, not in the planner action.  Surface both in
+        # this compact audit view so the stale-action guard is inspectable
+        # without consulting the raw rollout JSON.
+        progress = total.get(f"current_step_progress_{ordinal}")
+        if isinstance(progress, dict):
+            attempt = progress.get("attempt")
+            if isinstance(attempt, dict):
+                planner_actions[-1]["executed_command"] = compact(attempt.get("command"))
+                planner_actions[-1]["executable_signature"] = compact(
+                    attempt.get("executable_signature")
+                )
+                planner_actions[-1]["stable_step_id"] = compact(
+                    attempt.get("stable_step_id")
+                )
     termination_cause, termination_evidence = classify_termination(total, steps, max_steps, max_time)
     unresolved = [
         step for step in (total.get("high_level_plan", {}) or {}).get("steps", [])

@@ -88,7 +88,7 @@ class Executor:
             self.query_cache_dir = os.path.join(self.root_cache_dir, timestamp)
         os.makedirs(self.query_cache_dir, exist_ok=True)
 
-    def generate_tool_command(self, question: str, image: str, context: str, sub_goal: str, tool_name: str, tool_metadata: Dict[str, Any], step_count: int = 0, json_data: Any = None) -> Any:
+    def generate_tool_command(self, question: str, image: str, context: str, sub_goal: str, tool_name: str, tool_metadata: Dict[str, Any], step_count: int = 0, json_data: Any = None, record_label: str = "initial") -> Any:
         prompt_generate_tool_command = f"""
         Task: Generate a precise command to execute the selected tool.
 
@@ -116,8 +116,11 @@ Use the exact field names above. Do not emit markdown fences, legacy section hea
 
         tool_command = self.llm_generate_tool_command(prompt_generate_tool_command, response_format=ToolCommand)
         if json_data is not None:
-            json_data[f"tool_commander_{step_count}_prompt"] = prompt_generate_tool_command
-            json_data[f"tool_commander_{step_count}_response"] = str(tool_command)
+            prefix = f"tool_commander_{step_count}"
+            if record_label != "initial":
+                prefix += f"_{record_label}"
+            json_data[f"{prefix}_prompt"] = prompt_generate_tool_command
+            json_data[f"{prefix}_response"] = str(tool_command)
 
         return tool_command
 
