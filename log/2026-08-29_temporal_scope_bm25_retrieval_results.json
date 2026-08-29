@@ -1,0 +1,1105 @@
+{
+  "cleanup_markers": [
+    "\u001b[36m(TaskRunner pid=359724)\u001b[0m bind role actor_rollout method sleep to class <class 'verl.single_controller.ray.base.create_colocated_worker_cls.<locals>.WorkerDict'>",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:35:47,663 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP trigger=manager_sleep outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:35:47,663 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:35:47,663 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:35:47,665 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:35:47,666 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:35:59,589 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:35:59,590 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=11.927s",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:36:00,445 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP wake_up complete; request acceptance resumed",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:37:59,479 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP trigger=normal_complete outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:37:59,479 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:37:59,480 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:37:59,484 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:37:59,484 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(TaskRunner pid=359724)\u001b[0m VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.0003343261778354645, 'sleep_started': True, 'cleanup_duration_seconds': 0.662691168487072}]",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:38:00,141 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=360791)\u001b[0m 2026-08-29 23:38:00,142 [INFO] (Process-360791 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=0.663s"
+  ],
+  "dropped_or_invalid_rollout_count": 2,
+  "factual_retrieval_rollout_count": 2,
+  "fatal_lifecycle_markers": [],
+  "fixed_role_runtime_totals": {
+    "step_verifier_calls": 5,
+    "supervisor_calls": 4
+  },
+  "gpu_peak_memory_mib": 20609.0,
+  "input_manifest": {
+    "benchmark_id": "2hop__13592_49388",
+    "ground_truth_sha256": "aea92132c4cbeb263e6ac2bf6c183b5d81737f179f21efdc5863739672f0f470",
+    "id": 4,
+    "output_parquet": "/root/autodl-tmp/tmp/temporal_scope_bm25_retrieval_20260829/musique_group4.parquet",
+    "output_parquet_sha256": "289c8afbb9fa202262696924e12dba20016bae2b845e3411ab37a87c912346fd",
+    "purpose": "bounded structural smoke only; no optimizer/checkpoint/training",
+    "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+    "rollout_n": 4,
+    "schema_version": 1,
+    "seed": 20260829,
+    "selection": "fixed existing MuSiQue probe group 4; no resampling",
+    "source_idx": 259,
+    "source_parquet": "/root/autodl-tmp/tmp/multihop_allqwen_probe_20260829/musique.parquet",
+    "source_parquet_sha256": "0dba79b972473a34b27586f24d7e1a0f2b179d5b8a92bb545417d7bc8fc8e450"
+  },
+  "mixed_group": false,
+  "partial_result": true,
+  "purpose": "one-question x4 rollout-only structural routing smoke; not a training result",
+  "requested_rollout_count": 4,
+  "retained_rollout_count": 2,
+  "reward_mean": 0.0,
+  "reward_vector": [
+    0.0,
+    0.0
+  ],
+  "role_routing": [
+    "{\"ark_reasoning_effort\": \"minimal\", \"coverage_auditor\": \"doubao-seed-2-0-lite-260428\", \"executor\": \"vllm-qwen-base\", \"final_generator\": \"vllm-qwen-base\", \"fixed_role_temperature\": 0.0, \"high_level_evidence_planner\": \"doubao-seed-2-0-lite-260428\", \"planner_main\": \"vllm-qwen-actor\", \"query_analysis\": \"vllm-qwen-base\", \"step_verifier\": \"doubao-seed-2-0-lite-260428\", \"supervisor_temperature\": 0.0, \"verifier_temperature\": 0.0}"
+  ],
+  "rollout_count": 2,
+  "rollout_dir": "rollout_data/46.38.243.197/temporal-scope-bm25-musique-group4-20260829_20260829-233605/Qwen2.5-7B-Instruct_20260829-233621/train",
+  "schema_version": 1,
+  "search_internal_doubao_calls": 0,
+  "search_internal_openai_calls": 0,
+  "search_internal_telemetry": [
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 2,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 1,
+      "shared_cache_writes": 2,
+      "singleflight_wait_count": 1,
+      "singleflight_wait_seconds": 0.5097820423543453,
+      "throttle_wait_count": 1,
+      "throttle_wait_seconds": 0.7493458464741707
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 3,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 3,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 1,
+      "throttle_wait_seconds": 0.288531057536602
+    },
+    {
+      "cache_hits": 3,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 0,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_url",
+      "ranking": "deterministic_bm25_coverage_proximity",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_url",
+      "ranking": "deterministic_bm25_coverage_proximity",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    }
+  ],
+  "search_telemetry_totals": {
+    "cache_hits": 3.0,
+    "doubao_calls": 0.0,
+    "http_429": 0.0,
+    "http_requests": 5.0,
+    "openai_calls": 0.0,
+    "retries": 0.0,
+    "retry_after_seconds": 0.0,
+    "search_internal_llm_calls": 0.0,
+    "shared_cache_hits": 1.0,
+    "shared_cache_writes": 5.0,
+    "singleflight_wait_count": 1.0,
+    "singleflight_wait_seconds": 0.5097820423543453,
+    "throttle_wait_count": 2.0,
+    "throttle_wait_seconds": 1.0378769040107727
+  },
+  "supervisor_preflight": {
+    "ark_reasoning_effort": "minimal",
+    "benchmark_id": "2hop__13592_49388",
+    "boundary_audits": [
+      {
+        "attempt": 1,
+        "marker_categories": {
+          "arithmetic_not_in_recorded_evidence": [],
+          "command_or_query_syntax": false,
+          "direct_answer_language": false,
+          "tool_names": [],
+          "urls": []
+        },
+        "marker_count": 0,
+        "parse_error_category": null,
+        "parsed_schema_success": true,
+        "response_length": 751,
+        "response_sha256": "007844219bd2198faf5420daaeca684c3feb8209ccffc4ab43a912f9e35d9eff",
+        "role": "high_level_evidence_planner"
+      },
+      {
+        "attempt": 1,
+        "marker_categories": {
+          "arithmetic_not_in_recorded_evidence": [],
+          "command_or_query_syntax": false,
+          "direct_answer_language": false,
+          "tool_names": [],
+          "urls": []
+        },
+        "marker_count": 0,
+        "parse_error_category": null,
+        "parsed_schema_success": true,
+        "response_length": 976,
+        "response_sha256": "327b2d33cfeb0530e2ffae83e1a34b2bc9be537061cc77982b7fdf0029dc4dcd",
+        "role": "coverage_auditor"
+      }
+    ],
+    "coverage": {
+      "coverage": {
+        "composite_step_ids": [],
+        "covered_step_ids": [
+          "step_1",
+          "step_2"
+        ],
+        "independently_necessary_requirements": [
+          "Identify the specific football league where Barcelona won championship titles in both 1948 and 1949",
+          "Retrieve the total number of games played in a single season of the confirmed league"
+        ],
+        "introduced_constraints": [],
+        "missing_requirements": [],
+        "rationale": "All independently necessary evidence requirements to answer the query are fully covered by the two atomic plan steps, dependencies are properly explicit, no steps combine unrelated requirements, no unneeded constraints are added, and no redundant steps are present.",
+        "redundant_step_ids": [],
+        "requirement_coverage": [
+          {
+            "covered_step_ids": [
+              "step_1"
+            ],
+            "requirement": "Identify the specific football league where Barcelona won championship titles in both 1948 and 1949"
+          },
+          {
+            "covered_step_ids": [
+              "step_2"
+            ],
+            "requirement": "Retrieve the total number of games played in a single season of the confirmed league"
+          }
+        ],
+        "sufficient": true
+      },
+      "valid": true
+    },
+    "hierarchical_plan_max_steps": 3,
+    "last_request_metadata": {
+      "max_tokens": 512,
+      "model": "doubao-seed-2-0-lite-260428",
+      "reasoning_effort": "minimal",
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "model": "doubao-seed-2-0-lite-260428",
+    "passed": true,
+    "purpose": "supervisor-only boundary preflight; no actor action, tool, scoring, or training",
+    "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+    "source_idx": 259,
+    "source_sha256": "289c8afbb9fa202262696924e12dba20016bae2b845e3411ab37a87c912346fd",
+    "supervisor_call_count": 2,
+    "temperature": 0.0
+  },
+  "termination_cause_counts": {
+    "planner_action_stagnant": 2
+  },
+  "trajectories": [
+    {
+      "configured_max_steps": 6,
+      "configured_max_time_seconds": 1200.0,
+      "distinct_tools": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 44.17,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Confirmed, named league entity that verifiably hosted FC Barcelona's top-tier competitive titles in both 1948 and 1949, as the retrieved Wikipedia snippets do not reference Barcelona's 1948 or 1949 title wins or the specific league those titles were claimed in; step_2: A verified count of total games per season for the relevant iteration of the confirmed league",
+      "fixed_role_runtime_telemetry": {
+        "ark_reasoning_effort": "minimal",
+        "step_verifier_calls": 1,
+        "supervisor_calls": 2
+      },
+      "ground_truth": "38",
+      "high_level_plan_coverage_final": {
+        "composite_step_ids": [],
+        "covered_step_ids": [
+          "step_1",
+          "step_2"
+        ],
+        "independently_necessary_requirements": [
+          "Identify the specific league where FC Barcelona won top-tier competitive titles in both 1948 and 1949",
+          "Determine the total number of games in a season of the identified league corresponding to the relevant period"
+        ],
+        "introduced_constraints": [],
+        "missing_requirements": [],
+        "rationale": "All independently necessary evidence requirements to answer the query are fully covered by the two atomic plan steps, dependencies are properly explicit, no steps combine unrelated requirements, no unneeded extra constraints are added, and no redundant steps exist.",
+        "redundant_step_ids": [],
+        "requirement_coverage": [
+          {
+            "covered_step_ids": [
+              "step_1"
+            ],
+            "requirement": "Identify the specific league where FC Barcelona won top-tier competitive titles in both 1948 and 1949"
+          },
+          {
+            "covered_step_ids": [
+              "step_2"
+            ],
+            "requirement": "Determine the total number of games in a season of the identified league corresponding to the relevant period"
+          }
+        ],
+        "sufficient": true
+      },
+      "high_level_plan_coverage_initial": {
+        "composite_step_ids": [],
+        "covered_step_ids": [
+          "step_1",
+          "step_2"
+        ],
+        "independently_necessary_requirements": [
+          "Identify the specific league where FC Barcelona won top-tier competitive titles in both 1948 and 1949",
+          "Determine the total number of games in a season of the identified league corresponding to the relevant period"
+        ],
+        "introduced_constraints": [],
+        "missing_requirements": [],
+        "rationale": "All independently necessary evidence requirements to answer the query are fully covered by the two atomic plan steps, dependencies are properly explicit, no steps combine unrelated requirements, no unneeded extra constraints are added, and no redundant steps exist.",
+        "redundant_step_ids": [],
+        "requirement_coverage": [
+          {
+            "covered_step_ids": [
+              "step_1"
+            ],
+            "requirement": "Identify the specific league where FC Barcelona won top-tier competitive titles in both 1948 and 1949"
+          },
+          {
+            "covered_step_ids": [
+              "step_2"
+            ],
+            "requirement": "Determine the total number of games in a season of the identified league corresponding to the relevant period"
+          }
+        ],
+        "sufficient": true
+      },
+      "high_level_plan_coverage_valid": true,
+      "high_level_plan_validated": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league in which FC Barcelona won top-tier competitive titles in both 1948 and 1949",
+            "status": "pending",
+            "step_id": "step_1",
+            "success_criteria": "A confirmed, named league entity that matches the described title-winning context for Barcelona across those two years",
+            "verified_evidence": []
+          },
+          {
+            "depends_on": [
+              "step_1"
+            ],
+            "missing_evidence": [],
+            "objective": "Determine the total number of games played in a standard season of the identified league corresponding to the 1948 and 1949 title-winning period",
+            "status": "pending",
+            "step_id": "step_2",
+            "success_criteria": "A verified count of total games per season for the relevant iteration of the confirmed league",
+            "verified_evidence": []
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        }
+      ],
+      "requirement_to_step_mapping": {
+        "Determine the total number of games in a season of the identified league corresponding to the relevant period": [
+          "step_2"
+        ],
+        "Identify the specific league where FC Barcelona won top-tier competitive titles in both 1948 and 1949": [
+          "step_1"
+        ]
+      },
+      "reward": 0.0,
+      "role_routing": {
+        "ark_reasoning_effort": "minimal",
+        "coverage_auditor": "doubao-seed-2-0-lite-260428",
+        "executor": "vllm-qwen-base",
+        "final_generator": "vllm-qwen-base",
+        "fixed_role_temperature": 0.0,
+        "high_level_evidence_planner": "doubao-seed-2-0-lite-260428",
+        "planner_main": "vllm-qwen-actor",
+        "query_analysis": "vllm-qwen-base",
+        "step_verifier": "doubao-seed-2-0-lite-260428",
+        "supervisor_temperature": 0.0,
+        "verifier_temperature": 0.0
+      },
+      "rollout_file": "rollout_data/46.38.243.197/temporal-scope-bm25-musique-group4-20260829_20260829-233605/Qwen2.5-7B-Instruct_20260829-233621/train/step_1/idx_259/rollout_6feeffe1-f868-4c7d-80bd-caf4aa565cd1.json",
+      "steps": [
+        {
+          "planner_subgoal": "Identify the specific league where FC Barcelona won top-tier competitive titles in both 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "RCD Espanyol",
+              "url": "https://en.wikipedia.org/wiki/RCD_Espanyol"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 2,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 1,
+              "shared_cache_writes": 2,
+              "singleflight_wait_count": 1,
+              "singleflight_wait_seconds": 0.5097820423543453,
+              "throttle_wait_count": 1,
+              "throttle_wait_seconds": 0.7493458464741707
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmed, named league entity that verifiably hosted FC Barcelona's top-tier competitive titles in both 1948 and 1949, as the retrieved Wikipedia snippets do not reference Barcelona's 1948 or 1949 title wins or the specific league those ti…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific league where FC Barcelona won top-tier competitive titles in both 1948 and 1949"
+              }
+            ],
+            "verified_evidence": []
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        }
+      ],
+      "supervisor_last_request_metadata": {
+        "max_tokens": 512,
+        "model": "doubao-seed-2-0-lite-260428",
+        "reasoning_effort": "minimal",
+        "response_format": "json_object",
+        "temperature": 0.0,
+        "top_p": 1.0
+      },
+      "supervisor_role_boundary_audits": [
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 754,
+          "response_sha256": "51fac839575a344af22c3cefe607202931566a1ad89bcf9e50efd8bd4b73b4b7",
+          "role": "high_level_evidence_planner"
+        },
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1030,
+          "response_sha256": "14b1b735a545b4420dd54d9461cede5f8a17890ce6c9897cfedec1adf03ba37e",
+          "role": "coverage_auditor"
+        }
+      ],
+      "termination_cause": "planner_action_stagnant",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_stagnant",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 6,
+      "configured_max_time_seconds": 1200.0,
+      "distinct_tools": [
+        "Web_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 90.35,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_2: Verified count of total games per season for La Liga (the identified league where Barcelona won 1948 and 1949 titles)",
+      "fixed_role_runtime_telemetry": {
+        "ark_reasoning_effort": "minimal",
+        "step_verifier_calls": 4,
+        "supervisor_calls": 2
+      },
+      "ground_truth": "38",
+      "high_level_plan_coverage_final": {
+        "composite_step_ids": [],
+        "covered_step_ids": [
+          "step_1",
+          "step_2"
+        ],
+        "independently_necessary_requirements": [
+          "Identify the specific league where Barcelona won titles in 1948 and 1949",
+          "Determine the number of games in a standard season of the identified league"
+        ],
+        "introduced_constraints": [],
+        "missing_requirements": [],
+        "rationale": "All independently necessary evidence requirements to answer the query are captured as distinct atomic steps, dependencies between steps are properly declared, no steps combine unrelated requirements, no unneeded constraints are added beyond the literal query, and no redundant steps are present.",
+        "redundant_step_ids": [],
+        "requirement_coverage": [
+          {
+            "covered_step_ids": [
+              "step_1"
+            ],
+            "requirement": "Identify the specific league where Barcelona won titles in 1948 and 1949"
+          },
+          {
+            "covered_step_ids": [
+              "step_2"
+            ],
+            "requirement": "Determine the number of games in a standard season of the identified league"
+          }
+        ],
+        "sufficient": true
+      },
+      "high_level_plan_coverage_initial": {
+        "composite_step_ids": [],
+        "covered_step_ids": [
+          "step_1",
+          "step_2"
+        ],
+        "independently_necessary_requirements": [
+          "Identify the specific league where Barcelona won titles in 1948 and 1949",
+          "Determine the number of games in a standard season of the identified league"
+        ],
+        "introduced_constraints": [],
+        "missing_requirements": [],
+        "rationale": "All independently necessary evidence requirements to answer the query are captured as distinct atomic steps, dependencies between steps are properly declared, no steps combine unrelated requirements, no unneeded constraints are added beyond the literal query, and no redundant steps are present.",
+        "redundant_step_ids": [],
+        "requirement_coverage": [
+          {
+            "covered_step_ids": [
+              "step_1"
+            ],
+            "requirement": "Identify the specific league where Barcelona won titles in 1948 and 1949"
+          },
+          {
+            "covered_step_ids": [
+              "step_2"
+            ],
+            "requirement": "Determine the number of games in a standard season of the identified league"
+          }
+        ],
+        "sufficient": true
+      },
+      "high_level_plan_coverage_valid": true,
+      "high_level_plan_validated": {
+        "steps": [
+          {
+            "depends_on": [],
+            "missing_evidence": [],
+            "objective": "Identify the specific league where Barcelona won titles in 1948 and 1949",
+            "status": "pending",
+            "step_id": "step_1",
+            "success_criteria": "A confirmed, named league entity that matches the described title-winning context for Barcelona in those two years",
+            "verified_evidence": []
+          },
+          {
+            "depends_on": [
+              "step_1"
+            ],
+            "missing_evidence": [],
+            "objective": "Determine the number of games played in a standard season of the identified league",
+            "status": "pending",
+            "step_id": "step_2",
+            "success_criteria": "A verified count of total games per season for the specified league",
+            "verified_evidence": []
+          }
+        ]
+      },
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "complete",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_2"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_2"
+        }
+      ],
+      "requirement_to_step_mapping": {
+        "Determine the number of games in a standard season of the identified league": [
+          "step_2"
+        ],
+        "Identify the specific league where Barcelona won titles in 1948 and 1949": [
+          "step_1"
+        ]
+      },
+      "reward": 0.0,
+      "role_routing": {
+        "ark_reasoning_effort": "minimal",
+        "coverage_auditor": "doubao-seed-2-0-lite-260428",
+        "executor": "vllm-qwen-base",
+        "final_generator": "vllm-qwen-base",
+        "fixed_role_temperature": 0.0,
+        "high_level_evidence_planner": "doubao-seed-2-0-lite-260428",
+        "planner_main": "vllm-qwen-actor",
+        "query_analysis": "vllm-qwen-base",
+        "step_verifier": "doubao-seed-2-0-lite-260428",
+        "supervisor_temperature": 0.0,
+        "verifier_temperature": 0.0
+      },
+      "rollout_file": "rollout_data/46.38.243.197/temporal-scope-bm25-musique-group4-20260829_20260829-233605/Qwen2.5-7B-Instruct_20260829-233621/train/step_1/idx_259/rollout_84bc1547-9efe-4e0c-8861-f8725bf5d74c.json",
+      "steps": [
+        {
+          "planner_subgoal": "Identify the specific league where Barcelona won titles in 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 3,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 3,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 1,
+              "throttle_wait_seconds": 0.288531057536602
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Evidence confirming the specific league where Barcelona won titles in 1948 and 1949, as the retrieved search results do not explicitly state that Barcelona won league titles in those two years or name the exact corresponding league for thos…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific league where Barcelona won titles in 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain that competes in La Liga, the top division of Spanish football"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        },
+        {
+          "planner_subgoal": "Identify the specific league where Barcelona won titles in 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 3,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 0,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Evidence confirming the specific league where Barcelona won titles in 1948 and 1949, as the retrieved search results do not explicitly state that Barcelona won league titles in those two years or name the exact corresponding league for thos…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific league where Barcelona won titles in 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain that competes in La Liga, the top division of Spanish football"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Evidence confirming the specific league where Barcelona won titles in 1948 and 1949, as the retrieved search results do not explicitly state that Barcelona won league titles in those two years or name the exact corresponding league for those 1948-1949 titles"
+          ]
+        },
+        {
+          "planner_subgoal": "Identify the specific league where Barcelona won titles in 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "bm25_score": 16.93548459,
+              "chunk_index": 38,
+              "lexical_score": 17.83634666,
+              "matched_numeric_tokens": [
+                "1948",
+                "1949"
+              ],
+              "matched_terms": [
+                "1948",
+                "1949",
+                "and",
+                "barcelona",
+                "in",
+                "titles",
+                "won"
+              ],
+              "phrase_hits": 4,
+              "proximity_span": 58,
+              "query_term_count": 10,
+              "query_term_coverage": 7,
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "bm25_score": 11.9741242,
+              "chunk_index": 171,
+              "lexical_score": 12.67479086,
+              "matched_numeric_tokens": [
+                "1948",
+                "1949"
+              ],
+              "matched_terms": [
+                "1948",
+                "1949",
+                "and",
+                "in",
+                "titles"
+              ],
+              "phrase_hits": 4,
+              "proximity_span": 75,
+              "query_term_count": 10,
+              "query_term_coverage": 5,
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_url",
+              "ranking": "deterministic_bm25_coverage_proximity",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 3,
+          "step_verifier": {
+            "completed": true,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 3"
+                ],
+                "evidence_quote_count": 2,
+                "requirement": "Identify the specific league where Barcelona won titles in 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "The specific league where Barcelona won titles in 1948 and 1949 is La Liga, the top division of Spanish football."
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Evidence confirming the specific league where Barcelona won titles in 1948 and 1949, as the retrieved search results do not explicitly state that Barcelona won league titles in those two years or name the exact corresponding league for those 1948-1949 titles"
+          ]
+        },
+        {
+          "planner_subgoal": "Find the number of games played in a standard season of La Liga",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Web_RAG_Search_Tool",
+          "retrieved_evidence_refs": [],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_url",
+              "ranking": "deterministic_bm25_coverage_proximity",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "stable_step_id": "step_2",
+          "step": 4,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Verified count of total games per season for La Liga (the identified league where Barcelona won 1948 and 1949 titles)"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 4"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Determine the number of games in a standard season of the identified league"
+              }
+            ],
+            "verified_evidence": []
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 2,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [
+                  "Web_RAG_Search_Tool"
+                ],
+                "urls": [
+                  "https://www.laliga.com/en-laliga"
+                ]
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        }
+      ],
+      "supervisor_last_request_metadata": {
+        "max_tokens": 512,
+        "model": "doubao-seed-2-0-lite-260428",
+        "reasoning_effort": "minimal",
+        "response_format": "json_object",
+        "temperature": 0.0,
+        "top_p": 1.0
+      },
+      "supervisor_role_boundary_audits": [
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 630,
+          "response_sha256": "e4b17d2f9e4ef0ef87d0db9549c35d91bdc26f60bd7b11aad172cbc77569c7f8",
+          "role": "high_level_evidence_planner"
+        },
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 934,
+          "response_sha256": "40f98e1c26d0d1a95d715a547ebdb7a3a26845b1fd46c0996af66e755b55f573",
+          "role": "coverage_auditor"
+        }
+      ],
+      "termination_cause": "planner_action_stagnant",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_stagnant",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Web_RAG_Search_Tool"
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_stop_signals": []
+    }
+  ],
+  "two_or_more_distinct_tools_rollout_count": 1,
+  "unsupported_final_claim_rollout_count": 0,
+  "verifier_continue_followed_by_next_planner_action_count": 0
+}

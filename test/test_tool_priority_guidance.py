@@ -230,6 +230,25 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
         self.assertEqual(second["web_search_telemetry"]["cache_hits"], 1)
         self.assertEqual(get.call_count, 1)
 
+    def test_web_rag_bm25_prefers_rare_relation_and_exact_numeric_tokens(self):
+        """Ranking must not let a long generic chunk drown a rare dated fact."""
+        from agentflow.tools.web_search.tool import Web_Search_Tool
+
+        tool = Web_Search_Tool()
+        generic = " ".join(["league Barcelona title season"] * 30)
+        dated_relation = (
+            "A historical record confirms Barcelona won back to back league titles "
+            "in 1948 and 1949."
+        )
+        ranked = tool._rank(
+            "Barcelona league titles 1948 1949",
+            [generic, dated_relation],
+        )
+        self.assertEqual(ranked[0]["chunk_index"], 1)
+        self.assertEqual(ranked[0]["matched_numeric_tokens"], ["1948", "1949"])
+        self.assertGreater(ranked[0]["query_term_coverage"], ranked[1]["query_term_coverage"])
+        self.assertIn("bm25_score", ranked[0])
+
 
 if __name__ == "__main__":
     unittest.main()

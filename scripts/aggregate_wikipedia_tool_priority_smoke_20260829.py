@@ -60,6 +60,13 @@ def extract_evidence(value: Any) -> list[dict[str, Any]]:
                         "excerpt": compact(chunk.get("excerpt", ""), 400),
                         "chunk_index": chunk.get("chunk_index"),
                         "lexical_score": chunk.get("lexical_score"),
+                        "bm25_score": chunk.get("bm25_score"),
+                        "query_term_coverage": chunk.get("query_term_coverage"),
+                        "query_term_count": chunk.get("query_term_count"),
+                        "matched_numeric_tokens": chunk.get("matched_numeric_tokens", []),
+                        "matched_terms": chunk.get("matched_terms", []),
+                        "phrase_hits": chunk.get("phrase_hits"),
+                        "proximity_span": chunk.get("proximity_span"),
                     })
         evidence.extend(extract_evidence(child))
     return evidence
@@ -259,6 +266,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         "high_level_plan_revised": compact(total.get("high_level_plan_revised"), 1800),
         "high_level_plan_coverage_final": compact(total.get("high_level_plan_coverage_final"), 1800),
         "high_level_plan_coverage_valid": total.get("high_level_plan_coverage_valid"),
+        "high_level_plan_validated": compact(total.get("high_level_plan_validated"), 1800),
         "requirement_to_step_mapping": compact(total.get("requirement_to_step_mapping")),
         "high_level_plan": compact(total.get("high_level_plan"), 1800),
         "plan_transitions": compact(total.get("plan_transitions"), 1800),
@@ -310,7 +318,15 @@ def compact_trajectory_for_handoff(entry: dict[str, Any]) -> dict[str, Any]:
     steps = []
     for step in entry["steps"]:
         evidence = [
-            {key: item.get(key) for key in ("title", "url", "chunk_index", "lexical_score") if item.get(key) is not None}
+            {
+                key: item.get(key)
+                for key in (
+                    "title", "url", "chunk_index", "lexical_score", "bm25_score",
+                    "query_term_coverage", "query_term_count", "matched_numeric_tokens",
+                    "matched_terms", "phrase_hits", "proximity_span",
+                )
+                if item.get(key) is not None
+            }
             for item in step.get("retrieved_evidence", [])
         ]
         steps.append({
@@ -331,6 +347,8 @@ def compact_trajectory_for_handoff(entry: dict[str, Any]) -> dict[str, Any]:
             "supervisor_role_boundary_audits", "termination_reason", "execution_time_seconds",
             "configured_max_steps", "configured_max_time_seconds", "termination_cause",
             "termination_cause_evidence", "high_level_plan_coverage_valid",
+            "high_level_plan_coverage_initial", "high_level_plan_coverage_final",
+            "high_level_plan_validated",
             "requirement_to_step_mapping", "plan_transitions", "tool_sequence", "distinct_tools",
             "used_factual_retrieval", "unsupported_final_claim", "verifier_stop_signals",
         )
@@ -348,12 +366,16 @@ def main() -> None:
     parser.add_argument("--supervisor-preflight", type=Path)
     parser.add_argument("--max-steps", type=int, required=True)
     parser.add_argument("--max-time", type=float, required=True)
+    parser.add_argument("--expected-rollouts", type=int, default=4)
+    parser.add_argument("--allow-partial", action="store_true", help="summarize retained valid rollouts after bounded slot drops")
     parser.add_argument("--compact", action="store_true", help="omit raw prompts/evidence excerpts from tracked handoff JSON")
     args = parser.parse_args()
     files = sorted(args.rollout_dir.rglob("*.json"))
     entries = [trajectory(path, args.max_steps, args.max_time) for path in files]
-    if len(entries) != 4:
-        raise SystemExit(f"expected exactly four rollout files, found {len(entries)}")
+    if len(entries) != args.expected_rollouts and not args.allow_partial:
+        raise SystemExit(f"expected exactly {args.expected_rollouts} rollout files, found {len(entries)}")
+    if not entries:
+        raise SystemExit("no retained rollout files found")
     rewards = [float(entry["reward"]) for entry in entries]
     telemetry = [item for entry in entries for step in entry["steps"] for item in step["search_internal_telemetry"]]
     gpu_peak = None
@@ -402,6 +424,10 @@ def main() -> None:
         "supervisor_preflight": preflight,
         "rollout_dir": str(args.rollout_dir),
         "rollout_count": len(entries),
+        "requested_rollout_count": args.expected_rollouts,
+        "retained_rollout_count": len(entries),
+        "dropped_or_invalid_rollout_count": max(0, args.expected_rollouts - len(entries)),
+        "partial_result": len(entries) != args.expected_rollouts,
         "reward_vector": rewards,
         "reward_mean": mean(rewards),
         "mixed_group": len(set(rewards)) > 1,

@@ -78,6 +78,11 @@ class PlanCoverage(BaseModel):
     covered_step_ids: list[str] = Field(default_factory=list)
     missing_requirements: list[str] = Field(default_factory=list)
     composite_step_ids: list[str] = Field(default_factory=list)
+    # Coverage may reject semantic scope that the literal query did not ask
+    # for, as well as a step that is only a redundant restatement.  These are
+    # diagnostics, never instructions for an actor tool/action.
+    introduced_constraints: list[str] = Field(default_factory=list)
+    redundant_step_ids: list[str] = Field(default_factory=list)
     rationale: str = ""
     model_config = ConfigDict(extra="forbid")
 

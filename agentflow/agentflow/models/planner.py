@@ -599,6 +599,16 @@ Available tools: {self.available_tools}
 
 Create at most {max_step_count} ordered, atomic evidence goals. Each step must establish exactly one fact, relation, entity, or derivation input with a concrete success criterion. Split dependent facts into separate steps and use dependencies only when a later step needs a prior verified fact. Do not create composite steps, tool scripts, or a fixed tool sequence. Do not name tools, URLs, queries, commands, search strategies, factual answers, or calculations.
 
+The literal user query is authoritative; initial analysis is advisory only. Make
+the plan minimally sufficient for that literal query. A modifier used only to
+identify an intermediate entity or relation (for example a date, location, or
+qualification) must not automatically constrain a later requested property of
+the resolved entity unless the query explicitly scopes that property the same
+way. Do not add historical/current qualifiers, intermediate structure
+requirements, or derivation steps that the query does not require. A requested
+property remains one evidence goal even when it may later be established
+directly or by an actor-selected calculation.
+
 Response Format (JSON object only; match the HighLevelPlan schema exactly):
 {{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}
 """
@@ -625,6 +635,12 @@ Every independently necessary fact, relation, entity, or derivation input must
 have its own step and concrete success criterion. Make dependencies explicit
 when a later input needs an earlier verified input. Do not combine dependent
 requirements inside a step. A final synthesis is not an evidence step. Do not name tools, URLs, queries, commands, search strategies, factual answers, or calculations.
+
+The literal user query is authoritative; do not preserve an introduced
+constraint merely because it appeared in the prior plan or advisory analysis.
+Keep the revised plan minimally sufficient: an intermediate identifier's
+modifier does not scope a later requested property unless the query explicitly
+says so. Do not add redundant intermediate requirements.
 
 Response Format (JSON object only; match the HighLevelPlan schema exactly):
 {{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}
@@ -680,8 +696,17 @@ whether dependencies are explicit, and whether any step combines independent
 requirements. Treat final answer synthesis as not being an evidence
 requirement. Report only this plan audit. Do not name tools, URLs, queries, commands, search strategies, factual answers, or calculations.
 
+The literal query is authoritative and the query-analysis text is advisory.
+Identify `introduced_constraints` when a plan adds a date, location,
+historical/current qualifier, intermediate structure, or derivation condition
+that the literal query did not require. In particular, a modifier needed to
+identify an intermediate relation does not automatically constrain a later
+property of that relation unless the literal query explicitly scopes it there.
+Identify `redundant_step_ids` for steps that add no independently necessary
+evidence requirement. A sufficient plan must have both lists empty.
+
 Response Format (JSON object only; match the PlanCoverage schema exactly):
-{{"sufficient":true,"independently_necessary_requirements":["<requirement>"],"requirement_coverage":[{{"requirement":"<same requirement>","covered_step_ids":["<one atomic step id>"]}}],"covered_step_ids":["<all covered step ids>"],"missing_requirements":[],"composite_step_ids":[],"rationale":"<brief evidence-plan rationale>"}}
+{{"sufficient":true,"independently_necessary_requirements":["<requirement>"],"requirement_coverage":[{{"requirement":"<same requirement>","covered_step_ids":["<one atomic step id>"]}}],"covered_step_ids":["<all covered step ids>"],"missing_requirements":[],"composite_step_ids":[],"introduced_constraints":[],"redundant_step_ids":[],"rationale":"<brief evidence-plan rationale>"}}
 """
         try:
             coverage, _, _ = self._supervisor_structured(
@@ -727,6 +752,8 @@ Response Format (JSON object only; match the PlanCoverage schema exactly):
             and all(count == 1 for count in step_use_counts.values())
             and not coverage.missing_requirements
             and not composite
+            and not coverage.introduced_constraints
+            and not coverage.redundant_step_ids
         )
 
 

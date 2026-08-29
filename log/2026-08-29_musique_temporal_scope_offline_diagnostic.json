@@ -1,0 +1,35 @@
+{
+  "contains_answer_or_support_text": false,
+  "decomposition_count": 2,
+  "decomposition_metadata": [
+    {
+      "ordinal": 0,
+      "question_has_requested_property_marker": false,
+      "question_has_year_like_token": true,
+      "question_sha256": "697fbdb52b53b89f097c24d1685c996c5bef8794b7fd0e9c39d2e33e7788e545",
+      "support_has_requested_property_marker": true,
+      "support_has_year_like_token": true,
+      "support_index": 15,
+      "support_is_marked_supporting": true,
+      "support_sha256": "1b8e485dcb3dcab31308e0a58c7be7cfd8898e4502f656644b2903f4220e60c5"
+    },
+    {
+      "ordinal": 1,
+      "question_has_requested_property_marker": true,
+      "question_has_year_like_token": false,
+      "question_sha256": "6c1da848a3f69775c22808aafdc8f03032d5c1f2ae93327eebc3e1e5dbd65487",
+      "support_has_requested_property_marker": true,
+      "support_has_year_like_token": false,
+      "support_index": 2,
+      "support_is_marked_supporting": true,
+      "support_sha256": "8600b6a75b5ce019c2b4d9e97a3fa6eac643c6fcc3b866934f73a131b08e4a98"
+    }
+  ],
+  "official_jsonl_sha256": "15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b",
+  "official_repo_commit": "922ac98f19a201998dbdae6d7f2887a5258dbdeb",
+  "purpose": "offline diagnostic only; no field here is consumed by AgentFlow runtime",
+  "record_id": "2hop__13592_49388",
+  "record_question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+  "schema_version": 1,
+  "temporal_relation_then_unqualified_property": true
+}

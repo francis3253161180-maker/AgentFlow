@@ -346,6 +346,29 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         )
         self.assertFalse(Planner._coverage_is_sufficient(plan, contradictory))
 
+    def test_coverage_rejects_introduced_constraint_or_redundant_step(self):
+        from agentflow.models.formatters import PlanCoverage, RequirementCoverage
+        from agentflow.models.planner import Planner
+
+        plan = {"steps": [{"step_id": "identify"}, {"step_id": "property"}]}
+        baseline = dict(
+            sufficient=True,
+            independently_necessary_requirements=["identify relation", "retrieve requested property"],
+            requirement_coverage=[
+                RequirementCoverage(requirement="identify relation", covered_step_ids=["identify"]),
+                RequirementCoverage(requirement="retrieve requested property", covered_step_ids=["property"]),
+            ],
+            covered_step_ids=["identify", "property"], missing_requirements=[],
+            composite_step_ids=[], rationale="minimal",
+        )
+        self.assertTrue(Planner._coverage_is_sufficient(plan, PlanCoverage(**baseline)))
+        self.assertFalse(Planner._coverage_is_sufficient(plan, PlanCoverage(
+            **baseline, introduced_constraints=["unrequested temporal scope"],
+        )))
+        self.assertFalse(Planner._coverage_is_sufficient(plan, PlanCoverage(
+            **baseline, redundant_step_ids=["property"],
+        )))
+
 
 if __name__ == "__main__":
     unittest.main()

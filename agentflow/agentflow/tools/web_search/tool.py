@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 import time
+from collections import Counter
+from math import log
 from typing import Any
 from urllib.parse import urlparse
 
@@ -115,18 +117,65 @@ class Web_Search_Tool(BaseTool):
             start = end - self.chunk_overlap_words
         return chunks
 
-    def _rank(self, query: str, chunks: list[str]) -> list[tuple[int, int]]:
-        query_terms = set(self._tokens(query))
+    def _rank(self, query: str, chunks: list[str]) -> list[dict[str, Any]]:
+        """Rank known-URL chunks with deterministic BM25 and lexical evidence.
+
+        This is intentionally lexical only.  Exact numeric/date tokens gain
+        discriminative weight from inverse document frequency; no task-specific
+        vocabulary, embeddings, or answer synthesis is involved.
+        """
+        query_tokens = self._tokens(query)
+        query_terms = list(dict.fromkeys(query_tokens))
+        chunk_tokens = [self._tokens(chunk) for chunk in chunks]
+        document_count = len(chunk_tokens)
+        document_frequency = Counter(
+            token for terms in chunk_tokens for token in set(terms)
+        )
+        average_length = sum(len(terms) for terms in chunk_tokens) / max(document_count, 1)
+        k1, b = 1.5, 0.75
+        query_bigrams = set(zip(query_tokens, query_tokens[1:]))
         ranked = []
-        for index, chunk in enumerate(chunks):
-            terms = self._tokens(chunk)
-            score = sum(terms.count(term) for term in query_terms)
-            ranked.append((score, index))
-        return sorted(ranked, key=lambda item: (-item[0], item[1]))
+        for index, terms in enumerate(chunk_tokens):
+            frequencies = Counter(terms)
+            length_norm = k1 * (1 - b + b * len(terms) / max(average_length, 1.0))
+            bm25_score = 0.0
+            matched_terms = []
+            for term in query_terms:
+                frequency = frequencies.get(term, 0)
+                if not frequency:
+                    continue
+                idf = log(1.0 + (document_count - document_frequency[term] + 0.5) /
+                          (document_frequency[term] + 0.5))
+                bm25_score += idf * (frequency * (k1 + 1)) / (frequency + length_norm)
+                matched_terms.append(term)
+            chunk_bigrams = set(zip(terms, terms[1:]))
+            phrase_hits = len(query_bigrams & chunk_bigrams)
+            positions = [pos for pos, token in enumerate(terms) if token in set(matched_terms)]
+            proximity_span = (max(positions) - min(positions) + 1) if len(positions) >= 2 else None
+            # Bounded tie-breaking signals retain lexical interpretability and
+            # prefer compact co-occurrence without dominating BM25/IDF.
+            coverage = len(set(matched_terms))
+            proximity_bonus = (1.0 / proximity_span) if proximity_span else 0.0
+            final_score = bm25_score + 0.10 * coverage + 0.05 * phrase_hits + 0.05 * proximity_bonus
+            ranked.append({
+                "chunk_index": index,
+                "bm25_score": round(bm25_score, 8),
+                "lexical_score": round(final_score, 8),
+                "query_term_coverage": coverage,
+                "query_term_count": len(query_terms),
+                "matched_numeric_tokens": sorted({term for term in matched_terms if term.isdigit()}),
+                "matched_terms": sorted(set(matched_terms)),
+                "phrase_hits": phrase_hits,
+                "proximity_span": proximity_span,
+            })
+        return sorted(
+            ranked,
+            key=lambda item: (-item["lexical_score"], -item["bm25_score"], item["chunk_index"]),
+        )
 
     def execute(self, query: str, url: str) -> dict[str, Any]:
         telemetry = {
-            "provider": "public_url", "ranking": "deterministic_lexical",
+            "provider": "public_url", "ranking": "deterministic_bm25_coverage_proximity",
             "cache_hits": 0, "retries": 0, "http_429": 0,
             "search_internal_llm_calls": 0, "openai_calls": 0, "doubao_calls": 0,
         }
@@ -151,8 +200,8 @@ class Web_Search_Tool(BaseTool):
                 "query": query,
                 "url": url,
                 "evidence_chunks": [
-                    {"chunk_index": index, "lexical_score": score, "excerpt": chunks[index]}
-                    for score, index in ranked
+                    {**rank, "excerpt": chunks[rank["chunk_index"]]}
+                    for rank in ranked
                 ],
                 "web_search_telemetry": telemetry,
             }
