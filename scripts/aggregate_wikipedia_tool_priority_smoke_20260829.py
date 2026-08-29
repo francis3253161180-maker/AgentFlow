@@ -48,6 +48,7 @@ def extract_evidence(value: Any) -> list[dict[str, Any]]:
                     evidence.append({
                         "title": page.get("title"),
                         "url": page.get("url"),
+                        "search_snippet": compact(page.get("search_snippet", ""), 400),
                         "excerpt": compact(page.get("abstract", ""), 400),
                     })
         if key == "evidence_chunks" and isinstance(child, list):
@@ -229,6 +230,11 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         "final_answer": final_answer,
         "final_output": compact(total.get("direct_output") if isinstance(total, dict) else None),
         "termination_reason": total.get("termination_reason"),
+        "high_level_plan_original": compact(total.get("high_level_plan_original"), 1800),
+        "high_level_plan_coverage_initial": compact(total.get("high_level_plan_coverage_initial"), 1800),
+        "high_level_plan_revised": compact(total.get("high_level_plan_revised"), 1800),
+        "high_level_plan_coverage_final": compact(total.get("high_level_plan_coverage_final"), 1800),
+        "high_level_plan_coverage_valid": total.get("high_level_plan_coverage_valid"),
         "high_level_plan": compact(total.get("high_level_plan"), 1800),
         "plan_transitions": compact(total.get("plan_transitions"), 1800),
         "execution_time_seconds": total.get("execution_time"),
@@ -317,8 +323,14 @@ def main() -> None:
         "unsupported_final_claim_rollout_count": sum(entry["unsupported_final_claim"] for entry in entries),
         "search_internal_telemetry": telemetry,
         "search_telemetry_totals": {
-            key: sum(int(item.get(key, 0)) for item in telemetry)
-            for key in ("cache_hits", "retries", "http_429", "search_internal_llm_calls", "openai_calls", "doubao_calls")
+            key: sum(float(item.get(key, 0) or 0) for item in telemetry)
+            for key in (
+                "cache_hits", "retries", "http_429", "throttle_wait_count",
+                "throttle_wait_seconds", "retry_after_seconds",
+                "shared_cache_hits", "shared_cache_writes",
+                "singleflight_wait_count", "singleflight_wait_seconds",
+                "search_internal_llm_calls", "openai_calls", "doubao_calls",
+            )
         },
         "search_internal_doubao_calls": sum(int(item.get("doubao_calls", 0)) for item in telemetry),
         "search_internal_openai_calls": sum(int(item.get("openai_calls", 0)) for item in telemetry),

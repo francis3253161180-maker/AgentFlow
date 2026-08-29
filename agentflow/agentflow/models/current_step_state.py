@@ -8,6 +8,7 @@ verifier-confirmed lack of progress.
 from __future__ import annotations
 
 import re
+from difflib import SequenceMatcher
 from typing import Any
 
 
@@ -68,10 +69,10 @@ def should_revise_stagnant_action(
         if (
             str(attempt.get("tool_name")) == str(tool_name)
             and str(attempt.get("stable_step_id")) == str(stable_step_id)
-            and attempt.get("executable_signature") == signature
+            and executable_intents_near_duplicate(attempt.get("executable_signature"), signature)
         ):
             return True, (
-                "The proposed action repeats the same tool and executable retrieval intent "
+                "The proposed action repeats the same or near-duplicate executable retrieval intent "
                 "after the recorded attempt made no evidence progress. Revise the target or objective."
             )
     return False, ""
@@ -116,3 +117,48 @@ def executable_signature(tool_name: Any, command: Any, context: Any, sub_goal: A
     else:
         intent = f"proposal:{context}|{sub_goal}"
     return f"{str(tool_name)}::{objective_signature(intent)}"
+
+
+_RETRIEVAL_STOPWORDS = {
+    "a", "an", "and", "for", "from", "in", "of", "on", "the", "to", "with",
+}
+
+
+def executable_intents_near_duplicate(previous: Any, current: Any) -> bool:
+    """Conservatively identify a no-progress retry of the same retrieval intent.
+
+    Identical normalized commands are always duplicates.  A near match must
+    preserve every numeric token (years/seasons are often decisive) and have
+    the same non-stopword token set after boilerplate normalization.  This
+    catches cosmetic query changes while allowing a new entity, relation, URL,
+    or season to proceed with the same tool.
+    """
+    old = str(previous or "")
+    new = str(current or "")
+    if not old or not new:
+        return False
+    if old == new:
+        return True
+    if "::" not in old or "::" not in new:
+        return False
+    old_tool, old_intent = old.split("::", 1)
+    new_tool, new_intent = new.split("::", 1)
+    if old_tool != new_tool:
+        return False
+    old_numbers = re.findall(r"\b\d+(?:\.\d+)?\b", old_intent)
+    new_numbers = re.findall(r"\b\d+(?:\.\d+)?\b", new_intent)
+    if old_numbers != new_numbers:
+        return False
+    old_tokens = {
+        token for token in re.findall(r"[a-z0-9]+", old_intent)
+        if token not in _RETRIEVAL_STOPWORDS and not token.isdigit()
+    }
+    new_tokens = {
+        token for token in re.findall(r"[a-z0-9]+", new_intent)
+        if token not in _RETRIEVAL_STOPWORDS and not token.isdigit()
+    }
+    if not old_tokens or old_tokens != new_tokens:
+        return False
+    # The token-set check above is deliberately strict.  Sequence similarity
+    # only removes harmless word-order/punctuation variation.
+    return SequenceMatcher(None, old_intent, new_intent).ratio() >= 0.80

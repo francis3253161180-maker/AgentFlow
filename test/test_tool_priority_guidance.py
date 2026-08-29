@@ -1,4 +1,5 @@
 import unittest
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 
@@ -97,13 +98,14 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
                 return self.payload
 
         tool = Wikipedia_Search_Tool("vllm-qwen-base", base_url="http://127.0.0.1:1/v1")
+        tool.min_request_interval_seconds = 0.0
         self.assertFalse(tool.require_llm_engine)
         self.assertEqual(tool.model_string, "raw-wikipedia")
         with patch.dict("os.environ", {}, clear=True):
             with patch(
                 "agentflow.tools.wikipedia_search.tool.requests.get",
                 side_effect=[
-                    _Response({"query": {"search": [{"title": "Example"}]}}),
+                    _Response({"query": {"search": [{"title": "Example", "snippet": "<span>Matched</span> evidence"}]}}),
                     _Response({"query": {"pages": {"1": {
                         "title": "Example",
                         "fullurl": "https://en.wikipedia.org/wiki/Example",
@@ -116,6 +118,7 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
         pages = result["relevant_pages (public search order; raw evidence only)"]
         self.assertEqual(pages[0]["title"], "Example")
         self.assertEqual(pages[0]["url"], "https://en.wikipedia.org/wiki/Example")
+        self.assertEqual(pages[0]["search_snippet"], "Matched evidence")
         self.assertEqual(result["search_telemetry"]["search_internal_llm_calls"], 0)
         self.assertEqual(result["search_telemetry"]["openai_calls"], 0)
         self.assertEqual(result["search_telemetry"]["doubao_calls"], 0)
@@ -138,25 +141,66 @@ class ToolPriorityGuidanceTest(unittest.TestCase):
                 return self.payload
 
         tool = Wikipedia_Search_Tool()
-        with patch("agentflow.tools.wikipedia_search.tool.time.sleep") as sleep, patch(
-            "agentflow.tools.wikipedia_search.tool.requests.get",
-            side_effect=[
-                _Response({}, status_code=429, retry_after="0"),
-                _Response({"query": {"search": [{"title": "Example"}]}}),
-                _Response({"query": {"pages": {"1": {
-                    "title": "Example", "fullurl": "https://en.wikipedia.org/wiki/Example",
-                    "extract": "Evidence text.",
-                }}}}),
-            ],
-        ) as get:
-            first = tool.execute("Example")
-            second = tool.execute("Example")
+        tool.min_request_interval_seconds = 0.0
+        with TemporaryDirectory() as tmpdir:
+            tool.throttle_lock_path = f"{tmpdir}/mediawiki.lock"
+            tool.shared_cache_dir = f"{tmpdir}/raw-cache"
+            with patch("agentflow.tools.wikipedia_search.tool.time.sleep") as sleep, patch(
+                "agentflow.tools.wikipedia_search.tool.requests.get",
+                side_effect=[
+                    _Response({}, status_code=429, retry_after="0"),
+                    _Response({"query": {"search": [{"title": "Example"}]}}),
+                    _Response({"query": {"pages": {"1": {
+                        "title": "Example", "fullurl": "https://en.wikipedia.org/wiki/Example",
+                        "extract": "Evidence text.",
+                    }}}}),
+                ],
+            ) as get:
+                first = tool.execute("Example")
+                second = tool.execute("Example")
 
         self.assertEqual(first["search_telemetry"]["http_429"], 1)
         self.assertEqual(first["search_telemetry"]["retries"], 1)
         self.assertEqual(second["search_telemetry"]["cache_hits"], 2)
         self.assertEqual(get.call_count, 3)
-        sleep.assert_called_once_with(0.0)
+        sleep.assert_not_called()
+
+    def test_wikipedia_shared_raw_cache_uses_full_request_semantics(self):
+        from agentflow.tools.wikipedia_search.tool import Wikipedia_Search_Tool
+
+        class _Response:
+            status_code = 200
+            headers = {}
+
+            def __init__(self, payload):
+                self.payload = payload
+
+            def raise_for_status(self):
+                return None
+
+            def json(self):
+                return self.payload
+
+        with TemporaryDirectory() as tmpdir:
+            first = Wikipedia_Search_Tool()
+            second = Wikipedia_Search_Tool()
+            for tool in (first, second):
+                tool.min_request_interval_seconds = 0.0
+                tool.throttle_lock_path = f"{tmpdir}/throttle.lock"
+                tool.shared_cache_dir = f"{tmpdir}/raw-cache"
+            with patch("agentflow.tools.wikipedia_search.tool.requests.get", side_effect=[
+                _Response({"query": {"search": [{"title": "Example", "snippet": "<b>Matched</b>"}]}}),
+                _Response({"query": {"pages": {"1": {
+                    "title": "Example", "fullurl": "https://en.wikipedia.org/wiki/Example",
+                    "extract": "Evidence text.",
+                }}}}),
+            ]) as get:
+                first_result = first.execute("same semantic request")
+                second_result = second.execute("same semantic request")
+
+        self.assertEqual(get.call_count, 2)
+        self.assertEqual(second_result["search_telemetry"]["shared_cache_hits"], 2)
+        self.assertEqual(first_result["relevant_pages (public search order; raw evidence only)"][0]["search_snippet"], "Matched")
 
     def test_web_rag_is_known_url_raw_evidence_without_openai(self):
         from agentflow.tools.web_search.tool import Web_Search_Tool

@@ -59,6 +59,25 @@ class HighLevelPlan(BaseModel):
     steps: list[PlanStep] = Field(min_length=1)
 
 
+class RequirementCoverage(BaseModel):
+    """One independent evidence requirement and its atomic plan coverage."""
+
+    requirement: str
+    covered_step_ids: list[str] = Field(default_factory=list)
+
+
+class PlanCoverage(BaseModel):
+    """Fixed-role audit of whether a plan covers independent evidence needs."""
+
+    sufficient: bool
+    independently_necessary_requirements: list[str] = Field(default_factory=list)
+    requirement_coverage: list[RequirementCoverage] = Field(default_factory=list)
+    covered_step_ids: list[str] = Field(default_factory=list)
+    missing_requirements: list[str] = Field(default_factory=list)
+    composite_step_ids: list[str] = Field(default_factory=list)
+    rationale: str = ""
+
+
 class StepVerification(BaseModel):
     """Evidence-only verifier result for the current plan step."""
 

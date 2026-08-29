@@ -119,6 +119,12 @@ class Solver:
                 json_data["hierarchical_planning"] = True
                 json_data["high_level_plan"] = plan_snapshot(plan_state)
                 json_data["plan_transitions"] = copy.deepcopy(plan_transitions)
+                coverage_state = getattr(self.planner, "last_high_level_plan_coverage", None)
+                if isinstance(coverage_state, dict) and not bool(coverage_state.get("valid", False)):
+                    # Do not execute a known incomplete/composite evidence
+                    # plan and then allow final synthesis to fill its gaps.
+                    # The fixed planner already received exactly one revision.
+                    termination_reason = "high_level_plan_coverage_invalid"
                 if self.verbose:
                     print(f"\n==> 🧭 High-Level Plan\n{plan_state}")
 
@@ -130,7 +136,11 @@ class Solver:
             memory_actions = self.memory.get_actions()
             previous_verifier_assessment = None
             attempts_by_step: dict[str, list[dict]] = {}
-            while step_count < self.max_steps and (time.time() - query_start_time) < self.max_time:
+            while (
+                termination_reason is None
+                and step_count < self.max_steps
+                and (time.time() - query_start_time) < self.max_time
+            ):
                 current_plan_step = None
                 if hierarchical_planning:
                     current_plan_step = activate_next_step(plan_state, plan_transitions)

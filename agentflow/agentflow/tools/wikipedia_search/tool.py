@@ -1,4 +1,10 @@
 import copy
+import fcntl
+import html
+import hashlib
+import json
+import os
+import re
 import time
 from typing import Any
 
@@ -85,6 +91,18 @@ class Wikipedia_Search_Tool(BaseTool):
         self._response_cache: dict[tuple[tuple[str, str], ...], dict[str, Any]] = {}
         self.max_http_retries = 2
         self.max_backoff_seconds = 2.0
+        # All rollout workers share this lock file.  It deliberately
+        # serializes only the short public MediaWiki request admission, not
+        # planner/vLLM work, so N_WORKERS can still overlap local inference.
+        self.throttle_lock_path = os.getenv(
+            "AGENTFLOW_MEDIAWIKI_THROTTLE_LOCK", "/tmp/agentflow_mediawiki_throttle.lock",
+        )
+        self.shared_cache_dir = os.getenv(
+            "AGENTFLOW_MEDIAWIKI_SHARED_CACHE_DIR", "/tmp/agentflow_mediawiki_raw_cache",
+        )
+        self.min_request_interval_seconds = float(
+            os.getenv("AGENTFLOW_MEDIAWIKI_MIN_INTERVAL_SECONDS", "0.75")
+        )
 
     def _get_wikipedia_url(self, query):
         """
@@ -102,7 +120,38 @@ class Wikipedia_Search_Tool(BaseTool):
         if cached is not None:
             telemetry["cache_hits"] += 1
             return copy.deepcopy(cached)
+        # The per-key lock implements singleflight across rollout processes.
+        # It protects only raw deterministic HTTP results; planner, memory,
+        # verifier, and all agent state remain per-rollout.
+        cache_path = self._shared_cache_path(params)
+        lock_path = f"{cache_path}.lock"
+        os.makedirs(self.shared_cache_dir, exist_ok=True)
+        with open(lock_path, "a+", encoding="utf-8") as lock_file:
+            lock_started = time.monotonic()
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            lock_wait = time.monotonic() - lock_started
+            if lock_wait > 0.001:
+                telemetry["singleflight_wait_count"] += 1
+                telemetry["singleflight_wait_seconds"] += lock_wait
+            try:
+                shared = self._read_shared_cache(cache_path)
+                if shared is not None:
+                    telemetry["shared_cache_hits"] += 1
+                    self._response_cache[key] = copy.deepcopy(shared)
+                    return copy.deepcopy(shared)
+                payload = self._request_json_uncached(params, telemetry)
+                # Cache only a valid successful JSON payload.  429s, timeouts,
+                # malformed bodies, and other failures leave no negative entry.
+                self._write_shared_cache(cache_path, payload)
+                telemetry["shared_cache_writes"] += 1
+                self._response_cache[key] = copy.deepcopy(payload)
+                return payload
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+    def _request_json_uncached(self, params: dict[str, Any], telemetry: dict[str, Any]) -> dict[str, Any]:
         for attempt in range(self.max_http_retries + 1):
+            self._wait_for_request_slot(telemetry)
             response = requests.get(MEDIAWIKI_API_URL, params=params, headers=MEDIAWIKI_HEADERS, timeout=15)
             if response.status_code == 429:
                 telemetry["http_429"] += 1
@@ -114,13 +163,108 @@ class Wikipedia_Search_Tool(BaseTool):
                 except (TypeError, ValueError):
                     delay = 0.25 * (2 ** attempt)
                 telemetry["retries"] += 1
-                time.sleep(min(self.max_backoff_seconds, max(0.0, delay)))
+                # A server-provided Retry-After is shared exactly with all
+                # workers.  Locally chosen exponential fallback remains
+                # bounded so a transient 429 cannot grow unboundedly.
+                wait_seconds = (
+                    max(0.0, delay)
+                    if retry_after is not None
+                    else min(self.max_backoff_seconds, max(0.0, delay))
+                )
+                telemetry["retry_after_seconds"] += wait_seconds
+                self._defer_request_slot(wait_seconds)
                 continue
             response.raise_for_status()
             payload = response.json()
-            self._response_cache[key] = copy.deepcopy(payload)
+            if not isinstance(payload, dict):
+                raise ValueError("MediaWiki response JSON must be an object")
             return payload
         raise RuntimeError("bounded MediaWiki retry loop exited unexpectedly")
+
+    @staticmethod
+    def _shared_cache_key(params: dict[str, Any]) -> str:
+        canonical = json.dumps(
+            {"provider": "wikipedia", "endpoint": MEDIAWIKI_API_URL, "params": params},
+            ensure_ascii=True, sort_keys=True, separators=(",", ":"),
+        )
+        return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+    def _shared_cache_path(self, params: dict[str, Any]) -> str:
+        return os.path.join(self.shared_cache_dir, f"{self._shared_cache_key(params)}.json")
+
+    @staticmethod
+    def _read_shared_cache(path: str) -> dict[str, Any] | None:
+        try:
+            with open(path, encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError):
+            return None
+        return payload if isinstance(payload, dict) else None
+
+    @staticmethod
+    def _write_shared_cache(path: str, payload: dict[str, Any]) -> None:
+        temporary = f"{path}.{os.getpid()}.tmp"
+        try:
+            with open(temporary, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, ensure_ascii=False, sort_keys=True)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, path)
+        finally:
+            try:
+                os.unlink(temporary)
+            except FileNotFoundError:
+                pass
+
+    def _wait_for_request_slot(self, telemetry: dict[str, Any]) -> None:
+        """Cross-process MediaWiki admission control using an advisory lock."""
+        os.makedirs(os.path.dirname(self.throttle_lock_path) or ".", exist_ok=True)
+        with open(self.throttle_lock_path, "a+", encoding="utf-8") as lock_file:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            try:
+                lock_file.seek(0)
+                try:
+                    next_allowed = float(lock_file.read().strip() or "0")
+                except ValueError:
+                    next_allowed = 0.0
+                delay = max(0.0, next_allowed - time.monotonic())
+                if delay:
+                    telemetry["throttle_wait_count"] += 1
+                    telemetry["throttle_wait_seconds"] += delay
+                    time.sleep(delay)
+                lock_file.seek(0)
+                lock_file.truncate()
+                lock_file.write(str(time.monotonic() + self.min_request_interval_seconds))
+                lock_file.flush()
+                os.fsync(lock_file.fileno())
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+    def _defer_request_slot(self, delay: float) -> None:
+        """Publish server-requested backoff to every local rollout worker."""
+        if delay <= 0:
+            return
+        with open(self.throttle_lock_path, "a+", encoding="utf-8") as lock_file:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            try:
+                lock_file.seek(0)
+                try:
+                    previous = float(lock_file.read().strip() or "0")
+                except ValueError:
+                    previous = 0.0
+                lock_file.seek(0)
+                lock_file.truncate()
+                lock_file.write(str(max(previous, time.monotonic() + delay)))
+                lock_file.flush()
+                os.fsync(lock_file.fileno())
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+    @staticmethod
+    def _sanitize_search_snippet(value: Any) -> str:
+        text = html.unescape(str(value or ""))
+        text = re.sub(r"<[^>]+>", " ", text)
+        return re.sub(r"\s+", " ", text).strip()[:600]
 
     def search_wikipedia(self, query, max_length=600, max_pages=2, telemetry=None):
         """
@@ -141,6 +285,10 @@ class Wikipedia_Search_Tool(BaseTool):
                 "srlimit": max_pages, "format": "json",
             }, telemetry).get("query", {}).get("search", [])
             titles = [match.get("title") for match in matches if match.get("title")]
+            snippets = {
+                str(match.get("title")): self._sanitize_search_snippet(match.get("snippet"))
+                for match in matches if match.get("title")
+            }
             if not titles:
                 return [{"title": None, "url": None, "abstract": None, "error": f"No results found for query: {query}"}]
 
@@ -158,6 +306,7 @@ class Wikipedia_Search_Tool(BaseTool):
                         "title": page.get("title", title),
                         "url": page.get("fullurl", self._get_wikipedia_url(title)),
                         "abstract": text,
+                        "search_snippet": snippets.get(str(title), ""),
                     })
                 except requests.RequestException as exc:
                     pages_data.append({
@@ -183,6 +332,10 @@ class Wikipedia_Search_Tool(BaseTool):
         telemetry = {
             "provider": "public_wikipedia", "ranking": "public_search_order",
             "cache_hits": 0, "retries": 0, "http_429": 0,
+            "throttle_wait_count": 0, "throttle_wait_seconds": 0.0,
+            "retry_after_seconds": 0.0,
+            "shared_cache_hits": 0, "shared_cache_writes": 0,
+            "singleflight_wait_count": 0, "singleflight_wait_seconds": 0.0,
             "search_internal_llm_calls": 0, "openai_calls": 0, "doubao_calls": 0,
         }
         search_results = self.search_wikipedia(query, telemetry=telemetry)

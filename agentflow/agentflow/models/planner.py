@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple
 from PIL import Image
 
 from agentflow.engine.factory import create_llm_engine
-from agentflow.models.formatters import HighLevelPlan, NextStep, QueryAnalysis
+from agentflow.models.formatters import HighLevelPlan, NextStep, PlanCoverage, QueryAnalysis
 from agentflow.models.memory import Memory
 from agentflow.models.current_step_state import build_current_step_contract
 from agentflow.models.structured_outputs import (
@@ -517,13 +517,124 @@ Response Format (JSON object only; match the HighLevelPlan schema exactly):
         # is requested. Parse that text before handing it to the state machine.
         raw_plan = self.llm_engine_fixed(prompt, response_format=HighLevelPlan, max_tokens=self.max_tokens)
         plan = parse_strict_json(raw_plan, HighLevelPlan)
+        initial_plan = self._model_payload(plan)
+        initial_coverage = self._audit_high_level_plan_coverage(question, initial_plan)
+        final_plan = plan
+        final_coverage = initial_coverage
+        revised_plan_payload = None
+        if not self._coverage_is_sufficient(initial_plan, initial_coverage):
+            revision_prompt = f"""
+Task: Revise an evidence plan. Do not answer the query and do not choose executable commands.
+
+Query: {question}
+Original plan: {json.dumps(initial_plan, ensure_ascii=False)}
+Coverage audit: {json.dumps(self._model_payload(initial_coverage), ensure_ascii=False)}
+
+Produce one corrected plan with at most {max_step_count} ordered atomic evidence steps.
+Every independently necessary fact, relation, entity, or derivation input must
+have its own step and concrete success criterion. Make dependencies explicit
+when a later input needs an earlier verified input. Do not combine dependent
+requirements inside a step. A final synthesis is not an evidence step.
+
+Response Format (JSON object only; match the HighLevelPlan schema exactly):
+{{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}
+"""
+            raw_revised_plan = self.llm_engine_fixed(
+                revision_prompt, response_format=HighLevelPlan, max_tokens=self.max_tokens,
+            )
+            final_plan = parse_strict_json(raw_revised_plan, HighLevelPlan)
+            revised_plan_payload = self._model_payload(final_plan)
+            final_coverage = self._audit_high_level_plan_coverage(question, revised_plan_payload)
+
+        coverage_payload = self._model_payload(final_coverage)
+        coverage_valid = self._coverage_is_sufficient(self._model_payload(final_plan), final_coverage)
+        self.last_high_level_plan_coverage = {
+            "valid": coverage_valid,
+            "coverage": coverage_payload,
+        }
         if json_data is not None:
             json_data["high_level_plan_prompt"] = prompt
             json_data["high_level_plan_response"] = str(raw_plan)
-            json_data["high_level_plan_validated"] = (
-                plan.model_dump() if hasattr(plan, "model_dump") else plan.dict()
+            json_data["high_level_plan_original"] = initial_plan
+            json_data["high_level_plan_coverage_initial"] = self._model_payload(initial_coverage)
+            json_data["high_level_plan_revised"] = revised_plan_payload
+            json_data["high_level_plan_coverage_final"] = coverage_payload
+            json_data["high_level_plan_coverage_valid"] = coverage_valid
+            json_data["high_level_plan_validated"] = self._model_payload(final_plan)
+        return final_plan
+
+    @staticmethod
+    def _model_payload(value: Any) -> dict[str, Any]:
+        if hasattr(value, "model_dump"):
+            return value.model_dump()
+        if hasattr(value, "dict"):
+            return value.dict()
+        return value if isinstance(value, dict) else {}
+
+    def _audit_high_level_plan_coverage(self, question: str, plan: dict[str, Any]) -> PlanCoverage:
+        """Use the existing frozen planner role as a bounded plan-quality audit."""
+        prompt = f"""
+Task: Audit an evidence plan. Do not answer the query, retrieve facts, choose
+tools, or infer missing factual content from model knowledge.
+
+Query: {question}
+Plan: {json.dumps(plan, ensure_ascii=False)}
+
+Identify the independently necessary evidence requirements needed to answer
+the query. Check whether every requirement is covered by an atomic plan step,
+whether dependencies are explicit, and whether any step combines independent
+requirements. Treat final answer synthesis as not being an evidence
+requirement. Report only this plan audit.
+
+Response Format (JSON object only; match the PlanCoverage schema exactly):
+{{"sufficient":true,"independently_necessary_requirements":["<requirement>"],"requirement_coverage":[{{"requirement":"<same requirement>","covered_step_ids":["<one atomic step id>"]}}],"covered_step_ids":["<all covered step ids>"],"missing_requirements":[],"composite_step_ids":[],"rationale":"<brief evidence-plan rationale>"}}
+"""
+        raw_coverage = self.llm_engine_fixed(prompt, response_format=PlanCoverage, max_tokens=self.max_tokens)
+        try:
+            return parse_strict_json(raw_coverage, PlanCoverage)
+        except ValueError as exc:
+            # A malformed coverage audit is not permission to execute an
+            # incomplete plan.  It triggers the one permitted plan revision
+            # and, if still malformed, the solver's safe coverage gate.
+            return PlanCoverage(
+                sufficient=False,
+                missing_requirements=["coverage audit could not be parsed"],
+                rationale=f"coverage_parse_error: {exc}",
             )
-        return plan
+
+    @staticmethod
+    def _coverage_is_sufficient(plan: dict[str, Any], coverage: PlanCoverage) -> bool:
+        def normalized(value: Any) -> str:
+            return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", str(value).lower())).strip()
+
+        step_ids = {str(step.get("step_id")) for step in plan.get("steps", []) if isinstance(step, dict)}
+        requirements = {normalized(value) for value in coverage.independently_necessary_requirements if normalized(value)}
+        coverage_map = {
+            normalized(item.requirement): {str(step_id) for step_id in item.covered_step_ids}
+            for item in coverage.requirement_coverage if normalized(item.requirement)
+        }
+        covered = {step_id for step_ids_for_requirement in coverage_map.values() for step_id in step_ids_for_requirement}
+        composite = {str(step_id) for step_id in coverage.composite_step_ids}
+        step_use_counts: dict[str, int] = {}
+        for step_ids_for_requirement in coverage_map.values():
+            for step_id in step_ids_for_requirement:
+                step_use_counts[step_id] = step_use_counts.get(step_id, 0) + 1
+        # A positive verdict must be internally consistent with the submitted
+        # plan.  Each independent requirement needs a mapped atomic step; an
+        # audit cannot silently map multiple independent requirements onto one
+        # step while claiming that the plan is non-composite.
+        return bool(
+            coverage.sufficient
+            and requirements
+            and requirements == set(coverage_map)
+            and all(coverage_map[requirement] for requirement in requirements)
+            and covered
+            and covered.issubset(step_ids)
+            and set(coverage.covered_step_ids) == covered
+            and all(count == 1 for count in step_use_counts.values())
+            and not coverage.missing_requirements
+            and not composite
+        )
 
 
     def generate_final_output(self, question: str, image: str, memory: Memory) -> str:

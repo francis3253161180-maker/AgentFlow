@@ -135,6 +135,34 @@ class HierarchicalPlanStateTest(unittest.TestCase):
             }],
         )
         self.assertFalse(changed)
+        cosmetic, _ = should_revise_stagnant_action(
+            tool_name="Wikipedia_RAG_Search_Tool", stable_step_id=stable_id,
+            executable_signature=executable_signature(
+                "Wikipedia_RAG_Search_Tool",
+                'execution = tool.execute(query="entity relation in 1948 and 1949")', "", "",
+            ),
+            prior_attempts=[{
+                "tool_name": "Wikipedia_RAG_Search_Tool", "stable_step_id": stable_id,
+                "executable_signature": executable_signature(
+                    "Wikipedia_RAG_Search_Tool",
+                    'execution = tool.execute(query="entity relation 1948 1949")', "", "",
+                ),
+                "made_progress": False,
+            }],
+        )
+        self.assertTrue(cosmetic)
+        new_season, _ = should_revise_stagnant_action(
+            tool_name="Wikipedia_RAG_Search_Tool", stable_step_id=stable_id,
+            executable_signature=executable_signature(
+                "Wikipedia_RAG_Search_Tool",
+                'execution = tool.execute(query="entity relation 1950 1951")', "", "",
+            ),
+            prior_attempts=[{
+                "tool_name": "Wikipedia_RAG_Search_Tool", "stable_step_id": stable_id,
+                "executable_signature": signature, "made_progress": False,
+            }],
+        )
+        self.assertFalse(new_season)
 
     def test_missing_evidence_wording_churn_is_not_progress(self):
         from agentflow.models.current_step_state import assess_step_progress
@@ -152,12 +180,62 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         planner = object.__new__(Planner)
         planner.max_tokens = 64
         planner.available_tools = ["Wikipedia_RAG_Search_Tool"]
-        planner.llm_engine_fixed = MagicMock(return_value=(
+        planner.llm_engine_fixed = MagicMock(side_effect=[
             '{"steps":[{"step_id":"discover","objective":"Find one fact",'
-            '"success_criteria":"Memory contains cited fact"}]}'
-        ))
-        plan = planner.generate_high_level_plan("q", "", "a", 3, {})
+            '"success_criteria":"Memory contains cited fact"}]}',
+            '{"sufficient":true,"independently_necessary_requirements":["one fact"],'
+            '"requirement_coverage":[{"requirement":"one fact","covered_step_ids":["discover"]}],'
+            '"covered_step_ids":["discover"],"missing_requirements":[],"composite_step_ids":[],"rationale":"atomic"}',
+        ])
+        data = {}
+        plan = planner.generate_high_level_plan("q", "", "a", 3, data)
         self.assertEqual(plan.steps[0].step_id, "discover")
+        self.assertTrue(data["high_level_plan_coverage_valid"])
+        self.assertEqual(planner.llm_engine_fixed.call_count, 2)
+
+    def test_incomplete_coverage_gets_one_fixed_role_plan_revision(self):
+        from unittest.mock import MagicMock
+        from agentflow.models.planner import Planner
+
+        planner = object.__new__(Planner)
+        planner.max_tokens = 64
+        planner.available_tools = ["Wikipedia_RAG_Search_Tool"]
+        planner.llm_engine_fixed = MagicMock(side_effect=[
+            '{"steps":[{"step_id":"first","objective":"Find one fact",'
+            '"success_criteria":"Memory contains fact"}]}',
+            '{"sufficient":false,"independently_necessary_requirements":["fact one","fact two"],'
+            '"requirement_coverage":[{"requirement":"fact one","covered_step_ids":["first"]},{"requirement":"fact two","covered_step_ids":[]}],'
+            '"covered_step_ids":["first"],"missing_requirements":["fact two"],"composite_step_ids":[],"rationale":"missing"}',
+            '{"steps":[{"step_id":"first","objective":"Find fact one","success_criteria":"fact one",'
+            '"depends_on":[]},{"step_id":"second","objective":"Find fact two","success_criteria":"fact two",'
+            '"depends_on":["first"]}]}',
+            '{"sufficient":true,"independently_necessary_requirements":["fact one","fact two"],'
+            '"requirement_coverage":[{"requirement":"fact one","covered_step_ids":["first"]},{"requirement":"fact two","covered_step_ids":["second"]}],'
+            '"covered_step_ids":["first","second"],"missing_requirements":[],"composite_step_ids":[],"rationale":"complete"}',
+        ])
+        data = {}
+        plan = planner.generate_high_level_plan("q", "", "a", 3, data)
+        self.assertEqual([step.step_id for step in plan.steps], ["first", "second"])
+        self.assertIsNotNone(data["high_level_plan_revised"])
+        self.assertTrue(data["high_level_plan_coverage_valid"])
+        self.assertEqual(planner.llm_engine_fixed.call_count, 4)
+
+    def test_coverage_verdict_cannot_contradict_requirement_mapping(self):
+        from agentflow.models.formatters import PlanCoverage, RequirementCoverage
+        from agentflow.models.planner import Planner
+
+        plan = {"steps": [{"step_id": "one"}]}
+        contradictory = PlanCoverage(
+            sufficient=True,
+            independently_necessary_requirements=["fact one", "fact two"],
+            requirement_coverage=[
+                RequirementCoverage(requirement="fact one", covered_step_ids=["one"]),
+                RequirementCoverage(requirement="fact two", covered_step_ids=[]),
+            ],
+            covered_step_ids=["one"],
+            missing_requirements=[], composite_step_ids=[], rationale="claims sufficient",
+        )
+        self.assertFalse(Planner._coverage_is_sufficient(plan, contradictory))
 
 
 if __name__ == "__main__":
