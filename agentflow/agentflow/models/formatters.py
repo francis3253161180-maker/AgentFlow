@@ -29,6 +29,16 @@ class NextStep(BaseModel):
     context: str
     sub_goal: str
     tool_name: str
+    # Empty remains accepted for historical persisted action parsing.  New
+    # hierarchical Planner prompts require one exact current-step gap ID and
+    # Solver validates it before execution.
+    target_gap: str = ""
+
+
+class HierarchicalNextStep(NextStep):
+    """Guided-JSON action used only for new hierarchical rollouts."""
+
+    target_gap: str
 
 
 class PlanStep(BaseModel):

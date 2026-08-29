@@ -9,6 +9,13 @@ from agentflow.models.initializer import Initializer
 from agentflow.models.planner import Planner
 from agentflow.models.verifier import Verifier
 from agentflow.models.memory import Memory
+from agentflow.models.current_step_state import (
+    assess_step_progress,
+    build_current_step_contract,
+    objective_signature,
+    should_revise_stagnant_action,
+    target_gap_is_current,
+)
 from agentflow.models.plan_state import (
     activate_next_step,
     all_steps_completed,
@@ -122,6 +129,7 @@ class Solver:
             # become active; normal execution overwrites it after each action.
             memory_actions = self.memory.get_actions()
             previous_verifier_assessment = None
+            attempts_by_step: dict[str, list[dict]] = {}
             while step_count < self.max_steps and (time.time() - query_start_time) < self.max_time:
                 current_plan_step = None
                 if hierarchical_planning:
@@ -138,6 +146,15 @@ class Solver:
 
                 # [2] Generate next step
                 local_start_time = time.time()
+                current_step_contract = None
+                prior_attempts: list[dict] = []
+                if hierarchical_planning:
+                    prior_attempts = attempts_by_step.setdefault(current_plan_step["step_id"], [])
+                    current_step_contract = build_current_step_contract(
+                        current_plan_step, self.memory.get_actions(), prior_attempts,
+                        previous_verifier_assessment,
+                    )
+                    json_data[f"current_step_state_{step_count}"] = copy.deepcopy(current_step_contract)
                 next_step = self.planner.generate_next_step(
                     question, 
                     image_path, 
@@ -149,11 +166,57 @@ class Solver:
                     previous_verifier_assessment=previous_verifier_assessment,
                     hierarchical_plan=plan_state,
                     current_step=current_plan_step,
+                    current_step_contract=current_step_contract,
                 )
                 context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
+                target_gap = self.planner.extract_target_gap(next_step)
+                rejection_reason = ""
+                if hierarchical_planning:
+                    if not target_gap_is_current(target_gap, current_step_contract):
+                        rejection_reason = (
+                            "The target_gap is not an exact ID in the current unresolved_evidence_gaps. "
+                            "Choose one listed target-gap ID and one atomic sub-goal."
+                        )
+                    else:
+                        rejected, rejection_reason = should_revise_stagnant_action(
+                            tool_name=tool_name,
+                            target_gap=target_gap,
+                            sub_goal=sub_goal,
+                            prior_attempts=prior_attempts,
+                        )
+                        if not rejected:
+                            rejection_reason = ""
+                    if rejection_reason:
+                        json_data[f"action_revision_{step_count}"] = {
+                            "rejected": True,
+                            "reason": rejection_reason,
+                            "original": {
+                                "tool_name": tool_name,
+                                "target_gap": target_gap,
+                                "sub_goal": sub_goal,
+                            },
+                        }
+                        next_step = self.planner.generate_next_step(
+                            question, image_path, query_analysis, self.memory, step_count,
+                            self.max_steps, json_data,
+                            previous_verifier_assessment=previous_verifier_assessment,
+                            hierarchical_plan=plan_state,
+                            current_step=current_plan_step,
+                            current_step_contract=current_step_contract,
+                            action_rejection=rejection_reason,
+                            attempt_label="revision",
+                        )
+                        context, sub_goal, tool_name = self.planner.extract_context_subgoal_and_tool(next_step)
+                        target_gap = self.planner.extract_target_gap(next_step)
+                        json_data[f"action_revision_{step_count}"]["revised"] = {
+                            "tool_name": tool_name,
+                            "target_gap": target_gap,
+                            "sub_goal": sub_goal,
+                            "target_gap_valid": target_gap_is_current(target_gap, current_step_contract),
+                        }
                 if self.verbose:
                     print(f"\n==> 🎯 Step {step_count}: Action Prediction ({tool_name})\n")
-                    print(f"[Context]: {context}\n[Sub Goal]: {sub_goal}\n[Tool]: {tool_name}")
+                    print(f"[Context]: {context}\n[Target Gap]: {target_gap}\n[Sub Goal]: {sub_goal}\n[Tool]: {tool_name}")
                     print(f"[Time]: {round(time.time() - local_start_time, 2)}s")
 
                 if tool_name is None or tool_name not in self.planner.available_tools:
@@ -202,6 +265,7 @@ class Solver:
                 # [5] Verify either the active evidence step or legacy global memory.
                 local_start_time = time.time()
                 if hierarchical_planning:
+                    before_current_step = copy.deepcopy(current_plan_step)
                     raw_step_verification = self.verifier.verificate_step(
                         question, image_path, query_analysis, self.memory,
                         current_plan_step, plan_state, step_count, json_data,
@@ -214,8 +278,28 @@ class Solver:
                     apply_step_verification(
                         plan_state, current_plan_step["step_id"], verification_payload, plan_transitions,
                     )
+                    after_current_step = next(
+                        step for step in plan_state["steps"] if step["step_id"] == current_plan_step["step_id"]
+                    )
+                    progress = assess_step_progress(before_current_step, after_current_step)
+                    attempt = {
+                        "attempt_index": len(prior_attempts) + 1,
+                        "tool_name": tool_name,
+                        "target_gap": target_gap,
+                        "sub_goal": sub_goal,
+                        "objective_signature": objective_signature(sub_goal),
+                        "new_evidence_obtained": progress["made_progress"],
+                        "made_progress": progress["made_progress"],
+                    }
+                    prior_attempts.append(attempt)
                     previous_verifier_assessment = verification_payload
                     json_data[f"step_verification_{step_count}"] = verification_payload
+                    json_data[f"current_step_progress_{step_count}"] = {
+                        "active_step_id": current_plan_step["step_id"],
+                        "target_gap": target_gap,
+                        "attempt": attempt,
+                        "progress": progress,
+                    }
                     json_data[f"plan_after_step_{step_count}"] = plan_snapshot(plan_state)
                     json_data["plan_transitions"] = copy.deepcopy(plan_transitions)
                     if self.verbose:

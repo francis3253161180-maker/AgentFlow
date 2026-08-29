@@ -134,6 +134,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
     for ordinal, (_, action) in enumerate(memory.items(), start=1):
         action = action if isinstance(action, dict) else {}
         planner = parse_json(total.get(f"action_predictor_{ordinal}_response"))
+        revised_planner = parse_json(total.get(f"action_predictor_{ordinal}_revision_response"))
         verifier = parse_json(total.get(f"verifier_{ordinal}_response"))
         step_verifier = parse_json(total.get(f"step_verifier_{ordinal}_response"))
         plan_before = total.get(f"plan_before_step_{ordinal}")
@@ -144,7 +145,12 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
             "planner_tool_choice": planner.get("tool_name") if isinstance(planner, dict) else None,
             "planner_context": compact(planner.get("context")) if isinstance(planner, dict) else None,
             "planner_subgoal": compact(planner.get("sub_goal")) if isinstance(planner, dict) else None,
+            "planner_target_gap": compact(planner.get("target_gap")) if isinstance(planner, dict) else None,
+            "planner_revision": compact(revised_planner),
+            "action_revision": compact(total.get(f"action_revision_{ordinal}")),
             "routing_state": compact(total.get(f"action_predictor_{ordinal}_routing_state")),
+            "current_step_state": compact(total.get(f"current_step_state_{ordinal}"), 1800),
+            "current_step_progress": compact(total.get(f"current_step_progress_{ordinal}"), 1200),
             "current_plan_step": compact(current_plan_step),
             "unresolved_evidence_gaps_before_action": (
                 compact(current_plan_step.get("missing_evidence", [])) if current_plan_step else []

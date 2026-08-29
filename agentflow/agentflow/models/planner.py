@@ -6,8 +6,9 @@ from typing import Any, Dict, List, Tuple
 from PIL import Image
 
 from agentflow.engine.factory import create_llm_engine
-from agentflow.models.formatters import HighLevelPlan, NextStep, QueryAnalysis
+from agentflow.models.formatters import HighLevelPlan, HierarchicalNextStep, NextStep, QueryAnalysis
 from agentflow.models.memory import Memory
+from agentflow.models.current_step_state import build_current_step_contract
 from agentflow.models.structured_outputs import (
     Game24Answer,
     extract_game24_numbers,
@@ -339,7 +340,7 @@ Be biref and precise with insight.
 
         return context, sub_goal, tool_name
 
-    def generate_next_step(self, question: str, image: str, query_analysis: str, memory: Memory, step_count: int, max_step_count: int, json_data: Any = None, previous_verifier_assessment: Any = None, hierarchical_plan: Any = None, current_step: Any = None) -> Any:
+    def generate_next_step(self, question: str, image: str, query_analysis: str, memory: Memory, step_count: int, max_step_count: int, json_data: Any = None, previous_verifier_assessment: Any = None, hierarchical_plan: Any = None, current_step: Any = None, current_step_contract: Any = None, action_rejection: str | None = None, attempt_label: str = "initial") -> Any:
         def compact(value: Any, limit: int) -> str:
             text = str(value)
             if len(text) <= limit:
@@ -357,17 +358,26 @@ Be biref and precise with insight.
         compact_routing_state = routing_state_snapshot(memory, previous_verifier_assessment)
         hierarchical_context = ""
         if hierarchical_plan is not None and current_step is not None:
+            contract = current_step_contract or build_current_step_contract(
+                current_step, memory.get_actions(), [], previous_verifier_assessment,
+            )
             hierarchical_context = f"""
 Hierarchical Plan State:
 - Full plan: {compact(hierarchical_plan, 1600)}
-- Current unresolved step: {compact(current_step, 800)}
-- Unresolved evidence gaps for this step are the current step's
-  `missing_evidence`; use the recorded verified evidence and known URLs before
-  choosing a new action.
-- Select one action for this current step only. Formulate one atomic sub-goal
-  matched to that tool capability; do not redo a completed step or combine
-  dependent goals into one action. An action executing successfully is not
-  evidence that the step is complete; the verifier decides completion.
+- Current-Step State Contract: {compact(json.dumps(contract, ensure_ascii=False), 2200)}
+- Select exactly one `target_gap` ID from `unresolved_evidence_gaps` in that
+  contract. Formulate one atomic sub-goal matched to that one gap only; do not
+  redo a completed step or combine dependent goals into one action.
+- Prior attempts record whether the verifier observed evidence progress. A
+  repeat is valid only when it has a genuinely changed objective or target.
+- An action executing successfully is not evidence that the step is complete;
+  the verifier decides completion.
+"""
+            if action_rejection:
+                hierarchical_context += f"""
+Action revision required (this is the single allowed revision for this action):
+- {action_rejection}
+Use the same Current-Step State Contract and emit a changed, valid action.
 """
 
         if self.is_multimodal:
@@ -414,7 +424,7 @@ Instructions:
 4. Formulate a specific, achievable sub-goal for the selected tool that maximizes progress towards answering the query.
 
 Response Format (JSON object only; match the NextStep schema exactly):
-{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective>", "tool_name": "<exact tool name>"}}
+{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective for target_gap>", "tool_name": "<exact tool name>", "target_gap": "<exact target-gap ID from Current-Step State Contract, or empty when hierarchy is disabled>"}}
 
 Your response MUST be this JSON object and nothing else. Do not use the legacy section format below.
 Rules:
@@ -446,7 +456,7 @@ Instructions:
 4. Provide all necessary **context** (data, file names, variables) for the tool to function.
 
 Response Format (JSON object only; match the NextStep schema exactly):
-{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective>", "tool_name": "<exact tool name>"}}
+{{"justification": "<why this one tool is appropriate>", "context": "<all information required by the tool>", "sub_goal": "<one achievable objective for target_gap>", "tool_name": "<exact tool name>", "target_gap": "<exact target-gap ID from Current-Step State Contract, or empty when hierarchy is disabled>"}}
 
 Use the exact JSON field names above. Do not emit markdown, section headings, or any text outside the JSON object.
 
@@ -456,16 +466,36 @@ Rules:
 - Put all required tool context in the `context` field.
                     """
             
+        response_model = HierarchicalNextStep if hierarchical_plan is not None and current_step is not None else NextStep
         next_step = self.llm_engine(
             prompt_generate_next_step,
-            response_format=NextStep,
+            response_format=response_model,
             max_tokens=self.max_tokens,
         )
         if json_data is not None:
-            json_data[f"action_predictor_{step_count}_routing_state"] = compact_routing_state
-            json_data[f"action_predictor_{step_count}_prompt"] = prompt_generate_next_step
-            json_data[f"action_predictor_{step_count}_response"] = str(next_step)
+            prefix = f"action_predictor_{step_count}"
+            if attempt_label != "initial":
+                prefix += f"_{attempt_label}"
+            json_data[f"{prefix}_routing_state"] = compact_routing_state
+            json_data[f"{prefix}_prompt"] = prompt_generate_next_step
+            json_data[f"{prefix}_response"] = str(next_step)
         return next_step
+
+    def extract_target_gap(self, response: Any) -> str:
+        """Read the structured current-step target without changing legacy extraction."""
+        if isinstance(response, NextStep):
+            return response.target_gap.strip()
+        if isinstance(response, str):
+            try:
+                return NextStep(**json.loads(response)).target_gap.strip()
+            except Exception:
+                return ""
+        if isinstance(response, dict):
+            try:
+                return NextStep(**response).target_gap.strip()
+            except Exception:
+                return ""
+        return ""
 
     def generate_high_level_plan(
         self, question: str, image: str, query_analysis: str, max_step_count: int, json_data: Any = None,
