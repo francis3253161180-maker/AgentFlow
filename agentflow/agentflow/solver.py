@@ -28,7 +28,7 @@ from agentflow.models.plan_state import (
 )
 from agentflow.models.executor import Executor
 from agentflow.models.utils import make_json_serializable_truncated
-from agentflow.models.role_boundaries import sanitize_verifier_assessment
+from agentflow.models.role_boundaries import audit_fixed_role_output, sanitize_verifier_assessment
 
 class Solver:
     def __init__(
@@ -118,10 +118,17 @@ class Solver:
             plan_transitions = []
             termination_reason = None
             if hierarchical_planning:
+                configured_plan_cap = os.getenv("AGENTFLOW_HIERARCHICAL_PLAN_MAX_STEPS", "").strip()
+                try:
+                    plan_max_steps = int(configured_plan_cap) if configured_plan_cap else self.max_steps
+                except ValueError:
+                    plan_max_steps = self.max_steps
+                plan_max_steps = max(1, min(self.max_steps, plan_max_steps))
+                json_data["hierarchical_plan_max_steps"] = plan_max_steps
                 high_level_plan = self.planner.generate_high_level_plan(
-                    question, image_path, query_analysis, self.max_steps, json_data,
+                    question, image_path, query_analysis, plan_max_steps, json_data,
                 )
-                plan_state = normalize_plan(high_level_plan, self.max_steps)
+                plan_state = normalize_plan(high_level_plan, plan_max_steps)
                 activate_next_step(plan_state, plan_transitions)
                 json_data["hierarchical_planning"] = True
                 coverage_state = getattr(self.planner, "last_high_level_plan_coverage", None)
@@ -307,8 +314,15 @@ class Solver:
                         missing.append("traceable provenance is required for every mapped active-step requirement")
                         verification_payload["missing_evidence"] = list(dict.fromkeys(missing))
                     json_data[f"step_completion_grounding_{step_count}"] = completion_gate
+                    actor_visible_verification = sanitize_verifier_assessment(
+                        verification_payload, recorded_evidence=memory_actions,
+                    )
+                    # Completion is authorized by the deterministic raw-memory
+                    # provenance gate above; all text routed into plan state is
+                    # separately sanitized before planner_main can observe it.
+                    actor_visible_verification["completed"] = bool(verification_payload.get("completed"))
                     apply_step_verification(
-                        plan_state, current_plan_step["step_id"], verification_payload, plan_transitions,
+                        plan_state, current_plan_step["step_id"], actor_visible_verification, plan_transitions,
                     )
                     after_current_step = next(
                         step for step in plan_state["steps"] if step["step_id"] == current_plan_step["step_id"]
@@ -331,7 +345,10 @@ class Solver:
                     prior_attempts.append(attempt)
                     # Planner-main receives only state/provenance already in
                     # Memory, never the fixed verifier's free-form rationale.
-                    previous_verifier_assessment = sanitize_verifier_assessment(verification_payload)
+                    previous_verifier_assessment = actor_visible_verification
+                    json_data[f"step_verifier_{step_count}_actor_visible_boundary_audit"] = audit_fixed_role_output(
+                        previous_verifier_assessment, recorded_evidence=memory_actions,
+                    )
                     json_data[f"step_verification_{step_count}"] = verification_payload
                     json_data[f"current_step_progress_{step_count}"] = {
                         "active_step_id": current_plan_step["step_id"],

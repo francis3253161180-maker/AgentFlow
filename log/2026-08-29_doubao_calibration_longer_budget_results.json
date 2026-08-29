@@ -1,0 +1,2533 @@
+{
+  "cleanup_markers": [
+    "\u001b[36m(TaskRunner pid=350938)\u001b[0m bind role actor_rollout method sleep to class <class 'verl.single_controller.ray.base.create_colocated_worker_cls.<locals>.WorkerDict'>",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:14:48,985 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP trigger=manager_sleep outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:14:48,985 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:14:48,985 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:14:48,987 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:14:48,987 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:15:01,269 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:15:01,269 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=12.284s",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:15:01,978 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP wake_up complete; request acceptance resumed",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:17:52,002 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP trigger=normal_complete outstanding=0 active_http=0 abort_start=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:17:52,003 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP drain_complete=1 outstanding_before=0 abort_count=0 abort_errors=0 drain_duration=0.000s",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:17:52,003 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache start=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:17:52,009 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP reset_prefix_cache complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:17:52,010 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP sleep_start=1",
+    "\u001b[36m(TaskRunner pid=350938)\u001b[0m VLLM_CLEANUP_DRIVER reason=normal_complete results=[{'drained': True, 'outstanding_before': 0, 'abort_count': 0, 'abort_errors': 0, 'drain_duration_seconds': 0.00020238757133483887, 'sleep_started': True, 'cleanup_duration_seconds': 0.6949199885129929}]",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:17:52,697 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP sleep_complete=1",
+    "\u001b[36m(PatchedvLLMServer pid=351997)\u001b[0m 2026-08-29 23:17:52,697 [INFO] (Process-351997 agentflow.verl.async_server)   VLLM_CLEANUP complete=1 drained=1 duration=0.695s"
+  ],
+  "factual_retrieval_rollout_count": 4,
+  "fatal_lifecycle_markers": [],
+  "fixed_role_runtime_totals": {
+    "step_verifier_calls": 17,
+    "supervisor_calls": 8
+  },
+  "gpu_peak_memory_mib": 20195.0,
+  "input_manifest": {
+    "benchmark_id": "2hop__13592_49388",
+    "ground_truth_sha256": "aea92132c4cbeb263e6ac2bf6c183b5d81737f179f21efdc5863739672f0f470",
+    "id": 4,
+    "output_parquet": "/root/autodl-tmp/tmp/doubao_calibration_longer_budget_20260829/musique_group4.parquet",
+    "output_parquet_sha256": "289c8afbb9fa202262696924e12dba20016bae2b845e3411ab37a87c912346fd",
+    "purpose": "bounded structural smoke only; no optimizer/checkpoint/training",
+    "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+    "rollout_n": 4,
+    "schema_version": 1,
+    "seed": 20260829,
+    "selection": "fixed existing MuSiQue probe group 4; no resampling",
+    "source_idx": 259,
+    "source_parquet": "/root/autodl-tmp/tmp/multihop_allqwen_probe_20260829/musique.parquet",
+    "source_parquet_sha256": "0dba79b972473a34b27586f24d7e1a0f2b179d5b8a92bb545417d7bc8fc8e450"
+  },
+  "mixed_group": false,
+  "purpose": "one-question x4 rollout-only structural routing smoke; not a training result",
+  "reward_mean": 0.0,
+  "reward_vector": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "role_routing": [
+    "{\"ark_reasoning_effort\": \"minimal\", \"coverage_auditor\": \"doubao-seed-2-0-lite-260428\", \"executor\": \"vllm-qwen-base\", \"final_generator\": \"vllm-qwen-base\", \"fixed_role_temperature\": 0.0, \"high_level_evidence_planner\": \"doubao-seed-2-0-lite-260428\", \"planner_main\": \"vllm-qwen-actor\", \"query_analysis\": \"vllm-qwen-base\", \"step_verifier\": \"doubao-seed-2-0-lite-260428\", \"supervisor_temperature\": 0.0, \"verifier_temperature\": 0.0}"
+  ],
+  "rollout_count": 4,
+  "rollout_dir": "rollout_data/46.38.243.197/doubao-calibration-longer-budget-musique-group4-20260829_20260829-231506/Qwen2.5-7B-Instruct_20260829-231512/train",
+  "schema_version": 1,
+  "search_internal_doubao_calls": 0,
+  "search_internal_openai_calls": 0,
+  "search_internal_telemetry": [
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 2,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 1,
+      "shared_cache_writes": 2,
+      "singleflight_wait_count": 1,
+      "singleflight_wait_seconds": 2.196355313062668,
+      "throttle_wait_count": 2,
+      "throttle_wait_seconds": 0.8380980379879475
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 3,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 3,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 1,
+      "throttle_wait_seconds": 0.7492351643741131
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 3,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 3,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 1,
+      "throttle_wait_seconds": 0.11846094205975533
+    },
+    {
+      "cache_hits": 1,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 2,
+      "shared_cache_writes": 0,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 1,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 1,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 1,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 1,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_url",
+      "ranking": "deterministic_lexical",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 2,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 1,
+      "shared_cache_writes": 2,
+      "singleflight_wait_count": 1,
+      "singleflight_wait_seconds": 1.6262699775397778,
+      "throttle_wait_count": 2,
+      "throttle_wait_seconds": 1.4984459206461906
+    },
+    {
+      "cache_hits": 1,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 2,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 2,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 2,
+      "throttle_wait_seconds": 1.353609200567007
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "openai_calls": 0,
+      "provider": "public_url",
+      "ranking": "deterministic_lexical",
+      "retries": 0,
+      "search_internal_llm_calls": 0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 3,
+      "shared_cache_writes": 0,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 3,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 3,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 3,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 3,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 3,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 3,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 2,
+      "throttle_wait_seconds": 1.4986317120492458
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 2,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 1,
+      "shared_cache_writes": 2,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 2,
+      "throttle_wait_seconds": 1.0715576633810997
+    },
+    {
+      "cache_hits": 0,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 0,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 3,
+      "shared_cache_writes": 0,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    },
+    {
+      "cache_hits": 2,
+      "doubao_calls": 0,
+      "http_429": 0,
+      "http_requests": 1,
+      "openai_calls": 0,
+      "provider": "public_wikipedia",
+      "ranking": "public_search_order",
+      "retries": 0,
+      "retry_after_seconds": 0.0,
+      "search_internal_llm_calls": 0,
+      "shared_cache_hits": 0,
+      "shared_cache_writes": 1,
+      "singleflight_wait_count": 0,
+      "singleflight_wait_seconds": 0.0,
+      "throttle_wait_count": 0,
+      "throttle_wait_seconds": 0.0
+    }
+  ],
+  "search_telemetry_totals": {
+    "cache_hits": 8.0,
+    "doubao_calls": 0.0,
+    "http_429": 0.0,
+    "http_requests": 26.0,
+    "openai_calls": 0.0,
+    "retries": 0.0,
+    "retry_after_seconds": 0.0,
+    "search_internal_llm_calls": 0.0,
+    "shared_cache_hits": 11.0,
+    "shared_cache_writes": 26.0,
+    "singleflight_wait_count": 2.0,
+    "singleflight_wait_seconds": 3.8226252906024456,
+    "throttle_wait_count": 12.0,
+    "throttle_wait_seconds": 7.128038641065359
+  },
+  "supervisor_preflight": {
+    "ark_reasoning_effort": "minimal",
+    "benchmark_id": "2hop__13592_49388",
+    "boundary_audits": [
+      {
+        "attempt": 1,
+        "marker_categories": {
+          "arithmetic_not_in_recorded_evidence": [
+            "1947-48",
+            "1948-49"
+          ],
+          "command_or_query_syntax": false,
+          "direct_answer_language": false,
+          "tool_names": [],
+          "urls": []
+        },
+        "marker_count": 2,
+        "parse_error_category": null,
+        "parsed_schema_success": true,
+        "response_length": 1115,
+        "response_sha256": "f879f94de5889ca62ce62517c4e042df984e175bf92acfe721e3c97bec3ac85c",
+        "role": "high_level_evidence_planner"
+      },
+      {
+        "attempt": 2,
+        "marker_categories": {
+          "arithmetic_not_in_recorded_evidence": [],
+          "command_or_query_syntax": false,
+          "direct_answer_language": false,
+          "tool_names": [],
+          "urls": []
+        },
+        "marker_count": 0,
+        "parse_error_category": null,
+        "parsed_schema_success": true,
+        "response_length": 976,
+        "response_sha256": "33004e0c8d652c0f1d13a3d880cc6629a30d505e44e7f0fc0804d600262dec97",
+        "role": "high_level_evidence_planner"
+      },
+      {
+        "attempt": 1,
+        "marker_categories": {
+          "arithmetic_not_in_recorded_evidence": [],
+          "command_or_query_syntax": false,
+          "direct_answer_language": false,
+          "tool_names": [],
+          "urls": []
+        },
+        "marker_count": 0,
+        "parse_error_category": null,
+        "parsed_schema_success": true,
+        "response_length": 1137,
+        "response_sha256": "035cb9df57b6d864e981639dc4d8ade13b96d3933796bd9f3a7188a13df2e6d0",
+        "role": "coverage_auditor"
+      }
+    ],
+    "coverage": {
+      "coverage": {
+        "composite_step_ids": [],
+        "covered_step_ids": [
+          "step_1",
+          "step_2",
+          "step_3"
+        ],
+        "independently_necessary_requirements": [
+          "Identify the specific league where Barcelona won titles in both 1948 and 1949",
+          "Retrieve the official standard season structure for the identified league during the relevant historical period",
+          "Establish the total number of games played in a single standard season of that league"
+        ],
+        "missing_requirements": [],
+        "rationale": "All independently necessary evidence requirements to answer the query are fully covered by distinct atomic plan steps, all cross-step dependencies are explicitly declared, and no step combines multiple unrelated independent requirements.",
+        "requirement_coverage": [
+          {
+            "covered_step_ids": [
+              "step_1"
+            ],
+            "requirement": "Identify the specific league where Barcelona won titles in both 1948 and 1949"
+          },
+          {
+            "covered_step_ids": [
+              "step_2"
+            ],
+            "requirement": "Retrieve the official standard season structure for the identified league during the relevant historical period"
+          },
+          {
+            "covered_step_ids": [
+              "step_3"
+            ],
+            "requirement": "Establish the total number of games played in a single standard season of that league"
+          }
+        ],
+        "sufficient": true
+      },
+      "valid": true
+    },
+    "hierarchical_plan_max_steps": 3,
+    "last_request_metadata": {
+      "max_tokens": 512,
+      "model": "doubao-seed-2-0-lite-260428",
+      "reasoning_effort": "minimal",
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "model": "doubao-seed-2-0-lite-260428",
+    "passed": true,
+    "purpose": "supervisor-only boundary preflight; no actor action, tool, scoring, or training",
+    "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+    "source_idx": 259,
+    "source_sha256": "0dba79b972473a34b27586f24d7e1a0f2b179d5b8a92bb545417d7bc8fc8e450",
+    "supervisor_call_count": 3,
+    "temperature": 0.0
+  },
+  "termination_cause_counts": {
+    "max_steps_with_unresolved_plan": 2,
+    "planner_action_stagnant": 2
+  },
+  "trajectories": [
+    {
+      "configured_max_steps": 6,
+      "configured_max_time_seconds": 1200.0,
+      "distinct_tools": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 53.25,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Confirmation of the specific top-tier football league where FC Barcelona won official titles in both 1948 and 1949, as the retrieved Wikipedia snippets do not mention Barcelona's 1948 or 1949 top-tier league championship honors; step_2: The confirmed competition format for the relevant league seasons is fully documented, including participating team counts and match scheduling rules; step_3: A verified, season-appropriate total game count for the league is confirmed with no conflicting historical records",
+      "fixed_role_runtime_telemetry": {
+        "ark_reasoning_effort": "minimal",
+        "step_verifier_calls": 1,
+        "supervisor_calls": 2
+      },
+      "ground_truth": "38",
+      "high_level_plan_coverage_valid": true,
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        }
+      ],
+      "requirement_to_step_mapping": {
+        "Derive the verified total number of games in a standard season of the identified league corresponding to the 1948 and 1949 title period with no conflicting historical records": [
+          "step_3"
+        ],
+        "Identify the specific top-tier football league where FC Barcelona won official titles in both 1948 and 1949": [
+          "step_1"
+        ],
+        "Retrieve the official season structure rules for the identified league that applied to the 1948 and 1949 title-winning campaigns, including participating team counts and match scheduling rules": [
+          "step_2"
+        ]
+      },
+      "reward": 0.0,
+      "role_routing": {
+        "ark_reasoning_effort": "minimal",
+        "coverage_auditor": "doubao-seed-2-0-lite-260428",
+        "executor": "vllm-qwen-base",
+        "final_generator": "vllm-qwen-base",
+        "fixed_role_temperature": 0.0,
+        "high_level_evidence_planner": "doubao-seed-2-0-lite-260428",
+        "planner_main": "vllm-qwen-actor",
+        "query_analysis": "vllm-qwen-base",
+        "step_verifier": "doubao-seed-2-0-lite-260428",
+        "supervisor_temperature": 0.0,
+        "verifier_temperature": 0.0
+      },
+      "rollout_file": "rollout_data/46.38.243.197/doubao-calibration-longer-budget-musique-group4-20260829_20260829-231506/Qwen2.5-7B-Instruct_20260829-231512/train/step_1/idx_259/rollout_03f4468e-abfb-4223-b715-19b1701dc2b4.json",
+      "steps": [
+        {
+          "planner_subgoal": "Identify the specific top-tier football league where FC Barcelona won official titles in both 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "FC Barcelona Bàsquet",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona_B%C3%A0squet"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 2,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 1,
+              "shared_cache_writes": 2,
+              "singleflight_wait_count": 1,
+              "singleflight_wait_seconds": 2.196355313062668,
+              "throttle_wait_count": 2,
+              "throttle_wait_seconds": 0.8380980379879475
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmation of the specific top-tier football league where FC Barcelona won official titles in both 1948 and 1949, as the retrieved Wikipedia snippets do not mention Barcelona's 1948 or 1949 top-tier league championship honors"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1"
+                ],
+                "evidence_quote_count": 0,
+                "requirement": "Identify the specific top-tier football league where FC Barcelona won official titles in both 1948 and 1949"
+              }
+            ],
+            "verified_evidence": []
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        }
+      ],
+      "supervisor_last_request_metadata": {
+        "max_tokens": 512,
+        "model": "doubao-seed-2-0-lite-260428",
+        "reasoning_effort": "minimal",
+        "response_format": "json_object",
+        "temperature": 0.0,
+        "top_p": 1.0
+      },
+      "supervisor_role_boundary_audits": [
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1211,
+          "response_sha256": "078ca1c225cae89cc8494ae651ac447d16dabfb01f157dca5c64827b14e11d2a",
+          "role": "high_level_evidence_planner"
+        },
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1610,
+          "response_sha256": "79304ee91dc8ea97417b586d66141079fcbe3833ad6f3287770a7bdf40c7866c",
+          "role": "coverage_auditor"
+        }
+      ],
+      "termination_cause": "planner_action_stagnant",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_stagnant",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 6,
+      "configured_max_time_seconds": 1200.0,
+      "distinct_tools": [
+        "Web_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 135.81,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to; step_2: Verified documentation of the standard match count framework for a single full season of the target league during that historical period; step_3: A confirmed numerical value representing the total number of games per season for the relevant league in that era",
+      "fixed_role_runtime_telemetry": {
+        "ark_reasoning_effort": "minimal",
+        "step_verifier_calls": 6,
+        "supervisor_calls": 2
+      },
+      "ground_truth": "38",
+      "high_level_plan_coverage_valid": true,
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        }
+      ],
+      "requirement_to_step_mapping": {
+        "Determine the total number of games played in a standard season of the identified league corresponding to the 1948 and 1949 title years": [
+          "step_3"
+        ],
+        "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949": [
+          "step_1"
+        ],
+        "Retrieve the official season structure rules for the identified league that were in place for the 1948 and 1949 title-winning campaigns": [
+          "step_2"
+        ]
+      },
+      "reward": 0.0,
+      "role_routing": {
+        "ark_reasoning_effort": "minimal",
+        "coverage_auditor": "doubao-seed-2-0-lite-260428",
+        "executor": "vllm-qwen-base",
+        "final_generator": "vllm-qwen-base",
+        "fixed_role_temperature": 0.0,
+        "high_level_evidence_planner": "doubao-seed-2-0-lite-260428",
+        "planner_main": "vllm-qwen-actor",
+        "query_analysis": "vllm-qwen-base",
+        "step_verifier": "doubao-seed-2-0-lite-260428",
+        "supervisor_temperature": 0.0,
+        "verifier_temperature": 0.0
+      },
+      "rollout_file": "rollout_data/46.38.243.197/doubao-calibration-longer-budget-musique-group4-20260829_20260829-231506/Qwen2.5-7B-Instruct_20260829-231512/train/step_1/idx_259/rollout_7628c096-14d7-4049-bbc2-514e8b3cdc4a.json",
+      "steps": [
+        {
+          "planner_subgoal": "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "RCD Espanyol",
+              "url": "https://en.wikipedia.org/wiki/RCD_Espanyol"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 3,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 3,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 1,
+              "throttle_wait_seconds": 0.7492351643741131
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmed, named league entity that verifiably shows FC Barcelona won top-tier league titles in 1948 and 1949, as the existing Wikipedia_RAG_Search_Tool results do not explicitly state Barcelona's 1948 and 1949 top-tier championship wins or…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "The retrieved Wikipedia snippets note that FC Barcelona competes in La Liga, the top division of Spanish football, but do not provide confirmation of their 1948 and 1949 top-tier league title wins"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 1,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [
+                  "Wikipedia_RAG_Search_Tool"
+                ],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        },
+        {
+          "planner_subgoal": "Verify if FC Barcelona won titles in La Liga during 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "title": "List of FC Barcelona players",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 3,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 3,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 1,
+              "throttle_wait_seconds": 0.11846094205975533
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2"
+                ],
+                "evidence_quote_count": 2,
+                "requirement": "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "The retrieved Wikipedia snippets note that FC Barcelona competes in La Liga, the top division of Spanish football, but do not provide confirmation of their 1948 and 1949 top-tier league title wins"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        },
+        {
+          "planner_subgoal": "Confirm if FC Barcelona won top-tier league titles in 1948 and 1949 and identify the specific named league for these title wins.",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "FC Barcelona Bàsquet",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona_B%C3%A0squet"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 1,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 2,
+              "shared_cache_writes": 0,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 3,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2",
+                  "Action Step 3"
+                ],
+                "evidence_quote_count": 3,
+                "requirement": "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "The retrieved Wikipedia snippets note that FC Barcelona competes in La Liga, the top division of Spanish football, but do not provide confirmation of their 1948 and 1949 top-tier league title wins"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 1,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [
+                  "Wikipedia_RAG_Search_Tool"
+                ],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+          ]
+        },
+        {
+          "planner_subgoal": "Confirm if FC Barcelona won top-tier league titles in 1948 and 1949 and identify the specific named league that these title wins belong to",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "List of FC Barcelona players",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+            },
+            {
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 1,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 1,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 4,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 3"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "The retrieved Wikipedia snippets note that FC Barcelona competes in La Liga, the top division of Spanish football, but do not provide confirmation of their 1948 and 1949 top-tier league title wins"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 1,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [
+                  "Wikipedia_RAG_Search_Tool"
+                ],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+          ]
+        },
+        {
+          "planner_subgoal": "Confirm that FC Barcelona won top-tier league titles in La Liga during 1948 and 1949 and provide the specific named league that these title wins belong to.",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona Bàsquet",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona_B%C3%A0squet"
+            },
+            {
+              "title": "RCD Espanyol",
+              "url": "https://en.wikipedia.org/wiki/RCD_Espanyol"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 1,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 1,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 5,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 3"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "The retrieved Wikipedia snippets note that FC Barcelona competes in La Liga, the top division of Spanish football, but do not provide confirmation of their 1948 and 1949 top-tier league title wins"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 1,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [
+                  "Wikipedia_RAG_Search_Tool"
+                ],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+          ]
+        },
+        {
+          "planner_subgoal": "Confirm that FC Barcelona won top-tier league titles in La Liga during 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Web_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "chunk_index": 192,
+              "lexical_score": 24,
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "chunk_index": 134,
+              "lexical_score": 19,
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_url",
+              "ranking": "deterministic_lexical",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 6,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 3"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "The retrieved Wikipedia snippets note that FC Barcelona competes in La Liga, the top division of Spanish football, but do not provide confirmation of their 1948 and 1949 top-tier league title wins"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Confirmation that FC Barcelona won top-tier league titles in 1948 and 1949, and the specific named league that these title wins belong to"
+          ]
+        }
+      ],
+      "supervisor_last_request_metadata": {
+        "max_tokens": 512,
+        "model": "doubao-seed-2-0-lite-260428",
+        "reasoning_effort": "minimal",
+        "response_format": "json_object",
+        "temperature": 0.0,
+        "top_p": 1.0
+      },
+      "supervisor_role_boundary_audits": [
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1169,
+          "response_sha256": "20cbeab1d130d020bfa66535d4a92644ff2254a5c59b4b30a59ac6f5ab7ebd09",
+          "role": "high_level_evidence_planner"
+        },
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1372,
+          "response_sha256": "79003573eead25473c607cf4c0cc2524b6968c3a648f02edd0f273efd942aa04",
+          "role": "coverage_auditor"
+        }
+      ],
+      "termination_cause": "max_steps_with_unresolved_plan",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "max_steps_with_unresolved_plan",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Web_RAG_Search_Tool"
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 6,
+      "configured_max_time_seconds": 1200.0,
+      "distinct_tools": [
+        "Web_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 150.72,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga.; step_2: Verified documentation of how the league's season was organized during that historical timeframe; step_3: A confirmed numerical count of total matches per season that aligns with the league's 1940s structure",
+      "fixed_role_runtime_telemetry": {
+        "ark_reasoning_effort": "minimal",
+        "step_verifier_calls": 6,
+        "supervisor_calls": 2
+      },
+      "ground_truth": "38",
+      "high_level_plan_coverage_valid": true,
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        }
+      ],
+      "requirement_to_step_mapping": {
+        "Determine the total number of games played in a single season of that league during the relevant period": [
+          "step_3"
+        ],
+        "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949": [
+          "step_1"
+        ],
+        "Retrieve the standard season structure details for the identified league as it existed around the 1948 and 1949 period": [
+          "step_2"
+        ]
+      },
+      "reward": 0.0,
+      "role_routing": {
+        "ark_reasoning_effort": "minimal",
+        "coverage_auditor": "doubao-seed-2-0-lite-260428",
+        "executor": "vllm-qwen-base",
+        "final_generator": "vllm-qwen-base",
+        "fixed_role_temperature": 0.0,
+        "high_level_evidence_planner": "doubao-seed-2-0-lite-260428",
+        "planner_main": "vllm-qwen-actor",
+        "query_analysis": "vllm-qwen-base",
+        "step_verifier": "doubao-seed-2-0-lite-260428",
+        "supervisor_temperature": 0.0,
+        "verifier_temperature": 0.0
+      },
+      "rollout_file": "rollout_data/46.38.243.197/doubao-calibration-longer-budget-musique-group4-20260829_20260829-231506/Qwen2.5-7B-Instruct_20260829-231512/train/step_1/idx_259/rollout_cd65f375-cbba-4bb6-ae11-58dc6cfda1d7.json",
+      "steps": [
+        {
+          "planner_subgoal": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "Football in London",
+              "url": "https://en.wikipedia.org/wiki/Football_in_London"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 2,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 1,
+              "shared_cache_writes": 2,
+              "singleflight_wait_count": 1,
+              "singleflight_wait_seconds": 1.6262699775397778,
+              "throttle_wait_count": 2,
+              "throttle_wait_seconds": 1.4984459206461906
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is explicitly identified as the league corresponding to those specific 1948 and 1949 championship wins, as the current search result only notes Barc…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": []
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        },
+        {
+          "planner_subgoal": "Confirm the specific top-tier football league that Barcelona won titles in during 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "History of FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/History_of_FC_Barcelona"
+            },
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 1,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 2,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 2,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 2,
+              "throttle_wait_seconds": 1.353609200567007
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as the existing search results only note Barcelona currently competes in La Liga and co-founded La Liga in 1928, but do not exp…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2"
+                ],
+                "evidence_quote_count": 2,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain that competes in La Liga, the top division of Spanish football, and co-founded La Liga in 1928."
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is explicitly identified as the league corresponding to those specific 1948 and 1949 championship wins, as the current search result only notes Barcelona competes in La Liga now and does not confirm La Liga (or any named league) as the competition they won titles in during 1948 and 1949"
+          ]
+        },
+        {
+          "planner_subgoal": "Confirm that La Liga was the specific top-tier football league in which FC Barcelona won titles in 1948 and 1949.",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Web_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "chunk_index": 5,
+              "lexical_score": 17,
+              "url": "https://en.wikipedia.org/wiki/History_of_FC_Barcelona"
+            },
+            {
+              "chunk_index": 11,
+              "lexical_score": 16,
+              "url": "https://en.wikipedia.org/wiki/History_of_FC_Barcelona"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "openai_calls": 0,
+              "provider": "public_url",
+              "ranking": "deterministic_lexical",
+              "retries": 0,
+              "search_internal_llm_calls": 0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 3,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga."
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2",
+                  "Action Step 3"
+                ],
+                "evidence_quote_count": 2,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain that competes in La Liga, the top division of Spanish football, and co-founded La Liga in 1928."
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as the existing search results only note Barcelona currently competes in La Liga and co-founded La Liga in 1928, but do not explicitly link La Liga to Barcelona's specific 1948 and 1949 championship wins."
+          ]
+        },
+        {
+          "planner_subgoal": "Confirm that La Liga was the specific top-tier football league in which FC Barcelona won titles in 1948 and 1949.",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "title": "List of FC Barcelona players",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 3,
+              "shared_cache_writes": 0,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 4,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga."
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2",
+                  "Action Step 3",
+                  "Action Step 4"
+                ],
+                "evidence_quote_count": 2,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain that competes in La Liga, the top division of Spanish football, and co-founded La Liga in 1928."
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga."
+          ]
+        },
+        {
+          "planner_subgoal": "Confirm if La Liga was the specific top-tier football league that FC Barcelona won titles in during 1948 and 1949.",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "El Clásico",
+              "url": "https://en.wikipedia.org/wiki/El_Cl%C3%A1sico"
+            },
+            {
+              "title": "Atlético Madrid",
+              "url": "https://en.wikipedia.org/wiki/Atl%C3%A9tico_Madrid"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 3,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 3,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 5,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga."
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2",
+                  "Action Step 3",
+                  "Action Step 4"
+                ],
+                "evidence_quote_count": 2,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain that competes in La Liga, the top division of Spanish football, and co-founded La Liga in 1928."
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga."
+          ]
+        },
+        {
+          "planner_subgoal": "Retrieve historical information on the number of games played in a single season of La Liga during the late 1940s.",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "La Liga",
+              "url": "https://en.wikipedia.org/wiki/La_Liga"
+            },
+            {
+              "title": "Real Madrid CF",
+              "url": "https://en.wikipedia.org/wiki/Real_Madrid_CF"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 3,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 3,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 6,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga."
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2",
+                  "Action Step 3",
+                  "Action Step 4",
+                  "Action Step 6"
+                ],
+                "evidence_quote_count": 3,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain that competes in La Liga, the top division of Spanish football, and co-founded La Liga in 1928."
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Explicit confirmation that the top-tier football league Barcelona won titles in during 1948 and 1949 is La Liga, as no existing tool result in memory provides a direct link between Barcelona's 1948 and 1949 championship wins and La Liga."
+          ]
+        }
+      ],
+      "supervisor_last_request_metadata": {
+        "max_tokens": 512,
+        "model": "doubao-seed-2-0-lite-260428",
+        "reasoning_effort": "minimal",
+        "response_format": "json_object",
+        "temperature": 0.0,
+        "top_p": 1.0
+      },
+      "supervisor_role_boundary_audits": [
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1065,
+          "response_sha256": "11711fea2bd7f7a323c6b3749b2d276e80233422b652e9ce1977355d784fa56a",
+          "role": "high_level_evidence_planner"
+        },
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1269,
+          "response_sha256": "5329329c7006c719aa8e050ad42332e44cb4741e4d802a4feb2d4225549cc6cd",
+          "role": "coverage_auditor"
+        }
+      ],
+      "termination_cause": "max_steps_with_unresolved_plan",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "max_steps_with_unresolved_plan",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Web_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_stop_signals": []
+    },
+    {
+      "configured_max_steps": 6,
+      "configured_max_time_seconds": 1200.0,
+      "distinct_tools": [
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "execution_time_seconds": 124.63,
+      "final_answer": "Insufficient verified evidence; unresolved plan steps: step_1: Explicit confirmed evidence that the specific top-tier football league where Barcelona won titles in 1948 and 1949 is a named league entity matching the described championship wins in those two years, including verification that Barcelona secured league titles in that exact 1948 and 1949 timeframe for the identified league; step_2: Verified documentation of the league's competition format for seasons around 1948 and 1949, including participating team counts and match scheduling rules; step_3: A confirmed total game count that aligns with the verified historical league structure from the prior step",
+      "fixed_role_runtime_telemetry": {
+        "ark_reasoning_effort": "minimal",
+        "step_verifier_calls": 4,
+        "supervisor_calls": 2
+      },
+      "ground_truth": "38",
+      "high_level_plan_coverage_valid": true,
+      "plan_transitions": [
+        {
+          "event": "activate",
+          "reason": "dependencies_satisfied",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        },
+        {
+          "event": "remain_in_progress",
+          "reason": "",
+          "step_id": "step_1"
+        }
+      ],
+      "requirement_to_step_mapping": {
+        "Derive the total number of games played in a single season of that league during the relevant timeframe": [
+          "step_3"
+        ],
+        "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949": [
+          "step_1"
+        ],
+        "Retrieve the standard season structure details for the identified league as it existed in the 1948-1949 period, including participating team counts and match scheduling rules": [
+          "step_2"
+        ]
+      },
+      "reward": 0.0,
+      "role_routing": {
+        "ark_reasoning_effort": "minimal",
+        "coverage_auditor": "doubao-seed-2-0-lite-260428",
+        "executor": "vllm-qwen-base",
+        "final_generator": "vllm-qwen-base",
+        "fixed_role_temperature": 0.0,
+        "high_level_evidence_planner": "doubao-seed-2-0-lite-260428",
+        "planner_main": "vllm-qwen-actor",
+        "query_analysis": "vllm-qwen-base",
+        "step_verifier": "doubao-seed-2-0-lite-260428",
+        "supervisor_temperature": 0.0,
+        "verifier_temperature": 0.0
+      },
+      "rollout_file": "rollout_data/46.38.243.197/doubao-calibration-longer-budget-musique-group4-20260829_20260829-231506/Qwen2.5-7B-Instruct_20260829-231512/train/step_1/idx_259/rollout_f2c733bf-f7d9-43e6-9c6f-cb3bf13653b1.json",
+      "steps": [
+        {
+          "planner_subgoal": "Find the name of the top-tier football league where Barcelona won titles in 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "Premier League",
+              "url": "https://en.wikipedia.org/wiki/Premier_League"
+            },
+            {
+              "title": "Rangers F.C.",
+              "url": "https://en.wikipedia.org/wiki/Rangers_F.C."
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 3,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 3,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 2,
+              "throttle_wait_seconds": 1.4986317120492458
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 1,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Evidence confirming the specific top-tier football league that Barcelona won titles in during 1948 and 1949, as the returned Wikipedia search results only reference the Premier League (founded 1992, unrelated to the 1948/1949 timeframe) and…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1"
+                ],
+                "evidence_quote_count": 0,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": []
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 1,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [
+                  "1948/1949"
+                ],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        },
+        {
+          "planner_subgoal": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "List of English football first tier top scorers",
+              "url": "https://en.wikipedia.org/wiki/List_of_English_football_first_tier_top_scorers"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 2,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 1,
+              "shared_cache_writes": 2,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 2,
+              "throttle_wait_seconds": 1.0715576633810997
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 2,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmed, named league entity that Barcelona won titles in specifically during 1948 and 1949, as the existing tool results only state Barcelona competes in La Liga (the top division of Spanish football) without verifying that La Liga (or a…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 2"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        },
+        {
+          "planner_subgoal": "Confirm if La Liga was the specific top-tier football league where FC Barcelona won titles in 1948 and 1949.",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            },
+            {
+              "title": "List of FC Barcelona players",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_players"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 0,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 0,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 3,
+              "shared_cache_writes": 0,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 3,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Confirmed, named league entity that Barcelona won titles in specifically during 1948 and 1949, as all executed Wikipedia_RAG_Search_Tool results do not provide explicit verification that Barcelona secured championship wins in any named top-…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2",
+                  "Action Step 3"
+                ],
+                "evidence_quote_count": 2,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 1,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [
+                  "Wikipedia_RAG_Search_Tool"
+                ],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": [
+            "Confirmed, named league entity that Barcelona won titles in specifically during 1948 and 1949, as the existing tool results only state Barcelona competes in La Liga (the top division of Spanish football) without verifying that La Liga (or any named league) was the competition where Barcelona secured championship wins in those exact two years"
+          ]
+        },
+        {
+          "planner_subgoal": "Confirm if La Liga was the specific top-tier football league where FC Barcelona won titles in 1948 and 1949",
+          "planner_target_gap": null,
+          "planner_tool_choice": "Wikipedia_RAG_Search_Tool",
+          "retrieved_evidence_refs": [
+            {
+              "title": "FC Barcelona",
+              "url": "https://en.wikipedia.org/wiki/FC_Barcelona"
+            },
+            {
+              "title": "List of FC Barcelona records and statistics",
+              "url": "https://en.wikipedia.org/wiki/List_of_FC_Barcelona_records_and_statistics"
+            }
+          ],
+          "search_internal_telemetry": [
+            {
+              "cache_hits": 2,
+              "doubao_calls": 0,
+              "http_429": 0,
+              "http_requests": 1,
+              "openai_calls": 0,
+              "provider": "public_wikipedia",
+              "ranking": "public_search_order",
+              "retries": 0,
+              "retry_after_seconds": 0.0,
+              "search_internal_llm_calls": 0,
+              "shared_cache_hits": 0,
+              "shared_cache_writes": 1,
+              "singleflight_wait_count": 0,
+              "singleflight_wait_seconds": 0.0,
+              "throttle_wait_count": 0,
+              "throttle_wait_seconds": 0.0
+            }
+          ],
+          "stable_step_id": "step_1",
+          "step": 4,
+          "step_verifier": {
+            "completed": false,
+            "contradiction": false,
+            "invalidated_step_ids": [],
+            "missing_evidence": [
+              "Explicit confirmed evidence that the specific top-tier football league where Barcelona won titles in 1948 and 1949 is a named league entity matching the described championship wins in those two years, including verification that Barcelona s…[truncated]"
+            ],
+            "requirement_evidence": [
+              {
+                "action_step_refs": [
+                  "Action Step 1",
+                  "Action Step 2",
+                  "Action Step 3",
+                  "Action Step 4"
+                ],
+                "evidence_quote_count": 1,
+                "requirement": "Identify the specific top-tier football league that Barcelona won titles in during 1948 and 1949"
+              }
+            ],
+            "verified_evidence": [
+              "FC Barcelona is a professional football club based in Barcelona, Catalonia, Spain, that competes in La Liga, the top division of Spanish football"
+            ]
+          },
+          "step_verifier_boundary": {
+            "actor_visible_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            },
+            "request_metadata": {
+              "max_tokens": 512,
+              "model": "doubao-seed-2-0-lite-260428",
+              "reasoning_effort": "minimal",
+              "response_format": "json_object",
+              "temperature": 0.0,
+              "top_p": 1.0
+            },
+            "role_boundary_audit": {
+              "marker_count": 0,
+              "markers": {
+                "arithmetic_not_in_recorded_evidence": [],
+                "command_or_query_syntax": false,
+                "direct_answer_language": false,
+                "tool_names": [],
+                "urls": []
+              }
+            }
+          },
+          "unresolved_evidence_gaps_before_action": []
+        }
+      ],
+      "supervisor_last_request_metadata": {
+        "max_tokens": 512,
+        "model": "doubao-seed-2-0-lite-260428",
+        "reasoning_effort": "minimal",
+        "response_format": "json_object",
+        "temperature": 0.0,
+        "top_p": 1.0
+      },
+      "supervisor_role_boundary_audits": [
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1119,
+          "response_sha256": "c282b9203e0fc4354a80bf1fcd64ae0d115ced2e44bcef172ea90a39bd78fc66",
+          "role": "high_level_evidence_planner"
+        },
+        {
+          "attempt": 1,
+          "marker_categories": {
+            "arithmetic_not_in_recorded_evidence": [],
+            "command_or_query_syntax": false,
+            "direct_answer_language": false,
+            "tool_names": [],
+            "urls": []
+          },
+          "marker_count": 0,
+          "parse_error_category": null,
+          "parsed_schema_success": true,
+          "response_length": 1379,
+          "response_sha256": "28e162b7168ae98004e4ac18088e2b2f613962cd5fa9faed05d91a32bd7bfcbe",
+          "role": "coverage_auditor"
+        }
+      ],
+      "termination_cause": "planner_action_stagnant",
+      "termination_cause_evidence": "persisted by solver",
+      "termination_reason": "planner_action_stagnant",
+      "tool_sequence": [
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool",
+        "Wikipedia_RAG_Search_Tool"
+      ],
+      "unsupported_final_claim": false,
+      "used_factual_retrieval": true,
+      "verifier_stop_signals": []
+    }
+  ],
+  "two_or_more_distinct_tools_rollout_count": 2,
+  "unsupported_final_claim_rollout_count": 0,
+  "verifier_continue_followed_by_next_planner_action_count": 0
+}

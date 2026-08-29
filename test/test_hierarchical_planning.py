@@ -289,6 +289,8 @@ class HierarchicalPlanStateTest(unittest.TestCase):
             "Use Wikipedia_RAG_Search_Tool with query='hidden strategy'; final answer is 42."
         )
         self.assertFalse(structurally_safe_supervisor_output(audit))
+        season_audit = audit_fixed_role_output("Identify the relevant 1947-48 season.")
+        self.assertTrue(structurally_safe_supervisor_output(season_audit))
         state = sanitize_verifier_assessment({
             "completed": False,
             "missing_evidence": ["missing source"],
@@ -300,6 +302,32 @@ class HierarchicalPlanStateTest(unittest.TestCase):
         })
         self.assertNotIn("rationale", state)
         self.assertEqual(state["missing_evidence"], ["missing source"])
+
+    def test_supervisor_gets_one_redacted_structural_self_revision(self):
+        from unittest.mock import MagicMock
+        from agentflow.models.planner import Planner
+
+        planner = object.__new__(Planner)
+        planner.max_tokens = 64
+        planner.available_tools = []
+        planner.llm_engine_fixed = MagicMock(side_effect=[
+            '{"steps":[{"step_id":"one","objective":"Use Wikipedia_RAG_Search_Tool",'
+            '"success_criteria":"evidence"}]}',
+            '{"steps":[{"step_id":"one","objective":"Identify one relation",'
+            '"success_criteria":"recorded evidence names the relation"}]}',
+            '{"sufficient":true,"independently_necessary_requirements":["one relation"],'
+            '"requirement_coverage":[{"requirement":"one relation","covered_step_ids":["one"]}],'
+            '"covered_step_ids":["one"],"missing_requirements":[],"composite_step_ids":[],"rationale":"atomic"}',
+        ])
+        data = {}
+        plan = planner.generate_high_level_plan("q", "", "a", 3, data)
+        self.assertEqual(plan.steps[0].step_id, "one")
+        self.assertEqual(planner.llm_engine_fixed.call_count, 3)
+        audits = data["supervisor_role_boundary_audits"]
+        self.assertEqual(audits[0]["attempt"], 1)
+        self.assertEqual(audits[1]["attempt"], 2)
+        self.assertIn("response_sha256", audits[0])
+        self.assertNotIn("Use Wikipedia", str(audits[0]))
 
     def test_coverage_verdict_cannot_contradict_requirement_mapping(self):
         from agentflow.models.formatters import PlanCoverage, RequirementCoverage

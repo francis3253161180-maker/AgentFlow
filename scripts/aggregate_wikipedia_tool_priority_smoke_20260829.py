@@ -127,6 +127,17 @@ def active_plan_step(plan: Any) -> dict[str, Any] | None:
     return next((step for step in steps if isinstance(step, dict) and step.get("status") == "in_progress"), None)
 
 
+def role_boundary_audits(total: dict[str, Any], ordinal: int) -> dict[str, Any]:
+    """Keep redacted fixed-role audit telemetry, never raw supervisor text."""
+    return {
+        "role_boundary_audit": compact(total.get(f"step_verifier_{ordinal}_role_boundary_audit")),
+        "actor_visible_boundary_audit": compact(
+            total.get(f"step_verifier_{ordinal}_actor_visible_boundary_audit")
+        ),
+        "request_metadata": compact(total.get(f"step_verifier_{ordinal}_request_metadata")),
+    }
+
+
 def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     total = raw.get("total_result", {})
@@ -164,6 +175,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
             "search_internal_telemetry": search_telemetry(result),
             "verifier": compact(verifier),
             "step_verifier": compact(step_verifier),
+            "step_verifier_boundary": role_boundary_audits(total, ordinal),
         })
     known_urls: list[str] = []
     for step in steps:
@@ -200,6 +212,7 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
                 total.get(f"step_completion_grounding_{ordinal}")
             ),
             "progress": compact(total.get(f"current_step_progress_{ordinal}")),
+            "step_verifier_boundary": role_boundary_audits(total, ordinal),
         })
         # The solver records the executed command and normalized signature in
         # current_step_progress, not in the planner action.  Surface both in
@@ -236,6 +249,10 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
         "ground_truth": raw.get("groundtruth"),
         "final_answer": final_answer,
         "final_output": compact(total.get("direct_output") if isinstance(total, dict) else None),
+        "role_routing": compact(total.get("role_routing")),
+        "fixed_role_runtime_telemetry": compact(total.get("fixed_role_runtime_telemetry")),
+        "supervisor_last_request_metadata": compact(total.get("supervisor_last_request_metadata")),
+        "supervisor_role_boundary_audits": compact(total.get("supervisor_role_boundary_audits")),
         "termination_reason": total.get("termination_reason"),
         "high_level_plan_original": compact(total.get("high_level_plan_original"), 1800),
         "high_level_plan_coverage_initial": compact(total.get("high_level_plan_coverage_initial"), 1800),
@@ -266,6 +283,60 @@ def trajectory(path: Path, max_steps: int, max_time: float) -> dict[str, Any]:
     }
 
 
+def compact_trajectory_for_handoff(entry: dict[str, Any]) -> dict[str, Any]:
+    """Drop raw prompts/evidence excerpts so a tracked handoff stays small."""
+    def verifier_summary(value: Any) -> Any:
+        if not isinstance(value, dict):
+            return value
+        requirements = value.get("requirement_evidence", [])
+        requirement_refs = []
+        if isinstance(requirements, list):
+            for requirement in requirements:
+                if isinstance(requirement, dict):
+                    requirement_refs.append({
+                        "requirement": compact(requirement.get("requirement"), 240),
+                        "action_step_refs": requirement.get("action_step_refs", []),
+                        "evidence_quote_count": len(requirement.get("evidence_quotes", []) or []),
+                    })
+        return {
+            "completed": value.get("completed"),
+            "contradiction": value.get("contradiction"),
+            "invalidated_step_ids": value.get("invalidated_step_ids", []),
+            "missing_evidence": [compact(item, 240) for item in value.get("missing_evidence", [])],
+            "verified_evidence": [compact(item, 240) for item in value.get("verified_evidence", [])],
+            "requirement_evidence": requirement_refs,
+        }
+
+    steps = []
+    for step in entry["steps"]:
+        evidence = [
+            {key: item.get(key) for key in ("title", "url", "chunk_index", "lexical_score") if item.get(key) is not None}
+            for item in step.get("retrieved_evidence", [])
+        ]
+        steps.append({
+            key: step.get(key) for key in (
+                "step", "planner_tool_choice", "planner_subgoal", "planner_target_gap",
+                "stable_step_id", "unresolved_evidence_gaps_before_action",
+                "step_verifier_boundary",
+            )
+        } | {
+            "step_verifier": verifier_summary(step.get("step_verifier")),
+            "retrieved_evidence_refs": evidence,
+            "search_internal_telemetry": step.get("search_internal_telemetry", []),
+        })
+    return {
+        key: entry.get(key) for key in (
+            "rollout_file", "reward", "ground_truth", "final_answer", "role_routing",
+            "fixed_role_runtime_telemetry", "supervisor_last_request_metadata",
+            "supervisor_role_boundary_audits", "termination_reason", "execution_time_seconds",
+            "configured_max_steps", "configured_max_time_seconds", "termination_cause",
+            "termination_cause_evidence", "high_level_plan_coverage_valid",
+            "requirement_to_step_mapping", "plan_transitions", "tool_sequence", "distinct_tools",
+            "used_factual_retrieval", "unsupported_final_claim", "verifier_stop_signals",
+        )
+    } | {"steps": steps}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--rollout-dir", type=Path, required=True)
@@ -274,8 +345,10 @@ def main() -> None:
     parser.add_argument("--gpu-log", type=Path)
     parser.add_argument("--train-log", type=Path)
     parser.add_argument("--rollout-log", type=Path)
+    parser.add_argument("--supervisor-preflight", type=Path)
     parser.add_argument("--max-steps", type=int, required=True)
     parser.add_argument("--max-time", type=float, required=True)
+    parser.add_argument("--compact", action="store_true", help="omit raw prompts/evidence excerpts from tracked handoff JSON")
     args = parser.parse_args()
     files = sorted(args.rollout_dir.rglob("*.json"))
     entries = [trajectory(path, args.max_steps, args.max_time) for path in files]
@@ -310,10 +383,23 @@ def main() -> None:
             "illegal memory access", "blocks are not freed", "outofmemoryerror", "deadlock",
         ))
     ]
+    preflight = None
+    if args.supervisor_preflight and args.supervisor_preflight.exists():
+        raw_preflight = json.loads(args.supervisor_preflight.read_text(encoding="utf-8"))
+        preflight = {
+            key: raw_preflight.get(key)
+            for key in (
+                "purpose", "passed", "model", "temperature", "ark_reasoning_effort",
+                "hierarchical_plan_max_steps", "supervisor_call_count", "last_request_metadata",
+                "boundary_audits", "coverage", "question_sha256", "source_sha256",
+                "source_idx", "benchmark_id",
+            )
+        }
     result = {
         "schema_version": 1,
         "purpose": "one-question x4 rollout-only structural routing smoke; not a training result",
         "input_manifest": json.loads(args.input_manifest.read_text(encoding="utf-8")),
+        "supervisor_preflight": preflight,
         "rollout_dir": str(args.rollout_dir),
         "rollout_count": len(entries),
         "reward_vector": rewards,
@@ -343,10 +429,17 @@ def main() -> None:
         },
         "search_internal_doubao_calls": sum(int(item.get("doubao_calls", 0)) for item in telemetry),
         "search_internal_openai_calls": sum(int(item.get("openai_calls", 0)) for item in telemetry),
+        "fixed_role_runtime_totals": {
+            key: sum(int((entry.get("fixed_role_runtime_telemetry") or {}).get(key, 0) or 0) for entry in entries)
+            for key in ("supervisor_calls", "step_verifier_calls")
+        },
+        "role_routing": sorted(
+            {json.dumps(entry.get("role_routing"), sort_keys=True) for entry in entries}
+        ),
         "gpu_peak_memory_mib": gpu_peak,
         "cleanup_markers": cleanup_markers,
         "fatal_lifecycle_markers": fatal_lifecycle_markers,
-        "trajectories": entries,
+        "trajectories": [compact_trajectory_for_handoff(entry) for entry in entries] if args.compact else entries,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")

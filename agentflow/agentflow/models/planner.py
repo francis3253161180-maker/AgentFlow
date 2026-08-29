@@ -9,7 +9,11 @@ from agentflow.engine.factory import create_llm_engine
 from agentflow.models.formatters import HighLevelPlan, NextStep, PlanCoverage, QueryAnalysis
 from agentflow.models.memory import Memory
 from agentflow.models.current_step_state import build_current_step_contract
-from agentflow.models.role_boundaries import audit_fixed_role_output, structurally_safe_supervisor_output
+from agentflow.models.role_boundaries import (
+    boundary_categories,
+    redacted_boundary_telemetry,
+    structurally_safe_supervisor_output,
+)
 from agentflow.models.structured_outputs import (
     Game24Answer,
     extract_game24_numbers,
@@ -100,6 +104,18 @@ limitation rather than filling it in from model knowledge.
 """.strip()
 
 
+class SupervisorBoundaryViolation(ValueError):
+    """Safe, redacted failure raised when a supervisor response leaks capability."""
+
+    def __init__(self, role: str, telemetry: dict[str, Any]):
+        self.role = role
+        self.telemetry = telemetry
+        super().__init__(
+            f"supervisor {role} violated capability boundary telemetry="
+            f"{json.dumps(telemetry, sort_keys=True)}"
+        )
+
+
 class Planner:
     def __init__(self, llm_engine_name: str, llm_engine_fixed_name: str = "gpt-4o",
                  toolbox_metadata: dict = None, available_tools: List = None,
@@ -154,9 +170,48 @@ class Planner:
         engine = getattr(self, "llm_engine_supervisor", self.llm_engine_fixed)
         return engine(prompt, response_format=response_format, max_tokens=self.max_tokens)
 
-    @staticmethod
-    def _supervisor_audit(raw: Any, *, recorded_evidence: Any = None) -> dict[str, Any]:
-        return audit_fixed_role_output(raw, recorded_evidence=recorded_evidence)
+    def _supervisor_structured(
+        self, *, role: str, prompt: str, response_format: Any,
+    ) -> tuple[Any, Any, dict[str, Any]]:
+        """Parse then audit allowed fields; one redacted structural retry only."""
+
+        def attempt(current_prompt: str, attempt_index: int) -> tuple[Any | None, Any, dict[str, Any]]:
+            raw = self._call_supervisor(current_prompt, response_format)
+            parsed = None
+            parse_error = None
+            try:
+                parsed = parse_strict_json(raw, response_format)
+            except ValueError:
+                parse_error = "strict_schema_validation_failed"
+            telemetry = redacted_boundary_telemetry(
+                raw, parsed=self._model_payload(parsed) if parsed is not None else None,
+                parse_error=parse_error,
+            )
+            telemetry.update({"role": role, "attempt": attempt_index})
+            self.supervisor_boundary_audits.append(telemetry)
+            if parsed is not None and structurally_safe_supervisor_output(telemetry):
+                return parsed, raw, telemetry
+            return None, raw, telemetry
+
+        parsed, raw, telemetry = attempt(prompt, 1)
+        if parsed is not None:
+            return parsed, raw, telemetry
+        categories = boundary_categories(telemetry)
+        revision_prompt = f"""
+Task: Emit a replacement structured response for the same supervisor role.
+The previous response was rejected only for these structural categories:
+{json.dumps(categories)}.
+Do not discuss the rejection. Do not name tools, URLs, queries, commands,
+search strategies, factual answers, or calculations. Return only one JSON
+object matching the requested schema.
+
+Original role task:
+{prompt}
+"""
+        revised, revised_raw, revised_telemetry = attempt(revision_prompt, 2)
+        if revised is not None:
+            return revised, revised_raw, revised_telemetry
+        raise SupervisorBoundaryViolation(role, revised_telemetry)
 
     def _structured_game24_output(self, question: str, memory: Memory) -> str:
         """Return one strictly validated Game24 JSON object, or a failure object.
@@ -549,12 +604,9 @@ Response Format (JSON object only; match the HighLevelPlan schema exactly):
 """
         # The OpenAI-compatible vLLM engine returns text even when guided_json
         # is requested. Parse that text before handing it to the state machine.
-        raw_plan = self._call_supervisor(prompt, HighLevelPlan)
-        plan_audit = self._supervisor_audit(raw_plan)
-        self.supervisor_boundary_audits.append({"role": "high_level_evidence_planner", "audit": plan_audit})
-        if not structurally_safe_supervisor_output(plan_audit):
-            raise ValueError("supervisor high-level plan violated capability boundary")
-        plan = parse_strict_json(raw_plan, HighLevelPlan)
+        plan, raw_plan, plan_audit = self._supervisor_structured(
+            role="high_level_evidence_planner", prompt=prompt, response_format=HighLevelPlan,
+        )
         initial_plan = self._model_payload(plan)
         initial_coverage = self._audit_high_level_plan_coverage(question, initial_plan)
         final_plan = plan
@@ -577,12 +629,10 @@ requirements inside a step. A final synthesis is not an evidence step. Do not na
 Response Format (JSON object only; match the HighLevelPlan schema exactly):
 {{"steps":[{{"step_id":"step_1","objective":"<one atomic evidence goal>","success_criteria":"<what evidence proves it>","depends_on":[],"status":"pending","verified_evidence":[],"missing_evidence":[]}}]}}
 """
-            raw_revised_plan = self._call_supervisor(revision_prompt, HighLevelPlan)
-            revised_plan_audit = self._supervisor_audit(raw_revised_plan)
-            self.supervisor_boundary_audits.append({"role": "high_level_evidence_planner_revision", "audit": revised_plan_audit})
-            if not structurally_safe_supervisor_output(revised_plan_audit):
-                raise ValueError("supervisor revised plan violated capability boundary")
-            final_plan = parse_strict_json(raw_revised_plan, HighLevelPlan)
+            final_plan, raw_revised_plan, revised_plan_audit = self._supervisor_structured(
+                role="high_level_evidence_planner_revision",
+                prompt=revision_prompt, response_format=HighLevelPlan,
+            )
             revised_plan_payload = self._model_payload(final_plan)
             final_coverage = self._audit_high_level_plan_coverage(question, revised_plan_payload)
 
@@ -633,25 +683,16 @@ requirement. Report only this plan audit. Do not name tools, URLs, queries, comm
 Response Format (JSON object only; match the PlanCoverage schema exactly):
 {{"sufficient":true,"independently_necessary_requirements":["<requirement>"],"requirement_coverage":[{{"requirement":"<same requirement>","covered_step_ids":["<one atomic step id>"]}}],"covered_step_ids":["<all covered step ids>"],"missing_requirements":[],"composite_step_ids":[],"rationale":"<brief evidence-plan rationale>"}}
 """
-        raw_coverage = self._call_supervisor(prompt, PlanCoverage)
-        coverage_audit = self._supervisor_audit(raw_coverage)
-        self.supervisor_boundary_audits.append({"role": "coverage_auditor", "audit": coverage_audit})
-        if not structurally_safe_supervisor_output(coverage_audit):
+        try:
+            coverage, _, _ = self._supervisor_structured(
+                role="coverage_auditor", prompt=prompt, response_format=PlanCoverage,
+            )
+            return coverage
+        except SupervisorBoundaryViolation:
             return PlanCoverage(
                 sufficient=False,
                 missing_requirements=["coverage auditor violated capability boundary"],
                 rationale="coverage_boundary_violation",
-            )
-        try:
-            return parse_strict_json(raw_coverage, PlanCoverage)
-        except ValueError as exc:
-            # A malformed coverage audit is not permission to execute an
-            # incomplete plan.  It triggers the one permitted plan revision
-            # and, if still malformed, the solver's safe coverage gate.
-            return PlanCoverage(
-                sufficient=False,
-                missing_requirements=["coverage audit could not be parsed"],
-                rationale=f"coverage_parse_error: {exc}",
             )
 
     @staticmethod

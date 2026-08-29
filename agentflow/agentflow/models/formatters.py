@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 
 # Planner: QueryAnalysis
 class QueryAnalysis(BaseModel):
@@ -51,12 +51,14 @@ class PlanStep(BaseModel):
     status: Literal["pending", "in_progress", "completed", "failed"] = "pending"
     verified_evidence: list[str] = Field(default_factory=list)
     missing_evidence: list[str] = Field(default_factory=list)
+    model_config = ConfigDict(extra="forbid")
 
 
 class HighLevelPlan(BaseModel):
     # This is vLLM guided JSON.  Reject an otherwise valid but unusable empty
     # plan before it can reach the execution loop.
     steps: list[PlanStep] = Field(min_length=1)
+    model_config = ConfigDict(extra="forbid")
 
 
 class RequirementCoverage(BaseModel):
@@ -64,6 +66,7 @@ class RequirementCoverage(BaseModel):
 
     requirement: str
     covered_step_ids: list[str] = Field(default_factory=list)
+    model_config = ConfigDict(extra="forbid")
 
 
 class PlanCoverage(BaseModel):
@@ -76,6 +79,7 @@ class PlanCoverage(BaseModel):
     missing_requirements: list[str] = Field(default_factory=list)
     composite_step_ids: list[str] = Field(default_factory=list)
     rationale: str = ""
+    model_config = ConfigDict(extra="forbid")
 
 
 class RequirementEvidence(BaseModel):
