@@ -502,17 +502,28 @@ class AgentModeDaemon:
         max_timeout = 3600  # At most 1 hour
         dynamic_timeout = max(min_timeout, min(max_timeout, estimated_total_time))
         timeout_override = os.environ.get("AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS")
+        unlimited_wait = False
         if timeout_override:
             dynamic_timeout = float(timeout_override)
-            if dynamic_timeout <= 0:
-                raise ValueError("AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS must be positive")
-            print(
-                "Using test-only rollout wait timeout override: "
-                f"{dynamic_timeout:.1f}s (AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS)"
-            )
+            if dynamic_timeout < 0:
+                raise ValueError("AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS must be non-negative")
+            if dynamic_timeout == 0:
+                unlimited_wait = True
+                print(
+                    "Using unlimited rollout wait: completion/no-progress conditions remain active "
+                    "(AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS=0)"
+                )
+            else:
+                print(
+                    "Using test-only rollout wait timeout override: "
+                    f"{dynamic_timeout:.1f}s (AGENTFLOW_ROLLOUT_WAIT_TIMEOUT_SECONDS)"
+                )
 
         print(f"Starting {original_task_count} {'training' if self.is_train else 'validation'} tasks")
-        print(f"Estimated completion time: {dynamic_timeout/60:.1f} minutes (avg {avg_task_time_sec}s per task)")
+        if unlimited_wait:
+            print(f"Estimated completion time: uncapped (avg {avg_task_time_sec}s per task)")
+        else:
+            print(f"Estimated completion time: {dynamic_timeout/60:.1f} minutes (avg {avg_task_time_sec}s per task)")
 
         while True:
             current_time = time.time()
@@ -534,7 +545,7 @@ class AgentModeDaemon:
                 break
 
             # Dynamic timeout check
-            if elapsed > dynamic_timeout:
+            if not unlimited_wait and elapsed > dynamic_timeout:
                 print(f"Timeout after {elapsed/60:.1f} minutes. Completed {completion_rate:.1%} ({logical_completed_count}/{original_task_count})")
                 self._cleanup_reason = "wait_timeout"
                 await self.server.stop_accepting_tasks(reason=self._cleanup_reason)
@@ -609,12 +620,16 @@ class AgentModeDaemon:
                         self._completed_rollouts[rollout.rollout_id] = rollout
 
             if verbose and (elapsed % 30 < 5 or new_retries > 0):  # Log every 30s or when retries happen
-                eta_minutes = (dynamic_timeout - elapsed) / 60
+                eta_minutes = (
+                    "uncapped"
+                    if unlimited_wait
+                    else f"{(dynamic_timeout - elapsed) / 60:.1f}m"
+                )
                 if self.is_train:
                     valid_rollouts = len([r for r in self._completed_rollouts.values()
                                         if r.triplets and len(r.triplets) > 0])
                     print(f"[{elapsed/60:.1f}m] Progress: {completion_rate:.1%} ({logical_completed_count}/{original_task_count}), "
-                          f"Valid: {valid_rollouts}, Retries: {new_retries}, ETA: {eta_minutes:.1f}m")
+                          f"Valid: {valid_rollouts}, Retries: {new_retries}, ETA: {eta_minutes}")
                 else:
                     print(f"[{elapsed/60:.1f}m] Validation: {completion_rate:.1%} ({logical_completed_count}/{original_task_count})")
 
