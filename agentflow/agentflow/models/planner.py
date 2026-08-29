@@ -17,6 +17,38 @@ from agentflow.models.structured_outputs import (
 )
 
 
+# This is deliberately a capability policy, not a task or dataset policy.  It
+# is shown wherever a planner is asked to reason about tools or select one.
+TOOL_SELECTION_GUIDANCE = """
+Tool responsibility priority (apply only when the named tool is available):
+- For factual, entity, or relation lookup, prefer a Wikipedia/knowledge-search
+  or web-search/retrieval tool over a language-model answer generator.
+- For arithmetic or calculation with supplied inputs, prefer
+  Python_Code_Generator_Tool.
+- For biomedical literature/knowledge lookup, prefer Pubmed_Search_Tool.
+- Generalist_Solution_Generator_Tool is for reasoning, synthesis, or fallback
+  only when no available specialized tool fits.  Do not use it as a factual
+  search/retrieval or calculator substitute when an applicable specialized
+  tool is available.
+This is a relevance priority, not a fixed tool order: select one tool that is
+both available and appropriate to the current sub-goal.
+""".strip()
+
+QUERY_ANALYSIS_BOUNDARY = """
+Role boundary: this fixed query-analysis role may decompose the request and
+identify needed tools, but must not answer factual/entity questions from
+parametric knowledge, perform hidden retrieval, or perform arithmetic as a
+substitute for an available specialist tool.
+""".strip()
+
+FINAL_SYNTHESIS_BOUNDARY = """
+Role boundary: synthesize only from the accumulated actions/results in memory.
+Do not perform fresh factual lookup, retrieve new facts, or do independent
+nontrivial calculation. If memory lacks the needed evidence, state that
+limitation rather than filling it in from model knowledge.
+""".strip()
+
+
 class Planner:
     def __init__(self, llm_engine_name: str, llm_engine_fixed_name: str = "gpt-4o",
                  toolbox_metadata: dict = None, available_tools: List = None,
@@ -138,6 +170,10 @@ Available tools: {self.available_tools}
 
 Metadata for the tools: {self.toolbox_metadata}
 
+{TOOL_SELECTION_GUIDANCE}
+
+{QUERY_ANALYSIS_BOUNDARY}
+
 Image: {image_info}
 
 Query: {question}
@@ -165,6 +201,10 @@ Inputs:
 - Query: {question}
 - Available tools: {self.available_tools}
 - Metadata for tools: {self.toolbox_metadata}
+
+{TOOL_SELECTION_GUIDANCE}
+
+{QUERY_ANALYSIS_BOUNDARY}
 
 Instructions:
 1. Identify the main objectives in the query.
@@ -284,6 +324,8 @@ Tool Metadata:
 Previous Steps and Their Results:
 {compact_memory}
 
+{TOOL_SELECTION_GUIDANCE}
+
 Current Step: {step_count} in {max_step_count} steps
 Remaining Steps: {max_step_count - step_count}
 
@@ -320,6 +362,8 @@ Context:
 - **Available Tools:** {compact_tools}
 - **Toolbox Metadata:** {compact_metadata}
 - **Previous Steps:** {compact_memory}
+
+{TOOL_SELECTION_GUIDANCE}
 
 Instructions:
 1. Analyze the query, previous steps, and available tools.
@@ -369,6 +413,8 @@ Instructions:
 3. Incorporate the relevant information from the memory to generate the step-by-step final output.
 4. The final output should be consistent and coherent using the results from the tools.
 
+{FINAL_SYNTHESIS_BOUNDARY}
+
 Output Structure:
 Your response should be well-organized and include the following sections:
 
@@ -407,6 +453,8 @@ Context:
 Instructions:
 1. Review the query and the results from all tool executions.
 2. Incorporate the relevant information to create a coherent, step-by-step final output.
+
+{FINAL_SYNTHESIS_BOUNDARY}
 """
 
         input_data = [prompt_generate_final_output]
@@ -441,6 +489,8 @@ Actions Taken:
 
 Please generate the concise output based on the query, image information, initial analysis, and actions taken. Break down the process into clear, logical, and conherent steps. Conclude with a precise and direct answer to the query.
 
+{FINAL_SYNTHESIS_BOUNDARY}
+
 Answer:
 """
         else:
@@ -456,6 +506,8 @@ Instructions:
 1. Review the query and the results from all actions.
 2. Synthesize the key findings into a clear, step-by-step summary of the process.
 3. Provide a direct, precise answer to the original query.
+
+{FINAL_SYNTHESIS_BOUNDARY}
 
 Output Structure:
 1.  **Process Summary:** A clear, step-by-step breakdown of how the query was addressed, including the purpose and key results of each action.

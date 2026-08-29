@@ -9,6 +9,14 @@ from typing import Any, Dict, List, Optional
 from agentflow.engine.factory import create_llm_engine
 from agentflow.models.formatters import ToolCommand
 
+
+EXECUTOR_ROLE_BOUNDARY = """
+Role boundary: translate only the planner-selected tool, sub-goal, and context
+into a valid tool.execute(...) command. Do not answer the user question,
+perform factual lookup, calculate a result yourself, substitute a Generalist
+answer for a selected specialist tool, or change the selected tool.
+""".strip()
+
 # Tool name mapping: Static fallback mapping (long external names to internal)
 TOOL_NAME_MAPPING_LONG = {
     "Generalist_Solution_Generator_Tool": {
@@ -90,6 +98,8 @@ Context:
 - **Tool Name:** {tool_name}
 - **Tool Metadata:** {tool_metadata}
 - **Relevant Data:** {context}
+
+{EXECUTOR_ROLE_BOUNDARY}
 
 Instructions:
 1.  Analyze the tool's required parameters from its metadata.

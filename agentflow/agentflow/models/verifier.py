@@ -10,6 +10,15 @@ from agentflow.models.formatters import MemoryVerification
 from agentflow.models.memory import Memory
 
 
+VERIFIER_ROLE_BOUNDARY = """
+Role boundary: judge only the evidence already present in memory. Do not invent
+missing facts, perform a fresh search, solve the question from parametric
+knowledge, or supply a calculation that the recorded tool results did not
+establish. Return stop_signal=true only when recorded evidence supports every
+required sub-goal.
+""".strip()
+
+
 class Verifier:
     def __init__(self, llm_engine_name: str, llm_engine_fixed_name: str = "dashscope",
                  toolbox_metadata: dict = None, available_tools: list = None,
@@ -66,6 +75,8 @@ Toolbox Metadata: {self.toolbox_metadata}
 Initial Analysis: {query_analysis}
 Memory (tools used and results): {memory.get_actions()}
 
+{VERIFIER_ROLE_BOUNDARY}
+
 Detailed Instructions:
 1. Carefully analyze the query, initial analysis, and image (if provided):
    - Identify the main objectives of the query.
@@ -115,6 +126,8 @@ Context:
 - **Toolbox Metadata:** {self.toolbox_metadata}
 - **Initial Analysis:** {query_analysis}
 - **Memory (Tools Used & Results):** {memory.get_actions()}
+
+{VERIFIER_ROLE_BOUNDARY}
 
 Instructions:
 1.  Review the query, initial analysis, and memory.

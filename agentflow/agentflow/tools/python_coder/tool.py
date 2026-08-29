@@ -65,7 +65,7 @@ For optimal results with the {TOOL_NAME}:
 
 class Python_Coder_Tool(BaseTool):
     require_llm_engine = True
-    def __init__(self, model_string="gpt-4o"):
+    def __init__(self, model_string="gpt-4o", base_url=None, max_tokens=2048):
         super().__init__(
             tool_name=TOOL_NAME,
             tool_description="A tool that generates and executes simple Python code snippets for basic arithmetical calculations and math-related problems. The generated code runs in a highly restricted environment with only basic mathematical operations available.",
@@ -99,6 +99,8 @@ class Python_Coder_Tool(BaseTool):
         self.llm_engine = create_llm_engine(
             model_string=model_string, 
             is_multimodal=False, 
+            base_url=base_url,
+            max_tokens=max_tokens,
             temperature=0.0, 
             top_p=1.0, 
             frequency_penalty=0.0, 

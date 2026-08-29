@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "task": "generic_tool_priority_and_role_boundary_correction",
+  "status": "blocked_before_rollout_smoke",
+  "branch": "experiment/flow-grpo-3b-lora",
+  "base_commit": "719a55e",
+  "scope": {
+    "training_started": false,
+    "optimizer_steps": 0,
+    "checkpoint_saved": false,
+    "external_llm_or_judge_calls": 0,
+    "gpu_or_ray_or_vllm_started": false
+  },
+  "requested_smoke": {
+    "source_manifest": "log/2026-08-29_multihop_allqwen20_probe_sample_manifest.json",
+    "selected_existing_group": 4,
+    "rollouts": 4,
+    "planner_main": "Qwen2.5-7B-Instruct + current trainable LoRA",
+    "fixed_roles_and_llm_backed_tools": "Qwen2.5-7B-Instruct base with adapter disabled",
+    "reason_not_started": "The selected MuSiQue question requires factual retrieval, but the available Wikipedia/Web RAG implementations require OPENAI_API_KEY and an LLM-backed relevance/generation path. The strict all-Qwen/no-external-LLM boundary therefore forbids a valid factual-tool smoke."
+  },
+  "observed_tool_availability": {
+    "configured_in_prior_multihop_smoke": [
+      "Base_Generator_Tool"
+    ],
+    "available_tool_implementations": [
+      "Base_Generator_Tool",
+      "Python_Code_Generator_Tool",
+      "Wikipedia_RAG_Search_Tool",
+      "Web_RAG_Search_Tool",
+      "Google_Search_Tool"
+    ],
+    "pubmed_tool_available": false,
+    "local_factual_retrieval_usable_without_external_llm": false,
+    "wikipedia_rag_constraints": [
+      "Exits when OPENAI_API_KEY is absent before the Wikipedia request.",
+      "Uses an LLM-backed relevance selection path and Web_RAG_Search_Tool.",
+      "Has an unrelated model_string attribute defect in the Web fallback path; it was not changed in this scoped task."
+    ]
+  },
+  "role_boundaries": {
+    "planner_main": "Selects a tool, context and subgoal; uses the generic specialist-priority guidance.",
+    "executor": "Only converts an already-selected action to a command; cannot retrieve facts, calculate, answer, or substitute Generalist.",
+    "verifier": "Assesses only evidence in Memory; cannot invent facts, retrieve, or calculate.",
+    "planner_fixed": "May decompose and identify a tool, but cannot answer from parametric knowledge or use hidden retrieval/calculation.",
+    "final_generator": "May synthesize only the recorded Memory evidence; it cannot perform fresh retrieval or independent nontrivial calculation.",
+    "generalist_tool": "Fallback reasoning/synthesis only; not a factual retrieval, arithmetic, or biomedical lookup substitute."
+  },
+  "validation": {
+    "pytest_command": "/root/autodl-tmp/conda/envs/agentflow/bin/python -m pytest -q test/test_tool_priority_guidance.py test/test_unified_local_roles.py test/test_vllm_timeout_cleanup.py test/test_reward_scorer.py",
+    "pytest_result": "24 passed, 1 warning, 34 subtests passed in 8.67s",
+    "static_checks": [
+      "py_compile passed for modified modules",
+      "git diff --check passed before result artifact creation"
+    ],
+    "failed_preexecution_attempt": "A removed non-executable local runner returned permission denied before process launch; it produced no rollout, GPU, Ray, or vLLM activity."
+  },
+  "next_safe_step": "Implement or approve a local factual-retrieval adapter that performs raw Wikipedia retrieval without OpenAI-backed relevance/generation, then rerun exactly the bounded one-question n=4 diagnostic."
+}

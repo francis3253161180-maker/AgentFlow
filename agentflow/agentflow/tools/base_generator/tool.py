@@ -11,12 +11,16 @@ The {TOOL_NAME} may provide hallucinated or incorrect responses.
 
 BEST_PRACTICE = f"""
 For optimal results with the {TOOL_NAME}:
-1. Use it for general queries or tasks that don't require specialized knowledge or specific tools in the toolbox.
-2. Provide clear, specific query.   
-3. Use it to answer the original query through step by step reasoning for tasks without complex or multi-step reasoning.
-4. For complex queries, break them down into subtasks and use the tool multiple times.
-5. Use it as a starting point for complex tasks, then refine with specialized tools.
-6. Verify important information from its responses.
+1. Use it only for reasoning, synthesis, open-ended transformation, or fallback
+   when no available specialized tool fits the current sub-goal.
+2. Do not use it as a factual/entity/relation search tool when an available
+   Wikipedia, knowledge-search, or web-search tool is applicable.
+3. Do not use it as a calculator when an available Python_Code_Generator_Tool
+   can execute the calculation from supplied inputs.
+4. Do not use it for biomedical literature lookup when an available
+   Pubmed_Search_Tool is applicable.
+5. Provide clear, specific context and verify important claims with an
+   appropriate retrieval or calculation tool when one is available.
 """
 
 class Base_Generator_Tool(BaseTool):
@@ -25,7 +29,11 @@ class Base_Generator_Tool(BaseTool):
     def __init__(self, model_string="gpt-4o-mini", base_url=None, max_tokens=2048):
         super().__init__(
             tool_name=TOOL_NAME,
-            tool_description="A generalized tool that takes query from the user, and answers the question step by step to the best of its ability. It can also accept an image.",
+            tool_description=(
+                "Fallback reasoning and synthesis tool for open-ended tasks when no "
+                "available specialized tool fits. It is not a factual search/retrieval "
+                "tool or arithmetic calculator substitute."
+            ),
             tool_version="1.0.0",
             input_types={
                 "query": "str - The query that includes query from the user to guide the agent to generate response.",
