@@ -29,7 +29,11 @@ class ArkProviderTest(unittest.TestCase):
         )
         with patch.dict(
             os.environ,
-            {"ARK_API_KEY": "test-only", "ARK_BASE_URL": "http://example.invalid/v1"},
+            {
+                "ARK_API_KEY": "test-only",
+                "ARK_BASE_URL": "http://example.invalid/v1",
+                "ARK_REASONING_EFFORT": "minimal",
+            },
             clear=False,
         ), patch("agentflow.engine.ark.OpenAI", return_value=client) as openai:
             engine = ChatArk("doubao-seed-2-0-lite-260428", temperature=0.0, max_tokens=8)
@@ -39,6 +43,7 @@ class ArkProviderTest(unittest.TestCase):
             self.assertNotIn("short prompt", engine._cache_key("system", "short prompt"))
             self.assertEqual(calls[0]["model"], "doubao-seed-2-0-lite-260428")
             self.assertEqual(calls[0]["temperature"], 0.0)
+            self.assertEqual(calls[0]["reasoning_effort"], "minimal")
             self.assertEqual(calls[0]["response_format"], {"type": "json_object"})
 
 

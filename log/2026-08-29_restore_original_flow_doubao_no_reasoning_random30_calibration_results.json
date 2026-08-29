@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "status": "blocked_incomplete",
+  "experiment": "restore_original_flow_doubao_no_reasoning_random30_calibration",
+  "branch": "experiment/flow-grpo-3b-lora",
+  "source_head_at_launch": "1ab60d3b8b0f56dac794bbd1f83cb632a0708abf",
+  "manifest": {
+    "path": "log/2026-08-28_random30_len1024_context4096_probe_sample_manifest.json",
+    "sha256": "f2c8db2b44bf1d8e0879565a2c49215c212090e48cd15d267529f14ea098136d",
+    "prompt_groups_expected": 30,
+    "prompt_groups_changed": false
+  },
+  "protocol": {
+    "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "actor_model_role": "planner_main",
+    "actor_trainable": true,
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "lora_target_modules": "all-linear",
+    "fixed_roles": {
+      "planner_fixed": "doubao-seed-2-0-lite-260428",
+      "verifier": "doubao-seed-2-0-lite-260428",
+      "executor": "doubao-seed-2-0-lite-260428",
+      "frozen": true,
+      "temperature": 0.0,
+      "reasoning_effort": "minimal"
+    },
+    "sampling": {
+      "temperature": 0.7,
+      "rollout_n": 4,
+      "max_prompt_length": 1536,
+      "max_response_length": 1024,
+      "max_model_len": 4096,
+      "dynamic_response_padding": true
+    },
+    "rollout_only": true,
+    "optimizer_steps": 0,
+    "backward": false,
+    "checkpoint_disabled": true,
+    "reward": "local deterministic Game24 final checker only",
+    "external_reward_judge": false
+  },
+  "preflight": {
+    "ark_key_status": "present_not_logged",
+    "model": "doubao-seed-2-0-lite-260428",
+    "request_reasoning_effort": "minimal",
+    "observed_reasoning_tokens": 0,
+    "status": "ok",
+    "latency_ms": 1019.1
+  },
+  "partial_run": {
+    "run_stamp": "20260828_232358",
+    "train_log": "log/random30-fresh-rollout-replay-20260828_20260828_232358_train.log",
+    "rollout_log": "log/random30-fresh-rollout-replay-20260828_20260828_232358_rollout.log",
+    "evidence_dir": "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/random30-fresh-rollout-replay-20260828_20260828_232358_trajectories",
+    "rollouts_written": 13,
+    "complete_groups": 3,
+    "partial_groups": 1,
+    "reward_counts": {"0.0": 13, "1.0": 0},
+    "trace_request_counts": {
+      "qwen-actor": 19,
+      "doubao-seed-2-0-lite-260428": 83
+    },
+    "trace_temperature_counts": {
+      "qwen-actor@0.7": 19,
+      "doubao-seed-2-0-lite-260428@0.0": 83
+    },
+    "api_or_parse_errors": 0,
+    "lora_snapshot": {
+      "path": "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/random30-fresh-rollout-replay-20260828_20260828_232358_behavior_snapshot.pt",
+      "metadata_path": "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/random30-fresh-rollout-replay-20260828_20260828_232358_behavior_snapshot.json",
+      "sha256_recorded_by_snapshot": "bd73d2887403e45266eee0843b906ca60921b450a3516c6a29bd10ff81554311",
+      "tensor_count": 392
+    },
+    "route_state": "/root/autodl-tmp/tmp/random30_fresh_rollout_replay_20260828/random30-fresh-rollout-replay-20260828_20260828_232358_role_route.json"
+  },
+  "stalled_retries": [
+    {
+      "run_stamp": "20260829_091347",
+      "train_log": "log/random30-fresh-rollout-replay-20260828_20260829_091347_train.log",
+      "rollouts_written": 0,
+      "last_initialization_marker": "NCCL version 2.26.2+cuda12.2",
+      "termination": "safe SIGTERM after approximately six minutes without log progress",
+      "extra_env": {}
+    },
+    {
+      "run_stamp": "20260829_092236",
+      "train_log": "log/random30-fresh-rollout-replay-20260828_20260829_092236_train.log",
+      "rollouts_written": 0,
+      "last_initialization_marker": "NCCL version 2.26.2+cuda12.2",
+      "termination": "safe SIGTERM after repeated initialization stall",
+      "extra_env": {
+        "NCCL_P2P_DISABLE": "1",
+        "NCCL_IB_DISABLE": "1"
+      }
+    }
+  ],
+  "fatal_error_scan": {
+    "cuda_oom": 0,
+    "cuda_illegal_memory_access": 0,
+    "prefix_cache_reset_failure": 0,
+    "drained_false": 0,
+    "ray_worker_death": 0,
+    "api_or_parse_error": 0,
+    "note": "Initialization stall was observed; absence of the listed markers does not make the calibration successful."
+  },
+  "cleanup": {
+    "final_gpu_memory_mib": 0,
+    "agentflow_processes_remaining": false,
+    "ray_or_vllm_processes_remaining": false,
+    "machine_shutdown": false,
+    "partial_run_normal_end_marker": false,
+    "retry_cleanup_completed": true
+  },
+  "not_available": [
+    "120 valid rollout total",
+    "30 complete reward groups",
+    "0/4 through 4/4 group bins",
+    "mixed-group rate",
+    "complete routing/cache/latency aggregation",
+    "pre-update replay validation"
+  ],
+  "decision": "Do not claim calibration metrics; diagnose Qwen7B FSDP2/NCCL initialization before another run. No silent 3B fallback was performed because the requested actor was Qwen2.5-7B."
+}

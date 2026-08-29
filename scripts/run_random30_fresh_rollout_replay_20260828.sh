@@ -34,8 +34,11 @@ export TMPDIR=/root/autodl-tmp/tmp
 export RAY_TMPDIR=/root/autodl-tmp/tmp/ray
 export WANDB_MODE=disabled
 export AGENTFLOW_TRAIN_CONFIG="$CONFIG"
-export AGENTFLOW_DISABLE_EXTERNAL_LLM=1
+export AGENTFLOW_DISABLE_EXTERNAL_LLM="${AGENTFLOW_DISABLE_EXTERNAL_LLM:-1}"
 export AGENTFLOW_UNIFIED_LOCAL_ROLES=1
+export AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE="${AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE:-}"
+export AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE="${AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE:-}"
+export ARK_REASONING_EFFORT="${ARK_REASONING_EFFORT:-}"
 export AGENTFLOW_REWARD_JUDGE_ENABLED=0
 export AGENTFLOW_REWARD_SCORER_LOG=1
 export AGENTFLOW_ROLLOUT_ONLY_GROUP_MODE=1
@@ -117,7 +120,11 @@ payload = {
     "model_path": os.environ["AGENTFLOW_UNIFIED_MODEL_PATH"], "model_role": "Qwen2.5-7B-Instruct",
     "sampling": {"temperature": 0.7, "rollout_n": 4, "max_prompt_length": 1536, "max_response_length": 1024, "max_model_len": 4096, "dynamic_response_padding": True},
     "rollout_only": True, "optimizer_steps": 0, "checkpoint_disabled": True,
-    "external_calls_disabled": True, "seed": 20260828, "code_commit": os.environ["AGENTFLOW_UNIFIED_CODE_COMMIT"],
+    "external_calls_disabled": os.environ.get("AGENTFLOW_DISABLE_EXTERNAL_LLM", "1").lower() in {"1", "true", "yes", "on"},
+    "fixed_role_engine": os.environ.get("AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE", ""),
+    "fixed_role_temperature": os.environ.get("AGENTFLOW_UNIFIED_FIXED_ROLE_TEMPERATURE", ""),
+    "ark_reasoning_effort": os.environ.get("ARK_REASONING_EFFORT", ""),
+    "seed": 20260828, "code_commit": os.environ["AGENTFLOW_UNIFIED_CODE_COMMIT"],
     "artifacts": {"snapshot": snapshot, "snapshot_metadata": snapshot_meta, "replay_pack": replay, "evidence_dir": evidence, "route_state": route, "length_audit": os.environ["AGENTFLOW_RESPONSE_LENGTH_AUDIT_PATH"], "train_log": train_log, "rollout_log": rollout_log, "gpu_log": gpu_log},
 }
 Path(out).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -132,7 +139,7 @@ cleanup() {
   for pid in "$ROLLOUT_PID" "$TRAIN_PID" "$MONITOR_PID"; do
     if [[ -n "$pid" ]]; then wait "$pid" 2>/dev/null || true; fi
   done
-  "$PY" -m ray stop --force >/dev/null 2>&1 || true
+  ray stop --force >/dev/null 2>&1 || true
   exit "$status"
 }
 trap cleanup EXIT INT TERM
@@ -140,7 +147,7 @@ trap cleanup EXIT INT TERM
 check_abort() {
   for path in "$TRAIN_LOG" "$ROLLOUT_LOG"; do
     [[ -f "$path" ]] || continue
-    if grep -Eqi 'CUDA out of memory|OutOfMemoryError|illegal memory access|blocks are not freed yet|Failed to reset prefix cache|drained[=: ]+false|RayTaskError|deadlock|worker died|No valid (training|validation) rollout|https://api\.deepseek|api\.openai|dashscope|doubao' "$path"; then
+    if grep -Eqi 'CUDA out of memory|OutOfMemoryError|illegal memory access|blocks are not freed yet|Failed to reset prefix cache|drained[=: ]+false|RayTaskError|deadlock|worker died|No valid (training|validation) rollout' "$path"; then
       echo "ABORT_CONDITION log_failure=$path" >&2
       return 1
     fi
@@ -151,7 +158,7 @@ check_abort() {
 rm -f "$TRAIN_LOG" "$ROLLOUT_LOG" "$GPU_LOG" "$SNAPSHOT" "$SNAPSHOT_META" "$REPLAY_PACK" "$ROUTE_STATE" "$LENGTH_AUDIT"
 echo "RANDOM30_FRESH_PROTOCOL model=Qwen2.5-7B-Instruct temp=0.7 n=4 max_prompt=1536 max_response=1024 max_model_len=4096 seed=20260828"
 echo "RANDOM30_FRESH_MEMORY vllm_gpu_memory_utilization=$VLLM_UTIL max_num_seqs=1 max_num_batched_tokens=1024"
-echo "RANDOM30_FRESH_MODE rollout_only=1 val_only=1 optimizer_steps=0 checkpoint=disabled external_calls=disabled"
+echo "RANDOM30_FRESH_MODE rollout_only=1 val_only=1 optimizer_steps=0 checkpoint=disabled external_calls_disabled=$AGENTFLOW_DISABLE_EXTERNAL_LLM fixed_role_engine=${AGENTFLOW_UNIFIED_FIXED_ROLE_ENGINE:-none} ark_reasoning_effort=${ARK_REASONING_EFFORT:-none}"
 echo "RANDOM30_FRESH_SNAPSHOT path=$SNAPSHOT metadata=$SNAPSHOT_META"
 echo "RANDOM30_FRESH_EVIDENCE_DIR=$EVIDENCE_DIR"
 PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config "$CONFIG" trainer.val_only=true trainer.val_before_train=true trainer.save_freq=0 trainer.test_freq=0 trainer.experiment_name="$EXP" data.train_files="$DATA" data.val_files="$DATA" actor_rollout_ref.rollout.n=4 actor_rollout_ref.rollout.temperature=0.7 data.max_prompt_length=1536 data.max_response_length=1024 +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 actor_rollout_ref.actor.fsdp_config.offload_policy=true >"$TRAIN_LOG" 2>&1 &
