@@ -1,0 +1,206 @@
+{
+  "datasets": {
+    "2wiki": {
+      "dataset": "2wiki",
+      "invalid_row_counts": {},
+      "output_parquet": "/root/autodl-tmp/tmp/multihop_allqwen_probe_20260829/2wiki.parquet",
+      "output_parquet_sha256": "1cbb6f46f8b55cf3fc8587ef8f0eba6b3877ab42c84275f06c99bb1467f12ee8",
+      "requested_sample_count": 10,
+      "selected_rows": [
+        {
+          "ground_truth_sha256": "aa9b5ee9992479d523c87919774770d96ff4837da2a18325019a86b8e444f7e0",
+          "question_sha256": "69fb4bbdbd14edd7538c6107ae55cbe80082afccbff4690b1f966173a8990f7c",
+          "sample_order": 0,
+          "source_id": "db787f5c0bdc11eba7f7acde48001122",
+          "source_record_sha256": "6c14c4a22703d35a576252bc9b63c13dc9179a633c260fd26cdd8486f88fc7ab",
+          "source_row_index": 684
+        },
+        {
+          "ground_truth_sha256": "47e48d2cf375833a1eb35578dc69f225f6f121eef3134f04beb18451c9d4a5e2",
+          "question_sha256": "2a265b1ef643cf584afb3aca2c260686f158c28c8cb20d41a393a253992f6e13",
+          "sample_order": 1,
+          "source_id": "e33d85f00bd911eba7f7acde48001122",
+          "source_record_sha256": "4f1d59ec20c1f2918fcde1c26721a9817120e69002d9a48bf0e3b970b1119a67",
+          "source_row_index": 920
+        },
+        {
+          "ground_truth_sha256": "4251685e06cab635578c72b1f5f221e9840a05ac4d8f2404be4177aa87f9907d",
+          "question_sha256": "e7d5f470bc79fd7ddf87abf81166a28f6113a8db7116f4cc2ca4b7c6cb4c0376",
+          "sample_order": 2,
+          "source_id": "35d462f40bdd11eba7f7acde48001122",
+          "source_record_sha256": "ac6f0bda02a5d7b5573630f139e4da032db837261b6986cd5d32e0cdc8bf9f00",
+          "source_row_index": 1145
+        },
+        {
+          "ground_truth_sha256": "39ff7ede02d200417a69414ebbb73c8b378156f4c49f1e50a3fc5ce2c4c4393b",
+          "question_sha256": "ad8a15fd4d99b18ec26f87825a897f02c22a6d6c8755b29553ca7bebc8d2068c",
+          "sample_order": 3,
+          "source_id": "9558f80608cf11ebbd95ac1f6bf848b6",
+          "source_record_sha256": "2ee9c4c318b29ad9966c3d967f44ee74539b8bf05c898a06d54e2c7d276271be",
+          "source_row_index": 2367
+        },
+        {
+          "ground_truth_sha256": "34f738182fa41bb36a1f5f4250f893412e0d08f6b288db42453d93b2357c60c9",
+          "question_sha256": "3d620d6b991dc71baaffbf8ee8bc4bce30be04dfa2dcf9be82ed2fe9619b3763",
+          "sample_order": 4,
+          "source_id": "051912f3086f11ebbd62ac1f6bf848b6",
+          "source_record_sha256": "107cb9ec9bc616ad177d45dc297bc9434d691aeb30467cbe8da4cd296ebe764b",
+          "source_row_index": 5584
+        },
+        {
+          "ground_truth_sha256": "c3a31a6cabfb162447209d85f4655273eb7478cae5f476a4f45a87bdb2ca7ee5",
+          "question_sha256": "539401feab4e47e0f5b50ccc1b8e04add005bfee94090c3d754099c8ac29d629",
+          "sample_order": 5,
+          "source_id": "ba81957c0baf11ebab90acde48001122",
+          "source_record_sha256": "38795b7182d4c4b89537f9fb020a529c0ba4b2819b99e311e842f823bb97cd4a",
+          "source_row_index": 6752
+        },
+        {
+          "ground_truth_sha256": "abd149214539d9f222d25de6358735b9fa0efd3956f66102b2c119ae2d9f6348",
+          "question_sha256": "93a0d933a719daa0e47df9a0a05e2c07f0aff6197e8bcdc812be28ef3c285981",
+          "sample_order": 6,
+          "source_id": "78f3ba520bd911eba7f7acde48001122",
+          "source_record_sha256": "26caa2683fa2e9068eb7d6792f68d1c96a2b366f247b96c3d6709455efb5fba3",
+          "source_row_index": 9883
+        },
+        {
+          "ground_truth_sha256": "d34f65ced4ac4fa656b5d90831f10b8c8ba047fc12b3f964a970a3afcf0f0d20",
+          "question_sha256": "5a970722b7899273c918f756f2bc8e1ee4796e766c7890cd9eed0c2e345be973",
+          "sample_order": 7,
+          "source_id": "d23a19520bda11eba7f7acde48001122",
+          "source_record_sha256": "2f0a7a0e68963b4f59693735e9c3d50f4b92ce909f13e7192043f5653c1ccaa4",
+          "source_row_index": 10702
+        },
+        {
+          "ground_truth_sha256": "a659b60d246dce8d4865d45673963de83d0e49a57e8559da98581c2bc5d7d97f",
+          "question_sha256": "2a32e571d7472362b8ee2997ebef25ca13361aaf063f3be4ec2c8e390a0232e9",
+          "sample_order": 8,
+          "source_id": "a95e8ae40bdb11eba7f7acde48001122",
+          "source_record_sha256": "36765742d8734c631f24aea0fd25671aea77695168dcb25ff18e8479901731f5",
+          "source_row_index": 10760
+        },
+        {
+          "ground_truth_sha256": "ffa9a4ec8c4a85d1fb4ad198fa00f768b93b2bfd12e7c5c41e51b73bfc016e1a",
+          "question_sha256": "edc292cf0e0a0022bf1297c856f1776a2377180112d88775a9cfc3b4f146bcdf",
+          "sample_order": 9,
+          "source_id": "ff8c3baa0bae11ebab90acde48001122",
+          "source_record_sha256": "0700bf0cca2c3029ddafe76f4b308ec12d5eabda2b217aea10d9f8f2f1fd00bf",
+          "source_row_index": 12180
+        }
+      ],
+      "selected_sample_count": 10,
+      "selection_rule": "random.sample over structurally valid dev rows only; sorted source indices; no answer-content criterion",
+      "selection_seed": 20260829,
+      "source_commit": "13800e5be57df1b4040b9b1588c6c811779e69e9",
+      "source_encoding": "json",
+      "source_path": "/root/autodl-tmp/tmp/multihop_official_sources_20260829/official_data/2wiki/data/dev.json",
+      "source_row_count": 12576,
+      "source_sha256": "48b9bdc69654dc580fda5f935a48b88cb89f11887587310af60d406c8d0111a6",
+      "source_split": "dev",
+      "structurally_valid_row_count": 12576
+    },
+    "musique": {
+      "dataset": "musique",
+      "invalid_row_counts": {},
+      "output_parquet": "/root/autodl-tmp/tmp/multihop_allqwen_probe_20260829/musique.parquet",
+      "output_parquet_sha256": "0dba79b972473a34b27586f24d7e1a0f2b179d5b8a92bb545417d7bc8fc8e450",
+      "requested_sample_count": 10,
+      "selected_rows": [
+        {
+          "ground_truth_sha256": "b944c8c35835e01e121e54d1151b47032efbd3a71150aac3a9a65214d8850d88",
+          "question_sha256": "d1ad40a27647177e500b531cad0535c413e55d3d7433f6c763e2bf36b5615f6c",
+          "sample_order": 0,
+          "source_id": "2hop__135653_669373",
+          "source_record_sha256": "73e6ed3620858fcdce2e561b999f3582adb8c8f05bd44eea81c147c38533b9c5",
+          "source_row_index": 112
+        },
+        {
+          "ground_truth_sha256": "7a585ce389e5a68fe9dff0aa0707a95392ae2a9686234fb73b38d8c4064f881d",
+          "question_sha256": "e3b09b7d0f1e262d0dbe90cbf5eea6341c8d0f0a87129693b029f5ad4d830c14",
+          "sample_order": 1,
+          "source_id": "2hop__50910_177869",
+          "source_record_sha256": "457565b159c5b3ed78ed2327c0c8554768b5dc759b75fb952feb098acdf11884",
+          "source_row_index": 139
+        },
+        {
+          "ground_truth_sha256": "ab634ccd02277beaf6b51c281dc9f32db45bff3221cae76b99f4e4e093a15989",
+          "question_sha256": "54fa6f12d5a787944214b7a41b4261cf3d9c2d0a56140d65b28be9536cfb504c",
+          "sample_order": 2,
+          "source_id": "2hop__847433_11402",
+          "source_record_sha256": "e94218ef93244f525dd5211e93348cbbfa2a84b9b0342a71f8e1b6f5b7b36426",
+          "source_row_index": 171
+        },
+        {
+          "ground_truth_sha256": "211cf479ca39074b75956aaf71f7b22a2b3fe2c82b7b056ba45cdf9fac208bf9",
+          "question_sha256": "5494fde1754c9adb7358539486e99c24f27cc26ecc1570ef4b6dfdc9fcdc9844",
+          "sample_order": 3,
+          "source_id": "2hop__30741_85990",
+          "source_record_sha256": "b6843ec877f959d55e39abe1aaf988bafa34306c05ecc82cb4418bd972c7fa25",
+          "source_row_index": 230
+        },
+        {
+          "ground_truth_sha256": "aea92132c4cbeb263e6ac2bf6c183b5d81737f179f21efdc5863739672f0f470",
+          "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+          "sample_order": 4,
+          "source_id": "2hop__13592_49388",
+          "source_record_sha256": "276b15d8c18d3409ebd1a2f449dd9be843d1568e0d2533c4edc9f5c3df6540d0",
+          "source_row_index": 259
+        },
+        {
+          "ground_truth_sha256": "ccd7b3cfe17dd26aed21eaaf81edec9bbd7c0ac9b98764e12970685d6317356d",
+          "question_sha256": "cd2f725d168592f795877e09c9f0c2badbbff3840421c30c698bfbe4af1b3b6a",
+          "sample_order": 5,
+          "source_id": "2hop__538735_3296",
+          "source_record_sha256": "d212a2b991150bedb180f51f7d1add2a5ab1add6d0ac511b9602c729b6f67acf",
+          "source_row_index": 286
+        },
+        {
+          "ground_truth_sha256": "0f8cd4b771f01f9399292925c0a6f8079a38b41fb6733bcb05490093f0170292",
+          "question_sha256": "fa95e0f6a389f6b20c3efb46599881ddb16ba723b5d48e8003ad81fd03f9a9a1",
+          "sample_order": 6,
+          "source_id": "2hop__243084_523417",
+          "source_record_sha256": "574f1d505d8300dbf15cf09d446cde9d85c43a5688cce32964c3761b0659c974",
+          "source_row_index": 591
+        },
+        {
+          "ground_truth_sha256": "a7372fe3f0996a67a8088879432d1b0d2b59ae9cc55c38832c3dc87278357677",
+          "question_sha256": "8081d6dc66d29b887aa539b86217c59481414d268bc3c57ba0109b81858d79c8",
+          "sample_order": 7,
+          "source_id": "2hop__829358_754719",
+          "source_record_sha256": "20b1a2a63e003479f0664a33655ff3b4d22f7a91cccfb66e75efba55090a9011",
+          "source_row_index": 670
+        },
+        {
+          "ground_truth_sha256": "91c6f773ee4ed1d17eca52bdbf8a2a35b8827abb5486a702c338533e61e47f74",
+          "question_sha256": "8f608ca351e0b63a7989763fcc775714187848de34ef72af8bdf1384a71a724e",
+          "sample_order": 8,
+          "source_id": "3hop1__254856_400692_51423",
+          "source_record_sha256": "78d3b2c05cb8db24c1b29a1c0985f1c24422d9691e0d3979c9b22f5ca11738db",
+          "source_row_index": 1396
+        },
+        {
+          "ground_truth_sha256": "3c135a8327120c2561afa19d723109be4c2b98fc12c6f7d0bdf6a91b2807adf7",
+          "question_sha256": "ca7773c050a62456449058f60cd9fbc5244a8597774753c6128e5212558e2b80",
+          "sample_order": 9,
+          "source_id": "3hop1__462960_160545_34754",
+          "source_record_sha256": "3e770762b65efe27ae56aafc845dc92b3e280d4ab9df284acbd85b658c7d8fde",
+          "source_row_index": 1688
+        }
+      ],
+      "selected_sample_count": 10,
+      "selection_rule": "random.sample over structurally valid dev rows only; sorted source indices; no answer-content criterion",
+      "selection_seed": 20260829,
+      "source_commit": "922ac98f19a201998dbdae6d7f2887a5258dbdeb",
+      "source_encoding": "jsonl",
+      "source_path": "/root/autodl-tmp/tmp/multihop_official_sources_20260829/official_data/musique/data/musique_ans_v1.0_dev.jsonl",
+      "source_row_count": 2417,
+      "source_sha256": "15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b",
+      "source_split": "dev",
+      "structurally_valid_row_count": 2417
+    }
+  },
+  "purpose": "bounded rollout-only AgentFlow difficulty probe; dev examples are probe-only and forbidden as future formal training data",
+  "requested_sample_count_per_dataset": 10,
+  "schema_version": 1,
+  "selection_seed": 20260829
+}

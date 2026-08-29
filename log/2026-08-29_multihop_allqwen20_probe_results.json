@@ -1,0 +1,1047 @@
+{
+  "schema_version": 1,
+  "mode": "rollout_only_no_optimizer_no_external_judge",
+  "protocol": {
+    "model": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "planner_role": "qwen-actor with current LoRA",
+    "fixed_roles": "qwen-base frozen, LoRA disabled",
+    "temperature": 0.7,
+    "fixed_role_temperature": 0.0,
+    "rollout_n": 4,
+    "seed": 20260829,
+    "max_prompt_length": 1536,
+    "max_response_length": 1024,
+    "max_model_len": 4096,
+    "vllm_gpu_memory_utilization": 0.6,
+    "optimizer_steps": 0,
+    "checkpoint": "disabled",
+    "external_model_calls": 0
+  },
+  "manifest_sha256": "922b73e10a4724d61163d71f6a12e2e57494134a84311c720f71cc9a664d61a1",
+  "datasets": {
+    "musique": {
+      "dataset": "musique",
+      "rollout_dir": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train",
+      "rollout_file_count": 40,
+      "prompt_group_count": 10,
+      "valid_rollouts": 40,
+      "retry_count": 0,
+      "error_count": 0,
+      "reward_mean": 0.025,
+      "positive_reward_count": 1,
+      "negative_reward_count": 39,
+      "group_bins": {
+        "0/4": {
+          "count": 9,
+          "proportion": 0.9
+        },
+        "1/4": {
+          "count": 1,
+          "proportion": 0.1
+        },
+        "2/4": {
+          "count": 0,
+          "proportion": 0.0
+        },
+        "3/4": {
+          "count": 0,
+          "proportion": 0.0
+        },
+        "4/4": {
+          "count": 0,
+          "proportion": 0.0
+        }
+      },
+      "mixed_group_count": 1,
+      "mixed_group_ratio": 0.1,
+      "nonzero_variance_group_ratio": 0.1,
+      "mean_unique_answers_per_group": 3.2,
+      "exact_duplicate_rate_mean": 0.2,
+      "mean_unique_tool_path_signatures_per_group": 1.5,
+      "trajectory_tool_count_mean": 1.0,
+      "trajectory_with_two_or_more_tools_ratio": 0.0,
+      "trajectory_with_three_or_more_tools_ratio": 0.0,
+      "mean_step_count": 1.35,
+      "mean_execution_time_seconds": 27.123,
+      "scorer_routing": {
+        "deterministic_count": 40,
+        "deepseek_fallback_count": 0,
+        "cache_hit_count": 0,
+        "api_error_count": 0,
+        "parse_error_count": 0,
+        "basis": "runner sets AGENTFLOW_REWARD_JUDGE_ENABLED=0 and external_calls=0; no per-row scorer event was emitted",
+        "per_row_telemetry_observed": false
+      },
+      "gpu": {
+        "samples": 277,
+        "peak_memory_used_mib": 20467.0,
+        "peak_gpu_utilization_percent": 69.0
+      },
+      "logs": {
+        "train": {
+          "exists": true,
+          "sha256": "867dff230f05f88dfb3f0c69f918ab5522f56b2b3eeb1e7a7dc0ec79582681c4",
+          "finished_after_minutes": 21.5,
+          "validation_summary_count": 1,
+          "cleanup_drain_complete_count": 2,
+          "cleanup_driver_drained_true_count": 1,
+          "cleanup_complete_count": 2,
+          "error_markers": [],
+          "external_model_markers": [],
+          "openai_compat_trace_span_count": 590,
+          "local_qwen_base_route_count": 241,
+          "local_qwen_actor_route_count": 54
+        },
+        "rollout": {
+          "exists": true,
+          "sha256": "6f4edbed843dc3de67c894aaad52dcf896b04e597a36ee94cca4831d695537a8",
+          "finished_after_minutes": null,
+          "validation_summary_count": 0,
+          "cleanup_drain_complete_count": 0,
+          "cleanup_driver_drained_true_count": 0,
+          "cleanup_complete_count": 0,
+          "error_markers": [],
+          "external_model_markers": [],
+          "openai_compat_trace_span_count": 295,
+          "local_qwen_base_route_count": 0,
+          "local_qwen_actor_route_count": 0
+        }
+      },
+      "groups": [
+        {
+          "group_id": 0,
+          "source_id": "2hop__135653_669373",
+          "source_row_index": 112,
+          "question_sha256": "d1ad40a27647177e500b531cad0535c413e55d3d7433f6c763e2bf36b5615f6c",
+          "ground_truth_sha256": "b944c8c35835e01e121e54d1151b47032efbd3a71150aac3a9a65214d8850d88",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "31d40d883999a618ddc0c7343a87830fbbc37cec044d1b83a2b694119f09d81a",
+            "a060f977a6d67e677d623a114a3a7f94505bf7773a88d3d839d2ea31469eb7e3",
+            "0cf416a7d7a0f91d799963cf2ba55cda085c95009670a26f522c635b2404f36e",
+            "0c21f479f7f3555f5a4e38fcb93b4758ff1f4f2e8cac1cdc0d38b37a78596b0d"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "execution_time_seconds": [
+            11.33,
+            13.25,
+            28.65,
+            17.15
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_1/idx_112/rollout_1a9c019b-bba5-4853-a5b7-885a44ed7cb0.json"
+        },
+        {
+          "group_id": 1,
+          "source_id": "2hop__50910_177869",
+          "source_row_index": 139,
+          "question_sha256": "e3b09b7d0f1e262d0dbe90cbf5eea6341c8d0f0a87129693b029f5ad4d830c14",
+          "ground_truth_sha256": "7a585ce389e5a68fe9dff0aa0707a95392ae2a9686234fb73b38d8c4064f881d",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "d312f4640b7ba796eff3a97886ee5a17211ce87e930b3364fbc922f6861e55b5",
+            "d312f4640b7ba796eff3a97886ee5a17211ce87e930b3364fbc922f6861e55b5",
+            "f15ddb75029e207f3ff29bc5060d9de5ced15cd665da395b18eefac10ecd9058",
+            "91d004647524bf74fe2e1bc1b618eb75602c5f3af5971bfc48547674363767ad"
+          ],
+          "unique_answers": 3,
+          "exact_duplicate_rate": 0.25,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "execution_time_seconds": [
+            14.91,
+            18.59,
+            17.1,
+            35.66
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_1/idx_139/rollout_cb019e1c-535f-43f2-b078-2ab58ab969b1.json"
+        },
+        {
+          "group_id": 2,
+          "source_id": "2hop__847433_11402",
+          "source_row_index": 171,
+          "question_sha256": "54fa6f12d5a787944214b7a41b4261cf3d9c2d0a56140d65b28be9536cfb504c",
+          "ground_truth_sha256": "ab634ccd02277beaf6b51c281dc9f32db45bff3221cae76b99f4e4e093a15989",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "6da9819f2c2d0ad626345a0a2b4daf8551d572e395119c024f6c97221ba4987a",
+            "6da9819f2c2d0ad626345a0a2b4daf8551d572e395119c024f6c97221ba4987a",
+            "6da9819f2c2d0ad626345a0a2b4daf8551d572e395119c024f6c97221ba4987a",
+            "3cb71eed95945254f2f4781dcc0b64c0767bd06f4adb5d04ee107d5faa0bcfef"
+          ],
+          "unique_answers": 2,
+          "exact_duplicate_rate": 0.5,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            2,
+            2,
+            1,
+            2
+          ],
+          "execution_time_seconds": [
+            33.68,
+            27.06,
+            20.99,
+            25.86
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_2/idx_171/rollout_2addedd1-646c-4821-a476-e42b2bb81147.json"
+        },
+        {
+          "group_id": 3,
+          "source_id": "2hop__30741_85990",
+          "source_row_index": 230,
+          "question_sha256": "5494fde1754c9adb7358539486e99c24f27cc26ecc1570ef4b6dfdc9fcdc9844",
+          "ground_truth_sha256": "211cf479ca39074b75956aaf71f7b22a2b3fe2c82b7b056ba45cdf9fac208bf9",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "9fc7db95f9508d0bd94949e6ff528b1e6d6d6350981b8213d0ca703d09ece14a",
+            "7cc930c6c3858d36a516fa8a2ccfd9b00bd14c2b8ecba16becaf726645753b6b",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "c4502852c2266e862d5afaa3b7a055ba19a95304fa553a3e2c196de55cb2a5cf"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "execution_time_seconds": [
+            42.6,
+            49.05,
+            55.91,
+            52.58
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_3/idx_230/rollout_a7a6659f-90ff-45c4-a316-eb2aab26d7a4.json"
+        },
+        {
+          "group_id": 4,
+          "source_id": "2hop__13592_49388",
+          "source_row_index": 259,
+          "question_sha256": "31b95a001d729c252d85cf6ecc6b30bb698d7f410d7a2393ac67b439c5edab5e",
+          "ground_truth_sha256": "aea92132c4cbeb263e6ac2bf6c183b5d81737f179f21efdc5863739672f0f470",
+          "reward_vector": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "aea92132c4cbeb263e6ac2bf6c183b5d81737f179f21efdc5863739672f0f470",
+            "b2a5cc5da6b522b24321698ead8af3561901e1e37741d717aca4734de4161a80",
+            "86e50149658661312a9e0b35558d84f6c6d3da797f552a9657fe0558ca40cdef",
+            "38b83caefa1ef26940f1d07bd4ec94c60809b0f88f2118e82ef8ec2d98938a84"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            28.33,
+            31.28,
+            29.99,
+            13.91
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_4/idx_259/rollout_363b95ee-8b73-40b2-9a60-a3f8080f4c43.json"
+        },
+        {
+          "group_id": 5,
+          "source_id": "2hop__538735_3296",
+          "source_row_index": 286,
+          "question_sha256": "cd2f725d168592f795877e09c9f0c2badbbff3840421c30c698bfbe4af1b3b6a",
+          "ground_truth_sha256": "ccd7b3cfe17dd26aed21eaaf81edec9bbd7c0ac9b98764e12970685d6317356d",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "4849e4589e4f49ebb1a5879bbd7e0134aa066f764c768f7dea14efa67aba2022",
+            "8dd926f0650e5c02763bb4e162bc3c06ab119a55894e9dfb856b44a83bbdbdb4",
+            "87a1943fac634c92071a53e8363e2db0f022151a23180176ff161dec5c133b81",
+            "811419d6e1ae716d807e6ca715f80394ac831e392a33d312df8a6a76061d9918"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            10.78,
+            24.63,
+            26.03,
+            25.82
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_5/idx_286/rollout_1312c192-b608-4e52-a3b5-8f93288a4e01.json"
+        },
+        {
+          "group_id": 6,
+          "source_id": "2hop__243084_523417",
+          "source_row_index": 591,
+          "question_sha256": "fa95e0f6a389f6b20c3efb46599881ddb16ba723b5d48e8003ad81fd03f9a9a1",
+          "ground_truth_sha256": "0f8cd4b771f01f9399292925c0a6f8079a38b41fb6733bcb05490093f0170292",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "2cde8d18812e77ae6c37f92a9b86f1414cf1616d37809947481eec5d8ab92951",
+            "2cde8d18812e77ae6c37f92a9b86f1414cf1616d37809947481eec5d8ab92951",
+            "2cde8d18812e77ae6c37f92a9b86f1414cf1616d37809947481eec5d8ab92951",
+            "2cde8d18812e77ae6c37f92a9b86f1414cf1616d37809947481eec5d8ab92951"
+          ],
+          "unique_answers": 1,
+          "exact_duplicate_rate": 0.75,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            21.66,
+            22.85,
+            9.04,
+            21.55
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_6/idx_591/rollout_25f7868a-54c7-4f47-a7d7-3ae9a39b73d2.json"
+        },
+        {
+          "group_id": 7,
+          "source_id": "2hop__829358_754719",
+          "source_row_index": 670,
+          "question_sha256": "8081d6dc66d29b887aa539b86217c59481414d268bc3c57ba0109b81858d79c8",
+          "ground_truth_sha256": "a7372fe3f0996a67a8088879432d1b0d2b59ae9cc55c38832c3dc87278357677",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "f50b92b29527bc026aa08508578ea17114279e2d407f6df858b8f8438140d5f6",
+            "f50b92b29527bc026aa08508578ea17114279e2d407f6df858b8f8438140d5f6",
+            "96453c55803b25a0c64ee1a861acfa4a67a15b7eb74b5a77199429a15d4af629",
+            "f50b92b29527bc026aa08508578ea17114279e2d407f6df858b8f8438140d5f6"
+          ],
+          "unique_answers": 2,
+          "exact_duplicate_rate": 0.5,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            8.25,
+            8.37,
+            19.82,
+            17.95
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_7/idx_670/rollout_b90a8167-5374-4ccc-ab0e-e6498fffe9ce.json"
+        },
+        {
+          "group_id": 8,
+          "source_id": "3hop1__254856_400692_51423",
+          "source_row_index": 1396,
+          "question_sha256": "8f608ca351e0b63a7989763fcc775714187848de34ef72af8bdf1384a71a724e",
+          "ground_truth_sha256": "91c6f773ee4ed1d17eca52bdbf8a2a35b8827abb5486a702c338533e61e47f74",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "332de61f143ed1ea88a47dcf6d6691a680bf5712e67e8383deab4b21d65571da",
+            "404649142292e06464c26c2373c3ff3a3345639ed38ae7a10a05cdcf015b4ae6",
+            "43530dea7ad487dc83a25b16ba29c3fe69de684b7ec9ed3f5d6b86fa8dd5a69c",
+            "70ff8786731e19beb3f7e1c798dde6e3b9e296abd12f69ee16b144f55c807ed3"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "execution_time_seconds": [
+            28.62,
+            27.64,
+            43.13,
+            24.0
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_8/idx_1396/rollout_621651ce-945e-4f82-927e-36a73c81b885.json"
+        },
+        {
+          "group_id": 9,
+          "source_id": "3hop1__462960_160545_34754",
+          "source_row_index": 1688,
+          "question_sha256": "ca7773c050a62456449058f60cd9fbc5244a8597774753c6128e5212558e2b80",
+          "ground_truth_sha256": "3c135a8327120c2561afa19d723109be4c2b98fc12c6f7d0bdf6a91b2807adf7",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "bc7364c9900f402b8a28838c7670a86edd9c9f52656d13e30aa7434fe7ce1a81",
+            "267517083a76fa013c1e2602bca217151e6f78079da28fae9699722bf08aea86",
+            "e97310f37be5f9adeeef90e408729010814c66f35bcbd7e1e42d9fdc94b408b5",
+            "b838b948d235213efac4118747973fb500f21b9c3726568ead529575e222744a"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            2,
+            1,
+            2,
+            2
+          ],
+          "execution_time_seconds": [
+            72.15,
+            16.27,
+            67.83,
+            20.65
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-musique-20260829_20260829-165503/Qwen2.5-7B-Instruct_20260829-165504/train/step_10/idx_1688/rollout_088cd869-319b-42ed-b9b3-b3c2835ca95a.json"
+        }
+      ]
+    },
+    "2wiki": {
+      "dataset": "2wiki",
+      "rollout_dir": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train",
+      "rollout_file_count": 40,
+      "prompt_group_count": 10,
+      "valid_rollouts": 40,
+      "retry_count": 0,
+      "error_count": 0,
+      "reward_mean": 0.0,
+      "positive_reward_count": 0,
+      "negative_reward_count": 40,
+      "group_bins": {
+        "0/4": {
+          "count": 10,
+          "proportion": 1.0
+        },
+        "1/4": {
+          "count": 0,
+          "proportion": 0.0
+        },
+        "2/4": {
+          "count": 0,
+          "proportion": 0.0
+        },
+        "3/4": {
+          "count": 0,
+          "proportion": 0.0
+        },
+        "4/4": {
+          "count": 0,
+          "proportion": 0.0
+        }
+      },
+      "mixed_group_count": 0,
+      "mixed_group_ratio": 0.0,
+      "nonzero_variance_group_ratio": 0.0,
+      "mean_unique_answers_per_group": 2.4,
+      "exact_duplicate_rate_mean": 0.4,
+      "mean_unique_tool_path_signatures_per_group": 1.3,
+      "trajectory_tool_count_mean": 1.0,
+      "trajectory_with_two_or_more_tools_ratio": 0.0,
+      "trajectory_with_three_or_more_tools_ratio": 0.0,
+      "mean_step_count": 1.325,
+      "mean_execution_time_seconds": 25.153749999999995,
+      "scorer_routing": {
+        "deterministic_count": 40,
+        "deepseek_fallback_count": 0,
+        "cache_hit_count": 0,
+        "api_error_count": 0,
+        "parse_error_count": 0,
+        "basis": "runner sets AGENTFLOW_REWARD_JUDGE_ENABLED=0 and external_calls=0; no per-row scorer event was emitted",
+        "per_row_telemetry_observed": false
+      },
+      "gpu": {
+        "samples": 261,
+        "peak_memory_used_mib": 20319.0,
+        "peak_gpu_utilization_percent": 68.0
+      },
+      "logs": {
+        "train": {
+          "exists": true,
+          "sha256": "a83b9033f20f906cafe394250701a0dfcaa6eef30b769679d39c1661bd7df629",
+          "finished_after_minutes": 19.8,
+          "validation_summary_count": 1,
+          "cleanup_drain_complete_count": 2,
+          "cleanup_driver_drained_true_count": 1,
+          "cleanup_complete_count": 2,
+          "error_markers": [],
+          "external_model_markers": [],
+          "openai_compat_trace_span_count": 584,
+          "local_qwen_base_route_count": 239,
+          "local_qwen_actor_route_count": 53
+        },
+        "rollout": {
+          "exists": true,
+          "sha256": "dfc4279d51c3a94cea9628dcdfdda8a51ebc1ca778f43db2a8ce541a920abd52",
+          "finished_after_minutes": null,
+          "validation_summary_count": 0,
+          "cleanup_drain_complete_count": 0,
+          "cleanup_driver_drained_true_count": 0,
+          "cleanup_complete_count": 0,
+          "error_markers": [],
+          "external_model_markers": [],
+          "openai_compat_trace_span_count": 292,
+          "local_qwen_base_route_count": 0,
+          "local_qwen_actor_route_count": 0
+        }
+      },
+      "groups": [
+        {
+          "group_id": 0,
+          "source_id": "db787f5c0bdc11eba7f7acde48001122",
+          "source_row_index": 684,
+          "question_sha256": "69fb4bbdbd14edd7538c6107ae55cbe80082afccbff4690b1f966173a8990f7c",
+          "ground_truth_sha256": "aa9b5ee9992479d523c87919774770d96ff4837da2a18325019a86b8e444f7e0",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "e6deb10a6558650aebf4c4d95fc47c716dfb2da7350183c114041c19ae9bfcd3",
+            "e6deb10a6558650aebf4c4d95fc47c716dfb2da7350183c114041c19ae9bfcd3",
+            "e6deb10a6558650aebf4c4d95fc47c716dfb2da7350183c114041c19ae9bfcd3",
+            "e6deb10a6558650aebf4c4d95fc47c716dfb2da7350183c114041c19ae9bfcd3"
+          ],
+          "unique_answers": 1,
+          "exact_duplicate_rate": 0.75,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            16.78,
+            16.05,
+            20.59,
+            16.12
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_1/idx_684/rollout_45dad393-87b9-4bc4-bc2a-b860f6d7ed7d.json"
+        },
+        {
+          "group_id": 1,
+          "source_id": "e33d85f00bd911eba7f7acde48001122",
+          "source_row_index": 920,
+          "question_sha256": "2a265b1ef643cf584afb3aca2c260686f158c28c8cb20d41a393a253992f6e13",
+          "ground_truth_sha256": "47e48d2cf375833a1eb35578dc69f225f6f121eef3134f04beb18451c9d4a5e2",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "12c5e24c6c1fa853453a18e5a9739240652de5daf5f9df614fc892515b300cd5",
+            "d89e76c52accf9bc88a6784d448c1e3bee88f90ca6f2d749ef4dd5cc35274177",
+            "9afbf13b81f115371c65cb351a77bcf0582ebc83867baf7341f8f35dae478506",
+            "8fd1f7af8a2157863d280f62ddecbe064882fe044a2f1875caa83844e034e296"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            2,
+            1,
+            2,
+            2
+          ],
+          "execution_time_seconds": [
+            42.69,
+            9.82,
+            26.95,
+            45.11
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_1/idx_920/rollout_580ab4e2-682d-4000-9516-bffd80ea1d49.json"
+        },
+        {
+          "group_id": 2,
+          "source_id": "35d462f40bdd11eba7f7acde48001122",
+          "source_row_index": 1145,
+          "question_sha256": "e7d5f470bc79fd7ddf87abf81166a28f6113a8db7116f4cc2ca4b7c6cb4c0376",
+          "ground_truth_sha256": "4251685e06cab635578c72b1f5f221e9840a05ac4d8f2404be4177aa87f9907d",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "cd8b13f31dc63e0f33526f40c33beeb8f425b19bb478b0c6abb7fdd5fa5f4ceb",
+            "d60c124c7e3a985d150b95cac317d1fb728731df4d89e59b4be787f2e4ed69bc",
+            "d60c124c7e3a985d150b95cac317d1fb728731df4d89e59b4be787f2e4ed69bc",
+            "cd8b13f31dc63e0f33526f40c33beeb8f425b19bb478b0c6abb7fdd5fa5f4ceb"
+          ],
+          "unique_answers": 2,
+          "exact_duplicate_rate": 0.5,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            35.69,
+            22.63,
+            19.84,
+            20.04
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_2/idx_1145/rollout_99ee4f0a-5dbf-4e84-8b8d-813e8553beda.json"
+        },
+        {
+          "group_id": 3,
+          "source_id": "9558f80608cf11ebbd95ac1f6bf848b6",
+          "source_row_index": 2367,
+          "question_sha256": "ad8a15fd4d99b18ec26f87825a897f02c22a6d6c8755b29553ca7bebc8d2068c",
+          "ground_truth_sha256": "39ff7ede02d200417a69414ebbb73c8b378156f4c49f1e50a3fc5ce2c4c4393b",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "a3b3ccb86ccf2811455f5c3b47e4acc1d17bedb98a1349b3fdd8b9b6638d6f04",
+            "e45d0b4d761b2210c6f124ca0e7a657202e4c7f33aed5c8521b507ad4e01147f",
+            "584b21abc9eab9c77397dd7474c5eda05fc22d6c553ac751f13f40daea4196c7",
+            "a3b3ccb86ccf2811455f5c3b47e4acc1d17bedb98a1349b3fdd8b9b6638d6f04"
+          ],
+          "unique_answers": 3,
+          "exact_duplicate_rate": 0.25,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            24.55,
+            19.47,
+            22.93,
+            25.33
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_3/idx_2367/rollout_49a94cde-36b7-4348-ad0f-7c5a17aef72f.json"
+        },
+        {
+          "group_id": 4,
+          "source_id": "051912f3086f11ebbd62ac1f6bf848b6",
+          "source_row_index": 5584,
+          "question_sha256": "3d620d6b991dc71baaffbf8ee8bc4bce30be04dfa2dcf9be82ed2fe9619b3763",
+          "ground_truth_sha256": "34f738182fa41bb36a1f5f4250f893412e0d08f6b288db42453d93b2357c60c9",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "b4c5d8b61d5ecaf75eb8cc0f8d754409f02b68fb7a678ed2c72a9be4fdcbf7ba",
+            "b4c5d8b61d5ecaf75eb8cc0f8d754409f02b68fb7a678ed2c72a9be4fdcbf7ba",
+            "b4c5d8b61d5ecaf75eb8cc0f8d754409f02b68fb7a678ed2c72a9be4fdcbf7ba",
+            "b4c5d8b61d5ecaf75eb8cc0f8d754409f02b68fb7a678ed2c72a9be4fdcbf7ba"
+          ],
+          "unique_answers": 1,
+          "exact_duplicate_rate": 0.75,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            25.01,
+            22.09,
+            10.58,
+            17.33
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_4/idx_5584/rollout_f9e0c009-6547-43a3-bf1e-ba329020eefc.json"
+        },
+        {
+          "group_id": 5,
+          "source_id": "ba81957c0baf11ebab90acde48001122",
+          "source_row_index": 6752,
+          "question_sha256": "539401feab4e47e0f5b50ccc1b8e04add005bfee94090c3d754099c8ac29d629",
+          "ground_truth_sha256": "c3a31a6cabfb162447209d85f4655273eb7478cae5f476a4f45a87bdb2ca7ee5",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "83fd6b2b6134c6bddd52258ef054ceb139b3cc4aaa417e37843ca1992aea50e9",
+            "83fd6b2b6134c6bddd52258ef054ceb139b3cc4aaa417e37843ca1992aea50e9",
+            "83fd6b2b6134c6bddd52258ef054ceb139b3cc4aaa417e37843ca1992aea50e9",
+            "83fd6b2b6134c6bddd52258ef054ceb139b3cc4aaa417e37843ca1992aea50e9"
+          ],
+          "unique_answers": 1,
+          "exact_duplicate_rate": 0.75,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            10.2,
+            14.21,
+            28.06,
+            25.16
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_5/idx_6752/rollout_0ba7de32-ac26-4296-8c20-42daee3b2aee.json"
+        },
+        {
+          "group_id": 6,
+          "source_id": "78f3ba520bd911eba7f7acde48001122",
+          "source_row_index": 9883,
+          "question_sha256": "93a0d933a719daa0e47df9a0a05e2c07f0aff6197e8bcdc812be28ef3c285981",
+          "ground_truth_sha256": "abd149214539d9f222d25de6358735b9fa0efd3956f66102b2c119ae2d9f6348",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "b116c99a2c11258bdc6b121b63d190a3b86f90bbb1116dece0b70ef7576938f2",
+            "b116c99a2c11258bdc6b121b63d190a3b86f90bbb1116dece0b70ef7576938f2",
+            "0cb042ed272786417227ec3ae6792969e8343dd83fa3d2254d2bd9a870d79f4b",
+            "b116c99a2c11258bdc6b121b63d190a3b86f90bbb1116dece0b70ef7576938f2"
+          ],
+          "unique_answers": 2,
+          "exact_duplicate_rate": 0.5,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 2,
+          "step_count": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            40.87,
+            20.06,
+            17.47,
+            21.27
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_6/idx_9883/rollout_997dd930-deec-4b48-b7fa-db19810419f6.json"
+        },
+        {
+          "group_id": 7,
+          "source_id": "d23a19520bda11eba7f7acde48001122",
+          "source_row_index": 10702,
+          "question_sha256": "5a970722b7899273c918f756f2bc8e1ee4796e766c7890cd9eed0c2e345be973",
+          "ground_truth_sha256": "d34f65ced4ac4fa656b5d90831f10b8c8ba047fc12b3f964a970a3afcf0f0d20",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "adb849deea9d4bd94c30b224db699dfde9d33e09807be3101e1585218631b9a9",
+            "ca1259f65b7e9e18c07cc484c8b8a525df7c9660ac8a83aa1d2416c6ca6058f2",
+            "6f9545ea017d2d1f7174325b46e2cbd253ed8fc8d0e9da79418a57230375a21e",
+            "300d7e531dc9ced8f80b1b55ad74ccacf2100b93e2e62ab80962abdc70e9f76a"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "execution_time_seconds": [
+            19.91,
+            37.37,
+            43.8,
+            20.55
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_7/idx_10702/rollout_dce59649-0917-40a1-86d9-045707ffc861.json"
+        },
+        {
+          "group_id": 8,
+          "source_id": "a95e8ae40bdb11eba7f7acde48001122",
+          "source_row_index": 10760,
+          "question_sha256": "2a32e571d7472362b8ee2997ebef25ca13361aaf063f3be4ec2c8e390a0232e9",
+          "ground_truth_sha256": "a659b60d246dce8d4865d45673963de83d0e49a57e8559da98581c2bc5d7d97f",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "21bb36ad06385b1ccc1f48489b71eea397b7e8b0fa39f91b920f51ce00af459e",
+            "21bb36ad06385b1ccc1f48489b71eea397b7e8b0fa39f91b920f51ce00af459e",
+            "21bb36ad06385b1ccc1f48489b71eea397b7e8b0fa39f91b920f51ce00af459e",
+            "21bd3229a131a2cc251bf2dde8a900bd318d92c7aad7d33e72e54f581c306e86"
+          ],
+          "unique_answers": 2,
+          "exact_duplicate_rate": 0.5,
+          "path_sha256": [
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2",
+            "ab4c4d2fa0246c7277fc3d810f8840d2a33948af3f1e059d09a6822b22f56db2"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "execution_time_seconds": [
+            19.62,
+            19.33,
+            20.85,
+            26.38
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_8/idx_10760/rollout_3a74d3d6-4f60-447c-b50b-ff943c2ba891.json"
+        },
+        {
+          "group_id": 9,
+          "source_id": "ff8c3baa0bae11ebab90acde48001122",
+          "source_row_index": 12180,
+          "question_sha256": "edc292cf0e0a0022bf1297c856f1776a2377180112d88775a9cfc3b4f146bcdf",
+          "ground_truth_sha256": "ffa9a4ec8c4a85d1fb4ad198fa00f768b93b2bfd12e7c5c41e51b73bfc016e1a",
+          "reward_vector": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "answer_sha256": [
+            "9f4ad9033eea4ceef91de3786bd0d12cffb2082ab436b01f6d7f8ebae4714243",
+            "190ab6fb9c3d58ee93443f72bab15563dfd023ceb521c21126a2a67fb1abb150",
+            "038ef63b118c90256626219ee945bbbb5b71fff9616c6649f6ac391e6794ae1c",
+            "9292ee685455082d1b5dbd30d8de1ed2704d9b2f9990dcd8e3a8cc8d9e7b1a8b"
+          ],
+          "unique_answers": 4,
+          "exact_duplicate_rate": 0.0,
+          "path_sha256": [
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e",
+            "e734ca4ce8aa8617d573b9bb9836b3a7d2d5911d9f48e771331ed7ac3e3fe86e"
+          ],
+          "unique_tool_path_signatures": 1,
+          "step_count": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "execution_time_seconds": [
+            43.22,
+            45.32,
+            24.14,
+            48.76
+          ],
+          "representative_id": "rollout_data/46.38.243.197/multihop-allqwen7b-2wiki-20260829_20260829-171907/Qwen2.5-7B-Instruct_20260829-171908/train/step_10/idx_12180/rollout_4ad7a287-d8b7-488b-9187-fe5714ad38d2.json"
+        }
+      ]
+    }
+  },
+  "comparison": [
+    {
+      "dataset": "musique",
+      "prompt_groups": 10,
+      "valid_rollouts": 40,
+      "reward_mean": 0.025,
+      "mixed_group_ratio": 0.1,
+      "mean_unique_answers_per_group": 3.2,
+      "mean_unique_tool_path_signatures_per_group": 1.5,
+      "runtime_minutes": 21.5
+    },
+    {
+      "dataset": "2wiki",
+      "prompt_groups": 10,
+      "valid_rollouts": 40,
+      "reward_mean": 0.0,
+      "mixed_group_ratio": 0.0,
+      "mean_unique_answers_per_group": 2.4,
+      "mean_unique_tool_path_signatures_per_group": 1.3,
+      "runtime_minutes": 19.8
+    }
+  ]
+}
