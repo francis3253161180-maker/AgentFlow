@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "preprocessing_version": "offline-musique-v1",
+  "dataset": {
+    "name": "MuSiQue-Ans v1.0 dev, answerable",
+    "official_repository": "https://github.com/StonyBrookNLP/musique.git",
+    "official_repository_commit": "922ac98f19a201998dbdae6d7f2887a5258dbdeb",
+    "official_download_zip_sha256": "bcdf94736e912f7c16242402ecb68031a5f9e16cddda37c4fe6d889e731f610d",
+    "source_path": "/root/autodl-tmp/tmp/multihop_official_sources_20260829/official_data/musique/data/musique_ans_v1.0_dev.jsonl",
+    "source_sha256": "15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b",
+    "answerable_questions": 2417,
+    "candidate_paragraphs_per_question_min_max": [17, 20],
+    "unique_paragraphs": 21100,
+    "train_split_status": "not present in extracted official_data tree and not obtained because Phase F was not reached"
+  },
+  "corpus": {
+    "local_path": "/root/autodl-tmp/offline_musique_artifacts_20260830/offline_musique_corpus_v1.json",
+    "sha256": "9f6b7fc8e6c3180ae4d2c11e86c76fdc00c39847d0f68b3784b1a05806fc1014",
+    "manifest_sha256": "8c926f61c9862615a018e8fa9181331ad91609399eb9470bb17876c43254c548",
+    "pid_method": "p_ + first 24 hex chars of SHA256(canonical JSON {title,text})"
+  },
+  "bge": {
+    "model_path": "/root/autodl-tmp/models/bge-small-en-v1.5",
+    "model_inventory_sha256": "b9b9a7e131d52726b1e05ad370aa89f288bcf3e2b7bbd1758344b367a2b3996e",
+    "model_safetensors_sha256": "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad",
+    "pooling": "last_hidden_state[:,0] (CLS), L2-normalized",
+    "dtype": "float32",
+    "dimension": 384,
+    "max_length": 512,
+    "paragraph_count": 21100,
+    "cache_path": "/root/autodl-tmp/offline_musique_artifacts_20260830/offline_musique_bge_v1.npz",
+    "cache_sha256": "c6e77cadba495117863ca01cf453c446dbc25f09aabb898cd92b3713ae575ca4",
+    "embedding_manifest_sha256": "1e87d396e0810db862b7f00e531d7a1fc6ef0a3f5693050c7497b3fba7b56aca"
+  },
+  "actor_base": {
+    "path": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "config_sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+    "model_index_sha256": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028",
+    "weight_shard_sha256": [
+      "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+      "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+      "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+      "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"
+    ]
+  },
+  "actor_lora": {
+    "path": "/root/autodl-tmp/tmp/game24_actor_diversity_diagnostic_20260829/direct_vllm/qwen-actor-lora",
+    "rank": 8,
+    "alpha": 16,
+    "adapter_config_sha256": "186a9d844b048176ee621b972db9946fe8d546210b02eddb8ce87adaa044d62d",
+    "adapter_weights_sha256": "335dc4eaccc19131c82dc96e7996bf59e6468c453440428467a44a9148f40654"
+  }
+}

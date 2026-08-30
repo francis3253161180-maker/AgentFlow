@@ -1,0 +1,232 @@
+{
+  "audit_config_hash": "b8d5cefb5c76f5a0265d1e22c67f92915f25fb00a1a0497548a976fb54aeec36",
+  "gate_checks": {
+    "actor_queries_vary": true,
+    "all_positive_rewards_grounded": true,
+    "at_least_one_grounded_mixed_group": true,
+    "no_hidden_fixed_or_external_roles": true,
+    "only_two_actor_modes": true,
+    "query_changes_observations": true,
+    "retriever_deterministic": true,
+    "support_selection_changes_reward_path": true
+  },
+  "gate_passed": true,
+  "hypothesis": "actor-generated search/evidence/answer differences, rather than retriever randomness or hidden roles, account for observable support and reward variance",
+  "iteration_id": "phase_e_v1",
+  "metrics": {
+    "actor_transition_modes": [
+      "DECISION",
+      "EVIDENCE_UPDATE"
+    ],
+    "answers_after_full_selected_support": 1,
+    "distinct_first_query_pairs": 133,
+    "distinct_first_query_pairs_with_different_observation": 87,
+    "external_semantic_call_count": 0,
+    "fixed_semantic_role_count": 0,
+    "full_support_retrieved_but_not_fully_selected_trajectories": 10,
+    "identical_qid_query_nondeterminism_violations": 0,
+    "mixed_reward_group_count": 1,
+    "no_useful_then_distinct_still_empty": 112,
+    "no_useful_then_distinct_useful_reformulation": 15,
+    "no_useful_then_repeated_query": 84,
+    "positive_reward_grounding_violations": 0,
+    "premature_answers_without_full_selected_support": 111,
+    "query_effect_rate": 0.6541353383458647,
+    "questions_where_first_query_changed_observation": 20,
+    "questions_with_first_query_variation": 28,
+    "questions_with_support_retrieval_variation": 17,
+    "support_returned_but_missing_from_selection_trajectories": 81,
+    "trajectory_count": 128
+  },
+  "mixed_group_audit": [
+    {
+      "question_id_hash": "dd54ed756311",
+      "rewards": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "rollouts": [
+        {
+          "answer_em": false,
+          "gold_support_count": 2,
+          "queries": [
+            "publisher of The North Star and their spouse"
+          ],
+          "retrieved_support_count": 1,
+          "selected_support_count": 1
+        },
+        {
+          "answer_em": true,
+          "gold_support_count": 2,
+          "queries": [
+            "who married the publisher of abolitionist newspaper The North Star",
+            "publisher of abolitionist newspaper The North Star and spouse",
+            "publisher of abolitionist newspaper The North Star and spouse",
+            "Frederick Douglass spouse"
+          ],
+          "retrieved_support_count": 2,
+          "selected_support_count": 2
+        },
+        {
+          "answer_em": false,
+          "gold_support_count": 2,
+          "queries": [
+            "publisher of abolitionist newspaper The North Star and their spouse",
+            "publisher of The North Star and spouse"
+          ],
+          "retrieved_support_count": 1,
+          "selected_support_count": 1
+        },
+        {
+          "answer_em": false,
+          "gold_support_count": 2,
+          "queries": [
+            "publisher of abolitionist newspaper The North Star and spouse"
+          ],
+          "retrieved_support_count": 1,
+          "selected_support_count": 0
+        }
+      ]
+    }
+  ],
+  "parent_phase_c_iteration": "phase_c_v4",
+  "phase": "E",
+  "phase_c_config_hash": "9ada929d31ba5edb0c688d24721f4594d69234051659096a077d106580cf3b92",
+  "source_trajectory_sha256": "a7dc1c9e386d779829fae4f2dd4724e3b6897e53b7e8eb6b29914cf314c54625",
+  "trajectory_examples": {
+    "answer_timing": [
+      {
+        "full_evidence_before_answer": false,
+        "gold_support_count": 2,
+        "question_id_hash": "94a7910fa61b",
+        "reward": 0,
+        "selected_support_count": 0
+      },
+      {
+        "full_evidence_before_answer": false,
+        "gold_support_count": 2,
+        "question_id_hash": "94a7910fa61b",
+        "reward": 0,
+        "selected_support_count": 0
+      },
+      {
+        "full_evidence_before_answer": false,
+        "gold_support_count": 2,
+        "question_id_hash": "94a7910fa61b",
+        "reward": 0,
+        "selected_support_count": 0
+      },
+      {
+        "full_evidence_before_answer": false,
+        "gold_support_count": 4,
+        "question_id_hash": "9cdcb088b9f1",
+        "reward": 0,
+        "selected_support_count": 0
+      }
+    ],
+    "query_effect": [
+      {
+        "distinct_first_observations": 2,
+        "distinct_first_queries": 2,
+        "queries": [
+          "when was the first governor general of India impeached",
+          "first governor general of india impeachment date",
+          "when was the first governor general of India impeached",
+          "first governor general of india impeachment date"
+        ],
+        "question_id_hash": "94a7910fa61b"
+      },
+      {
+        "distinct_first_observations": 2,
+        "distinct_first_queries": 4,
+        "queries": [
+          "Somali Muslim Ajuran Empire independence expulsion natural boundary Thailand Nam Khan",
+          "Somali Muslim Ajuran Empire independence declaration and expulsion related to Nam Khan location",
+          "Somali Muslim Ajuran Empire independence natural boundary Thailand Nam Khan expulsion",
+          "Somali Muslim Ajuran Empire independence natural boundary Thailand Nam Khan"
+        ],
+        "question_id_hash": "897e9fc8ce30"
+      },
+      {
+        "distinct_first_observations": 3,
+        "distinct_first_queries": 3,
+        "queries": [
+          "location of Veoh's headquarters and top five largest urban areas in the state where The Paramour Sessions performers were formed",
+          "location of Veoh headquarters and top five largest urban areas of state where The Paramour Sessions performers were formed",
+          "Veoh headquarters location and The Paramour Sessions performers formation location and top five urban areas ranking",
+          "location of Veoh's headquarters and top five largest urban areas in the state where The Paramour Sessions performers were formed"
+        ],
+        "question_id_hash": "57b5550d5b41"
+      },
+      {
+        "distinct_first_observations": 2,
+        "distinct_first_queries": 3,
+        "queries": [
+          "pop artist started career on adult contemporary radio with subject of The One That Got Away",
+          "pop artist started career on adult contemporary radio The One That Got Away",
+          "pop artist started career adult contemporary radio subject The One That Got Away",
+          "pop artist started career on adult contemporary radio The One That Got Away"
+        ],
+        "question_id_hash": "14cbbe171d73"
+      }
+    ],
+    "reformulation": [
+      {
+        "after_outcome": "useful",
+        "after_query": "Somali Muslim Ajuran Empire expulsion natural boundary Thailand Laos",
+        "before_query": "Somali Muslim Ajuran Empire expulsion natural boundary Thailand Laos Nam Khan",
+        "question_id_hash": "897e9fc8ce30"
+      },
+      {
+        "after_outcome": "useful",
+        "after_query": "city where You Wenhui was born",
+        "before_query": "city where You Wenhui was born railway lines",
+        "question_id_hash": "fda5318781f7"
+      },
+      {
+        "after_outcome": "useful",
+        "after_query": "longest home run record by team with most games played in MLB history MVP award recipient",
+        "before_query": "record for longest home run by team with most games played in MLB history MVP award recipient",
+        "question_id_hash": "f092da0658cb"
+      },
+      {
+        "after_outcome": "useful",
+        "after_query": "origin of last name Sylvester during era of Charlemagne",
+        "before_query": "language of last name Sylvester during era of Frankish king who formed Holy Roman Empire",
+        "question_id_hash": "aa6b1e1c1b6d"
+      }
+    ],
+    "returned_not_selected": [
+      {
+        "question_id_hash": "94a7910fa61b",
+        "retrieved_support_count": 1,
+        "search_count": 1,
+        "selected_support_count": 0,
+        "termination": "answer"
+      },
+      {
+        "question_id_hash": "94a7910fa61b",
+        "retrieved_support_count": 1,
+        "search_count": 1,
+        "selected_support_count": 0,
+        "termination": "answer"
+      },
+      {
+        "question_id_hash": "897e9fc8ce30",
+        "retrieved_support_count": 2,
+        "search_count": 6,
+        "selected_support_count": 1,
+        "termination": "answer"
+      },
+      {
+        "question_id_hash": "897e9fc8ce30",
+        "retrieved_support_count": 1,
+        "search_count": 6,
+        "selected_support_count": 0,
+        "termination": "answer"
+      }
+    ]
+  }
+}

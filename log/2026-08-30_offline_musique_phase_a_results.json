@@ -1,0 +1,33 @@
+{
+  "phase": "A",
+  "iteration_id": "phase_a_v1",
+  "parent_commit": "02fc10b06d29d70f740819d77409d5ef411fe2da",
+  "gate_passed": true,
+  "checks": {
+    "focused_and_existing_grouping_tests": "23 passed",
+    "new_offline_environment_tests": "14 passed",
+    "py_compile": "passed",
+    "git_diff_check": "passed",
+    "scoped_secret_scan": "0 findings",
+    "json_schema_validation": "passed",
+    "actor_payload_structural_leakage_audit": {
+      "questions_checked": 2417,
+      "forbidden_scorer_keys_found": 0
+    },
+    "gpu_after_embedding_precompute_mib": 2
+  },
+  "required_test_coverage": [
+    "scorer-only labels absent from actor-visible payloads",
+    "DECISION excludes prior raw observations",
+    "outside-observation pid cannot persist",
+    "exact normalized quote provenance pass/fail",
+    "raw top-k discarded before next DECISION",
+    "no-useful history stores no raw distractor",
+    "BM25/dense/RRF repeatability",
+    "cached-vs-fresh BGE ranking equality",
+    "correct answer without full support yields zero",
+    "reward one requires answer EM and full selected support",
+    "offline runtime constructs no external semantic path",
+    "synthetic two-hop trajectory uses both modes"
+  ]
+}
