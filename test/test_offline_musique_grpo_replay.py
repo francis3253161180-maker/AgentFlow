@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from agentflow.verl.trainer import materialize_offline_replay
+from agentflow.verl.trainer import _single_worker_result, materialize_offline_replay, offline_kl_audit
 from agentflow.verl.unified_smoke_capture import _field_digest
 
 
@@ -50,6 +50,31 @@ class OfflineMusiqueGRPOReplayTest(unittest.TestCase):
         self.assertEqual(before, after)
         self.assertIsNone(pack["meta_info"]["multi_turn"])
         self.assertFalse(replay.meta_info["multi_turn"])
+
+    def test_single_worker_result_accepts_ray_singleton_and_rejects_ambiguous(self):
+        self.assertEqual(_single_worker_result([{"lora_hash": "h"}], operation="test")["lora_hash"], "h")
+        with self.assertRaisesRegex(ValueError, "exactly one"):
+            _single_worker_result([{}, {}], operation="test")
+
+    def test_kl_audit_proves_zero_task_and_nonzero_kl_gradient(self):
+        from verl import DataProto
+
+        replay = DataProto.from_dict(
+            tensors={
+                "response_mask": torch.tensor([[1, 1, 0]], dtype=torch.long),
+                "advantages": torch.zeros((1, 3), dtype=torch.float32),
+            }
+        )
+        result = offline_kl_audit(
+            replay,
+            current_log_probs=torch.tensor([[-1.0, -2.0, 0.0]]),
+            ref_log_probs=torch.tensor([[-1.2, -1.8, 0.0]]),
+            kl_loss_type="low_var_kl",
+            kl_loss_coef=0.001,
+        )
+        self.assertTrue(result["task_advantage"]["all_zero"])
+        self.assertGreater(result["masked_kl"]["mean"], 0.0)
+        self.assertGreater(result["full_objective_logprob_gradient"]["kl_component_abs_mean"], 0.0)
 
 
 if __name__ == "__main__":

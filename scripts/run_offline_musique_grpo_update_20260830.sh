@@ -16,6 +16,7 @@ LOG="$ROOT/grpo_update.log"
 GPU_LOG="$ROOT/grpo_update_gpu.csv"
 CHECKSUM="$ROOT/grpo_update_lora_checksum.json"
 POST_SNAPSHOT="$ROOT/grpo_post_lora_snapshot.pt"
+KL_AUDIT="$ROOT/grpo_kl_audit.json"
 EXP=offline-musique-terminal-grpo-n8-20260830
 
 for required in "$MODEL" "$ADAPTER" "$PACK" "$SNAPSHOT" "$DATA"; do
@@ -54,6 +55,7 @@ export AGENTFLOW_LORA_CHECKSUM_ENABLED=1
 export AGENTFLOW_LORA_CHECKSUM_PATH="$CHECKSUM"
 export AGENTFLOW_LORA_POST_SNAPSHOT_PATH="$POST_SNAPSHOT"
 export AGENTFLOW_REPLAY_CAPTURE_ENABLED=0
+export AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT_PATH="$KL_AUDIT"
 export AGENTFLOW_VLLM_CLEANUP_DRAIN_TIMEOUT_SECONDS=30
 export AGENTFLOW_VLLM_CLEANUP_DRAIN_POLL_SECONDS=0.05
 
@@ -90,7 +92,8 @@ PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config train/config_5090_lora_sm
   actor_rollout_ref.actor.ppo_epochs=1 actor_rollout_ref.actor.ppo_mini_batch_size=6007 \
   actor_rollout_ref.actor.use_dynamic_bsz=true actor_rollout_ref.actor.ppo_max_token_len_per_gpu=16384 \
   actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 \
-  actor_rollout_ref.actor.use_kl_loss=false actor_rollout_ref.actor.entropy_coeff=0.0 \
+  actor_rollout_ref.actor.use_kl_loss=true actor_rollout_ref.actor.kl_loss_coef=0.001 \
+  actor_rollout_ref.actor.kl_loss_type=low_var_kl actor_rollout_ref.actor.entropy_coeff=0.0 \
   actor_rollout_ref.rollout.n=8 actor_rollout_ref.rollout.temperature=0.7 \
   actor_rollout_ref.rollout.gpu_memory_utilization=0.50 \
   actor_rollout_ref.rollout.max_model_len=2048 actor_rollout_ref.rollout.max_num_seqs=1 \
@@ -99,10 +102,16 @@ PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config train/config_5090_lora_sm
   actor_rollout_ref.actor.fsdp_config.offload_policy=true \
   >>"$LOG" 2>&1
 
-grep -q 'AGENTFLOW_OFFLINE_REPLAY_UPDATE' "$LOG"
-grep -q 'AGENTFLOW_OFFLINE_REPLAY_METRICS' "$LOG"
 grep -q 'Training finished at step' "$LOG"
-grep -q 'UNIFIED_LORA_CHECKSUM stage=post' "$LOG"
-test -s "$CHECKSUM"
-test -s "$POST_SNAPSHOT"
-echo 'AGENTFLOW_MUSIQUE_GRPO_STATUS=completed' | tee -a "$LOG"
+test -s "$KL_AUDIT"
+if [[ "${AGENTFLOW_OFFLINE_REPLAY_AUDIT_ONLY:-0}" == "1" ]]; then
+  grep -q 'AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT' "$LOG"
+  echo 'AGENTFLOW_MUSIQUE_GRPO_STATUS=kl_audit_completed' | tee -a "$LOG"
+else
+  grep -q 'AGENTFLOW_OFFLINE_REPLAY_UPDATE' "$LOG"
+  grep -q 'AGENTFLOW_OFFLINE_REPLAY_METRICS' "$LOG"
+  grep -q 'UNIFIED_LORA_CHECKSUM stage=post' "$LOG"
+  test -s "$CHECKSUM"
+  test -s "$POST_SNAPSHOT"
+  echo 'AGENTFLOW_MUSIQUE_GRPO_STATUS=completed' | tee -a "$LOG"
+fi

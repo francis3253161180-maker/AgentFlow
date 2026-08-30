@@ -31,6 +31,7 @@ from verl.utils.tracking import Tracking
 from .daemon import AgentModeDaemon
 from .advantage import compute_rollout_group_advantage
 from .unified_smoke_capture import (
+    _write_json_atomic,
     validate_replay_pack_for_update,
     write_replay_pack_from_dataproto,
 )
@@ -67,6 +68,89 @@ def materialize_offline_replay(pack: dict, *, multi_turn: bool) -> DataProto:
         )
     replay.meta_info["multi_turn"] = multi_turn
     return replay
+
+
+def _single_worker_result(value, *, operation: str) -> dict:
+    """Normalize one-worker Ray replies without accepting ambiguous identity."""
+    if isinstance(value, (list, tuple)):
+        if len(value) != 1:
+            raise ValueError(f"{operation} expected exactly one worker result, got {len(value)}")
+        value = value[0]
+    if not isinstance(value, dict):
+        raise ValueError(f"{operation} returned {type(value)!r}, not a mapping")
+    return value
+
+
+def offline_kl_audit(
+    replay: DataProto,
+    *,
+    current_log_probs: torch.Tensor,
+    ref_log_probs: torch.Tensor,
+    kl_loss_type: str,
+    kl_loss_coef: float,
+) -> dict:
+    """Summarize the official masked KL objective without an optimizer step."""
+    response_mask = replay.batch["response_mask"].bool()
+    advantages = replay.batch["advantages"].float()
+    if not bool(torch.isfinite(current_log_probs).all().item()):
+        raise ValueError("non-finite current actor log probabilities in KL audit")
+    if not bool(torch.isfinite(ref_log_probs).all().item()):
+        raise ValueError("non-finite reference log probabilities in KL audit")
+    if not bool(torch.isfinite(advantages).all().item()):
+        raise ValueError("non-finite task advantages in KL audit")
+    if int(response_mask.sum().item()) < 1:
+        raise ValueError("empty response mask in KL audit")
+
+    from verl.trainer.ppo.core_algos import kl_penalty
+
+    current = current_log_probs.float()[response_mask]
+    reference = ref_log_probs.float()[response_mask]
+    task_advantage = advantages[response_mask]
+    kld = kl_penalty(current, reference, kl_loss_type)
+    if not bool(torch.isfinite(kld).all().item()):
+        raise ValueError("non-finite KL values in KL audit")
+    # d low_var_kl/d logp = 1 - exp(ref_logp - logp), except at the
+    # explicit clamp boundaries.  This is the complete initial objective
+    # derivative with respect to logp when task advantage is identically zero.
+    if kl_loss_type not in {"low_var_kl", "k3"}:
+        raise ValueError(f"offline KL audit only supports official low_var_kl, got {kl_loss_type!r}")
+    raw = torch.clamp(reference - current, min=-20, max=20)
+    unclamped_kld = torch.exp(raw) - raw - 1
+    derivative = torch.where(
+        (unclamped_kld >= -10) & (unclamped_kld <= 10),
+        1 - torch.exp(raw),
+        torch.zeros_like(raw),
+    )
+    return {
+        "schema_version": 1,
+        "reference_policy": "same actor with LoRA adapter disabled (VERL FSDP LoRA ref_in_actor)",
+        "kl_loss_type": kl_loss_type,
+        "kl_loss_coef_beta": float(kl_loss_coef),
+        "entropy_coefficient": 0.0,
+        "response_masked_token_count": int(response_mask.sum().item()),
+        "task_advantage": {
+            "abs_max": float(task_advantage.abs().max().item()),
+            "nonzero_token_count": int((task_advantage != 0).sum().item()),
+            "all_zero": bool(torch.all(task_advantage == 0).item()),
+        },
+        "actor_minus_ref_logprob": {
+            "mean": float((current - reference).mean().item()),
+            "abs_mean": float((current - reference).abs().mean().item()),
+            "abs_max": float((current - reference).abs().max().item()),
+        },
+        "masked_kl": {
+            "mean": float(kld.mean().item()),
+            "abs_mean": float(kld.abs().mean().item()),
+            "abs_max": float(kld.abs().max().item()),
+            "nonzero_token_count": int((kld != 0).sum().item()),
+        },
+        "full_objective_logprob_gradient": {
+            "task_component_abs_max": 0.0,
+            "kl_component_abs_mean": float((float(kl_loss_coef) * derivative).abs().mean().item()),
+            "kl_component_abs_max": float((float(kl_loss_coef) * derivative).abs().max().item()),
+            "nonzero_token_count": int((derivative != 0).sum().item()),
+        },
+    }
 
 
 class AgentFlowTrainer(RayPPOTrainer):
@@ -299,8 +383,8 @@ class AgentFlowTrainer(RayPPOTrainer):
             verify = getattr(self.actor_rollout_wg, "restore_agentflow_behavior_snapshot", None)
             if not callable(verify):
                 raise ValueError("actor worker cannot verify behavior snapshot")
-            verified = verify()
-            current_lora_hash = verified.get("lora_hash") if isinstance(verified, dict) else None
+            verified = _single_worker_result(verify(), operation="behavior snapshot verification")
+            current_lora_hash = verified.get("lora_hash")
             validate_replay_pack_for_update(
                 pack,
                 expected_model_path=self.config.actor_rollout_ref.model.path,
@@ -313,6 +397,42 @@ class AgentFlowTrainer(RayPPOTrainer):
                 pack,
                 multi_turn=self.config.actor_rollout_ref.rollout.multi_turn.enable,
             )
+            if self.config.actor_rollout_ref.actor.use_kl_loss:
+                # Follow the official GRPO path: pi_ref is the same LoRA actor
+                # with its adapter disabled, and both values are defined only
+                # on response-mask tokens.  The immutable pack keeps rollout
+                # old_log_probs for PPO; fresh values are audit evidence only.
+                current = self.actor_rollout_wg.compute_log_prob(replay)
+                reference = self.actor_rollout_wg.compute_ref_log_prob(replay)
+                current_log_probs = current.batch["old_log_probs"]
+                ref_log_probs = reference.batch["ref_log_prob"]
+                kl_audit = offline_kl_audit(
+                    replay,
+                    current_log_probs=current_log_probs,
+                    ref_log_probs=ref_log_probs,
+                    kl_loss_type=str(self.config.actor_rollout_ref.actor.kl_loss_type),
+                    kl_loss_coef=float(self.config.actor_rollout_ref.actor.kl_loss_coef),
+                )
+                kl_audit.update(
+                    {
+                        "mode": "offline_replay_pre_update",
+                        "pack_path": offline_pack_path,
+                        "behavior_lora_hash": str(current_lora_hash),
+                    }
+                )
+                audit_path = os.environ.get("AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT_PATH", "").strip()
+                if audit_path:
+                    _write_json_atomic(Path(audit_path), kl_audit)
+                print(f"AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT {json.dumps(kl_audit, sort_keys=True)}", flush=True)
+                replay = replay.union(reference)
+                if os.environ.get("AGENTFLOW_OFFLINE_REPLAY_AUDIT_ONLY", "0") == "1":
+                    return {
+                        "offline_replay/audit_only": 1,
+                        "offline_replay/rollout_requests": 0,
+                        "offline_replay/external_calls": 0,
+                        "offline_replay/kl_mean": kl_audit["masked_kl"]["mean"],
+                        "offline_replay/kl_grad_abs_mean": kl_audit["full_objective_logprob_gradient"]["kl_component_abs_mean"],
+                    }
             expected_hash = metadata.get("lora_pre_hash")
             print(
                 "AGENTFLOW_OFFLINE_REPLAY_UPDATE "
