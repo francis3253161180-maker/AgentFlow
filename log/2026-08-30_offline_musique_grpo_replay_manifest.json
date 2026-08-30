@@ -1,0 +1,84 @@
+{
+  "advantage": {
+    "broadcast_to_all_response_tokens_verified": true,
+    "count": 183137,
+    "max": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "nonzero_token_count": 0,
+    "std": 0.0
+  },
+  "artifacts": {
+    "adapter_tensors_equal_behavior_snapshot": true,
+    "adapter_weights_sha256": "335dc4eaccc19131c82dc96e7996bf59e6468c453440428467a44a9148f40654",
+    "behavior_lora_hash": "c841011c9800784d97d381e0c5781b299c4d679aa7f8e824ad4773bc61bf8b38",
+    "behavior_snapshot_path": "/root/autodl-tmp/tmp/gameof24_planner_temp0_causal_sanity_20260829/gameof24-planner-temp0-causal-sanity-20260829_20260829_135323_behavior_snapshot.pt",
+    "behavior_snapshot_sha256": "654d8a7698ef70a27d9dff15a93c55979acfa3a2532c4fb8d68f0d9ebfaebcc8",
+    "field_digest": "9c26f5f2949dbf74d475faacf6cd08fa72440b43750834542539c68912171c80",
+    "replay_pack_path": "/root/autodl-tmp/offline_musique_grpo_20260830/train_replay_pack.pt",
+    "replay_pack_sha256": "ca51988e1036fce293b5d4ad2f568d772745c97c6e18aed9b74962cf08a73677",
+    "source_raw_path": "/root/autodl-tmp/offline_musique_grpo_20260830/train_trajectories.json",
+    "source_raw_sha256": "6e8e73d8a75fe742044c70a1d07d0dbadffa3526731ca87794a06057219a505c",
+    "transition_audit_path": "/root/autodl-tmp/AgentFlow-offline-musique/log/2026-08-30_offline_musique_grpo_train_rollout_results.json",
+    "transition_audit_sha256": "3f1b425116e518d1109206c5a211a7c51f66de94b0bbf7235a096f0a2b8086a6"
+  },
+  "effective_group_rate": 0.0,
+  "effective_mixed_group_count": 0,
+  "experiment": "offline_musique_terminal_only_grpo_replay",
+  "group_histogram": {
+    "0/8": 128,
+    "1/8": 0,
+    "2/8": 0,
+    "3/8": 0,
+    "4/8": 0,
+    "5/8": 0,
+    "6/8": 0,
+    "7/8": 0,
+    "8/8": 0
+  },
+  "grouping_checks": {
+    "all_groups_preserved_without_resampling": true,
+    "all_transitions_preserved_without_drop": true,
+    "exactly_128_qids": true,
+    "exactly_8_rollouts_per_qid": true
+  },
+  "question_count": 128,
+  "response": {
+    "max_selected_vs_cumulative_logprob_delta": 0.0,
+    "mode_response_token_counts": {
+      "DECISION": 88382,
+      "EVIDENCE_UPDATE": 94755
+    },
+    "mode_transition_counts": {
+      "DECISION": 3461,
+      "EVIDENCE_UPDATE": 2546
+    },
+    "old_logprob_min_max_mean": [
+      -9.127867698669434,
+      0.0,
+      -0.10348397493362427
+    ],
+    "prompt_length_min_max_mean": [
+      224,
+      1455,
+      501.36906941901117
+    ],
+    "prompt_width": 1536,
+    "response_length_min_max_mean": [
+      6,
+      256,
+      30.487264857666055
+    ],
+    "response_mask_matches_recorded_lengths": true,
+    "response_token_count": 183137,
+    "response_width": 256
+  },
+  "rollout_count": 1024,
+  "rollout_n": 8,
+  "schema_version": 1,
+  "training_weight": {
+    "F1_F2_delta_diagnostics": 0,
+    "outcome_v2_exact_set": 1
+  },
+  "transition_count": 6007
+}

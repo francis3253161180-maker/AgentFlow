@@ -102,6 +102,18 @@ def _lora_hash(module: torch.nn.Module) -> dict[str, Any]:
     }
 
 
+def _lora_state(module: torch.nn.Module) -> dict[str, torch.Tensor]:
+    """Materialize the trainable LoRA tensors as an auditable CPU state."""
+    state: dict[str, torch.Tensor] = {}
+    for name, parameter in sorted(module.named_parameters(), key=lambda item: item[0]):
+        if parameter.requires_grad and "lora_" in name.lower():
+            _, tensor = _tensor_bytes(parameter)
+            state[name] = tensor.clone()
+    if not state:
+        raise RuntimeError("LoRA state capture found no trainable LoRA tensors")
+    return state
+
+
 def _write_json_atomic(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=str(path.parent))
@@ -144,13 +156,7 @@ def capture_behavior_snapshot(module: torch.nn.Module) -> dict[str, Any]:
     if not output:
         return {"status": "disabled"}
 
-    state: dict[str, torch.Tensor] = {}
-    for name, parameter in sorted(module.named_parameters(), key=lambda item: item[0]):
-        if parameter.requires_grad and "lora_" in name.lower():
-            _, tensor = _tensor_bytes(parameter)
-            state[name] = tensor.clone()
-    if not state:
-        raise RuntimeError("behavior snapshot found no trainable LoRA tensors")
+    state = _lora_state(module)
 
     tensor_descriptors = []
     digest = hashlib.sha256()
@@ -385,21 +391,19 @@ def capture_lora_post(module: torch.nn.Module, grad_norm: float) -> None:
     global _POST_HASH
     if not _enabled("AGENTFLOW_LORA_CHECKSUM_ENABLED") or _POST_HASH is not None:
         return
-    if not float(grad_norm) > 0.0:
-        return
+    numeric_grad_norm = float(grad_norm)
+    if not np.isfinite(numeric_grad_norm):
+        raise RuntimeError(f"non-finite actor gradient norm: {numeric_grad_norm}")
     _POST_HASH = _lora_hash(module)
     print(
         f"UNIFIED_LORA_CHECKSUM stage=post hash={_POST_HASH['hash']} tensors={_POST_HASH['tensor_count']} ",
         flush=True,
     )
-    output = os.getenv("AGENTFLOW_LORA_CHECKSUM_PATH", "").strip()
-    if not output:
-        return
     payload = {
         "status": "post_captured",
         "pre": _PRE_HASH,
         "post": _POST_HASH,
-        "grad_norm": float(grad_norm),
+        "grad_norm": numeric_grad_norm,
         "hash_changed": bool(_PRE_HASH and _PRE_HASH["hash"] != _POST_HASH["hash"]),
         "changed_tensor_count": sum(
             before["sha256"] != after["sha256"]
@@ -408,7 +412,25 @@ def capture_lora_post(module: torch.nn.Module, grad_norm: float) -> None:
         if _PRE_HASH and len(_PRE_HASH["tensors"]) == len(_POST_HASH["tensors"])
         else None,
     }
-    _write_json_atomic(Path(output), payload)
+    output = os.getenv("AGENTFLOW_LORA_CHECKSUM_PATH", "").strip()
+    if output:
+        _write_json_atomic(Path(output), payload)
+
+    snapshot_output = os.getenv("AGENTFLOW_LORA_POST_SNAPSHOT_PATH", "").strip()
+    if snapshot_output:
+        snapshot = {
+            "schema_version": 1,
+            "kind": "agentflow_post_optimizer_lora_snapshot",
+            "lora_state": _lora_state(module),
+            "lora_hash": _POST_HASH["hash"],
+            "tensor_descriptors": _POST_HASH["tensors"],
+            "grad_norm": numeric_grad_norm,
+        }
+        path = Path(snapshot_output)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_name(f".{path.name}.tmp")
+        torch.save(snapshot, temporary)
+        os.replace(temporary, path)
 
 
 def _batch_fields(data: Any) -> dict[str, Any]:

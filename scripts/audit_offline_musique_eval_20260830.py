@@ -32,7 +32,7 @@ def gpu_memory_mib() -> int | None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=("PRE", "POST"), required=True)
+    parser.add_argument("--stage", choices=("PRE", "TRAIN_ROLLOUT", "POST"), required=True)
     parser.add_argument("--corpus", type=Path, required=True)
     parser.add_argument("--detail", type=Path, required=True)
     parser.add_argument("--runner-summary", type=Path, required=True)

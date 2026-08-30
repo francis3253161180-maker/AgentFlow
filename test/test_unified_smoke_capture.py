@@ -81,6 +81,42 @@ class UnifiedSmokeCaptureTest(unittest.TestCase):
             self.assertIn("input_ids", loaded["field_inventory"]["tensor_fields"])
             self.assertEqual(loaded["metadata"]["model_path"], "local-model")
 
+    def test_zero_gradient_still_captures_exact_post_state(self):
+        module = nn.Module()
+        module.lora_A = nn.Linear(2, 2, bias=False)
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            checksum = directory / "checksum.json"
+            snapshot = directory / "post.pt"
+            with patch.dict(
+                os.environ,
+                {
+                    "AGENTFLOW_LORA_CHECKSUM_ENABLED": "1",
+                    "AGENTFLOW_LORA_CHECKSUM_PATH": str(checksum),
+                    "AGENTFLOW_LORA_POST_SNAPSHOT_PATH": str(snapshot),
+                },
+                clear=False,
+            ):
+                capture.capture_lora_pre(module)
+                capture.capture_lora_post(module, 0.0)
+
+            result = json.loads(checksum.read_text())
+            self.assertEqual(result["grad_norm"], 0.0)
+            self.assertFalse(result["hash_changed"])
+            self.assertEqual(result["changed_tensor_count"], 0)
+            saved = torch.load(snapshot, map_location="cpu", weights_only=False)
+            self.assertEqual(saved["kind"], "agentflow_post_optimizer_lora_snapshot")
+            self.assertEqual(saved["lora_hash"], result["post"]["hash"])
+            self.assertEqual(set(saved["lora_state"]), {"lora_A.weight"})
+
+    def test_nonfinite_gradient_fails_closed(self):
+        module = nn.Module()
+        module.lora_A = nn.Linear(2, 2, bias=False)
+        with patch.dict(os.environ, {"AGENTFLOW_LORA_CHECKSUM_ENABLED": "1"}, clear=False):
+            capture.capture_lora_pre(module)
+            with self.assertRaisesRegex(RuntimeError, "non-finite actor gradient norm"):
+                capture.capture_lora_post(module, float("nan"))
+
     @unittest.skipUnless(
         Path(
             os.getenv(
