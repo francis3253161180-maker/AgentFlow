@@ -6,7 +6,7 @@ set -euo pipefail
 REPO=/root/autodl-tmp/AgentFlow-offline-musique
 PY=/root/autodl-tmp/conda/envs/agentflow/bin/python
 MODEL=/root/autodl-tmp/models/Qwen2.5-7B-Instruct
-ADAPTER=/root/autodl-tmp/multihop_unified_qwen_fixed_roles_20260829/game24_qwen_phase_c_v4_20260830_135323_adapter
+ADAPTER=/root/autodl-tmp/tmp/game24_actor_diversity_diagnostic_20260829/direct_vllm/qwen-actor-lora
 ROOT=/root/autodl-tmp/offline_musique_grpo_20260830
 PACK="$ROOT/train_replay_pack.pt"
 SNAPSHOT=/root/autodl-tmp/multihop_unified_qwen_fixed_roles_20260829/game24_qwen_phase_c_v4_20260830_135323_behavior_snapshot.pt
