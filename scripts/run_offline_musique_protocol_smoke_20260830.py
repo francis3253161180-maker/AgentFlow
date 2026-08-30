@@ -75,6 +75,30 @@ def stratified_subset(corpus: OfflineCorpus, size: int, seed: int) -> list[str]:
     return selected
 
 
+def resolve_qids(
+    corpus: OfflineCorpus,
+    size: int,
+    seed: int,
+    qid_file: Path | None = None,
+    qid_key: str | None = None,
+) -> list[str]:
+    if qid_file is None:
+        return stratified_subset(corpus, size, seed)
+    payload = json.loads(qid_file.read_text(encoding="utf-8"))
+    if qid_key:
+        payload = payload[qid_key]
+    if isinstance(payload, dict):
+        payload = payload["qids"]
+    if not isinstance(payload, list) or not all(isinstance(qid, str) for qid in payload):
+        raise ValueError("frozen qid payload must resolve to a list of strings")
+    if len(payload) != size or len(set(payload)) != size:
+        raise ValueError(f"frozen qid list must contain exactly {size} unique qids")
+    missing = sorted(set(payload) - set(corpus.questions))
+    if missing:
+        raise ValueError(f"frozen qids absent from corpus: {missing[:3]}")
+    return list(payload)
+
+
 def percentile(values: list[float], quantile: float) -> float:
     if not values:
         return 0.0
@@ -176,8 +200,12 @@ def finish(trajectory: Trajectory, corpus: OfflineCorpus, reason: str, answer: s
             "reward": 0,
             "answer_em": False,
             "full_selected_support_coverage": False,
+            "exact_selected_support_set": False,
             "selected_support_count": len(trajectory.selected_pids & corpus.scorer_record(trajectory.qid).support_pids),
+            "selected_distractor_count": len(trajectory.selected_pids - corpus.scorer_record(trajectory.qid).support_pids),
+            "selected_total_count": len(trajectory.selected_pids),
             "gold_support_count": len(corpus.scorer_record(trajectory.qid).support_pids),
+            "reward_version": "outcome_v2_exact_set",
         }
 
 
@@ -191,6 +219,19 @@ def generate_batch(llm: Any, prompts: list[list[int]], params: Any, request: Any
     metadata = []
     for output in outputs:
         generated = output.outputs[0]
+        response_token_ids = [int(token_id) for token_id in generated.token_ids]
+        logprob_rows = generated.logprobs
+        if logprob_rows is None or len(logprob_rows) != len(response_token_ids):
+            raise RuntimeError("vLLM did not return one logprob row per selected response token")
+        response_token_logprobs = []
+        for token_id, candidates in zip(response_token_ids, logprob_rows):
+            selected = candidates.get(token_id)
+            if selected is None:
+                raise RuntimeError(f"selected token {token_id} absent from vLLM logprob row")
+            value = float(selected.logprob)
+            if not math.isfinite(value):
+                raise RuntimeError("non-finite selected-token old logprob")
+            response_token_logprobs.append(value)
         texts.append(generated.text or "")
         metadata.append(
             {
@@ -200,6 +241,14 @@ def generate_batch(llm: Any, prompts: list[list[int]], params: Any, request: Any
                 "finish_reason": generated.finish_reason,
                 "batch_size": len(prompts),
                 "batch_wall_seconds": batch_wall,
+                "response_token_ids": response_token_ids,
+                "response_token_logprobs": response_token_logprobs,
+                "selected_logprob_sum": sum(response_token_logprobs),
+                "selected_vs_cumulative_logprob_delta": (
+                    sum(response_token_logprobs) - float(generated.cumulative_logprob)
+                    if generated.cumulative_logprob is not None
+                    else None
+                ),
             }
         )
     return texts, metadata
@@ -220,6 +269,11 @@ def summarize(corpus: OfflineCorpus, trajectories: list[Trajectory], wall_second
     proposed = sum(t.proposed_selections for t in trajectories)
     invalid = sum(
         reason["reason"] in {"pid_not_in_current_observation", "quote_not_exact_normalized_substring"}
+        for t in trajectories
+        for reason in t.rejected_selections
+    )
+    duplicate_selections = sum(
+        reason["reason"] == "duplicate_evidence"
         for t in trajectories
         for reason in t.rejected_selections
     )
@@ -268,6 +322,8 @@ def summarize(corpus: OfflineCorpus, trajectories: list[Trajectory], wall_second
         "invalid_quote_or_pid_count": invalid,
         "proposed_selection_count": proposed,
         "invalid_quote_or_pid_rate": invalid / max(proposed, 1),
+        "duplicate_selection_count": duplicate_selections,
+        "duplicate_selection_rate": duplicate_selections / max(proposed, 1),
         "average_selected_evidence_count_per_trajectory": selected_count / len(trajectories),
         "average_selected_evidence_count_per_evidence_transition": selected_count / max(len(by_mode["EVIDENCE_UPDATE"]), 1),
         "gold_support_retrieval_recall": sum(support_retrieval) / len(support_retrieval),
@@ -317,6 +373,8 @@ def main() -> int:
     parser.add_argument("--hypothesis", default="the strict two-mode Qwen+LoRA protocol produces valid diverse trajectories and a nondegenerate grounded binary reward distribution")
     parser.add_argument("--changed-variable", action="append", default=[])
     parser.add_argument("--before-results", type=Path)
+    parser.add_argument("--qid-file", type=Path)
+    parser.add_argument("--qid-key")
     args = parser.parse_args()
 
     os.environ.update(
@@ -350,7 +408,7 @@ def main() -> int:
     args.gpu_log.parent.mkdir(parents=True, exist_ok=True)
 
     corpus = OfflineCorpus.load(args.corpus)
-    qids = stratified_subset(corpus, args.subset_size, args.seed)
+    qids = resolve_qids(corpus, args.subset_size, args.seed, args.qid_file, args.qid_key)
     # Query encoding is explicitly CPU-only even while vLLM holds the GPU.
     query_encoder = BGEEncoder(args.bge_model, device="cpu")
     retriever = LocalCorpusSearch(corpus, args.embeddings, query_encoder, top_k=2, rrf_k=60)
@@ -627,6 +685,7 @@ def main() -> int:
         "gpu_memory_utilization": args.gpu_memory_utilization,
         "external_network_or_llm_calls": 0,
         "fixed_semantic_roles": 0,
+        "terminal_reward": "outcome_v2_exact_set: answer EM and unique validated selected pid set exactly equals gold support pid set",
         "generation_constraint": "off because vLLM 0.9.2 V1 xgrammar rejects its cached tokenizer wrapper; outputs still undergo strict Pydantic JSON validation with no repair",
         "evidence_generation_stop": {
             "sequence": "]}",
@@ -638,6 +697,12 @@ def main() -> int:
             "evidence_system_sha256": hashlib.sha256(EVIDENCE_SYSTEM.encode()).hexdigest(),
             "decision_schema_sha256": stable_json_hash(DECISION_ADAPTER.json_schema()),
             "evidence_schema_sha256": stable_json_hash(EvidenceUpdate.model_json_schema()),
+        },
+        "frozen_qids": {
+            "path": str(args.qid_file.resolve()) if args.qid_file else None,
+            "key": args.qid_key,
+            "file_sha256": sha256_file(args.qid_file) if args.qid_file else None,
+            "ordered_qids_sha256": stable_json_hash(qids),
         },
     }
     gate_checks = {

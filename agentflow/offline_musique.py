@@ -530,20 +530,48 @@ def evidence_prompt(
     return EVIDENCE_SYSTEM + "\nCurrent input:\n" + json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
 
-def terminal_reward(corpus: OfflineCorpus, qid: str, answer: str, selected_pids: Iterable[str]) -> dict[str, Any]:
+def _terminal_reward_detail(
+    corpus: OfflineCorpus,
+    qid: str,
+    answer: str,
+    selected_pids: Iterable[str],
+    *,
+    require_exact_support_set: bool,
+) -> dict[str, Any]:
     scorer = corpus.scorer_record(qid)
     normalized = normalize_answer(answer)
     answer_em = any(normalized == normalize_answer(alias) for alias in scorer.answers)
     selected = set(selected_pids)
     full_support = scorer.support_pids.issubset(selected)
-    reward = int(answer_em and full_support)
+    exact_support = selected == set(scorer.support_pids)
+    reward = int(answer_em and (exact_support if require_exact_support_set else full_support))
     return {
         "reward": reward,
         "answer_em": answer_em,
         "full_selected_support_coverage": full_support,
+        "exact_selected_support_set": exact_support,
         "selected_support_count": len(selected & scorer.support_pids),
+        "selected_distractor_count": len(selected - scorer.support_pids),
+        "selected_total_count": len(selected),
         "gold_support_count": len(scorer.support_pids),
+        "reward_version": "outcome_v2_exact_set" if require_exact_support_set else "outcome_v1_coverage",
     }
+
+
+def terminal_reward_coverage_v1(
+    corpus: OfflineCorpus, qid: str, answer: str, selected_pids: Iterable[str]
+) -> dict[str, Any]:
+    """Historical reward used through the completed n=8 diagnostic."""
+    return _terminal_reward_detail(
+        corpus, qid, answer, selected_pids, require_exact_support_set=False
+    )
+
+
+def terminal_reward(corpus: OfflineCorpus, qid: str, answer: str, selected_pids: Iterable[str]) -> dict[str, Any]:
+    """Grounded outcome v2: answer EM and exact unique selected support set."""
+    return _terminal_reward_detail(
+        corpus, qid, answer, selected_pids, require_exact_support_set=True
+    )
 
 
 def transition_record(

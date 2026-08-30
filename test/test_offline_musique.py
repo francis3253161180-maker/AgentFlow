@@ -23,6 +23,7 @@ from agentflow.offline_musique import (
     parse_decision,
     parse_evidence_update,
     terminal_reward,
+    terminal_reward_coverage_v1,
 )
 
 
@@ -185,6 +186,28 @@ class OfflineMusiquePhaseATest(unittest.TestCase):
     def test_reward_one_only_for_answer_and_full_selected_support(self):
         corpus, pids = tiny_corpus()
         self.assertEqual(terminal_reward(corpus, "q1", "amber", pids[:2])["reward"], 1)
+        self.assertEqual(terminal_reward(corpus, "q1", "blue", pids[:2])["reward"], 0)
+
+    def test_exact_set_reward_rejects_missing_support(self):
+        corpus, pids = tiny_corpus()
+        self.assertEqual(terminal_reward(corpus, "q1", "amber", [pids[0]])["reward"], 0)
+
+    def test_exact_set_reward_rejects_all_support_plus_distractor(self):
+        corpus, pids = tiny_corpus()
+        result = terminal_reward(corpus, "q1", "amber", pids)
+        self.assertTrue(result["full_selected_support_coverage"])
+        self.assertFalse(result["exact_selected_support_set"])
+        self.assertEqual(result["reward"], 0)
+        self.assertEqual(terminal_reward_coverage_v1(corpus, "q1", "amber", pids)["reward"], 1)
+
+    def test_exact_set_reward_accepts_exact_gold_and_correct_answer(self):
+        corpus, pids = tiny_corpus()
+        result = terminal_reward(corpus, "q1", "amber", pids[:2])
+        self.assertTrue(result["exact_selected_support_set"])
+        self.assertEqual(result["reward"], 1)
+
+    def test_exact_set_reward_rejects_exact_gold_and_wrong_answer(self):
+        corpus, pids = tiny_corpus()
         self.assertEqual(terminal_reward(corpus, "q1", "blue", pids[:2])["reward"], 0)
 
     def test_offline_runtime_constructs_no_external_llm_or_network_path(self):

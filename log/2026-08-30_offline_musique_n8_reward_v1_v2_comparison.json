@@ -1,0 +1,1013 @@
+{
+  "changed_trajectories": [],
+  "changed_trajectory_count": 0,
+  "conclusion": "exact-set v2 is the frozen terminal reward for PRE, train, and POST",
+  "corpus_path": "/root/autodl-tmp/offline_musique_artifacts_20260830/offline_musique_corpus_v1.json",
+  "corpus_sha256": "9f6b7fc8e6c3180ae4d2c11e86c76fdc00c39847d0f68b3784b1a05806fc1014",
+  "coverage_v1": {
+    "histogram": {
+      "0/8": 30,
+      "1/8": 1,
+      "2/8": 0,
+      "3/8": 1,
+      "4/8": 0,
+      "5/8": 0,
+      "6/8": 0,
+      "7/8": 0,
+      "8/8": 0
+    },
+    "mixed_group_count": 2,
+    "mixed_group_rate": 0.0625,
+    "per_qid": [
+      {
+        "population_variance": 0,
+        "qid": "2hop__75714_21969",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__58323_375563_161848_67585",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__270458_88460_30152_20999",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__56851_343058",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__668721_132409_371500_35031",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__56806_7298",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__145427_106426_157788",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__337705_132457_47686",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__88342_75218_128008_86588",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop2__90098_60649_10557",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__129499_85379",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__443274_17130_70784_79935",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__640171_228453_86925",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__41865_55331_34700",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0.234375,
+        "qid": "2hop__57638_615257",
+        "reward_vector": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "success_count": 3
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__32254_84601",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__601548_836463_161616_77103",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__387712_132409_223216_35031",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__507722_124896",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__152056_698586_1926_54362",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__389955_132457_47686",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop2__71753_623626_70784_61381",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__426806_42197_18397",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__726391_153080_33952_34053",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__604991_339990_15538",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__123190_519940_18967",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__532383_768138",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0.109375,
+        "qid": "2hop__50910_177869",
+        "reward_vector": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 1
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__3739_13529",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__53690_161697_73916",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__222497_737465_93723",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__551235_310309",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      }
+    ],
+    "positive_count": 4,
+    "reward_mean": 0.015625
+  },
+  "duplicate_selection_rejection_count": 128,
+  "exact_set_v2": {
+    "histogram": {
+      "0/8": 30,
+      "1/8": 1,
+      "2/8": 0,
+      "3/8": 1,
+      "4/8": 0,
+      "5/8": 0,
+      "6/8": 0,
+      "7/8": 0,
+      "8/8": 0
+    },
+    "mixed_group_count": 2,
+    "mixed_group_rate": 0.0625,
+    "per_qid": [
+      {
+        "population_variance": 0,
+        "qid": "2hop__75714_21969",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__58323_375563_161848_67585",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__270458_88460_30152_20999",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__56851_343058",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__668721_132409_371500_35031",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__56806_7298",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__145427_106426_157788",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__337705_132457_47686",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__88342_75218_128008_86588",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop2__90098_60649_10557",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__129499_85379",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__443274_17130_70784_79935",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__640171_228453_86925",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__41865_55331_34700",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0.234375,
+        "qid": "2hop__57638_615257",
+        "reward_vector": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "success_count": 3
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__32254_84601",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__601548_836463_161616_77103",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__387712_132409_223216_35031",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__507722_124896",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop3__152056_698586_1926_54362",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__389955_132457_47686",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop2__71753_623626_70784_61381",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__426806_42197_18397",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "4hop1__726391_153080_33952_34053",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__604991_339990_15538",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__123190_519940_18967",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__532383_768138",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0.109375,
+        "qid": "2hop__50910_177869",
+        "reward_vector": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 1
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__3739_13529",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__53690_161697_73916",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "3hop1__222497_737465_93723",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      },
+      {
+        "population_variance": 0,
+        "qid": "2hop__551235_310309",
+        "reward_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success_count": 0
+      }
+    ],
+    "positive_count": 4,
+    "reward_mean": 0.015625
+  },
+  "experiment": "completed_n8_reward_v1_vs_v2_recompute",
+  "qid_count": 32,
+  "rollout_n": 8,
+  "schema_version": 1,
+  "source_detail_path": "/root/autodl-tmp/offline_musique_artifacts_20260830/n8_transition_diag_v1_trajectories.json",
+  "source_detail_sha256": "db2debdd15174c9db4cea209db9547c892074534c627f3b678ed017c3bfab95c",
+  "trajectory_count": 256
+}
