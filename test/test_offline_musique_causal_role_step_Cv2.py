@@ -21,6 +21,12 @@ class CausalRoleStepCv2Test(unittest.TestCase):
         self.assertEqual(MODULE.normalized([1.0]), ([0.0], False))
         self.assertEqual(MODULE.normalized([1.0, 1.0]), ([0.0, 0.0], False))
 
+    def test_conditional_f2_penalizes_a_distractor_but_not_a_zero_true_positive(self):
+        opportunity = {"gold"}
+        self.assertEqual(MODULE.conditional_f2({"gold"}, opportunity), 1.0)
+        self.assertLess(MODULE.conditional_f2({"gold", "noise"}, opportunity), 1.0)
+        self.assertEqual(MODULE.conditional_f2({"noise"}, opportunity), 0.0)
+
     def test_valid_role_detectors_require_valid_schema(self):
         self.assertTrue(MODULE.is_valid_search({"mode": "DECISION", "semantic_output": {"action": "search"}, "validation_result": {"schema_valid": True}}))
         self.assertFalse(MODULE.is_valid_search({"mode": "DECISION", "semantic_output": {"action": "search"}, "validation_result": {"schema_valid": True, "format_failure": True}}))

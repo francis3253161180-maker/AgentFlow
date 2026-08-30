@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
-"""Fail-closed, advantage-only audit for role-step C-v2 MuSiQue credit.
-
-This script deliberately does not write a replay pack.  It constructs the
-would-be task advantages in memory solely to audit eligibility, group-local
-normalization, masking, and exploitability before any optimizer can run.
-"""
+"""Audit and, only after passing, materialize role-step C-v2 replay credit."""
 
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import re
@@ -16,6 +12,8 @@ from collections import defaultdict
 from pathlib import Path
 
 import torch
+
+from agentflow.verl.unified_smoke_capture import _field_digest
 
 
 FORBIDDEN_ACTOR_FIELDS = (
@@ -67,6 +65,16 @@ def event_opportunity(observation: list[dict], gold: set[str], consumed: set[str
         return set()
     observed = {str(row["pid"]) for row in observation}
     return (observed & gold) - consumed
+
+
+def conditional_f2(selected: set[str], opportunity: set[str]) -> float:
+    """F2 over this scorer-side event's current opportunity set."""
+    if not opportunity or not selected:
+        return 0.0
+    useful = len(selected & opportunity)
+    precision = useful / len(selected)
+    recall = useful / len(opportunity)
+    return 5.0 * precision * recall / (4.0 * precision + recall) if precision + recall else 0.0
 
 
 def is_valid_search(transition: dict) -> bool:
@@ -206,6 +214,7 @@ def main() -> int:
     parser.add_argument("--terminal-pack", type=Path, required=True)
     parser.add_argument("--b-pack", type=Path, required=True)
     parser.add_argument("--cv1-pack", type=Path, required=True)
+    parser.add_argument("--output-pack", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -283,14 +292,25 @@ def main() -> int:
                 opportunity = event_opportunity(observation, gold, consumed, remaining_capacity)
                 accepted = {str(row["pid"]) for row in (transition.get("validation_result") or {}).get("accepted", [])}
                 selectable = {str(row["pid"]) for row in observation} - consumed
-                reward = len(accepted & opportunity) / len(opportunity) if opportunity else 0.0
+                reward = conditional_f2(accepted, opportunity)
                 eligible = bool(opportunity)
                 events.append({"trajectory_id": trajectory_id, "transition_index": transition_index, "qid": qid, "role": ROLE_EVIDENCE, "ordinal": evidence_ordinal, "eligible": eligible, "reward": reward})
                 if eligible:
+                    distractors = selectable - opportunity
+                    useful_only_reward = conditional_f2(opportunity, opportunity)
+                    useful_plus_one_distractor_reward = (
+                        conditional_f2(opportunity | {next(iter(distractors))}, opportunity)
+                        if distractors and len(opportunity) + 1 <= remaining_capacity else None
+                    )
+                    reward_without_accepted_distractors = conditional_f2(accepted & opportunity, opportunity)
                     evidence_exploit.append({
                         "candidate_count": len(observation), "selectable_candidate_count": len(selectable),
                         "opportunity_count": len(opportunity), "remaining_capacity": remaining_capacity,
-                        "select_all_selectable_reward": len(selectable & opportunity) / len(opportunity),
+                        "select_all_selectable_reward": conditional_f2(selectable, opportunity),
+                        "useful_only_reward": useful_only_reward,
+                        "useful_plus_one_distractor_reward": useful_plus_one_distractor_reward,
+                        "actual_reward": reward,
+                        "reward_without_accepted_distractors": reward_without_accepted_distractors,
                         "accepted_distractor_count": len(accepted - gold),
                         "rejected_selection_count": len((transition.get("validation_result") or {}).get("rejected", [])),
                     })
@@ -307,26 +327,108 @@ def main() -> int:
     if not all(torch.isfinite(torch.tensor(event["task_advantage"])).item() for event in events):
         raise ValueError("non-finite C-v2 task advantage")
     eligible_exploit = len(evidence_exploit)
-    maximal_by_select_all = sum(row["select_all_selectable_reward"] == 1.0 for row in evidence_exploit)
+    select_all_with_distractor = [
+        row for row in evidence_exploit
+        if row["selectable_candidate_count"] > row["opportunity_count"]
+    ]
+    select_all_maximal_with_distractor = sum(
+        abs(row["select_all_selectable_reward"] - row["useful_only_reward"]) <= 1e-12
+        for row in select_all_with_distractor
+    )
+    strict_dominance_rows = [
+        row for row in evidence_exploit if row["useful_plus_one_distractor_reward"] is not None
+    ]
+    strict_dominance_violations = sum(
+        not row["useful_only_reward"] > row["useful_plus_one_distractor_reward"]
+        for row in strict_dominance_rows
+    )
+    actual_distractors = [row for row in evidence_exploit if row["accepted_distractor_count"] > 0]
+    actual_distractors_with_true_positive = [
+        row for row in actual_distractors
+        if row["reward_without_accepted_distractors"] > 0.0
+    ]
+    actual_distractor_reward_increase = sum(
+        row["actual_reward"] > row["reward_without_accepted_distractors"] + 1e-12
+        for row in actual_distractors
+    )
+    actual_distractor_strict_reduction_failures = sum(
+        not row["actual_reward"] < row["reward_without_accepted_distractors"] - 1e-12
+        for row in actual_distractors_with_true_positive
+    )
     exploitability = {
         "eligible_evidence_event_count": eligible_exploit,
-        "select_all_selectable_maximizes_reward_count": maximal_by_select_all,
-        "select_all_selectable_maximizes_reward_rate": maximal_by_select_all / eligible_exploit if eligible_exploit else 0.0,
+        "eligible_events_with_selectable_distractor": len(select_all_with_distractor),
+        "select_all_with_distractor_maximizes_reward_count": select_all_maximal_with_distractor,
+        "select_all_with_distractor_maximizes_reward_rate": (
+            select_all_maximal_with_distractor / len(select_all_with_distractor)
+            if select_all_with_distractor else 0.0
+        ),
+        "useful_only_vs_useful_plus_distractor_comparable_count": len(strict_dominance_rows),
+        "useful_only_strict_dominance_violation_count": strict_dominance_violations,
         "accepted_distractor_selection_count": sum(row["accepted_distractor_count"] for row in evidence_exploit),
         "rejected_false_positive_selection_count": sum(row["rejected_selection_count"] for row in evidence_exploit),
-        "reward_trivially_exploitable": eligible_exploit > 0 and maximal_by_select_all == eligible_exploit,
-        "reason": "Selecting every currently selectable candidate includes every opportunity PID and receives recall 1.0 without a false-positive penalty.",
+        "accepted_distractor_event_count": len(actual_distractors),
+        "accepted_distractor_reward_increase_count": actual_distractor_reward_increase,
+        "accepted_distractor_events_with_true_positive": len(actual_distractors_with_true_positive),
+        "accepted_distractor_strict_reduction_failure_count_when_true_positive": actual_distractor_strict_reduction_failures,
+        "zero_true_positive_distractor_events_receive_zero_reward": sum(
+            row["actual_reward"] == 0.0 and row["reward_without_accepted_distractors"] == 0.0
+            for row in actual_distractors if row not in actual_distractors_with_true_positive
+        ),
+        "reward_trivially_exploitable": select_all_maximal_with_distractor > 0,
+        "reason": "Conditional F2 penalizes false positives whenever a useful candidate is selected; false-positive-only selections remain at zero reward.",
     }
     b_active = int((packs["B"]["tensor_fields"]["advantages"][mask] != 0).sum().item())
     cv1_advantages = packs["C_v1"]["tensor_fields"]["advantages"]
     cv1_active = int((cv1_advantages[mask] != 0).sum().item())
     delta_f2 = delta_f2_signal_summary(diagnostics)
+    gate_passes = (
+        not exploitability["reward_trivially_exploitable"]
+        and strict_dominance_violations == 0
+        and actual_distractor_reward_increase == 0
+        and actual_distractor_strict_reduction_failures == 0
+    )
+    row_advantages = torch.zeros(len(mask), dtype=torch.float32)
+    for event in events:
+        row_advantages[row_by_transition[(event["trajectory_id"], event["transition_index"])]] = event["task_advantage"]
+    advantages = row_advantages.unsqueeze(-1) * tensors["response_mask"].float()
+    if int((advantages[mask] != 0).sum().item()) != summary["effective_task_pg_token_count"]:
+        raise AssertionError("task advantage did not broadcast exactly over response tokens")
+    if not bool(torch.isfinite(advantages).all().item()):
+        raise ValueError("non-finite token-level C-v2 advantage")
+    output_pack_sha256 = None
+    if gate_passes:
+        output = copy.deepcopy(packs["terminal"])
+        output["metadata"] = dict(output["metadata"])
+        output["metadata"].update({
+            "source_run_id": "offline-musique-causal-role-step-Cv2-n8-20260830",
+            "scorer": "outcome_v2 terminal + hidden role-step SEARCH retrieval delta and eligible EVIDENCE conditional-F2 credit",
+            "transition_diagnostic_training_weight": 1,
+            "transition_advantage_definition": "qid + role + same role ordinal; conditional F2 on current selectable opportunity; ineligible and degenerate groups zero",
+            "terminal_advantage_weight": 1,
+            "search_progress_advantage_weight": 1,
+            "evidence_progress_advantage_weight": 1,
+            "final_answer_progress_advantage_weight": 1,
+            "task_pg_mask_definition": "response_mask AND nonzero normalized task advantage; KL retains original response_mask",
+        })
+        output["tensor_fields"] = dict(output["tensor_fields"])
+        output["tensor_fields"]["advantages"] = advantages
+        output["tensor_fields"]["returns"] = advantages.clone()
+        output["captured_field_digest"] = _field_digest(
+            output["tensor_fields"], output["non_tensor_batch"], output["meta_info"]
+        )
+        args.output_pack.parent.mkdir(parents=True, exist_ok=True)
+        temporary = args.output_pack.with_name(f".{args.output_pack.name}.tmp")
+        torch.save(output, temporary)
+        temporary.replace(args.output_pack)
+        output_pack_sha256 = hashlib.sha256(args.output_pack.read_bytes()).hexdigest()
     audit = {
         "schema_version": 1,
         "kind": "offline_musique_causal_role_step_Cv2_advantage_only_audit",
-        "status": "FAILED_CLOSED_EXPLOITABLE_EVIDENCE_REWARD" if exploitability["reward_trivially_exploitable"] else "PASS",
+        "status": "PASS" if gate_passes else "FAILED_CLOSED_EVIDENCE_REWARD_SAFETY",
         "source": {
             "enriched": str(args.enriched), "terminal_pack": str(args.terminal_pack), "B_pack": str(args.b_pack), "C_v1_pack": str(args.cv1_pack),
+            "output_pack": str(args.output_pack), "output_pack_sha256": output_pack_sha256,
             "terminal_pack_sha256": hashlib.sha256(args.terminal_pack.read_bytes()).hexdigest(),
         },
         "hard_boundaries": {
@@ -342,9 +444,11 @@ def main() -> int:
         "invariant_tensor_sha256": invariant_hashes,
         "C_v2_role_step_credit": {
             "comparison_key": "qid + role/credit_channel + same_role_ordinal",
+            "evidence_reward": "conditional F2(S newly accepted candidate PIDs, V currently selectable gold opportunity)",
             "summary": {key: value for key, value in summary.items() if key not in {"signal_rows", "groups"}},
             "effective_task_pg_token_fraction": summary["effective_task_pg_token_count"] / int(mask.sum().item()),
             "ineligible_event_task_pg_token_count": 0,
+            "task_pg_mask": "response_mask AND nonzero normalized task advantage; zero advantage yields exactly zero policy-gradient contribution",
             "unmapped_transition_count": unmapped,
         },
         "evidence_select_all_exploitability": exploitability,
@@ -365,9 +469,12 @@ def main() -> int:
         },
         "gate": {
             "all_technical_integrity_checks_pass": True,
-            "evidence_reward_not_trivially_exploitable": not exploitability["reward_trivially_exploitable"],
-            "optimizer_authorized": not exploitability["reward_trivially_exploitable"],
-            "stop_condition": "Evidence useful-selection-recall is maximized by selecting every selectable candidate; C-v2 may not proceed without an explicitly authorized reward redesign.",
+            "select_all_exploitability_false": not exploitability["reward_trivially_exploitable"],
+            "useful_only_strictly_dominates_useful_plus_distractor": strict_dominance_violations == 0,
+            "accepted_distractors_do_not_increase_reward": actual_distractor_reward_increase == 0,
+            "accepted_distractors_strictly_reduce_reward_when_true_positive_exists": actual_distractor_strict_reduction_failures == 0,
+            "optimizer_authorized": gate_passes,
+            "stop_condition": None if gate_passes else "Conditional-F2 reward safety gate failed; no optimizer or POST is authorized.",
         },
     }
     if max(group["max_abs_eligible_group_mean"] for group in summary["by_role"].values()) > 2e-6:
