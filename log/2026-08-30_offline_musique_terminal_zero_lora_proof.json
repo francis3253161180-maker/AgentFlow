@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "next_phase": "authorized transition-aware B from the same initial snapshot and persisted pack",
+    "optimizer_run": false,
+    "post_A": "skipped; definitionally identical to frozen PRE",
+    "reason": "terminal task advantage is exactly zero and initial actor equals adapter-disabled reference exactly",
+    "terminal_only_A": "verified_no_op"
+  },
+  "kind": "offline_musique_terminal_zero_signal_exact_lora_proof",
+  "official_kl_loss": {
+    "at_actor_equals_ref": {
+      "d_kl_d_logp": 0.0,
+      "kl": 0.0
+    },
+    "beta": 0.001,
+    "entropy_coefficient": 0.0,
+    "formula": "exp(ref_logp - logp) - (ref_logp - logp) - 1, with configured clamp",
+    "loss_type": "low_var_kl",
+    "reference_policy": "VERL FSDP LoRA path: same actor with adapter disabled",
+    "response_mask_only": true,
+    "source": "verl/workers/fsdp_workers.py compute_ref_log_prob; actor.disable_adapter()"
+  },
+  "schema_version": 1,
+  "snapshot": {
+    "effective_lora_delta_exactly_zero": true,
+    "extra_lora_B_pairs": [],
+    "lora_A_count": 196,
+    "lora_B_count": 196,
+    "lora_B_max_abs": 0.0,
+    "lora_B_nonzero_tensor_count": 0,
+    "lora_B_total_nonzero_elements": 0,
+    "lora_hash": "c841011c9800784d97d381e0c5781b299c4d679aa7f8e824ad4773bc61bf8b38",
+    "missing_lora_B_pairs": [],
+    "other_adapter_tensor_count": 0,
+    "path": "/root/autodl-tmp/tmp/gameof24_planner_temp0_causal_sanity_20260829/gameof24-planner-temp0-causal-sanity-20260829_20260829_135323_behavior_snapshot.pt",
+    "tensor_count": 392
+  },
+  "terminal_pack": {
+    "all_zero_terminal_group_count": 128,
+    "effective_terminal_group_count": 0,
+    "path": "/root/autodl-tmp/offline_musique_grpo_20260830/train_replay_pack.pt",
+    "question_group_count": 128,
+    "response_masked_token_count": 183137,
+    "rollouts_per_group": 8,
+    "terminal_advantage_abs_max": 0.0,
+    "terminal_advantage_nonzero_token_count": 0
+  }
+}
