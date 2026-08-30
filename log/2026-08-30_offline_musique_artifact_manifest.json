@@ -49,5 +49,11 @@
     "alpha": 16,
     "adapter_config_sha256": "186a9d844b048176ee621b972db9946fe8d546210b02eddb8ce87adaa044d62d",
     "adapter_weights_sha256": "335dc4eaccc19131c82dc96e7996bf59e6468c453440428467a44a9148f40654"
+  },
+  "prompt_protocol": {
+    "passing_iteration": "phase_c_v4",
+    "decision_system_sha256": "197e2e115395b78c0e84097574b08a56815f04813f665833cabe8f0e06529ed0",
+    "evidence_system_sha256": "6f8708037ec10948a216bd638f3d4604bfeec9ad5bb2cc049ecb71023f8d4920",
+    "transition_prompt_hashes": "persisted per generated transition in the raw Phase-C and Phase-D result packs"
   }
 }

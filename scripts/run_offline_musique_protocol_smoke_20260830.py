@@ -633,6 +633,12 @@ def main() -> int:
             "included_in_raw_output": True,
             "purpose": "terminate the raw generation at the schema's outer closing sequence; no post-generation stripping or repair",
         },
+        "protocol_hashes": {
+            "decision_system_sha256": hashlib.sha256(DECISION_SYSTEM.encode()).hexdigest(),
+            "evidence_system_sha256": hashlib.sha256(EVIDENCE_SYSTEM.encode()).hexdigest(),
+            "decision_schema_sha256": stable_json_hash(DECISION_ADAPTER.json_schema()),
+            "evidence_schema_sha256": stable_json_hash(EvidenceUpdate.model_json_schema()),
+        },
     }
     gate_checks = {
         "each_mode_schema_valid_at_least_0_95": all(
