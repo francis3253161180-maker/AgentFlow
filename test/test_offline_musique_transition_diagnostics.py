@@ -3,6 +3,7 @@ import unittest
 from agentflow.offline_musique_transition_diagnostics import (
     annotate_trajectory,
     signed_distribution,
+    summarize_diagnostics,
     support_scores,
     unique_with_tolerance,
 )
@@ -73,6 +74,27 @@ class OfflineMusiqueTransitionDiagnosticTest(unittest.TestCase):
         row = signed_distribution([-0.25, 0.0, 1e-13, 0.5])
         self.assertEqual((row["negative_count"], row["zero_count"], row["positive_count"]), (1, 2, 1))
         self.assertEqual(row["positive_rate"], 0.25)
+
+    def test_outcome_group_persists_binary_reward_variance(self):
+        trajectories = []
+        for index, reward in enumerate((0, 1)):
+            trajectories.append(
+                {
+                    "trajectory_id": f"q::q__r{index}",
+                    "qid": "q",
+                    "rollout_index": index,
+                    "reward_detail": {"reward": reward},
+                    "termination_reason": "answer",
+                    "selected_pids": [],
+                    "retrieved_pids": [],
+                    "transitions": [],
+                }
+            )
+        annotations = [annotate_trajectory(row, {"g1"}) for row in trajectories]
+        summary = summarize_diagnostics(trajectories, annotations, {"q": {"g1"}}, ["q"], rollout_n=2)
+        group = summary["outcome"]["per_qid"][0]
+        self.assertEqual(group["terminal_reward_variance"], 0.25)
+        self.assertEqual(group["group_type"], "mixed")
 
 
 if __name__ == "__main__":

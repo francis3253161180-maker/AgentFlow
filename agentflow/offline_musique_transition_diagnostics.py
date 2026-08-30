@@ -218,6 +218,7 @@ def summarize_diagnostics(
                 "qid": qid,
                 "terminal_reward_vector": rewards,
                 "terminal_success_count": successes,
+                "terminal_reward_variance": statistics.pvariance(rewards),
                 "outcome_group_type": "all_zero" if successes == 0 else "all_one" if successes == rollout_n else "mixed",
                 "final_F1": {**f1_stats, "values": final_f1, "mixed": f1_mixed},
                 "final_F2": {**f2_stats, "values": final_f2, "mixed": f2_mixed},
@@ -258,6 +259,7 @@ def summarize_diagnostics(
                     "qid": row["qid"],
                     "terminal_reward_vector": row["terminal_reward_vector"],
                     "success_count": row["terminal_success_count"],
+                    "terminal_reward_variance": row["terminal_reward_variance"],
                     "group_type": row["outcome_group_type"],
                 }
                 for row in groups

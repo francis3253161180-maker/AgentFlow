@@ -45,6 +45,7 @@
     "top_k_retrieval": 2,
     "top_p": 1.0
   },
+  "diagnostic_analysis_parent_commit": "fd8699ea71a5bb0ffcb118bb344883c66d385f6b",
   "diagnostic_only": true,
   "diagnostics": {
     "failure_taxonomy": {
@@ -1532,6 +1533,7 @@
           "group_type": "all_zero",
           "qid": "2hop__75714_21969",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1547,6 +1549,7 @@
           "group_type": "all_zero",
           "qid": "4hop1__58323_375563_161848_67585",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1562,6 +1565,7 @@
           "group_type": "all_zero",
           "qid": "4hop3__270458_88460_30152_20999",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1577,6 +1581,7 @@
           "group_type": "all_zero",
           "qid": "2hop__56851_343058",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1592,6 +1597,7 @@
           "group_type": "all_zero",
           "qid": "4hop3__668721_132409_371500_35031",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1607,6 +1613,7 @@
           "group_type": "all_zero",
           "qid": "2hop__56806_7298",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1622,6 +1629,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__145427_106426_157788",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1637,6 +1645,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__337705_132457_47686",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1652,6 +1661,7 @@
           "group_type": "all_zero",
           "qid": "4hop1__88342_75218_128008_86588",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1667,6 +1677,7 @@
           "group_type": "all_zero",
           "qid": "3hop2__90098_60649_10557",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1682,6 +1693,7 @@
           "group_type": "all_zero",
           "qid": "2hop__129499_85379",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1697,6 +1709,7 @@
           "group_type": "all_zero",
           "qid": "4hop1__443274_17130_70784_79935",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1712,6 +1725,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__640171_228453_86925",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1727,6 +1741,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__41865_55331_34700",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1742,6 +1757,7 @@
           "group_type": "mixed",
           "qid": "2hop__57638_615257",
           "success_count": 3,
+          "terminal_reward_variance": 0.234375,
           "terminal_reward_vector": [
             1,
             0,
@@ -1757,6 +1773,7 @@
           "group_type": "all_zero",
           "qid": "2hop__32254_84601",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1772,6 +1789,7 @@
           "group_type": "all_zero",
           "qid": "4hop3__601548_836463_161616_77103",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1787,6 +1805,7 @@
           "group_type": "all_zero",
           "qid": "4hop3__387712_132409_223216_35031",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1802,6 +1821,7 @@
           "group_type": "all_zero",
           "qid": "2hop__507722_124896",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1817,6 +1837,7 @@
           "group_type": "all_zero",
           "qid": "4hop3__152056_698586_1926_54362",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1832,6 +1853,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__389955_132457_47686",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1847,6 +1869,7 @@
           "group_type": "all_zero",
           "qid": "4hop2__71753_623626_70784_61381",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1862,6 +1885,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__426806_42197_18397",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1877,6 +1901,7 @@
           "group_type": "all_zero",
           "qid": "4hop1__726391_153080_33952_34053",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1892,6 +1917,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__604991_339990_15538",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1907,6 +1933,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__123190_519940_18967",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1922,6 +1949,7 @@
           "group_type": "all_zero",
           "qid": "2hop__532383_768138",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1937,6 +1965,7 @@
           "group_type": "mixed",
           "qid": "2hop__50910_177869",
           "success_count": 1,
+          "terminal_reward_variance": 0.109375,
           "terminal_reward_vector": [
             0,
             0,
@@ -1952,6 +1981,7 @@
           "group_type": "all_zero",
           "qid": "2hop__3739_13529",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1967,6 +1997,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__53690_161697_73916",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1982,6 +2013,7 @@
           "group_type": "all_zero",
           "qid": "3hop1__222497_737465_93723",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -1997,6 +2029,7 @@
           "group_type": "all_zero",
           "qid": "2hop__551235_310309",
           "success_count": 0,
+          "terminal_reward_variance": 0,
           "terminal_reward_vector": [
             0,
             0,
@@ -3569,9 +3602,9 @@
     "scorer_diagnostics_training_weight": 0,
     "terminal_reward_unchanged": true
   },
+  "generation_parent_commit": "af79d1da1872e35c65f2f1344e51ec34591adc57",
   "grpo_occurred": false,
   "hob_occurred": false,
-  "parent_commit": "af79d1da1872e35c65f2f1344e51ec34591adc57",
   "schema_version": 1,
   "seed": 20260830,
   "training_metrics": {

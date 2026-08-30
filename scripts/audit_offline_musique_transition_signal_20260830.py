@@ -137,7 +137,10 @@ def main() -> int:
         "training_occurred": False,
         "grpo_occurred": False,
         "hob_occurred": False,
-        "parent_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+        "generation_parent_commit": runner["parent_commit"],
+        "diagnostic_analysis_parent_commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], text=True
+        ).strip(),
         "seed": detail["configuration"]["seed"],
         "configuration": detail["configuration"],
         "freeze_checks": {
