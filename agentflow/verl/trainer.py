@@ -54,6 +54,21 @@ def _timer(name: str, timing_raw: Dict[str, float]):
     timing_raw[name] += timer.last
 
 
+def materialize_offline_replay(pack: dict, *, multi_turn: bool) -> DataProto:
+    """Build the update DataProto without mutating the authenticated pack."""
+    replay = DataProto.from_dict(
+        tensors=pack["tensor_fields"],
+        non_tensors=pack.get("non_tensor_batch", {}),
+        meta_info=deepcopy(pack.get("meta_info", {})),
+    )
+    if "temperature" not in replay.meta_info:
+        replay.meta_info["temperature"] = float(
+            pack.get("metadata", {}).get("temperature", 0.7) or 0.7
+        )
+    replay.meta_info["multi_turn"] = multi_turn
+    return replay
+
+
 class AgentFlowTrainer(RayPPOTrainer):
     """
     Specialized PPO trainer for agent-based reinforcement learning.
@@ -275,16 +290,6 @@ class AgentFlowTrainer(RayPPOTrainer):
             pack = torch.load(offline_pack_path, map_location="cpu", weights_only=False)
             if pack.get("kind") != "agentflow_unified_authentic_pre_update_replay_pack":
                 raise ValueError(f"unsupported offline replay pack kind: {pack.get('kind')!r}")
-            replay = DataProto.from_dict(
-                tensors=pack["tensor_fields"],
-                non_tensors=pack.get("non_tensor_batch", {}),
-                meta_info=pack.get("meta_info", {}),
-            )
-            if "temperature" not in replay.meta_info:
-                replay.meta_info["temperature"] = float(
-                    pack.get("metadata", {}).get("temperature", 0.7) or 0.7
-                )
-            replay.meta_info["multi_turn"] = self.config.actor_rollout_ref.rollout.multi_turn.enable
             metadata = pack.get("metadata", {})
             if not isinstance(metadata, dict):
                 raise ValueError("offline replay metadata must be a mapping")
@@ -303,6 +308,10 @@ class AgentFlowTrainer(RayPPOTrainer):
                 expected_temperature=float(self.config.actor_rollout_ref.rollout.temperature),
                 expected_seed=os.environ.get("AGENTFLOW_UNIFIED_SEED"),
                 current_lora_hash=str(current_lora_hash or ""),
+            )
+            replay = materialize_offline_replay(
+                pack,
+                multi_turn=self.config.actor_rollout_ref.rollout.multi_turn.enable,
             )
             expected_hash = metadata.get("lora_pre_hash")
             print(
