@@ -66,6 +66,15 @@ def materialize_offline_replay(pack: dict, *, multi_turn: bool) -> DataProto:
         replay.meta_info["temperature"] = float(
             pack.get("metadata", {}).get("temperature", 0.7) or 0.7
         )
+    # The ordinary online path installs this immediately after constructing
+    # response_mask.  Offline replay already carries the authenticated masks,
+    # but update_actor still requires this per-sample denominator for its
+    # official global-loss aggregation.
+    if "global_token_num" not in replay.meta_info:
+        attention_mask = replay.batch.get("attention_mask")
+        if attention_mask is None:
+            raise ValueError("offline replay requires attention_mask for global_token_num")
+        replay.meta_info["global_token_num"] = torch.sum(attention_mask, dim=-1).tolist()
     replay.meta_info["multi_turn"] = multi_turn
     return replay
 

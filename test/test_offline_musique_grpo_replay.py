@@ -35,7 +35,10 @@ class OfflineMusiqueGRPOReplayTest(unittest.TestCase):
             MODULE.right_pad([1, 2, 3], 2, 0)
 
     def test_materialization_does_not_mutate_authenticated_metadata(self):
-        tensors = {"input_ids": torch.tensor([[1, 2]], dtype=torch.long)}
+        tensors = {
+            "input_ids": torch.tensor([[1, 2]], dtype=torch.long),
+            "attention_mask": torch.tensor([[1, 1]], dtype=torch.long),
+        }
         non_tensor = {"rollout_id_list": np.array(["r0"], dtype=object)}
         meta_info = {"temperature": 0.7, "multi_turn": None}
         pack = {
@@ -50,6 +53,7 @@ class OfflineMusiqueGRPOReplayTest(unittest.TestCase):
         self.assertEqual(before, after)
         self.assertIsNone(pack["meta_info"]["multi_turn"])
         self.assertFalse(replay.meta_info["multi_turn"])
+        self.assertEqual(replay.meta_info["global_token_num"], [2])
 
     def test_single_worker_result_accepts_ray_singleton_and_rejects_ambiguous(self):
         self.assertEqual(_single_worker_result([{"lora_hash": "h"}], operation="test")["lora_hash"], "h")
