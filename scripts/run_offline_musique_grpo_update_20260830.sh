@@ -92,7 +92,7 @@ PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config train/config_5090_lora_sm
   actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 \
   actor_rollout_ref.actor.use_kl_loss=false actor_rollout_ref.actor.entropy_coeff=0.0 \
   actor_rollout_ref.rollout.n=8 actor_rollout_ref.rollout.temperature=0.7 \
-  actor_rollout_ref.rollout.gpu_memory_utilization=0.24 \
+  actor_rollout_ref.rollout.gpu_memory_utilization=0.50 \
   actor_rollout_ref.rollout.max_model_len=2048 actor_rollout_ref.rollout.max_num_seqs=1 \
   actor_rollout_ref.rollout.max_num_batched_tokens=1024 \
   +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 \
