@@ -401,31 +401,32 @@ class AgentFlowTrainer(RayPPOTrainer):
                 # Follow the official GRPO path: pi_ref is the same LoRA actor
                 # with its adapter disabled, and both values are defined only
                 # on response-mask tokens.  The immutable pack keeps rollout
-                # old_log_probs for PPO; fresh values are audit evidence only.
-                current = self.actor_rollout_wg.compute_log_prob(replay)
+                # old_log_probs for PPO.  A full fresh-current pass is needed
+                # only for the explicit audit mode; ordinary update execution
+                # computes the reference once and lets update_actor compute the
+                # trainable current policy exactly as in official VERL.
                 reference = self.actor_rollout_wg.compute_ref_log_prob(replay)
-                current_log_probs = current.batch["old_log_probs"]
                 ref_log_probs = reference.batch["ref_log_prob"]
-                kl_audit = offline_kl_audit(
-                    replay,
-                    current_log_probs=current_log_probs,
-                    ref_log_probs=ref_log_probs,
-                    kl_loss_type=str(self.config.actor_rollout_ref.actor.kl_loss_type),
-                    kl_loss_coef=float(self.config.actor_rollout_ref.actor.kl_loss_coef),
-                )
-                kl_audit.update(
-                    {
-                        "mode": "offline_replay_pre_update",
-                        "pack_path": offline_pack_path,
-                        "behavior_lora_hash": str(current_lora_hash),
-                    }
-                )
-                audit_path = os.environ.get("AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT_PATH", "").strip()
-                if audit_path:
-                    _write_json_atomic(Path(audit_path), kl_audit)
-                print(f"AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT {json.dumps(kl_audit, sort_keys=True)}", flush=True)
-                replay = replay.union(reference)
                 if os.environ.get("AGENTFLOW_OFFLINE_REPLAY_AUDIT_ONLY", "0") == "1":
+                    current = self.actor_rollout_wg.compute_log_prob(replay)
+                    kl_audit = offline_kl_audit(
+                        replay,
+                        current_log_probs=current.batch["old_log_probs"],
+                        ref_log_probs=ref_log_probs,
+                        kl_loss_type=str(self.config.actor_rollout_ref.actor.kl_loss_type),
+                        kl_loss_coef=float(self.config.actor_rollout_ref.actor.kl_loss_coef),
+                    )
+                    kl_audit.update(
+                        {
+                            "mode": "offline_replay_pre_update",
+                            "pack_path": offline_pack_path,
+                            "behavior_lora_hash": str(current_lora_hash),
+                        }
+                    )
+                    audit_path = os.environ.get("AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT_PATH", "").strip()
+                    if audit_path:
+                        _write_json_atomic(Path(audit_path), kl_audit)
+                    print(f"AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT {json.dumps(kl_audit, sort_keys=True)}", flush=True)
                     return {
                         "offline_replay/audit_only": 1,
                         "offline_replay/rollout_requests": 0,
@@ -433,6 +434,7 @@ class AgentFlowTrainer(RayPPOTrainer):
                         "offline_replay/kl_mean": kl_audit["masked_kl"]["mean"],
                         "offline_replay/kl_grad_abs_mean": kl_audit["full_objective_logprob_gradient"]["kl_component_abs_mean"],
                     }
+                replay = replay.union(reference)
             expected_hash = metadata.get("lora_pre_hash")
             print(
                 "AGENTFLOW_OFFLINE_REPLAY_UPDATE "

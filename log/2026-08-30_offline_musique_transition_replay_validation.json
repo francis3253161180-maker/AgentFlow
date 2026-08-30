@@ -1,0 +1,80 @@
+{
+  "captured_field_digest": "cd85cb215343010fa5802815760aa685fae28dae6ce6dc3ec4611a51e93a431f",
+  "field_inventory": {
+    "meta_info_fields": [
+      "multi_turn",
+      "temperature"
+    ],
+    "non_tensor_fields": [
+      "data_id_list",
+      "policy_mode_list",
+      "prompt_id_list",
+      "rollout_id_list",
+      "rollout_reward_list",
+      "trajectory_id_list",
+      "turn_index_list",
+      "uid"
+    ],
+    "tensor_fields": [
+      "advantages",
+      "attention_mask",
+      "input_ids",
+      "is_drop_mask",
+      "old_log_probs",
+      "position_ids",
+      "prompts",
+      "response_mask",
+      "responses",
+      "returns",
+      "token_level_rewards",
+      "token_level_scores"
+    ]
+  },
+  "metadata": {
+    "adapter_tensors_equal_behavior_snapshot": true,
+    "adapter_weights_sha256": "335dc4eaccc19131c82dc96e7996bf59e6468c453440428467a44a9148f40654",
+    "behavior_snapshot_path": "/root/autodl-tmp/tmp/gameof24_planner_temp0_causal_sanity_20260829/gameof24-planner-temp0-causal-sanity-20260829_20260829_135323_behavior_snapshot.pt",
+    "behavior_snapshot_sha256": "654d8a7698ef70a27d9dff15a93c55979acfa3a2532c4fb8d68f0d9ebfaebcc8",
+    "lora_pre_hash": "c841011c9800784d97d381e0c5781b299c4d679aa7f8e824ad4773bc61bf8b38",
+    "model_path": "/root/autodl-tmp/models/Qwen2.5-7B-Instruct",
+    "optimizer_steps_before_pack": 0,
+    "ordered_qids_sha256": "70550829a743eadbd895fe0c9ab74bc46f7d5856fcbe23e259ae48a49eea5588",
+    "ppo_epochs": 1,
+    "progress_advantage_weight": 1,
+    "rollout_n": 8,
+    "scorer": "outcome_v2 terminal + scorer-side delta_F2 local advantage; lambda=1.0",
+    "seed": "20260830",
+    "source_raw_sha256": "6e8e73d8a75fe742044c70a1d07d0dbadffa3526731ca87794a06057219a505c",
+    "source_run_id": "offline-musique-transition-aware-grpo-n8-20260830",
+    "temperature": 0.7,
+    "terminal_advantage_weight": 1,
+    "transition_advantage_definition": "same qid + evidence ordinal sample-std normalized delta_F2",
+    "transition_diagnostic_training_weight": 1
+  },
+  "offline_replay_dry_run": {
+    "advantage_mean_on_response": 0.04510268196463585,
+    "batch_size": 6007,
+    "external_calls": false,
+    "old_log_prob_mean_on_response": -0.10348397493362427,
+    "response_token_count": 183137,
+    "reward": {
+      "field": "token_level_rewards",
+      "max": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "shape": [
+        6007,
+        256
+      ]
+    },
+    "rollout_generation": false,
+    "status": "ok",
+    "uid_fields": [
+      "uid"
+    ]
+  },
+  "pack_sha256": "8d8f7ee5a1009c1824a865d7a6c47ddd9a828544836854f0ecfe60e023627767",
+  "roundtrip_field_equal": true,
+  "status": "ok",
+  "token_ids_available": true
+}

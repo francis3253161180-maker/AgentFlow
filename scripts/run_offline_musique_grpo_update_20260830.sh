@@ -9,15 +9,16 @@ RAY=/root/autodl-tmp/conda/envs/agentflow/bin/ray
 MODEL=/root/autodl-tmp/models/Qwen2.5-7B-Instruct
 ADAPTER=/root/autodl-tmp/tmp/game24_actor_diversity_diagnostic_20260829/direct_vllm/qwen-actor-lora
 ROOT=/root/autodl-tmp/offline_musique_grpo_20260830
-PACK="$ROOT/train_replay_pack.pt"
+RUN_TAG="${AGENTFLOW_OFFLINE_REPLAY_RUN_TAG:-terminal_a}"
+PACK="${AGENTFLOW_OFFLINE_REPLAY_PACK_PATH:-$ROOT/train_replay_pack.pt}"
 SNAPSHOT=/root/autodl-tmp/tmp/gameof24_planner_temp0_causal_sanity_20260829/gameof24-planner-temp0-causal-sanity-20260829_20260829_135323_behavior_snapshot.pt
 DATA=/root/autodl-tmp/tmp/unified_qwen_fixed_roles_20260828/mixed_signal_smoke_4.parquet
-LOG="$ROOT/grpo_update.log"
-GPU_LOG="$ROOT/grpo_update_gpu.csv"
-CHECKSUM="$ROOT/grpo_update_lora_checksum.json"
-POST_SNAPSHOT="$ROOT/grpo_post_lora_snapshot.pt"
-KL_AUDIT="$ROOT/grpo_kl_audit.json"
-EXP=offline-musique-terminal-grpo-n8-20260830
+LOG="$ROOT/grpo_${RUN_TAG}.log"
+GPU_LOG="$ROOT/grpo_${RUN_TAG}_gpu.csv"
+CHECKSUM="$ROOT/grpo_${RUN_TAG}_lora_checksum.json"
+POST_SNAPSHOT="$ROOT/grpo_${RUN_TAG}_post_lora_snapshot.pt"
+KL_AUDIT="$ROOT/grpo_${RUN_TAG}_kl_audit.json"
+EXP="offline-musique-${RUN_TAG}-n8-20260830"
 
 for required in "$MODEL" "$ADAPTER" "$PACK" "$SNAPSHOT" "$DATA"; do
   if [[ ! -e "$required" ]]; then
@@ -103,8 +104,8 @@ PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config train/config_5090_lora_sm
   >>"$LOG" 2>&1
 
 grep -q 'Training finished at step' "$LOG"
-test -s "$KL_AUDIT"
 if [[ "${AGENTFLOW_OFFLINE_REPLAY_AUDIT_ONLY:-0}" == "1" ]]; then
+  test -s "$KL_AUDIT"
   grep -q 'AGENTFLOW_OFFLINE_REPLAY_KL_AUDIT' "$LOG"
   echo 'AGENTFLOW_MUSIQUE_GRPO_STATUS=kl_audit_completed' | tee -a "$LOG"
 else
