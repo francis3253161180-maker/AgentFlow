@@ -5,6 +5,7 @@ set -euo pipefail
 # This path performs no rollout, retrieval, scoring, or external model call.
 REPO=/root/autodl-tmp/AgentFlow-offline-musique
 PY=/root/autodl-tmp/conda/envs/agentflow/bin/python
+RAY=/root/autodl-tmp/conda/envs/agentflow/bin/ray
 MODEL=/root/autodl-tmp/models/Qwen2.5-7B-Instruct
 ADAPTER=/root/autodl-tmp/tmp/game24_actor_diversity_diagnostic_20260829/direct_vllm/qwen-actor-lora
 ROOT=/root/autodl-tmp/offline_musique_grpo_20260830
@@ -71,7 +72,7 @@ cleanup() {
   status=$?
   kill "$monitor_pid" >/dev/null 2>&1 || true
   wait "$monitor_pid" >/dev/null 2>&1 || true
-  "$PY" -m ray stop --force >/dev/null 2>&1 || true
+  "$RAY" stop --force >/dev/null 2>&1 || true
   exit "$status"
 }
 trap cleanup EXIT INT TERM
@@ -91,7 +92,7 @@ PYTHONUNBUFFERED=1 "$PY" train/train_agent.py --config train/config_5090_lora_sm
   actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 \
   actor_rollout_ref.actor.use_kl_loss=false actor_rollout_ref.actor.entropy_coeff=0.0 \
   actor_rollout_ref.rollout.n=8 actor_rollout_ref.rollout.temperature=0.7 \
-  actor_rollout_ref.rollout.gpu_memory_utilization=0.10 \
+  actor_rollout_ref.rollout.gpu_memory_utilization=0.24 \
   actor_rollout_ref.rollout.max_model_len=2048 actor_rollout_ref.rollout.max_num_seqs=1 \
   actor_rollout_ref.rollout.max_num_batched_tokens=1024 \
   +actor_rollout_ref.actor.fsdp_config.model_dtype=bf16 \
